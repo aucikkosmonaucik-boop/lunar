@@ -1,0 +1,32 @@
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/layout/Navbar';
+import Footer from './components/layout/Footer';
+import HomePage from './pages/HomePage';
+import ShopPage from './pages/ShopPage';
+import ProductDetailPage from './pages/ProductDetailPage';
+import CartPage from './pages/CartPage';
+import { CartProvider } from './context/CartContext';
+
+const App: React.FC = () => {
+  return (
+    <CartProvider>
+      <Router>
+        <div className="flex flex-col min-h-screen bg-lunar-bg text-lunar-text">
+          <Navbar />
+          <main className="flex-grow">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/sklep" element={<ShopPage />} />
+              <Route path="/produkt/:id" element={<ProductDetailPage />} />
+              <Route path="/koszyk" element={<CartPage />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
+      </Router>
+    </CartProvider>
+  );
+};
+
+export default App;
