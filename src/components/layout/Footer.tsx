@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Instagram, Facebook, Twitter, Youtube } from 'lucide-react';
+import { Instagram, Facebook, Youtube } from 'lucide-react';
 
 const Footer: React.FC = () => {
   return (
@@ -13,11 +13,25 @@ const Footer: React.FC = () => {
         </Link>
 
         <div className="flex gap-6 md:gap-8 mb-12">
-          {[Instagram, Twitter, Youtube, Facebook].map((Icon, i) => (
-            <a href="#" key={i} className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white hover:bg-black hover:scale-105 transition-all duration-300">
-              <Icon className="w-5 h-5" />
-            </a>
-          ))}
+          <a href="https://www.instagram.com/allkeys4games" target="_blank" rel="noreferrer"
+            className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white hover:bg-black hover:scale-105 transition-all duration-300">
+            <Instagram className="w-5 h-5" />
+          </a>
+
+          {/* X (formerly Twitter) */}
+          <a href="https://x.com/allkeys4games" target="_blank" rel="noreferrer"
+            className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white hover:bg-black hover:scale-105 transition-all duration-300">
+            <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor" aria-hidden="true">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.259 5.63 5.905-5.63Zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+          </a>
+
+          <a href="#" className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white hover:bg-black hover:scale-105 transition-all duration-300">
+            <Youtube className="w-5 h-5" />
+          </a>
+          <a href="#" className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white hover:bg-black hover:scale-105 transition-all duration-300">
+            <Facebook className="w-5 h-5" />
+          </a>
         </div>
 
         <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
