@@ -32,7 +32,7 @@ const Footer: React.FC = () => {
               {[
                 { to: '/sklep?category=perfumes-women', label: "Women's Perfumes" },
                 { to: '/sklep?category=perfumes-men', label: "Men's Perfumes" },
-                { to: '/sklep?category=jewelry', label: 'Jewelry' },
+                { to: '/sklep?category=jewelry', label: 'Jewelry By Agatha G.' },
                 { to: '/sklep?category=sets', label: 'Gift Sets' },
               ].map(link => (
                 <li key={link.label}>
