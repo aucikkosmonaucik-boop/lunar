@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ShoppingBag, ArrowLeft, Check, Minus, Plus, Truck, RotateCcw, Shield } from 'lucide-react';
 import { products } from '../data/products';
-import { useCart } from '../context/CartContext';
+import { useCart } from '../hooks/useCart';
 import ProductCard from '../components/ui/ProductCard';
 
 const ProductDetailPage: React.FC = () => {

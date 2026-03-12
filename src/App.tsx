@@ -6,7 +6,7 @@ import HomePage from './pages/HomePage';
 import ShopPage from './pages/ShopPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import CartPage from './pages/CartPage';
-import { CartProvider } from './context/CartContext';
+import { CartProvider } from './context/CartProvider';
 
 const App: React.FC = () => {
   return (

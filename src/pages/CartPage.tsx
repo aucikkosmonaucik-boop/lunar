@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Minus, ShoppingBag, ArrowRight, ArrowLeft } from 'lucide-react';
-import { useCart } from '../context/CartContext';
+import { useCart } from '../hooks/useCart';
 
 const CartPage: React.FC = () => {
   const { items, totalPrice, totalItems, removeFromCart, updateQuantity, clearCart } = useCart();

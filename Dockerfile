@@ -16,11 +16,13 @@ RUN npm run build
 # Production stage
 FROM nginx:stable-alpine AS production
 
+# Copy the custom nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 # Copy the built assets to the Nginx html directory
 COPY --from=build /app/dist /usr/share/nginx/html
 
 # Expose port 80
 EXPOSE 80
 
-# The default command will start Nginx in the foreground
 CMD ["nginx", "-g", "daemon off;"]

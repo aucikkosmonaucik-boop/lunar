@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ShoppingBag, User, Search, Menu, X } from 'lucide-react';
-import { useCart } from '../../context/CartContext';
+import { useCart } from '../../hooks/useCart';
 
 const Navbar: React.FC = () => {
   const { totalItems } = useCart();

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { X, Trash2, ShoppingBag, Plus, Minus } from 'lucide-react';
-import { useCart } from '../../context/CartContext';
+import { useCart } from '../../hooks/useCart';
 
 interface CartSidebarProps {
   open: boolean;
