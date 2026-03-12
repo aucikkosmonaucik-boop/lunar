@@ -30,10 +30,10 @@ const ContactPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-white min-h-screen flex flex-col items-center px-6 pt-28 pb-28">
+    <div className="bg-white min-h-screen flex flex-col items-center px-6 pb-28">
 
       {/* ── Header ──────────────────────────── */}
-      <div className="text-center mb-16 w-full">
+      <div className="text-center mt-8 mb-16 w-full">
         <p className="text-[11px] text-wonders-gold font-bold uppercase tracking-[0.45em] mb-5">
           Get in Touch
         </p>
