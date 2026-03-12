@@ -1,107 +1,105 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, Moon, Menu, X } from 'lucide-react';
+import { ShoppingBag, User, Search, Menu, X } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
-import CartSidebar from '../ui/CartSidebar';
 
 const Navbar: React.FC = () => {
   const { totalItems } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [cartOpen, setCartOpen] = useState(false);
   const location = useLocation();
 
   const navLinks = [
-    { to: '/', label: 'Strona Główna' },
-    { to: '/sklep', label: 'Sklep' },
+    { to: '/', label: 'Home' },
+    { to: '/sklep?category=perfumes-women', label: "Women's Perfumes" },
+    { to: '/sklep?category=perfumes-men', label: "Men's Perfumes" },
+    { to: '/sklep?category=sets', label: 'Sets' },
+    { to: '/sklep?category=jewelry', label: 'Jewelry by Ola' },
+    { to: '/contact', label: 'Contact' },
   ];
 
-  const isActive = (path: string) =>
-    path === '/' ? location.pathname === '/' : location.pathname.startsWith(path);
-
   return (
-    <>
-      <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-lunar-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 group">
-              <div className="relative">
-                <Moon className="w-7 h-7 text-lunar-purple-light group-hover:text-lunar-gold transition-colors duration-300" />
-                <div className="absolute inset-0 blur-sm bg-lunar-purple opacity-0 group-hover:opacity-50 transition-opacity duration-300 rounded-full" />
-              </div>
-              <span className="text-xl font-bold gradient-text">Lunar</span>
-            </Link>
-
-            {/* Desktop Nav */}
-            <div className="hidden md:flex items-center gap-8">
-              {navLinks.map(link => (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  className={`text-sm font-medium transition-colors duration-200 relative
-                    ${isActive(link.to)
-                      ? 'text-lunar-purple-light'
-                      : 'text-lunar-muted hover:text-lunar-text'}
-                  `}
-                >
-                  {link.label}
-                  {isActive(link.to) && (
-                    <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-lunar-purple to-lunar-gold rounded-full" />
-                  )}
-                </Link>
-              ))}
-            </div>
-
-            {/* Right side */}
-            <div className="flex items-center gap-3">
-              {/* Cart button */}
-              <button
-                id="cart-button"
-                onClick={() => setCartOpen(true)}
-                className="relative p-2 rounded-xl text-lunar-muted hover:text-lunar-text hover:bg-lunar-border transition-all duration-200"
-              >
-                <ShoppingCart className="w-5 h-5" />
-                {totalItems > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-lunar-purple rounded-full text-xs flex items-center justify-center text-white font-bold animate-pulse">
-                    {totalItems > 9 ? '9+' : totalItems}
-                  </span>
-                )}
-              </button>
-
-              {/* Mobile menu */}
-              <button
-                className="md:hidden p-2 rounded-xl text-lunar-muted hover:text-lunar-text hover:bg-lunar-border transition-all duration-200"
-                onClick={() => setMenuOpen(!menuOpen)}
-              >
-                {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              </button>
-            </div>
-          </div>
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white">
+      {/* Announcement Bar */}
+      <div className="bg-white border-b border-wonders-border py-2 overflow-hidden">
+        <div className="whitespace-nowrap flex animate-none md:justify-center gap-12 text-[10px] uppercase tracking-[0.2em] text-wonders-dark font-medium">
+          <span className="inline-block px-4">New Scents Available Now!</span>
+          <span className="hidden md:inline-block px-4">Free delivery from $50!</span>
+          <span className="hidden xl:inline-block px-4">Secure Payments</span>
+          <span className="xl:hidden inline-block px-4">New Scents Available Now!</span>
         </div>
+      </div>
 
-        {/* Mobile menu dropdown */}
-        {menuOpen && (
-          <div className="md:hidden glass border-t border-lunar-border px-4 py-4 flex flex-col gap-3">
-            {navLinks.map(link => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className={`text-sm font-medium py-2 px-3 rounded-lg transition-all duration-200
-                  ${isActive(link.to)
-                    ? 'text-lunar-purple-light bg-lunar-purple/10'
-                    : 'text-lunar-muted hover:text-lunar-text hover:bg-lunar-border'}
-                `}
-                onClick={() => setMenuOpen(false)}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
-        )}
+      {/* Top Bar */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between border-b border-wonders-border">
+        {/* Left: Mobile Menu Trigger */}
+        <button
+          className="md:hidden p-2 text-wonders-dark"
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+
+        {/* Center/Left: Logo */}
+        <Link to="/" className="flex flex-col items-center group">
+          <span className="font-serif text-3xl italic leading-none">My</span>
+          <span className="text-[10px] tracking-[0.4em] uppercase font-bold mt-[-4px]">Wonders</span>
+        </Link>
+
+        {/* Right: Icons */}
+        <div className="flex items-center gap-2 sm:gap-6">
+          <button className="p-2 text-wonders-dark hover:text-wonders-gold transition-colors block border-r border-wonders-border pr-4 sm:pr-8">
+            <User className="w-5 h-5 stroke-[1.5]" />
+          </button>
+          <button className="p-2 text-wonders-dark hover:text-wonders-gold transition-colors block border-r border-wonders-border pr-4 sm:pr-8">
+            <Search className="w-5 h-5 stroke-[1.5]" />
+          </button>
+          <Link to="/koszyk" className="flex items-center gap-2 group">
+            <div className="relative p-2">
+              <ShoppingBag className="w-5 h-5 text-wonders-dark group-hover:text-wonders-gold transition-colors stroke-[1.5]" />
+              {totalItems > 0 && (
+                <span className="absolute top-0 right-0 w-4 h-4 bg-wonders-gold rounded-full text-[9px] flex items-center justify-center text-white font-bold">
+                  {totalItems}
+                </span>
+              )}
+            </div>
+            <span className="hidden sm:block text-[11px] uppercase tracking-widest font-bold">Cart</span>
+          </Link>
+        </div>
+      </div>
+
+      {/* Main Navigation - Desktop Only */}
+      <nav className="hidden md:block border-b border-wonders-border bg-white">
+        <div className="max-w-7xl mx-auto px-4 flex justify-center items-center h-12 gap-8">
+          {navLinks.map((link) => (
+            <Link
+              key={link.to}
+              to={link.to}
+              className={`nav-link ${
+                location.pathname === link.to ? 'text-wonders-gold' : ''
+              }`}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
       </nav>
 
-      <CartSidebar open={cartOpen} onClose={() => setCartOpen(false)} />
-    </>
+      {/* Mobile Menu Dropdown */}
+      {menuOpen && (
+        <div className="md:hidden flex flex-col bg-white border-b border-wonders-border py-4 px-6 gap-4 animate-fade-in">
+          {navLinks.map((link) => (
+            <Link
+              key={link.to}
+              to={link.to}
+              className="text-xs uppercase tracking-widest font-medium py-2 border-b border-gray-50"
+              onClick={() => setMenuOpen(false)}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+      )}
+    </header>
   );
 };
 

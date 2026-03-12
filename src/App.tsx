@@ -12,7 +12,7 @@ const App: React.FC = () => {
   return (
     <CartProvider>
       <Router>
-        <div className="flex flex-col min-h-screen bg-lunar-bg text-lunar-text">
+        <div className="flex flex-col min-h-screen bg-white text-wonders-dark">
           <Navbar />
           <main className="flex-grow">
             <Routes>

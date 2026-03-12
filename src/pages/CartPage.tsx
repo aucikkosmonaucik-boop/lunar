@@ -1,174 +1,165 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Plus, Minus, ShoppingBag, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
 const CartPage: React.FC = () => {
   const { items, totalPrice, totalItems, removeFromCart, updateQuantity, clearCart } = useCart();
 
-  const shipping = totalPrice >= 200 ? 0 : 15;
+  const shipping = totalPrice >= 50 ? 0 : 10;
   const grandTotal = totalPrice + shipping;
 
   if (items.length === 0) {
     return (
-      <div className="pt-24 px-4 min-h-screen flex flex-col items-center justify-center text-center">
-        <ShoppingBag className="w-24 h-24 text-lunar-border mb-6" />
-        <h2 className="text-2xl font-bold text-lunar-text mb-3">Twój koszyk jest pusty</h2>
-        <p className="text-lunar-muted mb-8">Wygląda na to, że nie masz jeszcze żadnych produktów w koszyku.</p>
+      <div className="pt-32 px-4 min-h-screen flex flex-col items-center justify-center text-center bg-white">
+        <ShoppingBag className="w-16 h-16 text-wonders-border mb-8 stroke-[1]" />
+        <h2 className="text-2xl font-light uppercase tracking-widest text-wonders-dark mb-4">Your Bag is Empty</h2>
+        <p className="text-wonders-muted text-xs uppercase tracking-widest mb-12">Capture your wonders and they will appear here.</p>
         <Link
           to="/sklep"
-          className="inline-flex items-center gap-2 px-8 py-3 rounded-xl btn-shimmer text-white font-semibold hover:scale-105 transition-transform"
+          className="btn-primary inline-flex items-center gap-3"
         >
-          <ArrowLeft className="w-4 h-4" /> Wróć do sklepu
+          <ArrowLeft className="w-4 h-4" /> Start Shopping
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="pt-24 pb-16 px-4 min-h-screen">
+    <div className="pt-32 pb-24 px-4 min-h-screen bg-white">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-10">
-          <div>
-            <h1 className="text-4xl font-black">
-              Twój <span className="gradient-text">Koszyk</span>
-            </h1>
-            <p className="text-lunar-muted mt-1">{totalItems} {totalItems === 1 ? 'produkt' : 'produktów'}</p>
-          </div>
-          <button
-            onClick={clearCart}
-            className="flex items-center gap-2 text-sm text-lunar-muted hover:text-red-400 transition-colors py-2 px-4 rounded-xl hover:bg-red-400/10"
-          >
-            <Trash2 className="w-4 h-4" />
-            Wyczyść koszyk
-          </button>
+        <div className="mb-16 text-center">
+          <p className="text-[10px] text-wonders-gold font-bold uppercase tracking-[0.3em] mb-4">Your Selection</p>
+          <h1 className="text-4xl md:text-5xl font-light uppercase tracking-[0.2em] mb-6">
+            Shopping <span className="font-bold">Bag</span>
+          </h1>
+          <div className="w-12 h-[1px] bg-wonders-gold mx-auto mb-6"></div>
+          <p className="text-wonders-muted text-xs uppercase tracking-widest">{totalItems} {totalItems === 1 ? 'item' : 'items'} in your bag</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
           {/* Items */}
-          <div className="lg:col-span-2 space-y-4">
+          <div className="lg:col-span-2 space-y-8">
             {items.map(item => (
-              <div key={item.product.id} className="glass rounded-2xl border border-lunar-border p-5 flex gap-5 hover:border-lunar-purple/30 transition-all duration-300">
-                <Link to={`/produkt/${item.product.id}`} className="shrink-0">
+              <div key={item.product.id} className="flex flex-col sm:flex-row gap-8 py-8 border-b border-wonders-border items-center sm:items-start group">
+                <Link to={`/produkt/${item.product.id}`} className="shrink-0 w-32 aspect-[4/5] bg-gray-50 overflow-hidden border border-wonders-border rounded-sm">
                   <img
                     src={item.product.image}
                     alt={item.product.name}
-                    className="w-24 h-24 object-cover rounded-xl"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 </Link>
 
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="text-xs text-lunar-muted mb-1">{item.product.category}</p>
-                      <Link to={`/produkt/${item.product.id}`}>
-                        <h3 className="font-semibold text-lunar-text hover:text-lunar-purple-light transition-colors line-clamp-1">
-                          {item.product.name}
-                        </h3>
-                      </Link>
-                    </div>
-                    <button
-                      onClick={() => removeFromCart(item.product.id)}
-                      className="p-2 rounded-lg text-lunar-muted hover:text-red-400 hover:bg-red-400/10 transition-all duration-200 shrink-0"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                <div className="flex-1 flex flex-col items-center sm:items-start text-center sm:text-left">
+                  <div className="mb-4">
+                    <p className="text-[10px] text-wonders-gold font-bold uppercase tracking-widest mb-2">{item.product.category}</p>
+                    <Link to={`/produkt/${item.product.id}`}>
+                      <h3 className="text-sm font-semibold text-wonders-dark uppercase tracking-widest hover:text-wonders-gold transition-colors">
+                        {item.product.name}
+                      </h3>
+                    </Link>
                   </div>
 
-                  <div className="flex items-center justify-between mt-4">
+                  <div className="flex items-center gap-8 mt-auto">
                     {/* Qty */}
-                    <div className="flex items-center gap-2 glass border border-lunar-border rounded-lg px-2 py-1">
+                    <div className="flex items-center gap-6 border border-wonders-border rounded-full px-4 py-2">
                       <button
                         onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                        className="p-1 text-lunar-muted hover:text-lunar-text transition-colors"
+                        className="text-wonders-muted hover:text-wonders-dark"
                       >
                         <Minus className="w-3.5 h-3.5" />
                       </button>
-                      <span className="w-7 text-center text-sm font-semibold">{item.quantity}</span>
+                      <span className="w-4 text-center text-xs font-bold text-wonders-dark">{item.quantity}</span>
                       <button
                         onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
                         disabled={item.quantity >= item.product.stock}
-                        className="p-1 text-lunar-muted hover:text-lunar-text transition-colors disabled:opacity-40"
+                        className="text-wonders-muted hover:text-wonders-dark disabled:opacity-30"
                       >
                         <Plus className="w-3.5 h-3.5" />
                       </button>
                     </div>
 
-                    {/* Item total */}
-                    <div className="text-right">
-                      <p className="font-bold text-lunar-text">
-                        {(item.product.price * item.quantity).toLocaleString('pl-PL')} zł
-                      </p>
-                      {item.quantity > 1 && (
-                        <p className="text-xs text-lunar-muted">{item.product.price.toLocaleString('pl-PL')} zł / szt.</p>
-                      )}
-                    </div>
+                    <button
+                      onClick={() => removeFromCart(item.product.id)}
+                      className="text-[10px] uppercase tracking-widest font-bold text-red-400 hover:text-red-600 transition-colors"
+                    >
+                      Remove
+                    </button>
                   </div>
+                </div>
+
+                <div className="text-right sm:min-w-[120px]">
+                  <p className="text-sm font-bold text-wonders-dark tracking-widest">
+                    {(item.product.price * item.quantity).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                  </p>
+                  {item.quantity > 1 && (
+                    <p className="text-[10px] text-wonders-muted uppercase tracking-widest mt-1">
+                      {item.product.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })} / ea
+                    </p>
+                  )}
                 </div>
               </div>
             ))}
 
-            <Link
-              to="/sklep"
-              className="inline-flex items-center gap-2 text-sm text-lunar-muted hover:text-lunar-purple-light transition-colors mt-4"
-            >
-              <ArrowLeft className="w-4 h-4" /> Kontynuuj zakupy
-            </Link>
+            <div className="flex justify-between items-center pt-8">
+              <Link
+                to="/sklep"
+                className="text-[10px] uppercase tracking-[0.2em] font-bold text-wonders-dark border-b border-wonders-gold pb-1 hover:text-wonders-gold transition-colors flex items-center gap-2"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" /> Keep Exploring
+              </Link>
+              <button
+                onClick={clearCart}
+                className="text-[10px] uppercase tracking-[0.2em] font-bold text-wonders-muted hover:text-red-400 transition-colors"
+              >
+                Clear All
+              </button>
+            </div>
           </div>
 
           {/* Summary */}
           <div className="lg:col-span-1">
-            <div className="glass rounded-2xl border border-lunar-border p-6 sticky top-24">
-              <h2 className="text-lg font-bold text-lunar-text mb-6">Podsumowanie</h2>
+            <div className="bg-gray-50/50 border border-wonders-border p-8 sticky top-32 rounded-sm">
+              <h2 className="text-sm font-bold text-wonders-dark uppercase tracking-[0.2em] mb-10">Order Summary</h2>
 
-              <div className="space-y-3 mb-6">
-                <div className="flex justify-between text-sm">
-                  <span className="text-lunar-muted">Produkty ({totalItems})</span>
-                  <span className="text-lunar-text">{totalPrice.toLocaleString('pl-PL')} zł</span>
+              <div className="space-y-4 mb-8">
+                <div className="flex justify-between text-[11px] uppercase tracking-widest">
+                  <span className="text-wonders-muted">Subtotal</span>
+                  <span className="text-wonders-dark font-bold">{totalPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-lunar-muted">Dostawa</span>
-                  <span className={shipping === 0 ? 'text-green-400' : 'text-lunar-text'}>
-                    {shipping === 0 ? 'Bezpłatna' : `${shipping} zł`}
+                <div className="flex justify-between text-[11px] uppercase tracking-widest">
+                  <span className="text-wonders-muted">Delivery</span>
+                  <span className={shipping === 0 ? 'text-green-600 font-bold' : 'text-wonders-dark font-bold'}>
+                    {shipping === 0 ? 'Complimentary' : shipping.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
                   </span>
                 </div>
                 {shipping > 0 && (
-                  <p className="text-xs text-lunar-muted border-t border-lunar-border pt-2">
-                    Dodaj jeszcze {(200 - totalPrice).toLocaleString('pl-PL')} zł, aby uzyskać darmową dostawę
+                  <p className="text-[9px] text-wonders-muted uppercase tracking-widest pt-4 border-t border-wonders-border">
+                    Add {(50 - totalPrice).toLocaleString('en-US', { style: 'currency', currency: 'USD' })} more for free delivery
                   </p>
                 )}
               </div>
 
-              <div className="border-t border-lunar-border pt-4 mb-6">
-                <div className="flex justify-between">
-                  <span className="font-semibold text-lunar-text">Razem</span>
-                  <span className="text-2xl font-black gradient-text">{grandTotal.toLocaleString('pl-PL')} zł</span>
+              <div className="border-t border-wonders-border pt-6 mb-10">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-bold text-wonders-dark uppercase tracking-[0.2em]">Total</span>
+                  <span className="text-xl font-bold text-wonders-gold tracking-widest">{grandTotal.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span>
                 </div>
-              </div>
-
-              {/* Promo code */}
-              <div className="flex gap-2 mb-6">
-                <input
-                  placeholder="Kod rabatowy"
-                  className="flex-1 px-3 py-2 text-sm rounded-lg glass border border-lunar-border text-lunar-text placeholder:text-lunar-muted outline-none focus:border-lunar-purple/50 bg-transparent"
-                />
-                <button className="px-4 py-2 text-sm rounded-lg border border-lunar-purple/40 text-lunar-purple-light hover:bg-lunar-purple/10 transition-colors">
-                  OK
-                </button>
               </div>
 
               <button
                 id="checkout-btn"
-                className="w-full flex items-center justify-center gap-2 py-4 rounded-xl btn-shimmer text-white font-bold hover:scale-[1.02] transition-transform duration-200"
+                className="w-full btn-primary py-4 text-xs uppercase tracking-[0.2em] mb-6"
               >
-                Przejdź do płatności
-                <ArrowRight className="w-5 h-5" />
+                Checkout Securely
               </button>
 
-              <p className="text-xs text-lunar-muted text-center mt-4">
-                🔒 Bezpieczna płatność SSL
-              </p>
+              <div className="flex flex-col items-center gap-4">
+                <p className="text-[10px] text-wonders-muted uppercase tracking-[0.2em] flex items-center gap-2">
+                  <ArrowRight className="w-3 h-3" /> Secure SSL Checkout
+                </p>
+              </div>
             </div>
           </div>
         </div>

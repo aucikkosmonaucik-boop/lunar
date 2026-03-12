@@ -7,41 +7,31 @@ export default {
   theme: {
     extend: {
       colors: {
-        lunar: {
-          bg: '#06060f',
-          card: '#0d0d1f',
-          border: '#1e1e3a',
-          purple: '#7c3aed',
-          'purple-light': '#a855f7',
-          gold: '#f59e0b',
-          'gold-light': '#fbbf24',
-          text: '#e2e8f0',
-          muted: '#64748b',
-        }
+        'wonders-gold': '#C1A98F',
+        'wonders-dark': '#1A1A1A',
+        'wonders-muted': '#757575',
+        'wonders-bg': '#FFFFFF',
+        'wonders-border': '#E5E5E5',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
+        serif: ['Cormorant Garamond', 'serif'],
       },
       backdropBlur: {
         xs: '2px',
       },
       animation: {
-        'float': 'float 6s ease-in-out infinite',
-        'glow': 'glow 2s ease-in-out infinite alternate',
-        'shimmer': 'shimmer 2.5s linear infinite',
+        'fade-in': 'fadeIn 0.5s ease-out forwards',
+        'slide-up': 'slideUp 0.5s ease-out forwards',
       },
       keyframes: {
-        float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-10px)' },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
         },
-        glow: {
-          'from': { boxShadow: '0 0 10px #7c3aed44, 0 0 20px #7c3aed22' },
-          'to': { boxShadow: '0 0 20px #7c3aed88, 0 0 40px #7c3aed44' },
-        },
-        shimmer: {
-          '0%': { backgroundPosition: '-200% center' },
-          '100%': { backgroundPosition: '200% center' },
+        slideUp: {
+          '0%': { transform: 'translateY(10px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
         },
       },
     },
