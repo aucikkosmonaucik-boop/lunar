@@ -23,10 +23,10 @@ const Footer: React.FC = () => {
         </div>
 
         {/* Middle: Links Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-16 mb-20 border-t border-gray-300 pt-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 mb-20 border-t border-gray-300 pt-16">
           {/* Shop */}
-          <div className="text-center md:text-center">
-            <h3 className="text-xs font-bold text-gray-900 mb-8 uppercase tracking-[0.2em]">Shop</h3>
+          <div className="text-center">
+            <h3 className="text-[11px] font-bold text-gray-900 mb-6 uppercase tracking-[0.2em]">Shop</h3>
             <ul className="space-y-4">
               {[
                 { to: '/sklep?category=perfumes-women', label: "Women's Perfumes" },
@@ -35,7 +35,7 @@ const Footer: React.FC = () => {
                 { to: '/sklep?category=sets', label: 'Gift Sets' },
               ].map(link => (
                 <li key={link.label}>
-                  <Link to={link.to} className="text-[11px] uppercase tracking-widest text-gray-600 hover:text-black transition-colors">
+                  <Link to={link.to} className="text-[10px] uppercase tracking-widest text-[#5e5e5e] hover:text-black transition-colors font-medium">
                     {link.label}
                   </Link>
                 </li>
@@ -44,12 +44,12 @@ const Footer: React.FC = () => {
           </div>
 
           {/* Boutique */}
-          <div className="text-center md:text-center">
-            <h3 className="text-xs font-bold text-gray-900 mb-8 uppercase tracking-[0.2em]">Boutique</h3>
+          <div className="text-center">
+            <h3 className="text-[11px] font-bold text-gray-900 mb-6 uppercase tracking-[0.2em]">Boutique</h3>
             <ul className="space-y-4">
               {['About Us', 'Contact', 'Store Locator', 'Careers'].map(item => (
                 <li key={item}>
-                  <span className="text-[11px] uppercase tracking-widest text-gray-600 cursor-pointer hover:text-black transition-colors">
+                  <span className="text-[10px] uppercase tracking-widest text-[#5e5e5e] cursor-pointer hover:text-black transition-colors font-medium">
                     {item}
                   </span>
                 </li>
@@ -58,12 +58,12 @@ const Footer: React.FC = () => {
           </div>
 
           {/* Information */}
-          <div className="text-center md:text-center">
-            <h3 className="text-xs font-bold text-gray-900 mb-8 uppercase tracking-[0.2em]">Customer Care</h3>
+          <div className="text-center">
+            <h3 className="text-[11px] font-bold text-gray-900 mb-6 uppercase tracking-[0.2em]">Customer Care</h3>
             <ul className="space-y-4">
               {['Shipping & Returns', 'Privacy Policy', 'Terms of Service', 'FAQ'].map(item => (
                 <li key={item}>
-                  <span className="text-[11px] uppercase tracking-widest text-gray-600 cursor-pointer hover:text-black transition-colors">
+                  <span className="text-[10px] uppercase tracking-widest text-[#5e5e5e] cursor-pointer hover:text-black transition-colors font-medium">
                     {item}
                   </span>
                 </li>
