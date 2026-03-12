@@ -30,7 +30,7 @@ const ContactPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-white min-h-screen flex flex-col items-center px-6 pt-8 pb-28">
+    <div className="bg-white min-h-screen flex flex-col items-center justify-center px-6 py-20">
 
       {/* ── Header ──────────────────────────── */}
       <div className="text-center mb-16 w-full">
