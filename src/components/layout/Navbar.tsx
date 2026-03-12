@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ShoppingBag, User, Search, Menu, X, Heart } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
+import SearchOverlay from './SearchOverlay';
 
 const Navbar: React.FC = () => {
   const { totalItems } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const location = useLocation();
 
   const navLinks = [
@@ -31,7 +33,9 @@ const Navbar: React.FC = () => {
             {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
           <div className="flex items-center gap-5">
-            <Search className="w-6 h-6 stroke-[1.2]" />
+            <button onClick={() => setSearchOpen(true)} className="text-[#1a1a1a]">
+              <Search className="w-6 h-6 stroke-[1.2]" />
+            </button>
             <Link to="/koszyk" className="relative">
               <ShoppingBag className="w-6 h-6 stroke-[1.2]" />
                {totalItems > 0 && (
@@ -67,10 +71,13 @@ const Navbar: React.FC = () => {
 
         {/* Right: Icons (Desktop) */}
         <div className="hidden md:flex items-center justify-end gap-6 ml-auto w-full md:w-auto mt-4 md:mt-0 md:absolute md:right-12 md:top-12">
-           <div className="flex items-center gap-2 mr-2 cursor-pointer hover:text-gray-600 transition-colors text-[#1a1a1a]">
-             <span className="text-base font-light">Szukaj</span>
+           <button 
+             onClick={() => setSearchOpen(true)}
+             className="flex items-center gap-2 mr-2 cursor-pointer hover:text-gray-600 transition-colors text-[#1a1a1a]"
+           >
+             <span className="text-base font-light font-serif uppercase tracking-widest mr-1">Search</span>
              <Search className="w-[22px] h-[22px] stroke-[1.2]" />
-           </div>
+           </button>
           <button className="text-[#1a1a1a] hover:text-gray-600 transition-colors">
             <User className="w-[24px] h-[24px] stroke-[1.2]" />
           </button>
@@ -104,6 +111,9 @@ const Navbar: React.FC = () => {
           ))}
         </div>
       )}
+
+      {/* Full Screen Search Overlay */}
+      <SearchOverlay isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </header>
   );
 };
