@@ -38,18 +38,18 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // TODO: connect to backend
-    alert(`Zalogowano jako: ${loginEmail}`);
+    alert(`Logged in as: ${loginEmail}`);
     onClose();
   };
 
   const handleRegisterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (regPassword !== regConfirm) {
-      alert('Hasła nie są takie same.');
+      alert('Passwords do not match.');
       return;
     }
     // TODO: connect to backend
-    alert(`Konto utworzone dla: ${regEmail}`);
+    alert(`Account created for: ${regEmail}`);
     onClose();
   };
 
@@ -81,7 +81,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           <button
             onClick={onClose}
             className="p-2 text-[#1a1a1a] hover:text-gray-500 transition-colors"
-            aria-label="Zamknij"
+            aria-label="Close"
           >
             <X className="w-5 h-5 stroke-[1.5]" />
           </button>
@@ -99,7 +99,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   : 'text-gray-400 hover:text-gray-600'
               }`}
             >
-              {t === 'login' ? 'Logowanie' : 'Rejestracja'}
+              {t === 'login' ? 'Login' : 'Register'}
             </button>
           ))}
         </div>
@@ -110,21 +110,21 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             <form onSubmit={handleLoginSubmit} className="flex flex-col gap-4">
               <div className="flex flex-col gap-1">
                 <label className="text-[11px] uppercase tracking-[0.2em] text-gray-500 font-medium">
-                  E-mail
+                  Email
                 </label>
                 <input
                   type="email"
                   required
                   value={loginEmail}
                   onChange={(e) => setLoginEmail(e.target.value)}
-                  placeholder="twój@email.com"
+                  placeholder="your@email.com"
                   className={inputClass}
                 />
               </div>
 
               <div className="flex flex-col gap-1">
                 <label className="text-[11px] uppercase tracking-[0.2em] text-gray-500 font-medium">
-                  Hasło
+                  Password
                 </label>
                 <div className="relative">
                   <input
@@ -150,7 +150,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   type="button"
                   className="text-[11px] uppercase tracking-[0.15em] text-gray-400 hover:text-gray-700 transition-colors underline underline-offset-2"
                 >
-                  Zapomniałeś hasła?
+                  Forgot password?
                 </button>
               </div>
 
@@ -158,17 +158,17 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 type="submit"
                 className="mt-4 w-full bg-[#1a1a1a] text-white text-[12px] uppercase tracking-[0.3em] py-4 hover:bg-gray-800 transition-colors duration-200 font-medium"
               >
-                Zaloguj się
+                Sign In
               </button>
 
               <p className="text-center text-[12px] text-gray-400 mt-2">
-                Nie masz konta?{' '}
+                Don't have an account?{' '}
                 <button
                   type="button"
                   onClick={() => setTab('register')}
                   className="text-[#1a1a1a] underline underline-offset-2 hover:text-gray-600 transition-colors"
                 >
-                  Zarejestruj się
+                  Register
                 </button>
               </p>
             </form>
@@ -176,35 +176,35 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             <form onSubmit={handleRegisterSubmit} className="flex flex-col gap-4">
               <div className="flex flex-col gap-1">
                 <label className="text-[11px] uppercase tracking-[0.2em] text-gray-500 font-medium">
-                  Imię i nazwisko
+                  Full Name
                 </label>
                 <input
                   type="text"
                   required
                   value={regName}
                   onChange={(e) => setRegName(e.target.value)}
-                  placeholder="Jan Kowalski"
+                  placeholder="Jane Doe"
                   className={inputClass}
                 />
               </div>
 
               <div className="flex flex-col gap-1">
                 <label className="text-[11px] uppercase tracking-[0.2em] text-gray-500 font-medium">
-                  E-mail
+                  Email
                 </label>
                 <input
                   type="email"
                   required
                   value={regEmail}
                   onChange={(e) => setRegEmail(e.target.value)}
-                  placeholder="twój@email.com"
+                  placeholder="your@email.com"
                   className={inputClass}
                 />
               </div>
 
               <div className="flex flex-col gap-1">
                 <label className="text-[11px] uppercase tracking-[0.2em] text-gray-500 font-medium">
-                  Hasło
+                  Password
                 </label>
                 <div className="relative">
                   <input
@@ -213,7 +213,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                     minLength={6}
                     value={regPassword}
                     onChange={(e) => setRegPassword(e.target.value)}
-                    placeholder="min. 6 znaków"
+                    placeholder="min. 6 characters"
                     className={`${inputClass} pr-12`}
                   />
                   <button
@@ -228,7 +228,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
               <div className="flex flex-col gap-1">
                 <label className="text-[11px] uppercase tracking-[0.2em] text-gray-500 font-medium">
-                  Potwierdź hasło
+                  Confirm Password
                 </label>
                 <div className="relative">
                   <input
@@ -253,17 +253,17 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 type="submit"
                 className="mt-4 w-full bg-[#1a1a1a] text-white text-[12px] uppercase tracking-[0.3em] py-4 hover:bg-gray-800 transition-colors duration-200 font-medium"
               >
-                Utwórz konto
+                Create Account
               </button>
 
               <p className="text-center text-[12px] text-gray-400 mt-2">
-                Masz już konto?{' '}
+                Already have an account?{' '}
                 <button
                   type="button"
                   onClick={() => setTab('login')}
                   className="text-[#1a1a1a] underline underline-offset-2 hover:text-gray-600 transition-colors"
                 >
-                  Zaloguj się
+                  Sign In
                 </button>
               </p>
             </form>
@@ -272,7 +272,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
         {/* Footer note */}
         <p className="px-8 pb-8 text-center text-[10px] uppercase tracking-[0.2em] text-gray-400">
-          Twoje dane są bezpieczne
+          Your data is secure
         </p>
       </div>
     </>
