@@ -10,8 +10,8 @@ const Footer: React.FC = () => {
           {/* Brand */}
           <div className="col-span-1 md:col-span-1 flex flex-col items-center md:items-start text-center md:text-left">
             <Link to="/" className="flex flex-col items-center md:items-start group mb-8">
-              <span className="font-serif text-3xl italic leading-none">My</span>
-              <span className="text-[10px] tracking-[0.4em] uppercase font-bold mt-[-4px]">Wonders</span>
+              <span className="font-serif text-3xl italic leading-none pb-1">My</span>
+              <span className="text-[10px] tracking-[0.4em] uppercase font-bold mt-0">Wonders</span>
             </Link>
             <p className="text-[11px] text-wonders-muted uppercase tracking-[0.2em] leading-loose mb-8 max-w-xs">
               Curating moments of beauty through exceptional scents and artisanal jewelry.
@@ -76,7 +76,7 @@ const Footer: React.FC = () => {
         {/* Bottom bar */}
         <div className="pt-12 border-t border-wonders-border flex flex-col md:flex-row items-center justify-between gap-8">
           <p className="text-[9px] uppercase tracking-[0.3em] text-wonders-muted">
-            © {new Date().getFullYear()} My Wonders Boutique. All rights reserved.
+            © {new Date().getFullYear()} Lunar Boutique. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
             <span className="text-[9px] uppercase tracking-[0.3em] text-wonders-muted">Secure Payment</span>

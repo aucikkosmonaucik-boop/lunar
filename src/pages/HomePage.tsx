@@ -12,7 +12,7 @@ const HomePage: React.FC = () => {
       <section className="relative h-[80vh] flex items-center px-4 sm:px-12 md:px-24">
         <div className="max-w-4xl animate-fade-in pl-4 sm:pl-12">
           <h1 className="text-4xl sm:text-6xl md:text-7xl font-light text-wonders-gold leading-tight mb-8">
-            Welcome to the world of <span className="font-bold text-wonders-dark">My Wonders.</span>
+            Welcome to the world of <span className="font-bold text-wonders-dark">Lunar.</span>
           </h1>
           <blockquote className="text-2xl sm:text-4xl font-serif italic text-wonders-muted mb-4 leading-relaxed max-w-2xl">
             "Perfumes Are the Most Powerful Form of Memories"
@@ -65,15 +65,18 @@ const HomePage: React.FC = () => {
       {/* Featured Categories / Info */}
       <section className="py-24 px-4 border-t border-wonders-border bg-gray-50/50">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div className="reveal active">
+          <div className="reveal active flex flex-col items-start">
             <h3 className="font-serif text-4xl italic mb-6">Experience the Essence</h3>
             <p className="text-wonders-muted leading-relaxed mb-8 max-w-md">
-              Our curated collection of scents and jewelry is designed to evoke memories and celebrate the beauty of the present moment. Discover your signature style with My Wonders.
+              Our curated collection of scents and jewelry is designed to evoke memories and celebrate the beauty of the present moment. Discover your signature style with Lunar.
             </p>
             <Link to="/sklep" className="btn-primary inline-block">Explore Collections</Link>
           </div>
-          <div className="aspect-[4/3] rounded-sm overflow-hidden glass border border-wonders-border shadow-sm">
-             <img src="https://images.unsplash.com/photo-1583209814683-c023dd2f3bb3?auto=format&fit=crop&q=80&w=1200" alt="Luxury Perfumes" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+          <div className="aspect-[4/3] rounded-sm overflow-hidden glass border border-wonders-border shadow-sm p-4 bg-white relative">
+             <img src="https://images.unsplash.com/photo-1583209814683-c023dd2f3bb3?auto=format&fit=crop&q=80&w=1200" alt="Luxury Perfumes" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700 rounded-sm" />
+             <div className="absolute inset-0 flex items-center justify-center bg-black/10 hover:bg-black/20 transition-all opacity-0 hover:opacity-100 duration-500 rounded-sm">
+                 <span className="text-white text-xl uppercase tracking-widest font-serif italic drop-shadow-md">Luxury Perfumes</span>
+             </div>
           </div>
         </div>
       </section>

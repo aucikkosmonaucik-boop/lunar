@@ -43,7 +43,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
       {/* Info */}
       <div className="flex flex-col items-center px-2">
-        <p className="text-[10px] text-wonders-muted uppercase tracking-[0.2em] mb-2 font-medium">by My Wonders</p>
+        <p className="text-[10px] text-wonders-muted uppercase tracking-[0.2em] mb-2 font-medium">by Lunar</p>
         <Link 
           to={`/produkt/${product.id}`}
           className="text-xs font-semibold text-wonders-dark hover:text-wonders-gold transition-colors mb-3 uppercase tracking-wider line-clamp-2 max-w-[180px]"
