@@ -1,18 +1,86 @@
 import React from 'react';
 
+import { Link } from 'react-router-dom';
+
 const HomePage: React.FC = () => {
+  const featuredChains = [
+    { id: 1, name: 'Classic Gold Chain', price: '$120.00', image: 'https://images.unsplash.com/photo-1599643478514-4a888f802c61?auto=format&fit=crop&q=80&w=800' },
+    { id: 2, name: 'Silver Pendent Necklace', price: '$95.00', image: 'https://images.unsplash.com/photo-1599643477877-530eb83abc8e?auto=format&fit=crop&q=80&w=800' },
+    { id: 3, name: 'Diamond Tennis Chain', price: '$850.00', image: 'https://images.unsplash.com/photo-1629224316810-9d8805b95e76?auto=format&fit=crop&q=80&w=800' },
+    { id: 4, name: 'Rose Gold Choker', price: '$150.00', image: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&q=80&w=800' },
+  ];
+
   return (
-    <div className="bg-black min-h-[calc(100vh-160px)] flex flex-col items-center justify-center">
-      {/* Full screen moon image section */}
-      <div className="w-full relative">
+    <div className="bg-white min-h-screen">
+      {/* Hero Section */}
+      <section className="relative h-[80vh] flex items-center justify-center overflow-hidden">
         <img 
-          src="https://images.unsplash.com/photo-1522030299830-16b8d3d049d5?auto=format&fit=crop&q=80&w=2000" 
-          alt="Lunar Moon and Stars" 
-          className="w-full h-[80vh] md:h-screen object-cover opacity-90 block"
+          src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&q=80&w=2000" 
+          alt="Elegant Woman with Jewelry" 
+          className="absolute inset-0 w-full h-full object-cover object-top"
         />
-        {/* Optional overlay gradient to blend nicely with the page if needed */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/30 pointer-events-none"></div>
-      </div>
+        <div className="absolute inset-0 bg-black/20" /> {/* Subtle overlay */}
+        
+        <div className="relative z-10 text-center text-white px-4">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif italic mb-6 shadow-sm">Discover True Elegance</h1>
+          <p className="text-sm md:text-base uppercase tracking-widest mb-10 shadow-sm">The new collection by Agatha G.</p>
+          <Link 
+            to="/sklep?category=jewelry" 
+            className="inline-block bg-white text-black px-10 py-4 text-xs uppercase tracking-widest hover:bg-black hover:text-white transition-colors duration-300"
+          >
+            Shop the Collection
+          </Link>
+        </div>
+      </section>
+
+      {/* Featured Chains Section */}
+      <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="text-center mb-16">
+          <h2 className="text-2xl md:text-3xl font-serif text-[#1a1a1a] mb-4">Featured Chains</h2>
+          <div className="w-16 h-[1px] bg-gray-300 mx-auto" />
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {featuredChains.map((chain) => (
+            <Link to="/sklep?category=jewelry" key={chain.id} className="group block">
+              <div className="aspect-[4/5] bg-gray-100 mb-6 overflow-hidden relative">
+                <img 
+                  src={chain.image} 
+                  alt={chain.name}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
+                />
+              </div>
+              <div className="text-center">
+                <h3 className="text-xs uppercase tracking-widest text-gray-900 mb-2">{chain.name}</h3>
+                <p className="text-sm text-gray-500">{chain.price}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* Secondary Image Block */}
+      <section className="grid grid-cols-1 md:grid-cols-2 bg-[#f5f5f5]">
+        <div className="h-[50vh] md:h-[70vh]">
+          <img 
+            src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&q=80&w=1200" 
+            alt="Woman modeling necklace" 
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="flex flex-col items-center justify-center p-12 md:p-24 text-center">
+          <h2 className="text-3xl md:text-5xl font-serif italic text-gray-900 mb-6">Timeless Beauty</h2>
+          <p className="text-gray-600 mb-10 max-w-md text-sm leading-relaxed overflow-hidden">
+            Crafted for the modern aesthetic, our pieces are designed to be worn every day and cherished forever. Explore delicate chains, bold statements, and everything in between.
+          </p>
+          <Link 
+            to="/sklep?category=jewelry" 
+            className="text-xs uppercase tracking-widest pb-1 border-b border-black hover:text-gray-500 hover:border-gray-500 transition-colors"
+          >
+            Explore Jewelry
+          </Link>
+        </div>
+      </section>
     </div>
   );
 };
