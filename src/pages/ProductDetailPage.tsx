@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ShoppingBag, ArrowLeft, Check, Minus, Plus, Truck, RotateCcw, Shield } from 'lucide-react';
+import { ShoppingBag, ArrowLeft, Check, Minus, Plus, Truck, RotateCcw, Shield, Heart } from 'lucide-react';
 import { products } from '../data/products';
 import { useCart } from '../hooks/useCart';
+import { useFavorites } from '../hooks/useFavorites';
 import ProductCard from '../components/ui/ProductCard';
 
 const ProductDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { toggleFavorite, isFavorite } = useFavorites();
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
 
@@ -132,6 +134,21 @@ const ProductDetailPage: React.FC = () => {
                 ) : (
                   <><ShoppingBag className="w-4 h-4" /> {isSoldOut ? 'Sold Out' : 'Add to Bag'}</>
                 )}
+              </button>
+
+              {/* Favorite toggle */}
+              <button
+                onClick={() => toggleFavorite(product)}
+                className="w-14 h-14 rounded-full border border-wonders-border flex items-center justify-center hover:border-red-300 transition-all duration-300 shrink-0"
+                aria-label={isFavorite(product.id) ? 'Remove from wishlist' : 'Add to wishlist'}
+              >
+                <Heart
+                  className="w-5 h-5 transition-all duration-300"
+                  style={{
+                    stroke: isFavorite(product.id) ? '#e11d48' : '#1a1a1a',
+                    fill: isFavorite(product.id) ? '#e11d48' : 'none',
+                  }}
+                />
               </button>
             </div>
 

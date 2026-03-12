@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingBag, Eye } from 'lucide-react';
+import { ShoppingBag, Eye, Heart } from 'lucide-react';
 import type { Product } from '../../types';
 import { useCart } from '../../hooks/useCart';
+import { useFavorites } from '../../hooks/useFavorites';
 
 interface ProductCardProps {
   product: Product;
@@ -10,7 +11,9 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addToCart } = useCart();
+  const { toggleFavorite, isFavorite } = useFavorites();
   const isSoldOut = product.stock === 0;
+  const favorited = isFavorite(product.id);
 
   return (
     <div className="group flex flex-col items-center text-center animate-fade-in mb-8">
@@ -24,13 +27,33 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         
         {/* Overlay Actions */}
         <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-           <Link 
+          <Link 
             to={`/produkt/${product.id}`}
             className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-wonders-dark shadow-sm hover:bg-wonders-gold hover:text-white transition-all transform translate-y-4 group-hover:translate-y-0 duration-300"
           >
             <Eye className="w-4 h-4" />
           </Link>
+          <button
+            onClick={() => toggleFavorite(product)}
+            className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm hover:bg-red-50 transition-all transform translate-y-4 group-hover:translate-y-0 duration-300 delay-75"
+            aria-label={favorited ? 'Remove from wishlist' : 'Add to wishlist'}
+          >
+            <Heart
+              className="w-4 h-4 transition-colors duration-200"
+              style={{
+                stroke: favorited ? '#e11d48' : '#1a1a1a',
+                fill: favorited ? '#e11d48' : 'none',
+              }}
+            />
+          </button>
         </div>
+
+        {/* Favorite indicator — always visible if favorited */}
+        {favorited && (
+          <div className="absolute top-4 right-4 w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-sm">
+            <Heart className="w-3.5 h-3.5" style={{ stroke: '#e11d48', fill: '#e11d48' }} />
+          </div>
+        )}
 
         {/* Labels */}
         {product.badge && (

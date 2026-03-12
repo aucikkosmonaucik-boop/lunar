@@ -8,25 +8,28 @@ import ProductDetailPage from './pages/ProductDetailPage';
 import CartPage from './pages/CartPage';
 import ContactPage from './pages/ContactPage';
 import { CartProvider } from './context/CartProvider';
+import { FavoritesProvider } from './context/FavoritesProvider';
 
 const App: React.FC = () => {
   return (
     <CartProvider>
-      <Router>
-        <div className="flex flex-col min-h-screen bg-white text-wonders-dark">
-          <Navbar />
-          <main className="flex-grow pt-[210px]">
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/sklep" element={<ShopPage />} />
-              <Route path="/produkt/:id" element={<ProductDetailPage />} />
-              <Route path="/koszyk" element={<CartPage />} />
-              <Route path="/contact" element={<ContactPage />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
-      </Router>
+      <FavoritesProvider>
+        <Router>
+          <div className="flex flex-col min-h-screen bg-white text-wonders-dark">
+            <Navbar />
+            <main className="flex-grow pt-[210px]">
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/sklep" element={<ShopPage />} />
+                <Route path="/produkt/:id" element={<ProductDetailPage />} />
+                <Route path="/koszyk" element={<CartPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+              </Routes>
+            </main>
+            <Footer />
+          </div>
+        </Router>
+      </FavoritesProvider>
     </CartProvider>
   );
 };

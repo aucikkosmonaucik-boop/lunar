@@ -2,15 +2,19 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ShoppingBag, User, Search, Menu, X, Heart } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
+import { useFavorites } from '../../hooks/useFavorites';
 import SearchOverlay from './SearchOverlay';
 import AuthModal from '../auth/AuthModal';
+import FavoritesDrawer from '../ui/FavoritesDrawer';
 
 const Navbar: React.FC = () => {
   const { totalItems } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
+  const [favOpen, setFavOpen] = useState(false);
   const location = useLocation();
+  const { totalItems: favCount } = useFavorites();
 
   const navLinks = [
     { to: '/', label: 'Home' },
@@ -87,8 +91,17 @@ const Navbar: React.FC = () => {
           >
             <User className="w-[24px] h-[24px] stroke-[1.2]" />
           </button>
-          <button className="text-[#1a1a1a] hover:text-gray-600 transition-colors">
+          <button
+            onClick={() => setFavOpen(true)}
+            className="relative text-[#1a1a1a] hover:text-gray-600 transition-colors"
+            aria-label="Wishlist"
+          >
             <Heart className="w-[24px] h-[24px] stroke-[1.2]" />
+            {favCount > 0 && (
+              <span className="absolute -top-1.5 -right-2 w-5 h-5 bg-black rounded-full text-[11px] flex items-center justify-center text-white font-bold">
+                {favCount}
+              </span>
+            )}
           </button>
           <Link to="/koszyk" className="flex items-center gap-2 group relative text-[#1a1a1a] hover:text-gray-600 transition-colors">
             <ShoppingBag className="w-[24px] h-[24px] stroke-[1.2]" />
@@ -123,6 +136,9 @@ const Navbar: React.FC = () => {
 
       {/* Auth Modal */}
       <AuthModal isOpen={authOpen} onClose={() => setAuthOpen(false)} />
+
+      {/* Favorites Drawer */}
+      <FavoritesDrawer isOpen={favOpen} onClose={() => setFavOpen(false)} />
     </header>
   );
 };
