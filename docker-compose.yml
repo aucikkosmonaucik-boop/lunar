@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  wonders-app:
+    build: .
+    container_name: wonders_boutique
+    ports:
+      - "8080:80"
+    restart: unless-stopped
