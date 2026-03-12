@@ -64,33 +64,33 @@ const ProductDetailPage: React.FC = () => {
           </div>
 
           {/* Info */}
-          <div className="flex flex-col pt-4">
-            <p className="text-[11px] text-wonders-gold font-bold uppercase tracking-[0.3em] mb-4">Collection</p>
-            <h1 className="text-3xl md:text-4xl font-light uppercase tracking-[0.1em] text-wonders-dark mb-6 leading-tight">
+          <div className="flex flex-col pt-12 lg:pt-32">
+            <p className="text-[14px] text-wonders-gold font-bold uppercase tracking-[0.3em] mb-4">Collection</p>
+            <h1 className="text-4xl md:text-6xl font-light uppercase tracking-[0.1em] text-wonders-dark mb-6 leading-tight">
               {product.name}
             </h1>
 
             {/* Price */}
             <div className="mb-8">
-              <span className="text-2xl font-bold text-wonders-dark tracking-wider">
+              <span className="text-3xl font-bold text-wonders-dark tracking-wider">
                 {product.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
               </span>
               {product.originalPrice && (
-                <span className="ml-4 text-lg text-wonders-muted line-through tracking-wider">
+                <span className="ml-4 text-xl text-wonders-muted line-through tracking-wider">
                   {product.originalPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
                 </span>
               )}
             </div>
 
             {/* Description */}
-            <p className="text-wonders-muted text-sm leading-relaxed mb-10 max-w-xl">
+            <p className="text-wonders-muted text-base md:text-lg leading-relaxed mb-10 max-w-xl">
               {product.description}
             </p>
 
             {/* Features/Details */}
             <div className="space-y-4 mb-10">
               {product.features.map(f => (
-                <div key={f} className="flex items-center gap-3 text-[11px] uppercase tracking-widest text-wonders-dark font-medium">
+                <div key={f} className="flex items-center gap-3 text-[13px] uppercase tracking-widest text-wonders-dark font-medium">
                   <span className="w-1.5 h-1.5 bg-wonders-gold rounded-full"></span>
                   {f}
                 </div>

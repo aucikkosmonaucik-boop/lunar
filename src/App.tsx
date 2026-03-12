@@ -15,7 +15,7 @@ const App: React.FC = () => {
       <Router>
         <div className="flex flex-col min-h-screen bg-white text-wonders-dark">
           <Navbar />
-          <main className="flex-grow pt-40">
+          <main className="flex-grow pt-[210px]">
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/sklep" element={<ShopPage />} />
