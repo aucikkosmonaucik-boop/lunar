@@ -10,11 +10,7 @@ const Navbar: React.FC = () => {
 
   const navLinks = [
     { to: '/', label: 'Home' },
-    { to: '/sklep?category=perfumes-women', label: "Women's Perfumes" },
-    { to: '/sklep?category=perfumes-men', label: "Men's Perfumes" },
-    { to: '/sklep?category=sets', label: 'Sets' },
-    { to: '/sklep?category=jewelry', label: 'Jewelry by Ola' },
-    { to: '/contact', label: 'Contact' },
+    { to: '/sklep?category=jewelry', label: 'Jewelry by Lunar' },
   ];
 
   return (
@@ -41,8 +37,8 @@ const Navbar: React.FC = () => {
 
         {/* Center/Left: Logo */}
         <Link to="/" className="flex flex-col items-center group">
-          <span className="font-serif text-3xl italic leading-none pb-1">My</span>
-          <span className="text-[10px] tracking-[0.4em] uppercase font-bold mt-0">Wonders</span>
+          <span className="font-serif text-3xl italic leading-none pb-1">Lunar</span>
+          <span className="text-[10px] tracking-[0.4em] uppercase font-bold mt-0">Boutique</span>
         </Link>
 
         {/* Right: Icons */}

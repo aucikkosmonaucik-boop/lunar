@@ -10,8 +10,8 @@ const Footer: React.FC = () => {
           {/* Brand */}
           <div className="col-span-1 md:col-span-1 flex flex-col items-center md:items-start text-center md:text-left">
             <Link to="/" className="flex flex-col items-center md:items-start group mb-8">
-              <span className="font-serif text-3xl italic leading-none pb-1">My</span>
-              <span className="text-[10px] tracking-[0.4em] uppercase font-bold mt-0">Wonders</span>
+              <span className="font-serif text-3xl italic leading-none pb-1">Lunar</span>
+              <span className="text-[10px] tracking-[0.4em] uppercase font-bold mt-0">Boutique</span>
             </Link>
             <p className="text-[11px] text-wonders-muted uppercase tracking-[0.2em] leading-loose mb-8 max-w-xs">
               Curating moments of beauty through exceptional scents and artisanal jewelry.
