@@ -3,11 +3,13 @@ import { Link, useLocation } from 'react-router-dom';
 import { ShoppingBag, User, Search, Menu, X, Heart } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
 import SearchOverlay from './SearchOverlay';
+import AuthModal from '../auth/AuthModal';
 
 const Navbar: React.FC = () => {
   const { totalItems } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
   const location = useLocation();
 
   const navLinks = [
@@ -78,7 +80,11 @@ const Navbar: React.FC = () => {
              <span className="text-base font-light font-serif uppercase tracking-widest mr-1">Search</span>
              <Search className="w-[22px] h-[22px] stroke-[1.2]" />
            </button>
-          <button className="text-[#1a1a1a] hover:text-gray-600 transition-colors">
+          <button
+            onClick={() => setAuthOpen(true)}
+            className="text-[#1a1a1a] hover:text-gray-600 transition-colors"
+            aria-label="Konto"
+          >
             <User className="w-[24px] h-[24px] stroke-[1.2]" />
           </button>
           <button className="text-[#1a1a1a] hover:text-gray-600 transition-colors">
@@ -114,6 +120,9 @@ const Navbar: React.FC = () => {
 
       {/* Full Screen Search Overlay */}
       <SearchOverlay isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+
+      {/* Auth Modal */}
+      <AuthModal isOpen={authOpen} onClose={() => setAuthOpen(false)} />
     </header>
   );
 };
