@@ -51,16 +51,8 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="pt-8 border-t border-gray-300 flex flex-col md:flex-row items-center justify-between gap-6">
           <p className="text-[11px] uppercase tracking-[0.3em] text-gray-500 font-medium">
-            © {new Date().getFullYear()} Lunar Boutique. All rights reserved.
+            © {new Date().getFullYear()} Lunar Jewellery. All rights reserved.
           </p>
-          <div className="flex items-center gap-6">
-            <span className="text-[11px] uppercase tracking-[0.3em] text-gray-500 font-medium">Secure Payment</span>
-            <div className="flex gap-4 opacity-50 grayscale hover:grayscale-0 transition-all duration-300">
-              <span className="text-[11px] font-bold border border-gray-400 text-gray-600 px-2 rounded-sm">VISA</span>
-              <span className="text-[11px] font-bold border border-gray-400 text-gray-600 px-2 rounded-sm">MC</span>
-              <span className="text-[11px] font-bold border border-gray-400 text-gray-600 px-2 rounded-sm">AMEX</span>
-            </div>
-          </div>
         </div>
       </div>
     </footer>
