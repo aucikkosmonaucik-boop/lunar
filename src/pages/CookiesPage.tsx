@@ -15,52 +15,52 @@ const CookiesPage: React.FC = () => {
           <div className="w-12 h-[1px] bg-wonders-gold mx-auto" />
         </div>
 
-        <div className="space-y-12 text-[#1a1a1a] leading-relaxed font-light text-center">
-          <section>
-            <h2 className="text-xl md:text-2xl uppercase tracking-[0.2em] font-medium mb-6">1. What are Cookies?</h2>
-            <p className="text-[15px] text-gray-600">
+        <div className="space-y-12 text-[#1a1a1a] leading-relaxed font-light flex flex-col items-center text-center">
+          <section className="w-full">
+            <h2 className="text-xl md:text-2xl uppercase tracking-[0.2em] font-medium mb-6 text-center">1. What are Cookies?</h2>
+            <p className="text-[15px] text-gray-600 text-center">
               Cookies are small pieces of text sent to your web browser by a website you visit. A cookie file is stored in your web browser and allows the Service or a third-party to recognize you and make your next visit easier and the Service more useful to you.
             </p>
           </section>
 
-          <section>
-            <h2 className="text-xl md:text-2xl uppercase tracking-[0.2em] font-medium mb-6">2. How Lunar uses Cookies</h2>
-            <p className="text-[15px] text-gray-600 mb-4">
+          <section className="w-full">
+            <h2 className="text-xl md:text-2xl uppercase tracking-[0.2em] font-medium mb-6 text-center">2. How Lunar uses Cookies</h2>
+            <p className="text-[15px] text-gray-600 mb-4 text-center">
               When you use and access our Service, we may place a number of cookies files in your web browser. We use cookies for the following purposes:
             </p>
-            <ul className="list-none text-[15px] text-gray-600 space-y-3">
-              <li>To enable certain functions of the Service</li>
-              <li>To provide analytics</li>
-              <li>To store your preferences</li>
-              <li>To enable advertisements delivery, including behavioral advertising</li>
+            <ul className="list-none text-[15px] text-gray-600 space-y-3 mx-auto">
+              <li className="text-center">To enable certain functions of the Service</li>
+              <li className="text-center">To provide analytics</li>
+              <li className="text-center">To store your preferences</li>
+              <li className="text-center">To enable advertisements delivery, including behavioral advertising</li>
             </ul>
           </section>
 
-          <section>
-            <h2 className="text-xl md:text-2xl uppercase tracking-[0.2em] font-medium mb-6">3. Types of Cookies we use</h2>
-            <p className="text-[15px] text-gray-600">
+          <section className="w-full">
+            <h2 className="text-xl md:text-2xl uppercase tracking-[0.2em] font-medium mb-6 text-center">3. Types of Cookies we use</h2>
+            <p className="text-[15px] text-gray-600 text-center">
               We use both session and persistent cookies on the Service and we use different types of cookies to run the Service:
             </p>
-            <div className="mt-4 space-y-4">
-              <div>
-                <strong className="text-[14px] uppercase tracking-wider block mb-2">Essential Cookies</strong>
-                <p className="text-[15px] text-gray-600">We may use essential cookies to authenticate users and prevent fraudulent use of user accounts.</p>
+            <div className="mt-4 space-y-4 w-full">
+              <div className="text-center">
+                <strong className="text-[14px] uppercase tracking-wider block mb-2 text-center">Essential Cookies</strong>
+                <p className="text-[15px] text-gray-600 text-center">We may use essential cookies to authenticate users and prevent fraudulent use of user accounts.</p>
               </div>
-              <div>
-                <strong className="text-[14px] uppercase tracking-wider block mb-2">Analytics Cookies</strong>
-                <p className="text-[15px] text-gray-600">We may use analytics cookies to track information how the Service is used so that we can make improvements.</p>
+              <div className="text-center">
+                <strong className="text-[14px] uppercase tracking-wider block mb-2 text-center">Analytics Cookies</strong>
+                <p className="text-[15px] text-gray-600 text-center">We may use analytics cookies to track information how the Service is used so that we can make improvements.</p>
               </div>
             </div>
           </section>
 
-          <section>
-            <h2 className="text-xl md:text-2xl uppercase tracking-[0.2em] font-medium mb-6">4. Your choices</h2>
-            <p className="text-[15px] text-gray-600">
+          <section className="w-full">
+            <h2 className="text-xl md:text-2xl uppercase tracking-[0.2em] font-medium mb-6 text-center">4. Your choices</h2>
+            <p className="text-[15px] text-gray-600 text-center">
               If you'd like to delete cookies or instruct your web browser to delete or refuse cookies, please visit the help pages of your web browser. Please note, however, that if you delete cookies or refuse to accept them, you might not be able to use all of the features we offer.
             </p>
           </section>
 
-          <div className="pt-12 border-t border-gray-100 mt-20">
+          <div className="pt-12 border-t border-gray-100 mt-20 w-full text-center">
             <p className="text-[11px] uppercase tracking-widest text-gray-400">Last updated: March 2026</p>
           </div>
         </div>
