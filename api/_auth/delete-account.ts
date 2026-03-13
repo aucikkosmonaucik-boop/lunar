@@ -1,5 +1,5 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import { prisma } from '../lib/prisma.js';
+import { prisma } from '../_lib/prisma.js';
 import { parse, serialize } from 'cookie';
 import jwt from 'jsonwebtoken';
 

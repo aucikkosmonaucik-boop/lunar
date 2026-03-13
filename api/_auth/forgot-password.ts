@@ -1,6 +1,6 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import { prisma } from '../lib/prisma.js';
-import { sendEmail } from '../lib/email.js';
+import { prisma } from '../_lib/prisma.js';
+import { sendEmail } from '../_lib/email.js';
 import crypto from 'crypto';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

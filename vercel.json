@@ -1,6 +1,14 @@
 {
   "rewrites": [
     {
+      "source": "/api/auth/:action*",
+      "destination": "/api/auth-handler"
+    },
+    {
+      "source": "/api/orders/:action*",
+      "destination": "/api/orders-handler"
+    },
+    {
       "source": "/api/(.*)",
       "destination": "/api/$1"
     },
