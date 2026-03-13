@@ -2,9 +2,9 @@ import React from 'react';
 
 const TermsPage: React.FC = () => {
   return (
-    <div className="bg-white min-h-screen px-6 pt-2 md:pt-4 pb-20 animate-fade-in">
+    <div className="bg-white min-h-screen px-6 pt-2 md:pt-4 pb-20 animate-fade-in flex flex-col items-center w-full">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 w-full flex flex-col items-center">
           <p className="text-[11px] text-wonders-gold font-bold uppercase tracking-[0.45em] mb-4">Legal Notice</p>
           <h1 
             style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
