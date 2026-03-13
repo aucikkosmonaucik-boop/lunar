@@ -13,7 +13,7 @@ const Footer: React.FC = () => {
         </Link>
 
         <div className="flex gap-6 md:gap-8 mb-12">
-          <a href="https://www.instagram.com/allkeys4games" target="_blank" rel="noreferrer"
+          <a href="https://www.instagram.com/mylunar.ie?igsh=MXJjZjNndm13NHduMQ==" target="_blank" rel="noreferrer"
             className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white hover:bg-black hover:scale-105 transition-all duration-300">
             <Instagram className="w-5 h-5" />
           </a>
