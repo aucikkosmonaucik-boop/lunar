@@ -58,6 +58,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         city: user.city,
         postalCode: user.postalCode,
         country: user.country,
+        phone: user.phone,
       },
     });
   } catch (error) {
