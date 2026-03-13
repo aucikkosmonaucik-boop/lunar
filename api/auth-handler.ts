@@ -1,9 +1,14 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const action = (req.query.action as string) || (req.url || '').split('/').pop()?.split('?')[0];
+  let action = req.query.action as string;
+  
+  // If query action is missing or literal string, try path
+  if (!action || action.startsWith(':') || action.startsWith('$')) {
+    action = (req.url || '').split('/').pop()?.split('?')[0] || '';
+  }
 
-  console.log(`Auth Handler: action=${action}, query=`, req.query);
+  console.log(`Auth Handler: detected action=${action}, query=`, req.query, "url=", req.url);
 
   try {
     let subHandler;
