@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { useFavorites } from '../hooks/useFavorites';
+import { useCart } from '../hooks/useCart';
 import { Package, MapPin, Heart, Settings, LogOut, Clock, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 interface OrderItem {
@@ -22,8 +24,10 @@ interface Order {
 
 const AccountPage: React.FC = () => {
   const { user, logout, checkAuth } = useAuth();
+  const { items: wishlistItems, removeFromFavorites } = useFavorites();
+  const { addToCart } = useCart();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'overview' | 'settings' | 'addresses' | 'orders'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'settings' | 'addresses' | 'orders' | 'wishlist'>('overview');
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
   const [loading, setLoading] = useState(false);
   const [orders, setOrders] = useState<Order[]>([]);
@@ -167,7 +171,7 @@ const AccountPage: React.FC = () => {
       title: 'Wishlist',
       description: 'View your saved favorite items and collections',
       icon: <Heart className="w-8 h-8 text-[#1a1a1a] stroke-[1.2] group-hover:text-[#D4AF37] transition-colors duration-300" />,
-      action: () => navigate('/sklep?category=jewelry'),
+      action: () => setActiveTab('wishlist'),
     },
     {
       title: 'Account Settings',
@@ -305,6 +309,64 @@ const AccountPage: React.FC = () => {
                     </div>
                   </div>
                 ))
+              )}
+            </div>
+            
+            <button 
+              onClick={() => setActiveTab('overview')}
+              className="mt-12 text-[11px] uppercase tracking-widest text-gray-500 hover:text-[#1a1a1a] border-b border-transparent hover:border-[#1a1a1a] transition-all pb-0.5"
+            >
+              Back to Overview
+            </button>
+          </div>
+        ) : activeTab === 'wishlist' ? (
+          <div className="w-full max-w-4xl flex flex-col items-center">
+            <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-3xl text-[#1a1a1a] mb-10 tracking-widest uppercase text-center font-light">
+              Your Wishlist
+            </h2>
+            
+            <div className="w-full">
+              {wishlistItems.length === 0 ? (
+                <div className="text-center py-20 bg-gray-50 rounded-sm border border-dashed border-gray-200 w-full">
+                  <Heart className="w-12 h-12 text-gray-300 mx-auto mb-4 stroke-[1]" />
+                  <p className="text-gray-500 uppercase tracking-widest text-xs">Your wishlist is empty</p>
+                  <Link to="/sklep" className="mt-6 inline-block text-[10px] uppercase tracking-[0.3em] font-bold text-wonders-gold hover:text-[#1a1a1a] transition-colors">
+                    Explore Collection
+                  </Link>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 w-full">
+                  {wishlistItems.map((product) => (
+                    <div key={product.id} className="bg-white border border-gray-100 rounded-sm shadow-sm overflow-hidden flex p-4 gap-6 group">
+                      <Link to={`/produkt/${product.id}`} className="w-24 h-32 bg-gray-50 flex-shrink-0 rounded-sm overflow-hidden border border-gray-100">
+                        <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      </Link>
+                      <div className="flex-grow flex flex-col justify-between py-1">
+                        <div>
+                          <h3 className="text-sm font-medium text-[#1a1a1a] uppercase tracking-widest mb-2">{product.name}</h3>
+                          <p className="text-wonders-gold text-xs font-bold tracking-widest">
+                            {product.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <button 
+                            onClick={() => addToCart(product, 1)}
+                            disabled={product.stock === 0}
+                            className="text-[10px] uppercase tracking-[0.2em] font-bold bg-[#1a1a1a] text-white px-5 py-2.5 hover:bg-[#D4AF37] transition-all duration-300 disabled:opacity-50"
+                          >
+                            {product.stock === 0 ? 'Sold Out' : 'Add to Bag'}
+                          </button>
+                          <button 
+                            onClick={() => removeFromFavorites(product.id)}
+                            className="text-[10px] uppercase tracking-[0.2em] font-medium text-gray-400 hover:text-red-500 transition-colors"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
             
