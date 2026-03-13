@@ -38,12 +38,12 @@ const Footer: React.FC = () => {
           <Link to="/contact" className="text-[14px] uppercase tracking-widest text-[#5e5e5e] hover:text-black transition-colors font-medium">
             Contact
           </Link>
-          <span className="text-[14px] uppercase tracking-widest text-[#5e5e5e] cursor-pointer hover:text-black transition-colors font-medium">
+          <Link to="/terms" className="text-[14px] uppercase tracking-widest text-[#5e5e5e] hover:text-black transition-colors font-medium">
             Terms of Service
-          </span>
-          <span className="text-[14px] uppercase tracking-widest text-[#5e5e5e] cursor-pointer hover:text-black transition-colors font-medium">
+          </Link>
+          <Link to="/cookies" className="text-[14px] uppercase tracking-widest text-[#5e5e5e] hover:text-black transition-colors font-medium">
             Cookies
-          </span>
+          </Link>
         </div>
       </div>
 
