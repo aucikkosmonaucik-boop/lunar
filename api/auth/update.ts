@@ -20,7 +20,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
-    const { name, email, password, street, city, postalCode, country } = req.body;
+    const { name, email, password, street, city, postalCode, country, phone } = req.body;
 
     const dataToUpdate: { 
       name?: string; 
@@ -30,6 +30,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       city?: string;
       postalCode?: string;
       country?: string;
+      phone?: string;
     } = {};
 
     if (name) dataToUpdate.name = name;
@@ -38,6 +39,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (city !== undefined) dataToUpdate.city = city;
     if (postalCode !== undefined) dataToUpdate.postalCode = postalCode;
     if (country !== undefined) dataToUpdate.country = country;
+    if (phone !== undefined) dataToUpdate.phone = phone;
     if (password) {
       dataToUpdate.password = await bcrypt.hash(password, 10);
     }
@@ -53,6 +55,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         city: true,
         postalCode: true,
         country: true,
+        phone: true,
         createdAt: true,
         updatedAt: true,
       }

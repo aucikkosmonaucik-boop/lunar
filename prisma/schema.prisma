@@ -15,6 +15,7 @@ model User {
   city       String?
   postalCode String?
   country    String?
+  phone      String?
   orders     Order[]
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt

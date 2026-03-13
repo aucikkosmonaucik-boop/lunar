@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useFavorites } from '../hooks/useFavorites';
 import { useCart } from '../hooks/useCart';
-import { Package, MapPin, Heart, Settings, LogOut, Clock, ArrowRight, Trash2 } from 'lucide-react';
+import { Package, MapPin, Heart, Settings, LogOut, Clock, ArrowRight, Trash2, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
 interface OrderItem {
   id: string;
@@ -41,6 +41,7 @@ const AccountPage: React.FC = () => {
   const [editCity, setEditCity] = useState(user?.city || '');
   const [editPostal, setEditPostal] = useState(user?.postalCode || '');
   const [editCountry, setEditCountry] = useState(user?.country || '');
+  const [editPhone, setEditPhone] = useState(user?.phone || '');
 
   const fetchOrders = async () => {
     setOrdersLoading(true);
@@ -72,6 +73,7 @@ const AccountPage: React.FC = () => {
       setEditCity(user.city || '');
       setEditPostal(user.postalCode || '');
       setEditCountry(user.country || '');
+      setEditPhone(user.phone || '');
     }
   }, [user]);
 
@@ -125,6 +127,7 @@ const AccountPage: React.FC = () => {
           city: editCity,
           postalCode: editPostal,
           country: editCountry,
+          phone: editPhone,
         }),
       });
 
@@ -157,6 +160,7 @@ const AccountPage: React.FC = () => {
           city: '',
           postalCode: '',
           country: '',
+          phone: '',
         }),
       });
 
@@ -451,15 +455,27 @@ const AccountPage: React.FC = () => {
                   />
                 </div>
               </div>
-              <div>
-                <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">Country</label>
-                <input
-                  type="text"
-                  value={editCountry}
-                  onChange={(e) => setEditCountry(e.target.value)}
-                  placeholder="United States"
-                  className="w-full bg-transparent border-b border-gray-200 py-3 text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#D4AF37] transition-colors duration-300"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">Country</label>
+                  <input
+                    type="text"
+                    value={editCountry}
+                    onChange={(e) => setEditCountry(e.target.value)}
+                    placeholder="United States"
+                    className="w-full bg-transparent border-b border-gray-200 py-3 text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#D4AF37] transition-colors duration-300"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">Phone Number</label>
+                  <input
+                    type="tel"
+                    value={editPhone}
+                    onChange={(e) => setEditPhone(e.target.value)}
+                    placeholder="+1 234 567 890"
+                    className="w-full bg-transparent border-b border-gray-200 py-3 text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#D4AF37] transition-colors duration-300"
+                  />
+                </div>
               </div>
               
               <div className="flex flex-col sm:flex-row justify-between items-center mt-12 gap-6 pt-6">
@@ -518,6 +534,12 @@ const AccountPage: React.FC = () => {
                           <p className="text-[12px] text-gray-400 font-medium tracking-[0.2em] uppercase pt-2">
                             {user.country}
                           </p>
+                          {user.phone && (
+                            <div className="flex items-center justify-center gap-2 mt-4 text-[#D4AF37]">
+                              <Phone className="w-3.5 h-3.5" />
+                              <p className="text-[13px] font-medium tracking-wider">{user.phone}</p>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>

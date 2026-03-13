@@ -8,6 +8,7 @@ export interface User {
   city: string | null;
   postalCode: string | null;
   country: string | null;
+  phone: string | null;
 }
 
 export interface AuthContextType {
