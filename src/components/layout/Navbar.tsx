@@ -55,9 +55,12 @@ const Navbar: React.FC = () => {
 
         {/* Center: Logo and Desktop Nav */}
         <div className="flex flex-col items-center justify-center w-full md:absolute md:left-1/2 md:-translate-x-1/2 md:top-6">
-          <Link to="/" className="flex flex-col items-center group mb-6">
-            <span className="font-serif text-5xl md:text-[64px] tracking-widest text-[#1a1a1a] uppercase leading-[0.8] pb-1">Lunar</span>
-            <span className="text-[14px] md:text-[18px] tracking-[0.5em] md:tracking-[0.8em] text-[#1a1a1a] pr-[calc(-0.5em)] md:pr-[calc(-0.8em)] mt-3">2026</span>
+          <Link to="/" className="flex flex-col items-center group mb-4">
+            <img 
+              src="/logo.png" 
+              alt="my Lunar.ie" 
+              className="h-20 md:h-28 object-contain transition-transform duration-500 group-hover:scale-105" 
+            />
           </Link>
           
           {/* Desktop Main Navigation */}
