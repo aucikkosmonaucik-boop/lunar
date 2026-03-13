@@ -1,12 +1,55 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Plus, Minus, ShoppingBag, ArrowRight, ArrowLeft, X, Truck, Shield, RotateCcw } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Plus, Minus, ShoppingBag, ArrowRight, ArrowLeft, X, Truck, Shield, RotateCcw, Loader2 } from 'lucide-react';
 import { useCart } from '../hooks/useCart';
+import { useAuth } from '../hooks/useAuth';
+import { useState } from 'react';
 
 const FREE_SHIPPING_THRESHOLD = 50;
 
 const CartPage: React.FC = () => {
   const { items, totalPrice, totalItems, removeFromCart, updateQuantity, clearCart } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleCheckout = async () => {
+    if (!user) {
+      navigate('/login?redirect=/koszyk');
+      return;
+    }
+
+    setIsCheckingOut(true);
+    setError(null);
+
+    try {
+      const shipping = totalPrice >= FREE_SHIPPING_THRESHOLD ? 0 : 10;
+      const grandTotal = totalPrice + shipping;
+
+      const response = await fetch('/api/orders/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items,
+          total: grandTotal,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Coud not process order');
+      }
+
+      // Success! Clear cart and go to account
+      clearCart();
+      navigate('/account?tab=orders');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred during checkout');
+    } finally {
+      setIsCheckingOut(false);
+    }
+  };
 
   const shipping = totalPrice >= FREE_SHIPPING_THRESHOLD ? 0 : 10;
   const grandTotal = totalPrice + shipping;
@@ -257,12 +300,25 @@ const CartPage: React.FC = () => {
                 </div>
               </div>
 
+              {/* Error Message */}
+              {error && (
+                <p className="text-red-500 text-[10px] uppercase tracking-wider mb-4 text-center">
+                  {error}
+                </p>
+              )}
+
               {/* CTA */}
               <button
                 id="checkout-btn"
-                className="w-full bg-[#1a1a1a] text-white text-[12px] uppercase tracking-[0.4em] py-5 hover:bg-gray-800 transition-colors duration-200 mb-6 font-medium flex items-center justify-center gap-3"
+                onClick={handleCheckout}
+                disabled={isCheckingOut}
+                className="w-full bg-[#1a1a1a] text-white text-[12px] uppercase tracking-[0.4em] py-5 hover:bg-gray-800 transition-colors duration-200 mb-6 font-medium flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Checkout Securely <ArrowRight className="w-4 h-4" />
+                {isCheckingOut ? (
+                  <>Processing <Loader2 className="w-4 h-4 animate-spin" /></>
+                ) : (
+                  <>Checkout Securely <ArrowRight className="w-4 h-4" /></>
+                )}
               </button>
 
               {/* Trust signals */}

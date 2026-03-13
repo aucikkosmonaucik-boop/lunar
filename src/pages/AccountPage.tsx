@@ -2,25 +2,72 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { Package, MapPin, Heart, Settings, LogOut, Clock, ArrowRight } from 'lucide-react';
-import { products } from '../data/products';
+import { Link } from 'react-router-dom';
+interface OrderItem {
+  id: string;
+  productId: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+}
+
+interface Order {
+  id: string;
+  total: number;
+  status: string;
+  createdAt: string;
+  items: OrderItem[];
+}
 
 const AccountPage: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, checkAuth } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'overview' | 'settings' | 'addresses' | 'orders'>('overview');
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
   const [loading, setLoading] = useState(false);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
 
   // Form states
   const [editName, setEditName] = useState(user?.name || '');
   const [editEmail, setEditEmail] = useState(user?.email || '');
   const [editPassword, setEditPassword] = useState('');
+  const [editStreet, setEditStreet] = useState(user?.street || '');
+  const [editCity, setEditCity] = useState(user?.city || '');
+  const [editPostal, setEditPostal] = useState(user?.postalCode || '');
+  const [editCountry, setEditCountry] = useState(user?.country || '');
+
+  const fetchOrders = async () => {
+    setOrdersLoading(true);
+    try {
+      const response = await fetch('/api/orders/list');
+      if (response.ok) {
+        const data = await response.json();
+        setOrders(data.orders);
+      }
+    } catch (err) {
+      console.error('Failed to fetch orders:', err);
+    } finally {
+      setOrdersLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'orders') {
+      fetchOrders();
+    }
+  }, [activeTab]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
     if (user) {
       setEditName(user.name || '');
       setEditEmail(user.email || '');
+      setEditStreet(user.street || '');
+      setEditCity(user.city || '');
+      setEditPostal(user.postalCode || '');
+      setEditCountry(user.country || '');
     }
   }, [user]);
 
@@ -50,8 +97,42 @@ const AccountPage: React.FC = () => {
         throw new Error(data.message || 'Failed to update profile');
       }
 
+      await checkAuth?.();
+      
       showNotification('Your profile has been updated successfully.');
       setEditPassword(''); 
+    } catch (err) {
+      showNotification(err instanceof Error ? err.message : 'An error occurred', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdateAddress = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await fetch('/api/auth/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          street: editStreet,
+          city: editCity,
+          postalCode: editPostal,
+          country: editCountry,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to update address');
+      }
+
+      await checkAuth?.();
+
+      showNotification('Address updated successfully.');
     } catch (err) {
       showNotification(err instanceof Error ? err.message : 'An error occurred', 'error');
     } finally {
@@ -151,70 +232,80 @@ const AccountPage: React.FC = () => {
             </h2>
             
             <div className="w-full space-y-8">
-              {[
-                {
-                  id: 'ORD-7729',
-                  date: 'March 10, 2026',
-                  status: 'Processing',
-                  items: [products[5]], // Golden Solar Necklace
-                  delivery: 'Processing: 2-4 business days'
-                },
-                {
-                  id: 'ORD-6510',
-                  date: 'February 24, 2026',
-                  status: 'Delivered',
-                  items: [products[4]], // Silver Orbit Earrings
-                  delivery: 'Delivered on February 28, 2026'
-                }
-              ].map((order) => (
-                <div key={order.id} className="bg-white border border-gray-100 rounded-sm shadow-sm overflow-hidden">
-                  <div className="bg-gray-50 px-6 py-4 border-b border-gray-100 flex flex-wrap justify-between items-center gap-4">
-                    <div className="flex gap-8">
-                      <div>
-                        <p className="text-[10px] uppercase tracking-widest text-gray-400 font-medium mb-1">Order Placed</p>
-                        <p className="text-xs text-[#1a1a1a] font-medium">{order.date}</p>
-                      </div>
-                      <div>
-                        <p className="text-[10px] uppercase tracking-widest text-gray-400 font-medium mb-1">Order ID</p>
-                        <p className="text-xs text-[#1a1a1a] font-medium">{order.id}</p>
-                      </div>
-                    </div>
-                    <div>
-                      <span className={`px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-bold ${order.status === 'Delivered' ? 'bg-green-50 text-green-700' : 'bg-blue-50 text-blue-700'}`}>
-                        {order.status}
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <div className="p-6">
-                    {order.items.map((product) => (
-                      <div key={product.id} className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-                        <div className="w-24 h-24 bg-gray-50 flex-shrink-0 rounded-sm overflow-hidden border border-gray-100">
-                          <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+              {ordersLoading ? (
+                <div className="flex justify-center py-20">
+                  <div className="w-8 h-8 border-2 border-wonders-gold border-t-transparent rounded-full animate-spin" />
+                </div>
+              ) : orders.length === 0 ? (
+                <div className="text-center py-20 bg-gray-50 rounded-sm border border-dashed border-gray-200">
+                  <Package className="w-12 h-12 text-gray-300 mx-auto mb-4 stroke-[1]" />
+                  <p className="text-gray-500 uppercase tracking-widest text-xs">No orders found yet</p>
+                  <Link to="/sklep" className="mt-6 inline-block text-[10px] uppercase tracking-[0.3em] font-bold text-wonders-gold hover:text-[#1a1a1a] transition-colors">
+                    Start Shopping
+                  </Link>
+                </div>
+              ) : (
+                orders.map((order) => (
+                  <div key={order.id} className="bg-white border border-gray-100 rounded-sm shadow-sm overflow-hidden text-left">
+                    <div className="bg-gray-50 px-6 py-4 border-b border-gray-100 flex flex-wrap justify-between items-center gap-4">
+                      <div className="flex gap-8">
+                        <div>
+                          <p className="text-[10px] uppercase tracking-widest text-gray-400 font-medium mb-1">Order Placed</p>
+                          <p className="text-xs text-[#1a1a1a] font-medium">
+                            {new Date(order.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                          </p>
                         </div>
-                        <div className="flex-grow text-center sm:text-left">
-                          <h3 className="text-sm font-medium text-[#1a1a1a] uppercase tracking-widest mb-2">{product.name}</h3>
-                          <p className="text-gray-500 text-xs font-light mb-4 line-clamp-2 italic">"{product.description}"</p>
-                          <div className="flex items-center justify-center sm:justify-start gap-2 text-[10px] text-wonders-gold uppercase tracking-widest font-bold">
-                            <Clock className="w-3.5 h-3.5" />
-                            {order.delivery}
+                        <div>
+                          <p className="text-[10px] uppercase tracking-widest text-gray-400 font-medium mb-1">Order ID</p>
+                          <p className="text-xs text-[#1a1a1a] font-medium">{order.id.slice(-8).toUpperCase()}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] uppercase tracking-widest text-gray-400 font-medium mb-1">Total</p>
+                          <p className="text-xs text-[#1a1a1a] font-medium">
+                            {order.total.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                          </p>
+                        </div>
+                      </div>
+                      <div>
+                        <span className={`px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-bold ${order.status === 'Delivered' ? 'bg-green-50 text-green-700' : 'bg-blue-50 text-blue-700'}`}>
+                          {order.status}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="p-6">
+                      {order.items.map((item: OrderItem) => (
+                        <div key={item.id} className="flex flex-col sm:flex-row items-center sm:items-start gap-6 border-b border-gray-50 last:border-0 pb-6 last:pb-0 mb-6 last:mb-0">
+                          <div className="w-24 h-24 bg-gray-50 flex-shrink-0 rounded-sm overflow-hidden border border-gray-100">
+                            <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                          </div>
+                          <div className="flex-grow text-center sm:text-left">
+                            <h3 className="text-sm font-medium text-[#1a1a1a] uppercase tracking-widest mb-2">{item.name}</h3>
+                            <p className="text-gray-400 text-[10px] uppercase tracking-widest mb-4">Qty: {item.quantity} • {item.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</p>
+                            <div className="flex items-center justify-center sm:justify-start gap-2 text-[10px] text-wonders-gold uppercase tracking-widest font-bold">
+                              <Clock className="w-3.5 h-3.5" />
+                              Estimated delivery: 3-5 business days
+                            </div>
+                          </div>
+                          <div className="flex-shrink-0">
+                            <Link 
+                              to={`/produkt/${item.productId}`}
+                              className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a] border border-[#1a1a1a] px-6 py-2.5 hover:bg-[#1a1a1a] hover:text-white transition-all duration-300"
+                            >
+                              View Product
+                            </Link>
                           </div>
                         </div>
-                        <div className="flex-shrink-0">
-                          <button className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a] border border-[#1a1a1a] px-6 py-2.5 hover:bg-[#1a1a1a] hover:text-white transition-all duration-300">
-                            Buy Again
-                          </button>
-                        </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
+                    <div className="px-6 py-3 bg-gray-50/50 border-t border-gray-100 text-right">
+                      <button className="text-[10px] uppercase tracking-widest font-medium text-gray-400 hover:text-[#1a1a1a] inline-flex items-center gap-1 transition-colors">
+                        View Order Details <ArrowRight className="w-3 h-3" />
+                      </button>
+                    </div>
                   </div>
-                  <div className="px-6 py-3 bg-gray-50/50 border-t border-gray-100 text-right">
-                    <button className="text-[10px] uppercase tracking-widest font-medium text-gray-400 hover:text-[#1a1a1a] inline-flex items-center gap-1 transition-colors">
-                      View Order Details <ArrowRight className="w-3 h-3" />
-                    </button>
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
             
             <button 
@@ -229,11 +320,13 @@ const AccountPage: React.FC = () => {
             <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-3xl text-[#1a1a1a] mb-8 tracking-widest uppercase text-center font-light">
               Delivery Address
             </h2>
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleUpdateAddress}>
               <div>
                 <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">Street Address</label>
                 <input
                   type="text"
+                  value={editStreet}
+                  onChange={(e) => setEditStreet(e.target.value)}
                   placeholder="e.g. 123 Luxury Ave"
                   className="w-full bg-transparent border-b border-gray-200 py-3 text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#D4AF37] transition-colors duration-300"
                 />
@@ -243,6 +336,8 @@ const AccountPage: React.FC = () => {
                   <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">City</label>
                   <input
                     type="text"
+                    value={editCity}
+                    onChange={(e) => setEditCity(e.target.value)}
                     placeholder="New York"
                     className="w-full bg-transparent border-b border-gray-200 py-3 text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#D4AF37] transition-colors duration-300"
                   />
@@ -251,6 +346,8 @@ const AccountPage: React.FC = () => {
                   <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">Postal Code</label>
                   <input
                     type="text"
+                    value={editPostal}
+                    onChange={(e) => setEditPostal(e.target.value)}
                     placeholder="10001"
                     className="w-full bg-transparent border-b border-gray-200 py-3 text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#D4AF37] transition-colors duration-300"
                   />
@@ -260,6 +357,8 @@ const AccountPage: React.FC = () => {
                 <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">Country</label>
                 <input
                   type="text"
+                  value={editCountry}
+                  onChange={(e) => setEditCountry(e.target.value)}
                   placeholder="United States"
                   className="w-full bg-transparent border-b border-gray-200 py-3 text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#D4AF37] transition-colors duration-300"
                 />
@@ -274,10 +373,11 @@ const AccountPage: React.FC = () => {
                   Back to Overview
                 </button>
                 <button 
-                  type="button" 
-                  className="w-full sm:w-auto bg-[#1a1a1a] text-white text-[11px] uppercase tracking-[0.3em] py-4 px-10 hover:bg-[#D4AF37] transition-colors duration-300"
+                  type="submit"
+                  disabled={loading}
+                  className="w-full sm:w-auto bg-[#1a1a1a] text-white text-[11px] uppercase tracking-[0.3em] py-4 px-10 hover:bg-[#D4AF37] transition-colors duration-300 disabled:opacity-50"
                 >
-                  Update Address
+                  {loading ? 'Updating...' : 'Update Address'}
                 </button>
               </div>
             </form>
