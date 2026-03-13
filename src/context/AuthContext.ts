@@ -4,6 +4,10 @@ export interface User {
   id: string;
   email: string;
   name: string | null;
+  street: string | null;
+  city: string | null;
+  postalCode: string | null;
+  country: string | null;
 }
 
 export interface AuthContextType {
