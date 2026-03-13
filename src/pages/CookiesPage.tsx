@@ -2,9 +2,9 @@ import React from 'react';
 
 const CookiesPage: React.FC = () => {
   return (
-    <div className="bg-white min-h-screen px-6 py-20 animate-fade-in">
+    <div className="bg-white min-h-screen px-6 pt-2 md:pt-4 pb-20 animate-fade-in">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-16">
+        <div className="text-center mb-8">
           <p className="text-[11px] text-wonders-gold font-bold uppercase tracking-[0.45em] mb-4">Privacy Preference</p>
           <h1 
             style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
