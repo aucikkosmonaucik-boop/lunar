@@ -27,7 +27,7 @@ model User {
 model Order {
   id        String      @id @default(cuid())
   userId    String
-  user      User        @relation(fields: [userId], references: [id])
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   total     Float
   status    String      @default("Processing")
   items     OrderItem[]
@@ -38,7 +38,7 @@ model Order {
 model OrderItem {
   id        String  @id @default(cuid())
   orderId   String
-  order     Order   @relation(fields: [orderId], references: [id])
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   productId String
   name      String
   price     Float

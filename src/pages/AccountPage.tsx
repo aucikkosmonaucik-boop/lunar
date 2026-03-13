@@ -147,6 +147,31 @@ const AccountPage: React.FC = () => {
     }
   };
 
+  const handleDeleteAccount = async () => {
+    const confirmed = window.confirm('WARNING: This action is permanent. All your data, including order history and wishlist, will be deleted. Are you sure you want to proceed?');
+    
+    if (!confirmed) return;
+
+    setLoading(true);
+    try {
+      const response = await fetch('/api/auth/delete-account', {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete account');
+      }
+
+      await logout();
+      navigate('/');
+      window.location.reload(); // Force full reload to clear any remaining state
+    } catch (err) {
+      showNotification(err instanceof Error ? err.message : 'An error occurred during account deletion', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleDeleteAddress = async () => {
     if (!window.confirm('Are you sure you want to remove your saved address?')) return;
     
@@ -599,6 +624,23 @@ const AccountPage: React.FC = () => {
                 </button>
               </div>
             </form>
+
+            <div className="mt-16 pt-12 border-t border-red-50">
+              <h3 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-xl text-red-800 mb-4 tracking-widest uppercase font-light">
+                Danger Zone
+              </h3>
+              <p className="text-[13px] text-gray-400 font-light mb-6 tracking-wide leading-relaxed">
+                Deleting your account will permanently remove all your data, including your address, order history, and wishlist. This action cannot be undone.
+              </p>
+              <button 
+                type="button"
+                onClick={handleDeleteAccount}
+                disabled={loading}
+                className="text-[10px] uppercase tracking-[0.2em] font-medium text-red-500 hover:text-white border border-red-200 hover:bg-red-500 hover:border-red-500 px-6 py-3 transition-all duration-300 disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-red-500"
+              >
+                Delete Account Permanently
+              </button>
+            </div>
           </div>
         )}
       </div>
