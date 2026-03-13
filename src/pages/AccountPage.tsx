@@ -6,7 +6,7 @@ import { Package, MapPin, Heart, Settings, LogOut } from 'lucide-react';
 const AccountPage: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'overview' | 'settings'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'settings' | 'addresses'>('overview');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -33,7 +33,7 @@ const AccountPage: React.FC = () => {
       title: 'Addresses',
       description: 'Edit your delivery preferences and addresses for orders',
       icon: <MapPin className="w-8 h-8 text-[#1a1a1a] stroke-[1.2] group-hover:text-[#D4AF37] transition-colors duration-300" />,
-      action: () => console.log('Navigate to addresses'),
+      action: () => setActiveTab('addresses'),
     },
     {
       title: 'Wishlist',
@@ -97,6 +97,64 @@ const AccountPage: React.FC = () => {
               </button>
             </div>
           </>
+        ) : activeTab === 'addresses' ? (
+          <div className="w-full max-w-2xl bg-white p-8 md:p-10 border border-gray-100 rounded-sm shadow-sm">
+            <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-3xl text-[#1a1a1a] mb-8 tracking-widest uppercase text-center font-light">
+              Delivery Address
+            </h2>
+            <form className="space-y-6">
+              <div>
+                <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">Street Address</label>
+                <input
+                  type="text"
+                  placeholder="e.g. 123 Luxury Ave"
+                  className="w-full bg-transparent border-b border-gray-200 py-3 text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#D4AF37] transition-colors duration-300"
+                />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">City</label>
+                  <input
+                    type="text"
+                    placeholder="New York"
+                    className="w-full bg-transparent border-b border-gray-200 py-3 text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#D4AF37] transition-colors duration-300"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">Postal Code</label>
+                  <input
+                    type="text"
+                    placeholder="10001"
+                    className="w-full bg-transparent border-b border-gray-200 py-3 text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#D4AF37] transition-colors duration-300"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">Country</label>
+                <input
+                  type="text"
+                  placeholder="United States"
+                  className="w-full bg-transparent border-b border-gray-200 py-3 text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#D4AF37] transition-colors duration-300"
+                />
+              </div>
+              
+              <div className="flex flex-col sm:flex-row justify-between items-center mt-12 gap-6 pt-6">
+                <button 
+                  type="button" 
+                  onClick={() => setActiveTab('overview')} 
+                  className="text-[11px] uppercase tracking-widest text-gray-500 hover:text-[#1a1a1a] border-b border-transparent hover:border-[#1a1a1a] transition-all pb-0.5"
+                >
+                  Back to Overview
+                </button>
+                <button 
+                  type="button" 
+                  className="w-full sm:w-auto bg-[#1a1a1a] text-white text-[11px] uppercase tracking-[0.3em] py-4 px-10 hover:bg-[#D4AF37] transition-colors duration-300"
+                >
+                  Update Address
+                </button>
+              </div>
+            </form>
+          </div>
         ) : (
           <div className="w-full max-w-2xl bg-white p-8 md:p-10 border border-gray-100 rounded-sm shadow-sm">
             <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-3xl text-[#1a1a1a] mb-8 tracking-widest uppercase text-center font-light">
