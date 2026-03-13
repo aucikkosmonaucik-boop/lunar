@@ -1,6 +1,4 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import createOrder from './_orders/create.js';
-import listOrders from './_orders/list.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const action = (req.query.action as string) || (req.url || '').split('/').pop()?.split('?')[0];
@@ -8,13 +6,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   console.log(`Orders Handler: action=${action}, query=`, req.query);
 
   try {
+    let subHandler;
     switch (action) {
-      case 'create': return await createOrder(req, res);
-      case 'list': return await listOrders(req, res);
+      case 'create': subHandler = (await import('./_orders/create.js')).default; break;
+      case 'list': subHandler = (await import('./_orders/list.js')).default; break;
       case 'status': return res.status(200).json({ status: 'ok', message: 'Orders Handler is active' });
       default:
         return res.status(404).json({ message: `Action '${action}' not found in Orders Handler` });
     }
+    return await subHandler(req, res);
   } catch (error) {
     console.error(`Orders Handler Error [${action}]:`, error);
     return res.status(500).json({ 
