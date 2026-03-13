@@ -26,6 +26,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         id: true,
         email: true,
         name: true,
+        street: true,
+        city: true,
+        postalCode: true,
+        country: true,
       },
     });
 
