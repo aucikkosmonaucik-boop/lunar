@@ -10,10 +10,9 @@ import verifyEmail from './_auth/verify-email.js';
 import deleteAccount from './_auth/delete-account.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const url = req.url || '';
-  const action = url.split('/').pop()?.split('?')[0];
+  const action = (req.query.action as string) || (req.url || '').split('/').pop()?.split('?')[0];
 
-  console.log(`Auth Handler: action=${action}, url=${url}`);
+  console.log(`Auth Handler: action=${action}, query=`, req.query);
 
   try {
     switch (action) {

@@ -3,10 +3,9 @@ import createOrder from './_orders/create.js';
 import listOrders from './_orders/list.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const url = req.url || '';
-  const action = url.split('/').pop()?.split('?')[0];
+  const action = (req.query.action as string) || (req.url || '').split('/').pop()?.split('?')[0];
 
-  console.log(`Orders Handler: action=${action}, url=${url}`);
+  console.log(`Orders Handler: action=${action}, query=`, req.query);
 
   try {
     switch (action) {
