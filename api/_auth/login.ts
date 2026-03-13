@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { prisma } from '../_lib/prisma.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { serialize } from 'cookie';
+import { serialize, parse } from 'cookie';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-in-production';
 
@@ -54,11 +54,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         id: user.id,
         email: user.email,
         name: user.name,
-        street: user.street,
-        city: user.city,
-        postalCode: user.postalCode,
-        country: user.country,
-        phone: user.phone,
+        street: (user as any).street,
+        city: (user as any).city,
+        postalCode: (user as any).postalCode,
+        country: (user as any).country,
+        phone: (user as any).phone,
       },
     });
   } catch (error) {

@@ -3,7 +3,7 @@ import { prisma } from '../_lib/prisma.js';
 import { parse, serialize } from 'cookie';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-in-production';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {

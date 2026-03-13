@@ -1,15 +1,17 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import { prisma } from '../_lib/prisma.js';
 import jwt from 'jsonwebtoken';
+import { parse } from 'cookie';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-in-production';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
-  const token = req.cookies.auth_token;
+  const cookies = parse(req.headers.cookie || '');
+  const token = cookies.auth_token;
 
   if (!token) {
     return res.status(401).json({ message: 'Unauthorized' });
@@ -33,7 +35,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ message: 'Cart is empty' });
     }
 
-    const order = await prisma.order.create({
+    const order = await (prisma as any).order.create({
       data: {
         userId: decoded.userId,
         total: Number(total),

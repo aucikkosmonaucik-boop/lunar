@@ -31,7 +31,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         postalCode: true,
         country: true,
         phone: true,
-      },
+      } as any,
     });
 
     if (!user) {
