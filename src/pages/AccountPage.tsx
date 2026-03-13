@@ -50,8 +50,8 @@ const AccountPage: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-col items-center w-full min-h-screen bg-white pt-24 md:pt-[400px]">
-      <div className="w-full max-w-5xl px-4 pb-24 flex flex-col items-center mx-auto mt-8 md:mt-12">
+    <div className="flex flex-col items-center w-full min-h-screen bg-white" style={{ paddingTop: '100px' }}>
+      <div className="w-full max-w-5xl px-4 pb-24 flex flex-col items-center mx-auto">
         <div className="mb-10 w-full">
           <h1 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-4xl md:text-5xl tracking-widest text-[#1a1a1a] uppercase font-light text-center">
             My Account
