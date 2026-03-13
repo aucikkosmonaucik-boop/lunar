@@ -56,11 +56,19 @@ const Navbar: React.FC = () => {
         {/* Center: Logo and Desktop Nav */}
         <div className="flex flex-col items-center justify-center w-full md:absolute md:left-1/2 md:-translate-x-1/2 md:top-6">
           <Link to="/" className="flex flex-col items-center group mb-4">
-            <img 
-              src="/logo.png" 
-              alt="my Lunar.ie" 
-              className="h-20 md:h-28 object-contain transition-transform duration-500 group-hover:scale-105" 
-            />
+            <div className="flex flex-col items-center select-none">
+              <span 
+                className="text-4xl md:text-[56px] text-[#1a1a1a] transition-transform duration-500 group-hover:scale-105"
+                style={{ fontFamily: "'Alex Brush', cursive" }}
+              >
+                My
+              </span>
+              <span 
+                className="font-serif text-xl md:text-[28px] tracking-[0.4em] text-[#1a1a1a] uppercase -mt-4 md:-mt-6 transition-transform duration-500 group-hover:scale-105"
+              >
+                Lunar.ie
+              </span>
+            </div>
           </Link>
           
           {/* Desktop Main Navigation */}
