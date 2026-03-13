@@ -11,7 +11,7 @@ const Navbar: React.FC = () => {
   const { totalItems } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [favOpen, setFavOpen] = useState(false);
   const location = useLocation();
   const { totalItems: favCount } = useFavorites();
@@ -85,20 +85,18 @@ const Navbar: React.FC = () => {
              <Search className="w-[22px] h-[22px] stroke-[1.2]" />
            </button>
           {user ? (
-            <div className="relative group flex items-center gap-4">
-              <span className="text-sm font-medium mr-2">{user.name || user.email}</span>
-              <button
-                onClick={logout}
-                className="text-xs text-wonders-accent hover:text-red-500 uppercase tracking-widest"
-              >
-                Sign Out
-              </button>
-            </div>
+            <Link
+              to="/account"
+              className="text-[#1a1a1a] hover:text-gray-600 transition-colors"
+              aria-label="My Account"
+            >
+              <User className="w-[24px] h-[24px] stroke-[1.2]" />
+            </Link>
           ) : (
             <Link
               to="/login"
               className="text-[#1a1a1a] hover:text-gray-600 transition-colors"
-              aria-label="Konto"
+              aria-label="Account"
             >
               <User className="w-[24px] h-[24px] stroke-[1.2]" />
             </Link>

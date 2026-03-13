@@ -34,8 +34,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     return res.status(200).json({ user });
-  } catch (error: any) {
-    console.error('Verification error:', error);
-    res.status(500).json({ message: `Prisma/Vercel Error: ${error.message}`, stack: error.stack });
+  } catch (error) {
+    const err = error as Error;
+    console.error('Verification error:', err);
+    res.status(500).json({ message: `Prisma/Vercel Error: ${err.message}`, stack: err.stack });
   }
 }
