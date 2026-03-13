@@ -91,12 +91,12 @@ const Navbar: React.FC = () => {
                 onClick={logout}
                 className="text-xs text-wonders-accent hover:text-red-500 uppercase tracking-widest"
               >
-                Wyloguj
+                Sign Out
               </button>
             </div>
           ) : (
             <Link
-              to="/logowanie"
+              to="/login"
               className="text-[#1a1a1a] hover:text-gray-600 transition-colors"
               aria-label="Konto"
             >

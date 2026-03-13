@@ -28,8 +28,8 @@ const App: React.FC = () => {
                 <Route path="/produkt/:id" element={<ProductDetailPage />} />
                 <Route path="/koszyk" element={<CartPage />} />
                 <Route path="/kontakt" element={<ContactPage />} />
-                <Route path="/logowanie" element={<LoginPage />} />
-                <Route path="/rejestracja" element={<RegisterPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
               </Routes>
             </main>
             <Footer />

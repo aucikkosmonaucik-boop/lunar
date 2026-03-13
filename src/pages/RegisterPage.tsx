@@ -25,11 +25,11 @@ const RegisterPage: React.FC = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Wystąpił błąd podczas rejestracji');
+        throw new Error(data.message || 'An error occurred during registration');
       }
 
       // Automatically redirect to login after success
-      navigate('/logowanie');
+      navigate('/login');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Wystąpił nieznany błąd');
     } finally {
@@ -41,13 +41,13 @@ const RegisterPage: React.FC = () => {
     <div className="min-h-[60vh] flex items-center justify-center px-4 py-12">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
         <div>
-          <h2 className="text-center text-3xl font-bold text-gray-900">
-            Zarejestruj się
+          <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-center text-4xl md:text-5xl tracking-widest text-[#1a1a1a] uppercase font-light">
+            Register
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            lub{' '}
-            <Link to="/logowanie" className="font-medium text-wonders-accent hover:text-black transition-colors">
-              zaloguj do swojego konta
+          <p className="mt-4 text-center text-xs uppercase tracking-[0.2em] text-gray-500">
+            or{' '}
+            <Link to="/login" className="font-medium text-[#1a1a1a] border-b border-[#1a1a1a] pb-0.5 hover:text-gray-500 hover:border-gray-500 transition-colors">
+              sign in to your account
             </Link>
           </p>
         </div>
@@ -60,60 +60,60 @@ const RegisterPage: React.FC = () => {
           )}
           <div className="rounded-md space-y-4">
             <div>
-              <label htmlFor="name" className="sr-only">Imię i nazwisko</label>
+              <label htmlFor="name" className="block text-[11px] uppercase tracking-[0.4em] text-gray-400 font-medium mb-3">Full Name</label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400" />
-                </div>
                 <input
                   id="name"
                   name="name"
                   type="text"
                   required
-                  className="appearance-none rounded-lg relative block w-full px-3 py-3 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-wonders-accent focus:border-wonders-accent focus:z-10 sm:text-sm"
-                  placeholder="Imię i nazwisko"
+                  className="w-full bg-transparent border-b-2 border-gray-200 py-4 pl-10 text-[16px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#1a1a1a] transition-colors duration-300"
+                  placeholder="Jane Smith"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
+                <div className="absolute inset-y-0 left-0 pl-0 flex items-center pointer-events-none">
+                  <User className="h-5 w-5 text-gray-400 stroke-[1.5]" />
+                </div>
               </div>
             </div>
             <div>
-              <label htmlFor="email-address" className="sr-only">Email</label>
+              <label htmlFor="email-address" className="block text-[11px] uppercase tracking-[0.4em] text-gray-400 font-medium mb-3">Email Address</label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400" />
-                </div>
                 <input
                   id="email-address"
                   name="email"
                   type="email"
                   autoComplete="email"
                   required
-                  className="appearance-none rounded-lg relative block w-full px-3 py-3 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-wonders-accent focus:border-wonders-accent focus:z-10 sm:text-sm"
-                  placeholder="Adres Email"
+                  className="w-full bg-transparent border-b-2 border-gray-200 py-4 pl-10 text-[16px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#1a1a1a] transition-colors duration-300"
+                  placeholder="jane@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
+                <div className="absolute inset-y-0 left-0 pl-0 flex items-center pointer-events-none">
+                  <Mail className="h-5 w-5 text-gray-400 stroke-[1.5]" />
+                </div>
               </div>
             </div>
             <div>
-              <label htmlFor="password" className="sr-only">Hasło</label>
+              <label htmlFor="password" className="block text-[11px] uppercase tracking-[0.4em] text-gray-400 font-medium mb-3">Password</label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
-                </div>
                 <input
                   id="password"
                   name="password"
                   type="password"
                   autoComplete="new-password"
                   required
-                  className="appearance-none rounded-lg relative block w-full px-3 py-3 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-wonders-accent focus:border-wonders-accent focus:z-10 sm:text-sm"
-                  placeholder="Hasło"
+                  className="w-full bg-transparent border-b-2 border-gray-200 py-4 pl-10 text-[16px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#1a1a1a] transition-colors duration-300"
+                  placeholder="Must be at least 6 characters"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   minLength={6}
                 />
+                <div className="absolute inset-y-0 left-0 pl-0 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-gray-400 stroke-[1.5]" />
+                </div>
               </div>
             </div>
           </div>
@@ -122,9 +122,9 @@ const RegisterPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 disabled:opacity-50 transition-colors"
+              className="mt-6 w-full flex justify-center items-center gap-3 bg-[#1a1a1a] text-white text-[12px] uppercase tracking-[0.45em] py-5 px-14 hover:bg-gray-800 transition-colors duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Przetwarzanie...' : 'Utwórz konto'}
+              {loading ? 'Processing...' : 'Create Account'}
             </button>
           </div>
         </form>
