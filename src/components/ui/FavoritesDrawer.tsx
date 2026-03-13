@@ -77,12 +77,13 @@ const FavoritesDrawer: React.FC<FavoritesDrawerProps> = ({ isOpen, onClose }) =>
                   Save pieces you love to come back to them.
                 </p>
               </div>
-              <button
+              <Link
+                to="/shop?category=jewelry"
                 onClick={onClose}
                 className="mt-2 text-[11px] uppercase tracking-[0.3em] font-medium text-[#1a1a1a] border-b border-[#1a1a1a] pb-0.5 hover:text-gray-500 hover:border-gray-500 transition-colors"
               >
                 Explore Collection
-              </button>
+              </Link>
             </div>
           ) : (
             <div className="flex flex-col gap-6">
