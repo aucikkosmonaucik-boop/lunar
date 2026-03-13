@@ -452,6 +452,29 @@ const AccountPage: React.FC = () => {
                 </button>
               </div>
             </form>
+
+            {(user?.street || user?.city || user?.postalCode || user?.country) && (
+              <div className="mt-12 pt-12 border-t border-gray-100 w-full">
+                <h3 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-2xl text-[#1a1a1a] mb-6 tracking-widest uppercase text-center font-light">
+                  Saved Delivery Address
+                </h3>
+                <div className="bg-[#fcfaf5] border border-[#f5eeeb] p-8 rounded-sm max-w-md mx-auto relative group">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white px-4">
+                    <MapPin className="w-5 h-5 text-[#D4AF37] stroke-[1.5]" />
+                  </div>
+                  <div className="space-y-3 text-center">
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium">Default Address</p>
+                    <div className="pt-2">
+                      <p className="text-[15px] text-[#1a1a1a] font-light tracking-wide mb-1">{user.street}</p>
+                      <p className="text-[15px] text-[#1a1a1a] font-light tracking-wide">
+                        {user.postalCode} {user.city}
+                      </p>
+                      <p className="text-[15px] text-[#1a1a1a] font-light tracking-wide mt-1 uppercase tracking-[0.1em]">{user.country}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <div className="w-full max-w-2xl bg-white p-8 md:p-10 border border-gray-100 rounded-sm shadow-sm">
