@@ -10,6 +10,11 @@ interface SearchOverlayProps {
 
 const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose }) => {
   const [query, setQuery] = useState('');
+  
+  const handleClose = React.useCallback(() => {
+    setQuery('');
+    onClose();
+  }, [onClose]);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
@@ -18,19 +23,16 @@ const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose }) => {
     if (isOpen && inputRef.current) {
       setTimeout(() => inputRef.current?.focus(), 100);
     }
-    if (!isOpen) {
-      setQuery('');
-    }
   }, [isOpen]);
 
   // Handle escape key
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') handleClose();
     };
     window.addEventListener('keydown', handleEsc);
     return () => window.removeEventListener('keydown', handleEsc);
-  }, [onClose]);
+  }, [handleClose]);
 
   if (!isOpen) return null;
 
@@ -45,16 +47,12 @@ const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose }) => {
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
-      // In a real app we might navigate to a dedicated search page
-      // Here we will just close the overlay if they hit enter on a result
-      // or we can route to the shop with a search param
-      onClose();
-      // Optional: navigate(`/sklep?search=${encodeURIComponent(query)}`);
+      handleClose();
     }
   };
 
   const handleResultClick = (id: string) => {
-    onClose();
+    handleClose();
     navigate(`/produkt/${id}`);
   };
 
@@ -75,7 +73,7 @@ const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose }) => {
             />
           </form>
           <button 
-            onClick={onClose}
+            onClick={handleClose}
             className="p-2 text-gray-500 hover:text-black hover:rotate-90 transition-all duration-300 ml-4"
           >
             <X className="w-8 h-8 stroke-[1.5]" />

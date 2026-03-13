@@ -14,13 +14,40 @@ const ContactPage: React.FC = () => {
     subject: '',
     message: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitted(true);
-    setFormData({ name: '', email: '', subject: '', message: '' });
-    setTimeout(() => setIsSubmitted(false), 6000);
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: '9822111f-4f42-40e0-b15a-9321a1d2fd24', // <-- Skonfigurowany klucz Web3Forms
+          ...formData,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setIsSubmitted(true);
+        setFormData({ name: '', email: '', subject: '', message: '' });
+        setTimeout(() => setIsSubmitted(false), 6000);
+      } else {
+        alert('There was a problem sending your message. Please try again later.');
+      }
+    } catch {
+      alert('Connection error. Please try again later.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (
@@ -134,9 +161,10 @@ const ContactPage: React.FC = () => {
             <div className="flex justify-center pt-4">
               <button
                 type="submit"
-                className="inline-flex items-center gap-3 bg-[#1a1a1a] text-white text-[12px] uppercase tracking-[0.45em] py-5 px-14 hover:bg-gray-800 transition-colors duration-200 font-medium"
+                disabled={isSubmitting}
+                className="inline-flex items-center gap-3 bg-[#1a1a1a] text-white text-[12px] uppercase tracking-[0.45em] py-5 px-14 hover:bg-gray-800 transition-colors duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Send Message <Send className="w-4 h-4" />
+                {isSubmitting ? 'Sending...' : 'Send Message'} <Send className="w-4 h-4" />
               </button>
             </div>
 

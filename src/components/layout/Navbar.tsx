@@ -4,14 +4,14 @@ import { ShoppingBag, User, Search, Menu, X, Heart } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
 import { useFavorites } from '../../hooks/useFavorites';
 import SearchOverlay from './SearchOverlay';
-import AuthModal from '../auth/AuthModal';
+import { useAuth } from '../../hooks/useAuth';
 import FavoritesDrawer from '../ui/FavoritesDrawer';
 
 const Navbar: React.FC = () => {
   const { totalItems } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [authOpen, setAuthOpen] = useState(false);
+  const { user, logout } = useAuth();
   const [favOpen, setFavOpen] = useState(false);
   const location = useLocation();
   const { totalItems: favCount } = useFavorites();
@@ -84,13 +84,25 @@ const Navbar: React.FC = () => {
              <span className="text-base font-light font-serif uppercase tracking-widest mr-1">Search</span>
              <Search className="w-[22px] h-[22px] stroke-[1.2]" />
            </button>
-          <button
-            onClick={() => setAuthOpen(true)}
-            className="text-[#1a1a1a] hover:text-gray-600 transition-colors"
-            aria-label="Konto"
-          >
-            <User className="w-[24px] h-[24px] stroke-[1.2]" />
-          </button>
+          {user ? (
+            <div className="relative group flex items-center gap-4">
+              <span className="text-sm font-medium mr-2">{user.name || user.email}</span>
+              <button
+                onClick={logout}
+                className="text-xs text-wonders-accent hover:text-red-500 uppercase tracking-widest"
+              >
+                Wyloguj
+              </button>
+            </div>
+          ) : (
+            <Link
+              to="/logowanie"
+              className="text-[#1a1a1a] hover:text-gray-600 transition-colors"
+              aria-label="Konto"
+            >
+              <User className="w-[24px] h-[24px] stroke-[1.2]" />
+            </Link>
+          )}
           <button
             onClick={() => setFavOpen(true)}
             className="relative text-[#1a1a1a] hover:text-gray-600 transition-colors"
@@ -134,8 +146,7 @@ const Navbar: React.FC = () => {
       {/* Full Screen Search Overlay */}
       <SearchOverlay isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
 
-      {/* Auth Modal */}
-      <AuthModal isOpen={authOpen} onClose={() => setAuthOpen(false)} />
+
 
       {/* Favorites Drawer */}
       <FavoritesDrawer isOpen={favOpen} onClose={() => setFavOpen(false)} />

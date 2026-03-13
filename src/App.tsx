@@ -9,13 +9,17 @@ import CartPage from './pages/CartPage';
 import ContactPage from './pages/ContactPage';
 import { CartProvider } from './context/CartProvider';
 import { FavoritesProvider } from './context/FavoritesProvider';
+import { AuthProvider } from './context/AuthProvider';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 
 const App: React.FC = () => {
   return (
-    <CartProvider>
-      <FavoritesProvider>
-        <Router>
-          <div className="flex flex-col min-h-screen bg-white text-wonders-dark">
+    <AuthProvider>
+      <CartProvider>
+        <FavoritesProvider>
+          <Router>
+            <div className="flex flex-col min-h-screen bg-white text-wonders-dark">
             <Navbar />
             <main className="flex-grow pt-[210px]">
               <Routes>
@@ -23,14 +27,17 @@ const App: React.FC = () => {
                 <Route path="/sklep" element={<ShopPage />} />
                 <Route path="/produkt/:id" element={<ProductDetailPage />} />
                 <Route path="/koszyk" element={<CartPage />} />
-                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/kontakt" element={<ContactPage />} />
+                <Route path="/logowanie" element={<LoginPage />} />
+                <Route path="/rejestracja" element={<RegisterPage />} />
               </Routes>
             </main>
             <Footer />
           </div>
-        </Router>
-      </FavoritesProvider>
-    </CartProvider>
+            </Router>
+        </FavoritesProvider>
+      </CartProvider>
+    </AuthProvider>
   );
 };
 
