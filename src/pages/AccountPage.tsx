@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useFavorites } from '../hooks/useFavorites';
 import { useCart } from '../hooks/useCart';
-import { Package, MapPin, Heart, Settings, LogOut, Clock, ArrowRight } from 'lucide-react';
+import { Package, MapPin, Heart, Settings, LogOut, Clock, ArrowRight, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 interface OrderItem {
   id: string;
@@ -137,6 +137,33 @@ const AccountPage: React.FC = () => {
       await checkAuth?.();
 
       showNotification('Address updated successfully.');
+    } catch (err) {
+      showNotification(err instanceof Error ? err.message : 'An error occurred', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteAddress = async () => {
+    if (!window.confirm('Are you sure you want to remove your saved address?')) return;
+    
+    setLoading(true);
+    try {
+      const response = await fetch('/api/auth/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          street: '',
+          city: '',
+          postalCode: '',
+          country: '',
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to delete address');
+
+      await checkAuth?.();
+      showNotification('Address removed successfully.');
     } catch (err) {
       showNotification(err instanceof Error ? err.message : 'An error occurred', 'error');
     } finally {
@@ -387,7 +414,7 @@ const AccountPage: React.FC = () => {
             </button>
           </div>
         ) : activeTab === 'addresses' ? (
-          <div className="w-full max-w-2xl bg-white p-8 md:p-10 border border-gray-100 rounded-sm shadow-sm">
+          <div className="w-full max-w-2xl bg-white p-8 md:p-10 border border-gray-100 rounded-sm shadow-sm md:mt-[-130px] transition-all duration-500">
             <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-3xl text-[#1a1a1a] mb-8 tracking-widest uppercase text-center font-light">
               Delivery Address
             </h2>
@@ -455,21 +482,44 @@ const AccountPage: React.FC = () => {
 
             {(user?.street || user?.city || user?.postalCode || user?.country) && (
               <div className="mt-12 pt-12 border-t border-gray-100 w-full">
-                <h3 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-2xl text-[#1a1a1a] mb-6 tracking-widest uppercase text-center font-light">
+                <h3 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-2xl text-[#1a1a1a] mb-8 tracking-widest uppercase text-center font-light">
                   Saved Delivery Address
                 </h3>
-                <div className="bg-[#fcfaf5] border border-[#f5eeeb] p-8 rounded-sm max-w-md mx-auto relative group">
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white px-4">
-                    <MapPin className="w-5 h-5 text-[#D4AF37] stroke-[1.5]" />
-                  </div>
-                  <div className="space-y-3 text-center">
-                    <p className="text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium">Default Address</p>
-                    <div className="pt-2">
-                      <p className="text-[15px] text-[#1a1a1a] font-light tracking-wide mb-1">{user.street}</p>
-                      <p className="text-[15px] text-[#1a1a1a] font-light tracking-wide">
-                        {user.postalCode} {user.city}
-                      </p>
-                      <p className="text-[15px] text-[#1a1a1a] font-light tracking-wide mt-1 uppercase tracking-[0.1em]">{user.country}</p>
+                <div className="max-w-md mx-auto relative group">
+                  <div className="bg-[#fcfaf5] border border-[#f5eeeb] p-10 rounded-sm shadow-sm group-hover:shadow-md transition-all duration-500 relative overflow-hidden">
+                    {/* Decorative gold line */}
+                    <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent opacity-50" />
+                    
+                    <div className="absolute top-4 right-4 translate-x-2 -translate-y-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                      <button 
+                        type="button"
+                        onClick={handleDeleteAddress}
+                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all"
+                        title="Remove Address"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    <div className="flex flex-col items-center">
+                      <div className="mb-6 w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm border border-[#f5eeeb]">
+                        <MapPin className="w-5 h-5 text-[#D4AF37] stroke-[1.5]" />
+                      </div>
+                      
+                      <div className="space-y-4 text-center">
+                        <span className="text-[9px] uppercase tracking-[0.4em] text-[#D4AF37] font-bold">Default Residence</span>
+                        <div className="pt-2">
+                          <p className="text-[17px] text-[#1a1a1a] font-light tracking-wide mb-1 leading-relaxed" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                            {user.street}
+                          </p>
+                          <p className="text-[14px] text-gray-600 font-light tracking-[0.05em] mb-1">
+                            {user.postalCode} • {user.city}
+                          </p>
+                          <p className="text-[12px] text-gray-400 font-medium tracking-[0.2em] uppercase pt-2">
+                            {user.country}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
