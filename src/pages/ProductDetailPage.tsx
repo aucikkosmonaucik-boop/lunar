@@ -21,7 +21,7 @@ const ProductDetailPage: React.FC = () => {
     return (
       <div className="pt-32 px-4 min-h-screen flex flex-col items-center justify-center text-center">
         <h2 className="text-2xl font-light uppercase tracking-widest text-wonders-dark mb-8">Product Not Found</h2>
-        <Link to="/sklep" className="text-wonders-gold hover:underline flex items-center gap-2 text-xs uppercase tracking-widest font-bold font-montserrat">
+        <Link to="/shop" className="text-wonders-gold hover:underline flex items-center gap-2 text-xs uppercase tracking-widest font-bold font-montserrat">
           <ArrowLeft className="w-4 h-4" /> Back to Boutique
         </Link>
       </div>
@@ -43,7 +43,7 @@ const ProductDetailPage: React.FC = () => {
         <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-bold text-wonders-muted mb-12">
           <button onClick={() => navigate(-1)} className="hover:text-wonders-dark transition-colors">Back</button>
           <span>/</span>
-          <Link to="/sklep" className="hover:text-wonders-dark transition-colors">Boutique</Link>
+          <Link to="/shop" className="hover:text-wonders-dark transition-colors">Boutique</Link>
           <span>/</span>
           <span className="text-wonders-dark truncate max-w-[200px]">{product.name}</span>
         </div>
@@ -75,11 +75,11 @@ const ProductDetailPage: React.FC = () => {
             {/* Price */}
             <div className="mb-8">
               <span className="text-3xl font-bold text-wonders-dark tracking-wider">
-                {product.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                {product.price.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}
               </span>
               {product.originalPrice && (
                 <span className="ml-4 text-xl text-wonders-muted line-through tracking-wider">
-                  {product.originalPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                  {product.originalPrice.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}
                 </span>
               )}
             </div>

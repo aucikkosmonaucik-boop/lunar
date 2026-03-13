@@ -89,7 +89,7 @@ const FavoritesDrawer: React.FC<FavoritesDrawerProps> = ({ isOpen, onClose }) =>
               {items.map(product => (
                 <div key={product.id} className="flex gap-4 group">
                   {/* Image */}
-                  <Link to={`/produkt/${product.id}`} onClick={onClose} className="shrink-0">
+                  <Link to={`/product/${product.id}`} onClick={onClose} className="shrink-0">
                     <div className="w-20 h-24 bg-gray-100 overflow-hidden border border-gray-200">
                       <img
                         src={product.image}
@@ -103,14 +103,14 @@ const FavoritesDrawer: React.FC<FavoritesDrawerProps> = ({ isOpen, onClose }) =>
                   <div className="flex flex-col flex-1 justify-between py-1">
                     <div>
                       <Link
-                        to={`/produkt/${product.id}`}
+                        to={`/product/${product.id}`}
                         onClick={onClose}
                         className="text-[12px] uppercase tracking-[0.15em] font-medium text-[#1a1a1a] hover:text-gray-500 transition-colors line-clamp-2"
                       >
                         {product.name}
                       </Link>
                       <p className="text-[13px] font-light text-gray-500 mt-1 tracking-wide">
-                        {product.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                        {product.price.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}
                       </p>
                     </div>
 

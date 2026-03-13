@@ -25,10 +25,10 @@ const App: React.FC = () => {
             <main className="flex-grow" style={{ paddingTop: '450px' }}>
               <Routes>
                 <Route path="/" element={<HomePage />} />
-                <Route path="/sklep" element={<ShopPage />} />
-                <Route path="/produkt/:id" element={<ProductDetailPage />} />
-                <Route path="/koszyk" element={<CartPage />} />
-                <Route path="/kontakt" element={<ContactPage />} />
+                <Route path="/shop" element={<ShopPage />} />
+                <Route path="/product/:id" element={<ProductDetailPage />} />
+                <Route path="/cart" element={<CartPage />} />
+                <Route path="/contact" element={<ContactPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/account" element={<AccountPage />} />

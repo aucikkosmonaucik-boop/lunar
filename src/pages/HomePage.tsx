@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom';
 
 const HomePage: React.FC = () => {
   const featuredChains = [
-    { id: 1, name: 'Classic Gold Chain', price: '$120.00', image: 'https://images.unsplash.com/photo-1599643478514-4a888f802c61?auto=format&fit=crop&q=80&w=800' },
-    { id: 2, name: 'Silver Pendent Necklace', price: '$95.00', image: 'https://images.unsplash.com/photo-1599643477877-530eb83abc8e?auto=format&fit=crop&q=80&w=800' },
-    { id: 3, name: 'Diamond Tennis Chain', price: '$850.00', image: 'https://images.unsplash.com/photo-1629224316810-9d8805b95e76?auto=format&fit=crop&q=80&w=800' },
-    { id: 4, name: 'Rose Gold Choker', price: '$150.00', image: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&q=80&w=800' },
+    { id: 1, name: 'Classic Gold Chain', price: '120,00€', image: 'https://images.unsplash.com/photo-1599643478514-4a888f802c61?auto=format&fit=crop&q=80&w=800' },
+    { id: 2, name: 'Silver Pendent Necklace', price: '95,00€', image: 'https://images.unsplash.com/photo-1599643477877-530eb83abc8e?auto=format&fit=crop&q=80&w=800' },
+    { id: 3, name: 'Diamond Tennis Chain', price: '850,00€', image: 'https://images.unsplash.com/photo-1629224316810-9d8805b95e76?auto=format&fit=crop&q=80&w=800' },
+    { id: 4, name: 'Rose Gold Choker', price: '150,00€', image: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&q=80&w=800' },
   ];
 
   return (
@@ -25,7 +25,7 @@ const HomePage: React.FC = () => {
           <h1 className="text-5xl md:text-7xl lg:text-[80px] font-serif italic mb-6 shadow-sm leading-[0.9]">Discover True Elegance</h1>
           <p className="text-base md:text-xl uppercase tracking-widest mb-10 shadow-sm">The new collection by Agatha G.</p>
           <Link 
-            to="/sklep?category=jewelry" 
+            to="/shop?category=jewelry" 
             className="inline-block bg-white text-black px-12 py-5 text-sm uppercase tracking-widest font-bold hover:bg-black hover:text-white transition-colors duration-300"
           >
             Shop the Collection
@@ -42,7 +42,7 @@ const HomePage: React.FC = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {featuredChains.map((chain) => (
-            <Link to="/sklep?category=jewelry" key={chain.id} className="group block">
+            <Link to="/shop?category=jewelry" key={chain.id} className="group block">
               <div className="aspect-[4/5] bg-gray-100 mb-6 overflow-hidden relative">
                 <img 
                   src={chain.image} 
@@ -74,7 +74,7 @@ const HomePage: React.FC = () => {
             Crafted for the modern aesthetic, our pieces are designed to be worn every day and cherished forever. Explore delicate chains, bold statements, and everything in between.
           </p>
           <Link 
-            to="/sklep?category=jewelry" 
+            to="/shop?category=jewelry" 
             className="text-sm md:text-base font-medium uppercase tracking-widest pb-1 border-b-2 border-black hover:text-gray-500 hover:border-gray-500 transition-colors"
           >
             Explore Jewelry

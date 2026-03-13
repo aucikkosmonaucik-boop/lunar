@@ -18,7 +18,7 @@ const Navbar: React.FC = () => {
 
   const navLinks = [
     { to: '/', label: 'Home' },
-    { to: '/sklep?category=jewelry', label: 'Jewelry By Agatha G.' },
+    { to: '/shop?category=jewelry', label: 'Jewelry By Agatha G.' },
   ];
 
   return (
@@ -26,7 +26,7 @@ const Navbar: React.FC = () => {
       {/* Announcement Bar */}
       <div className="bg-[#fcdde5] py-2 overflow-hidden">
         <div className="text-center text-[13px] md:text-[14px] text-gray-900 font-medium tracking-wide">
-          Darmowa dostawa od 50$ &gt;&gt;
+          FREE DELIVERY OVER 50€ &gt;&gt;
         </div>
       </div>
 
@@ -42,7 +42,7 @@ const Navbar: React.FC = () => {
             <button onClick={() => setSearchOpen(true)} className="text-[#1a1a1a]">
               <Search className="w-6 h-6 stroke-[1.2]" />
             </button>
-            <Link to="/koszyk" className="relative">
+            <Link to="/cart" className="relative">
               <ShoppingBag className="w-6 h-6 stroke-[1.2]" />
                {totalItems > 0 && (
                  <span className="absolute -top-1.5 -right-2 w-4 h-4 bg-black rounded-full text-[10px] flex items-center justify-center text-white font-bold">
@@ -113,7 +113,7 @@ const Navbar: React.FC = () => {
               </span>
             )}
           </button>
-          <Link to="/koszyk" className="flex items-center gap-2 group relative text-[#1a1a1a] hover:text-gray-600 transition-colors">
+          <Link to="/cart" className="flex items-center gap-2 group relative text-[#1a1a1a] hover:text-gray-600 transition-colors">
             <ShoppingBag className="w-[24px] h-[24px] stroke-[1.2]" />
             {totalItems > 0 && (
               <span className="absolute -top-1.5 -right-2 w-5 h-5 bg-black rounded-full text-[11px] flex items-center justify-center text-white font-bold">

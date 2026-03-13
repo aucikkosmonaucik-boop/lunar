@@ -301,7 +301,7 @@ const AccountPage: React.FC = () => {
                 <div className="text-center py-20 bg-gray-50 rounded-sm border border-dashed border-gray-200">
                   <Package className="w-12 h-12 text-gray-300 mx-auto mb-4 stroke-[1]" />
                   <p className="text-gray-500 uppercase tracking-widest text-xs">No orders found yet</p>
-                  <Link to="/sklep" className="mt-6 inline-block text-[10px] uppercase tracking-[0.3em] font-bold text-wonders-gold hover:text-[#1a1a1a] transition-colors">
+                  <Link to="/shop" className="mt-6 inline-block text-[10px] uppercase tracking-[0.3em] font-bold text-wonders-gold hover:text-[#1a1a1a] transition-colors">
                     Start Shopping
                   </Link>
                 </div>
@@ -323,7 +323,7 @@ const AccountPage: React.FC = () => {
                         <div>
                           <p className="text-[10px] uppercase tracking-widest text-gray-400 font-medium mb-1">Total</p>
                           <p className="text-xs text-[#1a1a1a] font-medium">
-                            {order.total.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                            {order.total.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}
                           </p>
                         </div>
                       </div>
@@ -342,7 +342,7 @@ const AccountPage: React.FC = () => {
                           </div>
                           <div className="flex-grow text-center sm:text-left">
                             <h3 className="text-sm font-medium text-[#1a1a1a] uppercase tracking-widest mb-2">{item.name}</h3>
-                            <p className="text-gray-400 text-[10px] uppercase tracking-widest mb-4">Qty: {item.quantity} • {item.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</p>
+                            <p className="text-gray-400 text-[10px] uppercase tracking-widest mb-4">Qty: {item.quantity} • {item.price.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}</p>
                             <div className="flex items-center justify-center sm:justify-start gap-2 text-[10px] text-wonders-gold uppercase tracking-widest font-bold">
                               <Clock className="w-3.5 h-3.5" />
                               Estimated delivery: 3-5 business days
@@ -350,7 +350,7 @@ const AccountPage: React.FC = () => {
                           </div>
                           <div className="flex-shrink-0">
                             <Link 
-                              to={`/produkt/${item.productId}`}
+                              to={`/product/${item.productId}`}
                               className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a] border border-[#1a1a1a] px-6 py-2.5 hover:bg-[#1a1a1a] hover:text-white transition-all duration-300"
                             >
                               View Product
@@ -386,7 +386,7 @@ const AccountPage: React.FC = () => {
                 <div className="text-center py-24 bg-gray-50/50 rounded-sm border border-dashed border-gray-200 w-full">
                   <Heart className="w-16 h-16 text-gray-200 mx-auto mb-6 stroke-[1]" />
                   <p className="text-gray-400 uppercase tracking-[0.3em] text-[10px] font-medium">Your wishlist is currently empty</p>
-                  <Link to="/sklep" className="mt-8 inline-block text-[11px] uppercase tracking-[0.4em] font-bold text-[#D4AF37] hover:text-[#1a1a1a] transition-all border-b border-[#D4AF37] pb-1">
+                  <Link to="/shop" className="mt-8 inline-block text-[11px] uppercase tracking-[0.4em] font-bold text-[#D4AF37] hover:text-[#1a1a1a] transition-all border-b border-[#D4AF37] pb-1">
                     Explore Our Collection
                   </Link>
                 </div>
@@ -394,7 +394,7 @@ const AccountPage: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 w-full">
                   {wishlistItems.map((product) => (
                     <div key={product.id} className="bg-white border border-gray-100 rounded-sm shadow-sm hover:shadow-md transition-shadow duration-300 flex p-5 gap-7 group relative">
-                      <Link to={`/produkt/${product.id}`} className="w-28 h-36 bg-gray-50 flex-shrink-0 rounded-sm overflow-hidden border border-gray-100">
+                      <Link to={`/product/${product.id}`} className="w-28 h-36 bg-gray-50 flex-shrink-0 rounded-sm overflow-hidden border border-gray-100">
                         <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                       </Link>
                       <div className="flex-grow flex flex-col justify-between py-1">
@@ -404,7 +404,7 @@ const AccountPage: React.FC = () => {
                             {product.name}
                           </h3>
                           <p className="text-[#D4AF37] text-sm font-bold tracking-[0.15em]">
-                            {product.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                            {product.price.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}
                           </p>
                         </div>
                         <div className="flex items-center gap-4 mt-4">
