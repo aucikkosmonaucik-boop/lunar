@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { Package, MapPin, Heart, Settings, LogOut } from 'lucide-react';
@@ -6,6 +6,7 @@ import { Package, MapPin, Heart, Settings, LogOut } from 'lucide-react';
 const AccountPage: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState<'overview' | 'settings'>('overview');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -25,72 +26,125 @@ const AccountPage: React.FC = () => {
     {
       title: 'My Orders',
       description: 'Track packages, return or reorder purchased items',
-      icon: <Package className="w-8 h-8 text-[#1a1a1a] stroke-[1.2]" />,
+      icon: <Package className="w-8 h-8 text-[#1a1a1a] stroke-[1.2] group-hover:text-[#D4AF37] transition-colors duration-300" />,
       action: () => console.log('Navigate to orders'),
     },
     {
       title: 'Addresses',
       description: 'Edit your delivery preferences and addresses for orders',
-      icon: <MapPin className="w-8 h-8 text-[#1a1a1a] stroke-[1.2]" />,
+      icon: <MapPin className="w-8 h-8 text-[#1a1a1a] stroke-[1.2] group-hover:text-[#D4AF37] transition-colors duration-300" />,
       action: () => console.log('Navigate to addresses'),
     },
     {
       title: 'Wishlist',
       description: 'View your saved favorite items and collections',
-      icon: <Heart className="w-8 h-8 text-[#1a1a1a] stroke-[1.2]" />,
+      icon: <Heart className="w-8 h-8 text-[#1a1a1a] stroke-[1.2] group-hover:text-[#D4AF37] transition-colors duration-300" />,
       action: () => navigate('/sklep?category=jewelry'),
     },
     {
       title: 'Account Settings',
       description: 'Manage your personal details and password',
-      icon: <Settings className="w-8 h-8 text-[#1a1a1a] stroke-[1.2]" />,
-      action: () => console.log('Navigate to settings'),
+      icon: <Settings className="w-8 h-8 text-[#1a1a1a] stroke-[1.2] group-hover:text-[#D4AF37] transition-colors duration-300" />,
+      action: () => setActiveTab('settings'),
     }
   ];
 
   return (
-    <div className="min-h-[60vh] px-4 py-12 w-full max-w-2xl mx-auto flex flex-col items-center">
-      <div className="mb-10 w-full">
-        <h1 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-4xl md:text-5xl tracking-widest text-[#1a1a1a] uppercase font-light text-center">
-          My Account
-        </h1>
-        <p className="mt-4 text-center text-xs uppercase tracking-[0.2em] text-gray-500">
-          Welcome back, {user.name || user.email}
-        </p>
-      </div>
+    <div className="flex justify-center w-full min-h-[60vh] bg-white">
+      <div className="w-full max-w-4xl px-4 py-12 flex flex-col items-center">
+        <div className="mb-10 w-full">
+          <h1 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-4xl md:text-5xl tracking-widest text-[#1a1a1a] uppercase font-light text-center">
+            My Account
+          </h1>
+          <p className="mt-4 text-center text-xs uppercase tracking-[0.2em] text-gray-500">
+            Welcome back, {user?.name || user?.email}
+          </p>
+        </div>
 
-      <div className="w-full flex flex-col gap-4">
-        {accountSections.map((section, index) => (
-          <button
-            key={index}
-            onClick={section.action}
-            className="group flex flex-col sm:flex-row items-center sm:items-start p-6 border border-gray-200 hover:border-[#1a1a1a] bg-white transition-all duration-300 text-center sm:text-left rounded-sm w-full"
-          >
-            <div className="flex-shrink-0 sm:mr-6 mb-4 sm:mb-0">
-              <div className="w-16 h-16 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-gray-100 transition-colors">
-                {section.icon}
+        {activeTab === 'overview' ? (
+          <>
+            <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
+              {accountSections.map((section, index) => (
+                <button
+                  key={index}
+                  onClick={section.action}
+                  className="group flex flex-col sm:flex-row items-center sm:items-start p-8 border border-gray-200 hover:border-[#D4AF37] bg-white transition-all duration-300 text-center sm:text-left rounded-sm w-full shadow-sm hover:shadow-md"
+                >
+                  <div className="flex-shrink-0 sm:mr-6 mb-4 sm:mb-0">
+                    <div className="w-16 h-16 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-[#fcfaf5] transition-colors duration-300">
+                      {section.icon}
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <h2 className="text-[14px] uppercase tracking-widest font-medium text-[#1a1a1a] mb-2 group-hover:text-[#D4AF37] transition-colors duration-300">
+                      {section.title}
+                    </h2>
+                    <p className="text-gray-500 text-sm font-light leading-relaxed">
+                      {section.description}
+                    </p>
+                  </div>
+                </button>
+              ))}
+            </div>
+            
+            <div className="mt-16 flex justify-center w-full">
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 text-[11px] uppercase tracking-[0.3em] font-medium text-gray-500 hover:text-red-600 transition-colors border-b border-transparent hover:border-red-600 pb-0.5"
+              >
+                <LogOut className="w-4 h-4" />
+                Sign Out
+              </button>
+            </div>
+          </>
+        ) : (
+          <div className="w-full max-w-2xl bg-white p-8 md:p-10 border border-gray-100 rounded-sm shadow-sm">
+            <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-3xl text-[#1a1a1a] mb-8 tracking-widest uppercase text-center font-light">
+              Personal Details
+            </h2>
+            <form className="space-y-6">
+              <div>
+                <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">Full Name</label>
+                <input
+                  type="text"
+                  defaultValue={user?.name || ''}
+                  className="w-full bg-transparent border-b border-gray-200 py-3 text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#D4AF37] transition-colors duration-300"
+                />
               </div>
-            </div>
-            <div className="flex-1">
-              <h2 className="text-[14px] uppercase tracking-widest font-medium text-[#1a1a1a] mb-2 group-hover:text-gray-600 transition-colors">
-                {section.title}
-              </h2>
-              <p className="text-gray-500 text-sm font-light leading-relaxed">
-                {section.description}
-              </p>
-            </div>
-          </button>
-        ))}
-      </div>
-
-      <div className="mt-12 flex justify-center">
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-2 text-[11px] uppercase tracking-[0.3em] font-medium text-gray-500 hover:text-red-600 transition-colors border-b border-transparent hover:border-red-600 pb-0.5"
-        >
-          <LogOut className="w-4 h-4" />
-          Sign Out
-        </button>
+              <div>
+                <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">Email Address</label>
+                <input
+                  type="email"
+                  defaultValue={user?.email || ''}
+                  className="w-full bg-transparent border-b border-gray-200 py-3 text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#D4AF37] transition-colors duration-300"
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">New Password (Optional)</label>
+                <input
+                  type="password"
+                  placeholder="Leave blank to keep current"
+                  className="w-full bg-transparent border-b border-gray-200 py-3 text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#D4AF37] transition-colors duration-300"
+                />
+              </div>
+              <div className="flex flex-col sm:flex-row justify-between items-center mt-12 gap-6 pt-6">
+                <button 
+                  type="button" 
+                  onClick={() => setActiveTab('overview')} 
+                  className="text-[11px] uppercase tracking-widest text-gray-500 hover:text-[#1a1a1a] border-b border-transparent hover:border-[#1a1a1a] transition-all pb-0.5"
+                >
+                  Back to Overview
+                </button>
+                <button 
+                  type="button" 
+                  className="w-full sm:w-auto bg-[#1a1a1a] text-white text-[11px] uppercase tracking-[0.3em] py-4 px-10 hover:bg-[#D4AF37] transition-colors duration-300"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
       </div>
     </div>
   );
