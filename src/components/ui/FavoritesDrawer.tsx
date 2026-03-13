@@ -31,10 +31,9 @@ const FavoritesDrawer: React.FC<FavoritesDrawerProps> = ({ isOpen, onClose }) =>
       >
         {/* Header */}
         <div className="flex items-center justify-between px-8 pt-10 pb-6 border-b border-gray-200">
-          <div className="flex flex-col">
-            <span className="font-serif text-[36px] tracking-widest text-[#1a1a1a] uppercase leading-none">Lunar</span>
-            <span className="text-[11px] tracking-[0.5em] text-[#1a1a1a] mt-1 font-light">2026</span>
-          </div>
+          <Link to="/" onClick={onClose} className="flex flex-col">
+            <img src="/logo.png" alt="my Lunar.ie" className="h-16 object-contain" />
+          </Link>
           <div className="flex flex-col items-end gap-1">
             <button
               onClick={onClose}
