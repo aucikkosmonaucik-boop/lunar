@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { Package, MapPin, Heart, Settings, LogOut } from 'lucide-react';
@@ -6,6 +6,10 @@ import { Package, MapPin, Heart, Settings, LogOut } from 'lucide-react';
 const AccountPage: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   if (!user) {
     navigate('/login');
@@ -45,8 +49,8 @@ const AccountPage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-[60vh] px-4 py-16 sm:px-8 lg:px-12 max-w-5xl mx-auto">
-      <div className="mb-12">
+    <div className="min-h-[60vh] px-4 py-12 w-full max-w-2xl mx-auto flex flex-col items-center">
+      <div className="mb-10 w-full">
         <h1 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-4xl md:text-5xl tracking-widest text-[#1a1a1a] uppercase font-light text-center">
           My Account
         </h1>
@@ -55,19 +59,19 @@ const AccountPage: React.FC = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="w-full flex flex-col gap-4">
         {accountSections.map((section, index) => (
           <button
             key={index}
             onClick={section.action}
-            className="group flex items-start p-8 border border-gray-200 hover:border-[#1a1a1a] bg-white transition-all duration-300 text-left rounded-sm"
+            className="group flex flex-col sm:flex-row items-center sm:items-start p-6 border border-gray-200 hover:border-[#1a1a1a] bg-white transition-all duration-300 text-center sm:text-left rounded-sm w-full"
           >
-            <div className="flex-shrink-0 mr-6">
+            <div className="flex-shrink-0 sm:mr-6 mb-4 sm:mb-0">
               <div className="w-16 h-16 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-gray-100 transition-colors">
                 {section.icon}
               </div>
             </div>
-            <div>
+            <div className="flex-1">
               <h2 className="text-[14px] uppercase tracking-widest font-medium text-[#1a1a1a] mb-2 group-hover:text-gray-600 transition-colors">
                 {section.title}
               </h2>
