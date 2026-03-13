@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { Package, MapPin, Heart, Settings, LogOut } from 'lucide-react';
+import { Package, MapPin, Heart, Settings, LogOut, Clock, ArrowRight } from 'lucide-react';
+import { products } from '../data/products';
 
 const AccountPage: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'overview' | 'settings' | 'addresses'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'settings' | 'addresses' | 'orders'>('overview');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -27,7 +28,7 @@ const AccountPage: React.FC = () => {
       title: 'My Orders',
       description: 'Track packages, return or reorder purchased items',
       icon: <Package className="w-8 h-8 text-[#1a1a1a] stroke-[1.2] group-hover:text-[#D4AF37] transition-colors duration-300" />,
-      action: () => console.log('Navigate to orders'),
+      action: () => setActiveTab('orders'),
     },
     {
       title: 'Addresses',
@@ -97,6 +98,86 @@ const AccountPage: React.FC = () => {
               </button>
             </div>
           </>
+        ) : activeTab === 'orders' ? (
+          <div className="w-full max-w-4xl flex flex-col items-center">
+            <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-3xl text-[#1a1a1a] mb-10 tracking-widest uppercase text-center font-light">
+              Order History
+            </h2>
+            
+            <div className="w-full space-y-8">
+              {[
+                {
+                  id: 'ORD-7729',
+                  date: 'March 10, 2026',
+                  status: 'Processing',
+                  items: [products[5]], // Golden Solar Necklace
+                  delivery: 'Processing: 2-4 business days'
+                },
+                {
+                  id: 'ORD-6510',
+                  date: 'February 24, 2026',
+                  status: 'Delivered',
+                  items: [products[4]], // Silver Orbit Earrings
+                  delivery: 'Delivered on February 28, 2026'
+                }
+              ].map((order) => (
+                <div key={order.id} className="bg-white border border-gray-100 rounded-sm shadow-sm overflow-hidden">
+                  <div className="bg-gray-50 px-6 py-4 border-b border-gray-100 flex flex-wrap justify-between items-center gap-4">
+                    <div className="flex gap-8">
+                      <div>
+                        <p className="text-[10px] uppercase tracking-widest text-gray-400 font-medium mb-1">Order Placed</p>
+                        <p className="text-xs text-[#1a1a1a] font-medium">{order.date}</p>
+                      </div>
+                      <div>
+                        <p className="text-[10px] uppercase tracking-widest text-gray-400 font-medium mb-1">Order ID</p>
+                        <p className="text-xs text-[#1a1a1a] font-medium">{order.id}</p>
+                      </div>
+                    </div>
+                    <div>
+                      <span className={`px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-bold ${order.status === 'Delivered' ? 'bg-green-50 text-green-700' : 'bg-blue-50 text-blue-700'}`}>
+                        {order.status}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="p-6">
+                    {order.items.map((product) => (
+                      <div key={product.id} className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+                        <div className="w-24 h-24 bg-gray-50 flex-shrink-0 rounded-sm overflow-hidden border border-gray-100">
+                          <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                        </div>
+                        <div className="flex-grow text-center sm:text-left">
+                          <h3 className="text-sm font-medium text-[#1a1a1a] uppercase tracking-widest mb-2">{product.name}</h3>
+                          <p className="text-gray-500 text-xs font-light mb-4 line-clamp-2 italic">"{product.description}"</p>
+                          <div className="flex items-center justify-center sm:justify-start gap-2 text-[10px] text-wonders-gold uppercase tracking-widest font-bold">
+                            <Clock className="w-3.5 h-3.5" />
+                            {order.delivery}
+                          </div>
+                        </div>
+                        <div className="flex-shrink-0">
+                          <button className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a] border border-[#1a1a1a] px-6 py-2.5 hover:bg-[#1a1a1a] hover:text-white transition-all duration-300">
+                            Buy Again
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="px-6 py-3 bg-gray-50/50 border-t border-gray-100 text-right">
+                    <button className="text-[10px] uppercase tracking-widest font-medium text-gray-400 hover:text-[#1a1a1a] inline-flex items-center gap-1 transition-colors">
+                      View Order Details <ArrowRight className="w-3 h-3" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            <button 
+              onClick={() => setActiveTab('overview')}
+              className="mt-12 text-[11px] uppercase tracking-widest text-gray-500 hover:text-[#1a1a1a] border-b border-transparent hover:border-[#1a1a1a] transition-all pb-0.5"
+            >
+              Back to Overview
+            </button>
+          </div>
         ) : activeTab === 'addresses' ? (
           <div className="w-full max-w-2xl bg-white p-8 md:p-10 border border-gray-100 rounded-sm shadow-sm">
             <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-3xl text-[#1a1a1a] mb-8 tracking-widest uppercase text-center font-light">
