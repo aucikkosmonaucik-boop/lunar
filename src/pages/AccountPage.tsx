@@ -199,6 +199,7 @@ const AccountPage: React.FC = () => {
               {accountSections.map((section, index) => (
                 <button
                   key={index}
+                  type="button"
                   onClick={section.action}
                   className="group flex flex-col sm:flex-row items-center sm:items-start p-8 border border-gray-200 hover:border-[#D4AF37] bg-white transition-all duration-300 text-center sm:text-left rounded-sm w-full shadow-sm hover:shadow-md"
                 >
@@ -324,43 +325,51 @@ const AccountPage: React.FC = () => {
             <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-3xl text-[#1a1a1a] mb-10 tracking-widest uppercase text-center font-light">
               Your Wishlist
             </h2>
-            
-            <div className="w-full">
+                       <div className="w-full">
               {wishlistItems.length === 0 ? (
-                <div className="text-center py-20 bg-gray-50 rounded-sm border border-dashed border-gray-200 w-full">
-                  <Heart className="w-12 h-12 text-gray-300 mx-auto mb-4 stroke-[1]" />
-                  <p className="text-gray-500 uppercase tracking-widest text-xs">Your wishlist is empty</p>
-                  <Link to="/sklep" className="mt-6 inline-block text-[10px] uppercase tracking-[0.3em] font-bold text-wonders-gold hover:text-[#1a1a1a] transition-colors">
-                    Explore Collection
+                <div className="text-center py-24 bg-gray-50/50 rounded-sm border border-dashed border-gray-200 w-full">
+                  <Heart className="w-16 h-16 text-gray-200 mx-auto mb-6 stroke-[1]" />
+                  <p className="text-gray-400 uppercase tracking-[0.3em] text-[10px] font-medium">Your wishlist is currently empty</p>
+                  <Link to="/sklep" className="mt-8 inline-block text-[11px] uppercase tracking-[0.4em] font-bold text-[#D4AF37] hover:text-[#1a1a1a] transition-all border-b border-[#D4AF37] pb-1">
+                    Explore Our Collection
                   </Link>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 w-full">
                   {wishlistItems.map((product) => (
-                    <div key={product.id} className="bg-white border border-gray-100 rounded-sm shadow-sm overflow-hidden flex p-4 gap-6 group">
-                      <Link to={`/produkt/${product.id}`} className="w-24 h-32 bg-gray-50 flex-shrink-0 rounded-sm overflow-hidden border border-gray-100">
-                        <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <div key={product.id} className="bg-white border border-gray-100 rounded-sm shadow-sm hover:shadow-md transition-shadow duration-300 flex p-5 gap-7 group relative">
+                      <Link to={`/produkt/${product.id}`} className="w-28 h-36 bg-gray-50 flex-shrink-0 rounded-sm overflow-hidden border border-gray-100">
+                        <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                       </Link>
                       <div className="flex-grow flex flex-col justify-between py-1">
                         <div>
-                          <h3 className="text-sm font-medium text-[#1a1a1a] uppercase tracking-widest mb-2">{product.name}</h3>
-                          <p className="text-wonders-gold text-xs font-bold tracking-widest">
+                          <p className="text-[9px] text-gray-400 uppercase tracking-[0.3em] mb-2 font-medium">Lunar Collection</p>
+                          <h3 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-xl font-light text-[#1a1a1a] uppercase tracking-wider mb-2 leading-tight">
+                            {product.name}
+                          </h3>
+                          <p className="text-[#D4AF37] text-sm font-bold tracking-[0.15em]">
                             {product.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
                           </p>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-4 mt-4">
                           <button 
+                            type="button"
                             onClick={() => addToCart(product, 1)}
                             disabled={product.stock === 0}
-                            className="text-[10px] uppercase tracking-[0.2em] font-bold bg-[#1a1a1a] text-white px-5 py-2.5 hover:bg-[#D4AF37] transition-all duration-300 disabled:opacity-50"
+                            className={`text-[10px] uppercase tracking-[0.25em] font-bold px-6 py-3 transition-all duration-300 ${
+                              product.stock === 0 
+                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                                : 'bg-[#1a1a1a] text-white hover:bg-[#D4AF37]'
+                            }`}
                           >
                             {product.stock === 0 ? 'Sold Out' : 'Add to Bag'}
                           </button>
                           <button 
+                            type="button"
                             onClick={() => removeFromFavorites(product.id)}
-                            className="text-[10px] uppercase tracking-[0.2em] font-medium text-gray-400 hover:text-red-500 transition-colors"
+                            className="text-[10px] uppercase tracking-[0.2em] font-medium text-gray-400 hover:text-red-500 transition-colors flex items-center gap-1.5"
                           >
-                            Remove
+                            <span>Remove</span>
                           </button>
                         </div>
                       </div>
