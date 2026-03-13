@@ -31,7 +31,7 @@ const Navbar: React.FC = () => {
       </div>
 
       {/* Main Header Container */}
-      <div className="w-full px-4 sm:px-8 lg:px-12 py-4 md:py-6 flex flex-col md:flex-row items-center justify-between relative min-h-[140px]">
+      <div className="w-full px-4 sm:px-8 lg:px-12 py-4 md:py-6 flex flex-col md:flex-row items-center justify-between relative min-h-[160px] md:min-h-[190px]">
         
         {/* Left: Mobile Menu */}
         <div className="w-full md:w-auto flex justify-between items-center md:hidden mb-4">
@@ -54,7 +54,7 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Center: Logo and Desktop Nav */}
-        <div className="flex flex-col items-center justify-center w-full md:absolute md:left-1/2 md:-translate-x-1/2 md:top-6">
+        <div className="flex flex-col items-center justify-center w-full md:absolute md:left-1/2 md:-translate-x-1/2 md:top-4">
           <Link to="/" className="flex flex-col items-center group mb-4">
             <div className="flex flex-col items-center select-none">
               <span 
