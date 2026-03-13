@@ -22,7 +22,7 @@ const App: React.FC = () => {
           <Router>
             <div className="flex flex-col min-h-screen bg-white text-wonders-dark">
             <Navbar />
-            <main className="flex-grow" style={{ paddingTop: '450px' }}>
+            <main className="flex-grow" style={{ paddingTop: '200px' }}>
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/shop" element={<ShopPage />} />

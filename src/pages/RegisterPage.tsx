@@ -38,8 +38,8 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-[60vh] flex items-center justify-center px-4 py-12">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
+    <div className="min-h-[60vh] flex items-start justify-center px-4 pt-2 md:pt-4">
+      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-xl border border-gray-100 mt-2 md:mt-4">
         <div>
           <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-center text-3xl md:text-4xl tracking-[0.15em] text-[#1a1a1a] uppercase font-light">
             Register
