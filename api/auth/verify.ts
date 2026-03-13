@@ -34,8 +34,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     return res.status(200).json({ user });
-  } catch (error) {
-    console.error('Verify error:', error);
-    return res.status(401).json({ message: 'Invalid or expired token' });
+  } catch (error: any) {
+    console.error('Verification error:', error);
+    res.status(500).json({ message: `Prisma/Vercel Error: ${error.message}`, stack: error.stack });
   }
 }
