@@ -30,7 +30,7 @@ const LoginPage: React.FC = () => {
       }
 
       login(data.user);
-      navigate('/');
+      navigate('/account');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unknown error occurred');
     } finally {
