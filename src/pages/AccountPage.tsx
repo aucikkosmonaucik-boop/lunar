@@ -8,10 +8,56 @@ const AccountPage: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'overview' | 'settings' | 'addresses' | 'orders'>('overview');
+  const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  // Form states
+  const [editName, setEditName] = useState(user?.name || '');
+  const [editEmail, setEditEmail] = useState(user?.email || '');
+  const [editPassword, setEditPassword] = useState('');
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    if (user) {
+      setEditName(user.name || '');
+      setEditEmail(user.email || '');
+    }
+  }, [user]);
+
+  const showNotification = (message: string, type: 'success' | 'error' = 'success') => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 5000);
+  };
+
+  const handleUpdateProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await fetch('/api/auth/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: editName,
+          email: editEmail,
+          password: editPassword || undefined,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to update profile');
+      }
+
+      showNotification('Your profile has been updated successfully.');
+      setEditPassword(''); 
+    } catch (err) {
+      showNotification(err instanceof Error ? err.message : 'An error occurred', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (!user) {
     navigate('/login');
@@ -241,12 +287,13 @@ const AccountPage: React.FC = () => {
             <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-3xl text-[#1a1a1a] mb-8 tracking-widest uppercase text-center font-light">
               Personal Details
             </h2>
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleUpdateProfile}>
               <div>
                 <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">Full Name</label>
                 <input
                   type="text"
-                  defaultValue={user?.name || ''}
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
                   className="w-full bg-transparent border-b border-gray-200 py-3 text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#D4AF37] transition-colors duration-300"
                 />
               </div>
@@ -254,7 +301,8 @@ const AccountPage: React.FC = () => {
                 <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">Email Address</label>
                 <input
                   type="email"
-                  defaultValue={user?.email || ''}
+                  value={editEmail}
+                  onChange={(e) => setEditEmail(e.target.value)}
                   className="w-full bg-transparent border-b border-gray-200 py-3 text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#D4AF37] transition-colors duration-300"
                 />
               </div>
@@ -262,6 +310,8 @@ const AccountPage: React.FC = () => {
                 <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">New Password (Optional)</label>
                 <input
                   type="password"
+                  value={editPassword}
+                  onChange={(e) => setEditPassword(e.target.value)}
                   placeholder="Leave blank to keep current"
                   className="w-full bg-transparent border-b border-gray-200 py-3 text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#D4AF37] transition-colors duration-300"
                 />
@@ -275,16 +325,33 @@ const AccountPage: React.FC = () => {
                   Back to Overview
                 </button>
                 <button 
-                  type="button" 
-                  className="w-full sm:w-auto bg-[#1a1a1a] text-white text-[11px] uppercase tracking-[0.3em] py-4 px-10 hover:bg-[#D4AF37] transition-colors duration-300"
+                  type="submit"
+                  disabled={loading}
+                  className="w-full sm:w-auto bg-[#1a1a1a] text-white text-[11px] uppercase tracking-[0.3em] py-4 px-10 hover:bg-[#D4AF37] transition-colors duration-300 disabled:opacity-50"
                 >
-                  Save Changes
+                  {loading ? 'Saving...' : 'Save Changes'}
                 </button>
               </div>
             </form>
           </div>
         )}
       </div>
+
+      {/* Notification Toast */}
+      {notification && (
+        <div className={`fixed bottom-10 left-1/2 -translate-x-1/2 px-8 py-4 bg-white border border-gray-100 shadow-2xl rounded-sm flex items-center gap-4 animate-in fade-in slide-in-from-bottom-5 duration-500 z-50`}>
+          <div className={`w-2 h-2 rounded-full ${notification.type === 'success' ? 'bg-[#D4AF37]' : 'bg-red-500'}`} />
+          <p className="text-[11px] uppercase tracking-[0.2em] font-medium text-[#1a1a1a]">
+            {notification.message}
+          </p>
+          <button 
+            onClick={() => setNotification(null)}
+            className="ml-4 text-gray-400 hover:text-[#1a1a1a] transition-colors"
+          >
+            ✕
+          </button>
+        </div>
+      )}
     </div>
   );
 };
