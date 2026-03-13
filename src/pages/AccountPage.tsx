@@ -50,8 +50,8 @@ const AccountPage: React.FC = () => {
   ];
 
   return (
-    <div className="flex justify-center w-full min-h-[60vh] bg-white">
-      <div className="w-full max-w-4xl px-4 py-12 flex flex-col items-center">
+    <div className="flex flex-col items-center w-full min-h-[80vh] bg-white pt-24 md:pt-40">
+      <div className="w-full max-w-5xl px-4 pb-24 flex flex-col items-center mx-auto mt-8 md:mt-12">
         <div className="mb-10 w-full">
           <h1 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-4xl md:text-5xl tracking-widest text-[#1a1a1a] uppercase font-light text-center">
             My Account
@@ -87,7 +87,7 @@ const AccountPage: React.FC = () => {
               ))}
             </div>
             
-            <div className="mt-16 flex justify-center w-full">
+            <div className="mt-16 flex items-center justify-center w-full text-center">
               <button
                 onClick={handleLogout}
                 className="flex items-center gap-2 text-[11px] uppercase tracking-[0.3em] font-medium text-gray-500 hover:text-red-600 transition-colors border-b border-transparent hover:border-red-600 pb-0.5"
