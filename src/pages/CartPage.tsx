@@ -59,7 +59,7 @@ const CartPage: React.FC = () => {
   /* ─── Empty State ─────────────────────────────── */
   if (items.length === 0) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center text-center bg-white px-4">
+      <div className="min-h-screen flex flex-col items-center justify-start pt-12 text-center bg-white px-4">
         <div className="w-24 h-24 rounded-full border border-gray-200 flex items-center justify-center mb-10">
           <ShoppingBag className="w-10 h-10 text-gray-300 stroke-[1]" />
         </div>
@@ -84,7 +84,7 @@ const CartPage: React.FC = () => {
 
   /* ─── Cart ────────────────────────────────────── */
   return (
-    <div className="min-h-screen bg-white" style={{ paddingTop: '180px', paddingBottom: '100px' }}>
+    <div className="min-h-screen bg-white" style={{ paddingTop: '20px', paddingBottom: '100px' }}>
       <div className="max-w-[1200px] mx-auto px-6">
 
         {/* ── Page Header ──────────────────────────── */}
