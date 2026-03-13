@@ -39,8 +39,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
 
     return res.status(201).json({ message: 'User created successfully', user });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Registration error:', error);
-    return res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({ message: `Prisma/Vercel Error: ${error.message}`, stack: error.stack });
   }
 }
