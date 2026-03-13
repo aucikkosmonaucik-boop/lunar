@@ -53,7 +53,7 @@ const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose }) => {
 
   const handleResultClick = (id: string) => {
     handleClose();
-    navigate(`/produkt/${id}`);
+    navigate(`/product/${id}`);
   };
 
   return (
@@ -113,7 +113,7 @@ const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose }) => {
                       />
                     </div>
                     <span className="text-[11px] font-bold text-gray-900 uppercase tracking-wider mb-1 px-2 line-clamp-1">{product.name}</span>
-                    <span className="text-xs text-gray-500">{product.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span>
+                    <span className="text-xs text-gray-500">{product.price.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}</span>
                   </div>
                 ))}
               </div>

@@ -27,7 +27,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ open, onClose }) => {
         <div className="flex items-center justify-between px-6 py-5 border-b border-lunar-border">
           <h2 className="text-lg font-bold gradient-text flex items-center gap-2">
             <ShoppingBag className="w-5 h-5 text-lunar-purple-light" />
-            Koszyk
+            Your Bag
           </h2>
           <button
             onClick={onClose}
@@ -42,12 +42,12 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ open, onClose }) => {
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center gap-4">
               <ShoppingBag className="w-16 h-16 text-lunar-border" />
-              <p className="text-lunar-muted">Twój koszyk jest pusty</p>
+              <p className="text-lunar-muted">Your bag is empty</p>
               <button
                 onClick={onClose}
                 className="text-sm text-lunar-purple-light hover:underline"
               >
-                Kontynuuj zakupy
+                Continue Shopping
               </button>
             </div>
           ) : (
@@ -67,7 +67,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ open, onClose }) => {
                     {item.product.name}
                   </Link>
                   <p className="text-lunar-purple-light font-bold text-sm mt-1">
-                    {(item.product.price * item.quantity).toLocaleString('pl-PL')} zł
+                    {(item.product.price * item.quantity).toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}
                   </p>
 
                   <div className="flex items-center justify-between mt-2">
@@ -106,15 +106,15 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ open, onClose }) => {
         {items.length > 0 && (
           <div className="px-6 py-5 border-t border-lunar-border space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-lunar-muted">Łącznie:</span>
-              <span className="text-xl font-bold gradient-text">{totalPrice.toLocaleString('pl-PL')} zł</span>
+              <span className="text-lunar-muted">Total:</span>
+              <span className="text-xl font-bold gradient-text">{totalPrice.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}</span>
             </div>
             <Link
-              to="/koszyk"
+              to="/cart"
               onClick={onClose}
               className="block w-full text-center py-3 px-6 rounded-xl btn-shimmer text-white font-semibold transition-all duration-300 hover:scale-[1.02]"
             >
-              Przejdź do koszyka
+              View Bag
             </Link>
           </div>
         )}

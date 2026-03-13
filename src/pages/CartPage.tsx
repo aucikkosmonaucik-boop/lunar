@@ -15,7 +15,7 @@ const CartPage: React.FC = () => {
 
   const handleCheckout = async () => {
     if (!user) {
-      navigate('/login?redirect=/koszyk');
+      navigate('/login?redirect=/cart');
       return;
     }
 
@@ -73,7 +73,7 @@ const CartPage: React.FC = () => {
           Explore our collection and add pieces you love.
         </p>
         <Link
-          to="/sklep"
+          to="/shop"
           className="inline-flex items-center gap-3 bg-[#1a1a1a] text-white text-[12px] uppercase tracking-[0.4em] py-5 px-12 hover:bg-gray-800 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> Explore Collection
@@ -158,7 +158,7 @@ const CartPage: React.FC = () => {
                       <div>
                         <p className="text-[10px] text-gray-400 uppercase tracking-[0.2em] mb-1">Price per item</p>
                         <p className="text-[18px] font-light text-[#1a1a1a] tracking-wide">
-                          {item.product.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                          {item.product.price.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}
                         </p>
                       </div>
 
@@ -191,7 +191,7 @@ const CartPage: React.FC = () => {
                         <div className="text-right">
                           <p className="text-[10px] text-gray-400 uppercase tracking-[0.2em] mb-1">Total</p>
                           <p className="text-[22px] font-light text-[#1a1a1a] tracking-wide">
-                            {(item.product.price * item.quantity).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                            {(item.product.price * item.quantity).toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}
                           </p>
                         </div>
 
@@ -213,7 +213,7 @@ const CartPage: React.FC = () => {
             {/* Footer actions */}
             <div className="flex justify-between items-center pt-8 border-t border-gray-100">
               <Link
-                to="/sklep"
+                to="/shop"
                 className="flex items-center gap-2 text-[11px] uppercase tracking-[0.3em] font-medium text-[#1a1a1a] hover:text-gray-500 transition-colors border-b border-[#1a1a1a] pb-0.5 hover:border-gray-400"
               >
                 <ArrowLeft className="w-3.5 h-3.5" /> Keep Exploring
@@ -246,7 +246,7 @@ const CartPage: React.FC = () => {
                       )}
                     </span>
                     <span className="text-[12px] text-[#1a1a1a] font-medium tracking-wide shrink-0">
-                      {(item.product.price * item.quantity).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                      {(item.product.price * item.quantity).toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}
                     </span>
                   </div>
                 ))}
@@ -257,13 +257,13 @@ const CartPage: React.FC = () => {
                 <div className="flex justify-between text-[12px] uppercase tracking-widest">
                   <span className="text-gray-500">Subtotal</span>
                   <span className="text-[#1a1a1a] font-medium">
-                    {totalPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                    {totalPrice.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}
                   </span>
                 </div>
                 <div className="flex justify-between text-[12px] uppercase tracking-widest">
                   <span className="text-gray-500">Delivery</span>
                   <span className={shipping === 0 ? 'text-green-600 font-medium' : 'text-[#1a1a1a] font-medium'}>
-                    {shipping === 0 ? 'Free' : shipping.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                    {shipping === 0 ? 'Free' : shipping.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}
                   </span>
                 </div>
               </div>
@@ -280,7 +280,7 @@ const CartPage: React.FC = () => {
                   <p className="text-[11px] text-gray-400 tracking-wide">
                     Add{' '}
                     <span className="text-[#1a1a1a] font-medium">
-                      {remaining.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                      {remaining.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}
                     </span>{' '}
                     more for free delivery
                   </p>
@@ -295,7 +295,7 @@ const CartPage: React.FC = () => {
                     style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
                     className="text-4xl font-light text-[#1a1a1a]"
                   >
-                    {grandTotal.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                    {grandTotal.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}
                   </span>
                 </div>
               </div>

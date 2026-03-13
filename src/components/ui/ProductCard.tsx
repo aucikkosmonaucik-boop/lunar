@@ -28,7 +28,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         {/* Overlay Actions */}
         <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
           <Link 
-            to={`/produkt/${product.id}`}
+            to={`/product/${product.id}`}
             className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-wonders-dark shadow-sm hover:bg-wonders-gold hover:text-white transition-all transform translate-y-4 group-hover:translate-y-0 duration-300"
           >
             <Eye className="w-4 h-4" />
@@ -68,13 +68,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <div className="flex flex-col items-center px-2">
         <p className="text-[10px] text-wonders-muted uppercase tracking-[0.2em] mb-2 font-medium">by Lunar</p>
         <Link 
-          to={`/produkt/${product.id}`}
+          to={`/product/${product.id}`}
           className="text-xs font-semibold text-wonders-dark hover:text-wonders-gold transition-colors mb-3 uppercase tracking-wider line-clamp-2 max-w-[180px]"
         >
           {product.name}
         </Link>
         <p className="text-xs font-bold text-wonders-gold tracking-[0.2em] mb-6">
-          {product.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+          {product.price.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}
         </p>
 
         {/* Add to Cart Button */}
