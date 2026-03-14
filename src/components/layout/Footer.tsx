@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Instagram, Facebook, Youtube } from 'lucide-react';
+import { Instagram, Facebook } from 'lucide-react';
 
 const Footer: React.FC = () => {
   return (
@@ -12,7 +12,7 @@ const Footer: React.FC = () => {
           <span className="text-[16px] md:text-[20px] tracking-[0.5em] md:tracking-[0.8em] text-[#1a1a1a] pr-[calc(-0.5em)] md:pr-[calc(-0.8em)] mt-2 font-light">2026</span>
         </Link>
 
-        <div className="flex gap-6 md:gap-8 mb-12">
+        <div className="flex justify-center items-center gap-6 md:gap-8 mb-12">
           <a href="https://www.instagram.com/mylunar.ie?igsh=MXJjZjNndm13NHduMQ==" target="_blank" rel="noreferrer"
             className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white hover:bg-black hover:scale-105 transition-all duration-300">
             <Instagram className="w-5 h-5" />
@@ -26,9 +26,6 @@ const Footer: React.FC = () => {
             </svg>
           </a>
 
-          <a href="#" className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white hover:bg-black hover:scale-105 transition-all duration-300">
-            <Youtube className="w-5 h-5" />
-          </a>
           <a href="#" className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white hover:bg-black hover:scale-105 transition-all duration-300">
             <Facebook className="w-5 h-5" />
           </a>
