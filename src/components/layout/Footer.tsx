@@ -7,9 +7,13 @@ const Footer: React.FC = () => {
     <footer className="bg-[#f5eeeb] pt-24 pb-12">
       {/* Centered Content: Logo, Socials, and Links — full viewport width */}
       <div className="w-full flex flex-col items-center justify-center text-center mb-24 px-4">
-        <Link to="/" className="flex flex-col items-center group mb-10">
-          <span className="font-serif text-5xl md:text-[72px] tracking-widest text-[#1a1a1a] uppercase leading-[0.8] pb-1">Lunar</span>
-          <span className="text-[16px] md:text-[20px] tracking-[0.5em] md:tracking-[0.8em] text-[#1a1a1a] pr-[calc(-0.5em)] md:pr-[calc(-0.8em)] mt-2 font-light">2026</span>
+        <Link to="/" className="flex flex-col items-center group mb-10 select-none">
+          <span className="font-serif font-light text-2xl md:text-3xl tracking-[0.35em] text-[#1a1a1a] uppercase leading-none pl-[0.35em] transition-opacity duration-300 group-hover:opacity-75">
+            Lunar
+          </span>
+          <span className="text-[10px] md:text-[11px] font-light tracking-[0.5em] text-[#78716c] uppercase pl-[0.5em] mt-2 transition-opacity duration-300 group-hover:opacity-75">
+            2026
+          </span>
         </Link>
 
         <div className="flex justify-center items-center gap-6 md:gap-8 mb-12">
