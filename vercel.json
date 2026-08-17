@@ -9,6 +9,10 @@
       "destination": "/api/orders-handler?action=:action"
     },
     {
+      "source": "/api/stripe/:action",
+      "destination": "/api/stripe-handler?action=:action"
+    },
+    {
       "source": "/api/debug",
       "destination": "/api/debug"
     },
