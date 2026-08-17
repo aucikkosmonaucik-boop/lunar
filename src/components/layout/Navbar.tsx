@@ -196,8 +196,8 @@ const Navbar: React.FC = () => {
                   {/* Invisible Hover Bridge */}
                   <div className="absolute -top-3 left-0 right-0 h-4 bg-transparent" />
 
-                  {/* Main Dropdown Panel (Styled in MyLunar warm linen / boutique tone) */}
-                  <div className="bg-[#FAF7F2] border border-[#E8DFD3] shadow-2xl shadow-black/10 min-w-[260px] py-3 animate-fade-in relative">
+                  {/* Main Dropdown Panel (Styled in clean white matching header) */}
+                  <div className="bg-white border border-gray-200 shadow-2xl shadow-black/10 min-w-[260px] py-3 animate-fade-in relative">
                     <div className="flex flex-col">
                       {shopCategories.map((item) => {
                         const hasSub = !!item.subitems;
@@ -212,9 +212,9 @@ const Navbar: React.FC = () => {
                             <Link
                               to={item.to}
                               onClick={() => setIsShopHovered(false)}
-                              className={`px-6 py-2.5 flex items-center justify-between text-[#1a1a1a] transition-all duration-200 hover:bg-[#EFE7DE] hover:translate-x-1 ${
+                              className={`px-6 py-2.5 flex items-center justify-between text-[#1a1a1a] transition-all duration-200 hover:bg-gray-50 hover:translate-x-1 ${
                                 item.label === 'Shop All'
-                                  ? 'font-serif text-[15px] border-b border-[#E8DFD3]/60 mb-1 pb-3 pt-1 text-black font-semibold'
+                                  ? 'font-serif text-[15px] border-b border-gray-100 mb-1 pb-3 pt-1 text-black font-semibold'
                                   : 'font-serif text-[14px] tracking-[0.18em] uppercase text-[#2b2b2b] hover:text-black'
                               }`}
                             >
@@ -247,9 +247,9 @@ const Navbar: React.FC = () => {
                                   setActiveFlyout(item.label);
                                 }}
                               >
-                                <div className="bg-[#FAF7F2] border border-[#E8DFD3] shadow-2xl shadow-black/10 min-w-[240px] py-3 animate-fade-in">
-                                  <div className="px-5 pb-2 mb-2 border-b border-[#E8DFD3]/60 flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-[#8c7e70] font-sans font-semibold">
-                                    <Sparkles className="w-3 h-3 text-[#c1a98f]" />
+                                <div className="bg-white border border-gray-200 shadow-2xl shadow-black/10 min-w-[240px] py-3 animate-fade-in">
+                                  <div className="px-5 pb-2 mb-2 border-b border-gray-100 flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-gray-500 font-sans font-semibold">
+                                    <Sparkles className="w-3 h-3 text-gray-400" />
                                     <span>{item.label} Collection</span>
                                   </div>
                                   {item.subitems?.map((sub) => (
@@ -260,7 +260,7 @@ const Navbar: React.FC = () => {
                                         setIsShopHovered(false);
                                         setActiveFlyout(null);
                                       }}
-                                      className="px-5 py-2 block font-serif text-[13px] tracking-[0.16em] uppercase text-[#333] hover:text-black hover:bg-[#EFE7DE] hover:translate-x-1 transition-all duration-200"
+                                      className="px-5 py-2 block font-serif text-[13px] tracking-[0.16em] uppercase text-[#333] hover:text-black hover:bg-gray-50 hover:translate-x-1 transition-all duration-200"
                                     >
                                       {sub.label}
                                     </Link>
@@ -395,7 +395,7 @@ const Navbar: React.FC = () => {
 
             {/* Mobile Shop Accordion Content */}
             {mobileShopOpen && (
-              <div className="pl-4 pr-2 py-2 flex flex-col gap-1 bg-[#FAF7F2] border border-[#E8DFD3] my-2">
+              <div className="pl-4 pr-2 py-2 flex flex-col gap-1 bg-white border border-gray-100 my-2">
                 {shopCategories.map((item) => {
                   const hasSub = !!item.subitems;
                   const isSubOpen = mobileSubmenuOpen === item.label;
@@ -429,7 +429,7 @@ const Navbar: React.FC = () => {
 
                       {/* Nested mobile subcategories */}
                       {hasSub && isSubOpen && (
-                        <div className="pl-4 pb-2 flex flex-col gap-1.5 border-l-2 border-[#E8DFD3] ml-1 my-1">
+                        <div className="pl-4 pb-2 flex flex-col gap-1.5 border-l-2 border-gray-200 ml-1 my-1">
                           {item.subitems?.map((sub) => (
                             <Link
                               key={sub.label}
