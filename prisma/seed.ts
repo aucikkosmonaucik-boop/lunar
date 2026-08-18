@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { Pool } from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
+import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -498,7 +499,25 @@ async function main() {
     });
   }
 
-  console.log('✅ Database seeded successfully!');
+  // 4. Seed Master Admin / Owner Account
+  console.log('👑 Seeding Master Admin User...');
+  const adminHashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD || 'LunarAdmin2026!', 10);
+  await prisma.user.upsert({
+    where: { email: 'admin@lunar.com' },
+    update: {
+      role: 'ADMIN',
+      name: 'Właściciel Lunar Boutique',
+    },
+    create: {
+      email: 'admin@lunar.com',
+      password: adminHashedPassword,
+      name: 'Właściciel Lunar Boutique',
+      role: 'ADMIN',
+      loyaltyPoints: 1000,
+    },
+  });
+
+  console.log('✅ Database seeded successfully with Master Admin!');
 }
 
 main()
