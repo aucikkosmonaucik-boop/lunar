@@ -25,10 +25,12 @@ import {
   Eye,
   EyeOff,
   UserCheck,
-  Sparkles
+  Sparkles,
+  Coins
 } from 'lucide-react';
 import { useCart } from '../hooks/useCart';
 import { useAuth } from '../hooks/useAuth';
+import { useLoyalty } from '../hooks/useLoyalty';
 
 const FREE_SHIPPING_THRESHOLD = 50;
 
@@ -60,17 +62,24 @@ const COUNTRIES = [
 const CartPage: React.FC = () => {
   const { items, totalPrice, totalItems, removeFromCart, updateQuantity, clearCart } = useCart();
   const { user, login } = useAuth();
+  const { loyaltyPoints, userCoupons, calculatePointsToEarn } = useLoyalty();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showCanceledNotice, setShowCanceledNotice] = useState(false);
 
-  // Promo code state
+  // Promo code / Loyalty Coupon state
   const [promoCode, setPromoCode] = useState('');
-  const [appliedPromo, setAppliedPromo] = useState<{ code: string; discountPct: number } | null>(null);
+  const [appliedPromo, setAppliedPromo] = useState<{
+    code: string;
+    discountPct?: number;
+    discountAmount?: number;
+    isLoyaltyCoupon?: boolean;
+  } | null>(null);
   const [promoError, setPromoError] = useState<string | null>(null);
   const [isPromoOpen, setIsPromoOpen] = useState(false);
+  const [isLoyaltyCouponsOpen, setIsLoyaltyCouponsOpen] = useState(false);
 
   // Mandatory Shipping Address form state
   const [shippingName, setShippingName] = useState('');
@@ -113,31 +122,83 @@ const CartPage: React.FC = () => {
     }
   }, [searchParams, setSearchParams]);
 
-  // Calculations
-  const discountAmount = appliedPromo ? (totalPrice * appliedPromo.discountPct) / 100 : 0;
+  // Calculations with Loyalty discount support
+  const discountAmount = appliedPromo
+    ? appliedPromo.discountAmount !== undefined && appliedPromo.discountAmount !== null && appliedPromo.discountAmount > 0
+      ? Math.min(totalPrice, appliedPromo.discountAmount)
+      : (totalPrice * (appliedPromo.discountPct || 0)) / 100
+    : 0;
+
   const priceAfterDiscount = Math.max(0, totalPrice - discountAmount);
   const isFreeShipping = priceAfterDiscount >= FREE_SHIPPING_THRESHOLD;
   const shippingFee = isFreeShipping ? 0 : 10;
   const grandTotal = priceAfterDiscount + shippingFee;
   const remainingForFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD - priceAfterDiscount);
   const progressPct = Math.min((priceAfterDiscount / FREE_SHIPPING_THRESHOLD) * 100, 100);
+  const pointsToEarn = calculatePointsToEarn(grandTotal);
 
-  const handleApplyPromo = (e: React.FormEvent) => {
+  const handleApplyPromo = async (e: React.FormEvent) => {
     e.preventDefault();
     setPromoError(null);
     const code = promoCode.trim().toUpperCase();
-
     if (!code) return;
 
-    if (code === 'LUNAR10' || code === 'WELCOME10') {
-      setAppliedPromo({ code, discountPct: 10 });
+    // 1. Check in user's active loyalty wallet first
+    const userCouponsMatching = userCoupons.find(c => c.code.toUpperCase() === code && !c.isUsed);
+    if (userCouponsMatching) {
+      setAppliedPromo({
+        code: userCouponsMatching.code,
+        discountPct: userCouponsMatching.discountType === 'PERCENTAGE' ? userCouponsMatching.discountValue : undefined,
+        discountAmount: userCouponsMatching.discountType === 'FIXED' ? userCouponsMatching.discountValue : undefined,
+        isLoyaltyCoupon: true,
+      });
       setPromoCode('');
-    } else if (code === 'VIP15') {
-      setAppliedPromo({ code, discountPct: 15 });
-      setPromoCode('');
-    } else {
-      setPromoError('Invalid code. Try "LUNAR10"');
+      return;
     }
+
+    // 2. Try API validation
+    try {
+      const res = await fetch('/api/promos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, orderAmount: totalPrice }),
+      });
+      const data = await res.json();
+      if (res.ok && data.valid) {
+        setAppliedPromo({
+          code: data.code,
+          discountPct: data.discountPct || undefined,
+          discountAmount: data.discountAmount || undefined,
+          isLoyaltyCoupon: data.isLoyaltyCoupon,
+        });
+        setPromoCode('');
+        return;
+      } else {
+        setPromoError(data.message || 'Nieprawidłowy lub nieaktywny kod rabatowy');
+        return;
+      }
+    } catch {
+      // Fallback local check
+      if (code === 'LUNAR10' || code === 'WELCOME10') {
+        setAppliedPromo({ code, discountPct: 10 });
+        setPromoCode('');
+      } else if (code === 'VIP15') {
+        setAppliedPromo({ code, discountPct: 15 });
+        setPromoCode('');
+      } else {
+        setPromoError('Nieprawidłowy kod. Spróbuj "LUNAR10"');
+      }
+    }
+  };
+
+  const handleApplyUserCoupon = (coupon: any) => {
+    setAppliedPromo({
+      code: coupon.code,
+      discountPct: coupon.discountType === 'PERCENTAGE' ? coupon.discountValue : undefined,
+      discountAmount: coupon.discountType === 'FIXED' ? coupon.discountValue : undefined,
+      isLoyaltyCoupon: true,
+    });
+    setPromoError(null);
   };
 
   const handleRemovePromo = () => {
@@ -942,14 +1003,37 @@ const CartPage: React.FC = () => {
 
                 {/* Promo Code Applied Row */}
                 {appliedPromo && (
-                  <div className="flex justify-between items-center text-emerald-700">
-                    <span className="flex items-center gap-1.5">
+                  <div className="flex justify-between items-center text-emerald-700 bg-emerald-50/70 p-2.5 rounded border border-emerald-200">
+                    <span className="flex items-center gap-1.5 font-medium">
                       <Tag className="w-3.5 h-3.5" />
-                      <span>Discount ({appliedPromo.code} -{appliedPromo.discountPct}%)</span>
+                      <span>
+                        Zniżka ({appliedPromo.code}{' '}
+                        {appliedPromo.discountPct
+                          ? `-${appliedPromo.discountPct}%`
+                          : appliedPromo.discountAmount
+                          ? `-${appliedPromo.discountAmount.toFixed(2)}€`
+                          : ''})
+                      </span>
                     </span>
-                    <span className="font-medium">-€{discountAmount.toFixed(2)}</span>
+                    <span className="font-bold">-€{discountAmount.toFixed(2)}</span>
                   </div>
                 )}
+
+                {/* Loyalty Points to be Earned */}
+                <div className="flex items-center justify-between p-2.5 bg-amber-50/70 border border-amber-200 rounded text-amber-950">
+                  <div className="flex items-center gap-2">
+                    <Coins className="w-4 h-4 text-[#D4AF37]" />
+                    <div className="text-xs">
+                      <span className="font-semibold block">LUNAR Club Punkty:</span>
+                      {user && (
+                        <span className="text-[10px] text-gray-500">Saldo: {loyaltyPoints} pkt</span>
+                      )}
+                    </div>
+                  </div>
+                  <span className="text-xs font-bold text-[#D4AF37] font-mono">
+                    +{pointsToEarn} PKT
+                  </span>
+                </div>
 
                 {/* Delivery */}
                 <div className="flex justify-between items-center">
@@ -985,24 +1069,61 @@ const CartPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Promo Code Accordion */}
+              {/* Promo Code & Loyalty Coupons Accordion */}
               <div className="border-t border-[#F0EBE3] pt-4 mb-6">
                 {!appliedPromo ? (
-                  <div>
+                  <div className="space-y-3">
+                    {/* User Loyalty Coupons Available */}
+                    {user && userCoupons.filter(c => !c.isUsed).length > 0 && (
+                      <div className="p-3 bg-amber-50/80 border border-amber-200 rounded">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-[11px] font-bold text-amber-900 uppercase tracking-wider flex items-center gap-1.5">
+                            <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+                            Masz {userCoupons.filter(c => !c.isUsed).length} kupon(y) w portfelu:
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setIsLoyaltyCouponsOpen(!isLoyaltyCouponsOpen)}
+                            className="text-[10px] uppercase tracking-wider font-bold text-black underline"
+                          >
+                            {isLoyaltyCouponsOpen ? 'Ukryj' : 'Wybierz kupon'}
+                          </button>
+                        </div>
+
+                        {isLoyaltyCouponsOpen && (
+                          <div className="space-y-1.5 pt-1">
+                            {userCoupons.filter(c => !c.isUsed).map((c) => (
+                              <button
+                                key={c.id}
+                                type="button"
+                                onClick={() => handleApplyUserCoupon(c)}
+                                className="w-full text-left p-2 bg-white border border-amber-200 hover:border-black rounded flex items-center justify-between text-xs transition-colors"
+                              >
+                                <span className="font-mono font-bold text-black">{c.code}</span>
+                                <span className="font-bold text-green-700">
+                                  {c.discountType === 'PERCENTAGE' ? `-${c.discountValue}%` : `-${c.discountValue.toFixed(2)}€`}
+                                </span>
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
                     {!isPromoOpen ? (
                       <button
                         onClick={() => setIsPromoOpen(true)}
                         className="text-[11px] uppercase tracking-[0.2em] font-medium text-[#C1A98F] hover:text-[#1A1A1A] transition-colors flex items-center gap-1.5"
                       >
                         <Tag className="w-3.5 h-3.5" />
-                        <span>Have a promo code?</span>
+                        <span>Masz kod rabatowy? Wpisz tutaj</span>
                       </button>
                     ) : (
                       <form onSubmit={handleApplyPromo} className="mt-2">
                         <div className="flex gap-2">
                           <input
                             type="text"
-                            placeholder="Enter code (e.g. LUNAR10)"
+                            placeholder="Wpisz kod (np. LUNAR10)"
                             value={promoCode}
                             onChange={(e) => setPromoCode(e.target.value)}
                             className="flex-1 px-3 py-2 text-xs uppercase tracking-wider border border-[#D5CCC1] focus:outline-none focus:border-black bg-[#FAF8F5]"
@@ -1011,7 +1132,7 @@ const CartPage: React.FC = () => {
                             type="submit"
                             className="px-4 py-2 bg-[#1A1A1A] text-white text-[11px] uppercase tracking-wider font-medium hover:bg-[#333333] transition-colors"
                           >
-                            Apply
+                            Zastosuj
                           </button>
                         </div>
                         {promoError && (
@@ -1024,13 +1145,13 @@ const CartPage: React.FC = () => {
                   <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 px-3 py-2 text-xs text-emerald-800">
                     <span className="flex items-center gap-1.5 font-medium">
                       <Check className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>Code {appliedPromo.code} applied!</span>
+                      <span>Kupon {appliedPromo.code} aktywny!</span>
                     </span>
                     <button
                       onClick={handleRemovePromo}
                       className="text-[11px] text-gray-500 hover:text-rose-600 uppercase tracking-wider font-semibold"
                     >
-                      Remove
+                      Usuń
                     </button>
                   </div>
                 )}

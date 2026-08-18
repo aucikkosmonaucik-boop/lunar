@@ -73,9 +73,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         >
           {product.name}
         </Link>
-        <p className="text-xs font-bold text-wonders-gold tracking-[0.2em] mb-6">
-          {product.price.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}
-        </p>
+        <div className="flex items-center gap-2 mb-6">
+          <p className="text-xs font-bold text-wonders-gold tracking-[0.2em]">
+            {product.price.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}
+          </p>
+          {product.originalPrice && product.originalPrice > product.price && (
+            <p className="text-[10px] text-gray-400 line-through tracking-wider">
+              {product.originalPrice.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}
+            </p>
+          )}
+        </div>
 
         {/* Add to Cart Button */}
         <button

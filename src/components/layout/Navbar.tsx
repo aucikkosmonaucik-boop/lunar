@@ -316,13 +316,27 @@ const Navbar: React.FC = () => {
             <span className="text-base font-light font-serif uppercase tracking-widest mr-1">Search</span>
             <Search className="w-[22px] h-[22px] stroke-[1.2]" />
           </button>
+          <Link
+            to="/admin"
+            className="hidden lg:flex items-center gap-1.5 px-3 py-1 bg-black text-white hover:bg-[#d4af37] hover:text-black transition-all rounded text-[11px] font-bold uppercase tracking-wider shadow-sm"
+            title="Panel Administratora (Moderacja galerii, cen, promocji, punkty)"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Admin</span>
+          </Link>
+
           {user ? (
             <Link
               to="/account"
-              className="text-[#1a1a1a] hover:text-gray-600 transition-colors"
+              className="text-[#1a1a1a] hover:text-gray-600 transition-colors relative group"
               aria-label="My Account"
             >
               <User className="w-[24px] h-[24px] stroke-[1.2]" />
+              {user.loyaltyPoints !== undefined && user.loyaltyPoints > 0 && (
+                <span className="absolute -top-1.5 -right-2 bg-[#d4af37] text-black text-[9px] font-bold px-1 rounded-full border border-white">
+                  {user.loyaltyPoints > 999 ? '999+' : user.loyaltyPoints}
+                </span>
+              )}
             </Link>
           ) : (
             <Link
@@ -499,6 +513,15 @@ const Navbar: React.FC = () => {
               <Heart className="w-4 h-4" />
               <span>Wishlist ({favCount})</span>
             </button>
+
+            <Link
+              to="/admin"
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center gap-1.5 text-xs uppercase tracking-widest text-[#d4af37] font-bold"
+            >
+              <Sparkles className="w-4 h-4" />
+              <span>Admin</span>
+            </Link>
 
             <Link
               to={user ? '/account' : '/login'}

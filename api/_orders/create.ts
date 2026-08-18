@@ -93,9 +93,56 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       },
     });
 
+    // Handle Loyalty Points for Authenticated User (10 pts per EUR/PLN)
+    let pointsEarned = 0;
+    if (userId) {
+      try {
+        pointsEarned = Math.max(10, Math.floor(Number(total) * 10));
+        await (prisma as any).user.update({
+          where: { id: userId },
+          data: {
+            loyaltyPoints: { increment: pointsEarned },
+          },
+        });
+
+        await (prisma as any).loyaltyHistory.create({
+          data: {
+            userId,
+            points: pointsEarned,
+            type: 'PURCHASE',
+            description: `Punkty za zamówienie #${orderNumber} (+${pointsEarned} pkt)`,
+            orderId: order.id,
+          },
+        });
+      } catch (ptsErr) {
+        console.warn('Could not record loyalty points:', ptsErr);
+      }
+    }
+
+    // Handle Promo Code or Loyalty Coupon Usage
+    if (discountCode) {
+      try {
+        const normalizedCode = discountCode.toUpperCase().trim();
+        // Check if user coupon
+        await (prisma as any).userCoupon.updateMany({
+          where: { code: normalizedCode },
+          data: { isUsed: true, usedAt: new Date() },
+        });
+
+        // Check if standard promo code
+        await (prisma as any).promoCode.updateMany({
+          where: { code: normalizedCode },
+          data: { usageCount: { increment: 1 } },
+        });
+      } catch (promoErr) {
+        console.warn('Could not mark promo code as used:', promoErr);
+      }
+    }
+
     return res.status(201).json({
       message: 'Order created successfully',
       order,
+      loyaltyPointsEarned: pointsEarned,
     });
   } catch (error: unknown) {
     const err = error as Error;
