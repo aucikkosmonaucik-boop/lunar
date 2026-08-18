@@ -11,6 +11,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   // Handle Demo / Mock checkout simulation
   if (sessionId.startsWith('mock_session_') || sessionId.startsWith('mock_sess_')) {
+    let customAddress = null;
+    if (req.query.address) {
+      try {
+        customAddress = JSON.parse(decodeURIComponent(req.query.address as string));
+      } catch {
+        customAddress = null;
+      }
+    }
+
     return res.status(200).json({
       success: true,
       demoMode: true,
@@ -19,13 +28,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         status: 'Paid',
         total: 189.00,
         currency: 'EUR',
-        customerEmail: 'customer@example.com',
-        customerName: 'Valued Customer',
+        customerEmail: customAddress?.email || 'customer@example.com',
+        customerName: customAddress?.name || 'Valued Customer',
         shippingAddress: {
-          line1: 'Grafton Street 42',
-          city: 'Dublin',
-          postalCode: 'D02 X285',
-          country: 'Ireland',
+          line1: customAddress?.street || 'Grafton Street 42',
+          city: customAddress?.city || 'Dublin',
+          postalCode: customAddress?.postalCode || 'D02 X285',
+          country: customAddress?.country || 'Ireland',
+          phone: customAddress?.phone || '+353 1 234 5678',
         },
         createdAt: new Date().toISOString(),
       },
@@ -49,23 +59,27 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const isPaid = session.payment_status === 'paid';
     const total = (session.amount_total || 0) / 100;
-    const customerEmail = session.customer_details?.email || session.customer_email || undefined;
-    const customerName = session.customer_details?.name || session.shipping_details?.name || 'Customer';
-    const shippingAddress = session.shipping_details?.address;
-    const userId = session.metadata?.userId !== 'guest' ? session.metadata?.userId : null;
+    const customerEmail = session.metadata?.customerEmail || session.customer_details?.email || session.customer_email || undefined;
+    const customerName = session.metadata?.customerName || session.customer_details?.name || session.shipping_details?.name || 'Customer';
+    const shippingPhone = session.metadata?.shippingPhone || session.customer_details?.phone || null;
+    const shippingStreet = session.metadata?.shippingStreet || session.shipping_details?.address?.line1 || null;
+    const shippingCity = session.metadata?.shippingCity || session.shipping_details?.address?.city || null;
+    const shippingPostalCode = session.metadata?.shippingPostalCode || session.shipping_details?.address?.postal_code || null;
+    const shippingCountry = session.metadata?.shippingCountry || session.shipping_details?.address?.country || null;
+    const userId = session.metadata?.userId && session.metadata.userId !== 'guest' ? session.metadata.userId : null;
 
     let savedOrder: any = null;
 
-    // Persist order in Prisma if userId exists
-    if (isPaid && userId) {
+    // Persist order in Prisma if paid
+    if (isPaid) {
       try {
-        // Check if order with this session was already created
+        // Check if order with this total/customer was already created in the last 15 minutes
         const existingOrder = await (prisma as any).order.findFirst({
           where: {
-            userId,
+            ...(userId ? { userId } : { customerEmail }),
             total,
             createdAt: {
-              gte: new Date(Date.now() - 3600000), // last hour
+              gte: new Date(Date.now() - 900000), // last 15 minutes
             },
           },
           include: { items: true },
@@ -84,7 +98,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
           savedOrder = await (prisma as any).order.create({
             data: {
-              userId,
+              userId: userId || null,
+              customerEmail: customerEmail || null,
+              customerName: customerName || null,
+              shippingPhone: shippingPhone || null,
+              shippingStreet: shippingStreet || null,
+              shippingCity: shippingCity || null,
+              shippingPostalCode: shippingPostalCode || null,
+              shippingCountry: shippingCountry || null,
               total,
               status: 'Paid',
               items: {
@@ -118,7 +139,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         status: session.status,
         customerEmail,
         customerName,
-        shippingAddress,
+        shippingPhone,
+        shippingAddress: {
+          line1: shippingStreet,
+          city: shippingCity,
+          postal_code: shippingPostalCode,
+          country: shippingCountry,
+        },
         amountTotal: total,
         currency: session.currency?.toUpperCase() || 'EUR',
       },
