@@ -7,8 +7,12 @@
     "dev": "vite",
     "vercel-dev": "vercel dev",
     "build": "prisma generate && tsc -b && vite build",
+    "seed": "tsx prisma/seed.ts",
     "lint": "eslint .",
     "preview": "vite preview"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.5.0",

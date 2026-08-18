@@ -96,18 +96,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             rawItems = [];
           }
 
+          const orderNumber = `LUNAR-${Date.now().toString().slice(-6)}-${Math.floor(100 + Math.random() * 900)}`;
+
           savedOrder = await (prisma as any).order.create({
             data: {
+              orderNumber,
               userId: userId || null,
-              customerEmail: customerEmail || null,
-              customerName: customerName || null,
+              customerEmail: customerEmail || 'customer@lunar.ie',
+              customerName: customerName || 'Valued Customer',
               shippingPhone: shippingPhone || null,
-              shippingStreet: shippingStreet || null,
-              shippingCity: shippingCity || null,
-              shippingPostalCode: shippingPostalCode || null,
-              shippingCountry: shippingCountry || null,
+              shippingStreet: shippingStreet || 'Grafton Street',
+              shippingCity: shippingCity || 'Dublin',
+              shippingPostalCode: shippingPostalCode || 'D02',
+              shippingCountry: shippingCountry || 'IE',
               total,
+              subtotal: total,
               status: 'Paid',
+              paymentStatus: 'paid',
+              paymentMethod: 'stripe',
+              stripeSessionId: session.id,
               items: {
                 create: rawItems.map((item: any) => ({
                   productId: String(item.id || 'item'),
