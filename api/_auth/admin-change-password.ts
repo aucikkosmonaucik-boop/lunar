@@ -17,11 +17,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const { currentPassword, newPassword, newEmail } = req.body;
 
     if (!currentPassword || !newPassword) {
-      return res.status(400).json({ message: 'Aktualne hasło oraz nowe hasło są wymagane.' });
+      return res.status(400).json({ message: 'Current password and new password are required.' });
     }
 
     if (newPassword.length < 6) {
-      return res.status(400).json({ message: 'Nowe hasło musi mieć minimum 6 znaków.' });
+      return res.status(400).json({ message: 'New password must be at least 6 characters long.' });
     }
 
     // 1. Identify user from cookie token if available
@@ -94,7 +94,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     if (!isCurrentValid) {
-      return res.status(401).json({ message: 'Podane aktualne hasło jest nieprawidłowe.' });
+      return res.status(401).json({ message: 'Current master password provided is incorrect.' });
     }
 
     // 4. Hash new password
@@ -120,12 +120,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         update: {
           password: hashedNewPassword,
           role: 'ADMIN',
-          name: 'Właściciel Lunar Boutique',
+          name: 'Lunar Boutique Owner',
         },
         create: {
           email: targetEmail,
           password: hashedNewPassword,
-          name: 'Właściciel Lunar Boutique',
+          name: 'Lunar Boutique Owner',
           role: 'ADMIN',
           loyaltyPoints: 1000,
         },
@@ -135,14 +135,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     return res.status(200).json({
       success: true,
-      message: 'Hasło administratora zostało pomyślnie zmienione.',
+      message: 'Master administrator credentials updated successfully.',
       email: updatedUser.email,
     });
   } catch (error) {
     const err = error as Error;
     console.error('Admin change password error:', err);
     return res.status(500).json({ 
-      message: `Błąd zmiany hasła: ${err.message}`, 
+      message: `Password change error: ${err.message}`, 
       stack: err.stack 
     });
   }

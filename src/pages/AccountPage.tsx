@@ -216,8 +216,8 @@ const AccountPage: React.FC = () => {
 
   const accountSections = [
     {
-      title: 'Punkty Lojalnościowe & Kupony',
-      description: `Masz ${loyaltyPoints} pkt • Wymieniaj punkty na kupony rabatowe`,
+      title: 'Loyalty Points & Rewards',
+      description: `You have ${loyaltyPoints} pts • Redeem points for discount vouchers`,
       icon: <Award className="w-8 h-8 text-[#D4AF37] stroke-[1.2] group-hover:scale-110 transition-transform duration-300" />,
       action: () => setActiveTab('loyalty'),
       highlight: true,
@@ -462,25 +462,25 @@ const AccountPage: React.FC = () => {
               <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
                 <div>
                   <div className="flex items-center gap-2 text-[#D4AF37] text-[11px] uppercase tracking-[0.3em] font-bold mb-2">
-                    <Sparkles className="w-4 h-4" /> LUNAR Club • Program Lojalnościowy
+                    <Sparkles className="w-4 h-4" /> LUNAR Club • Loyalty Program
                   </div>
                   <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-4xl md:text-5xl font-light tracking-wider">
-                    Twoje Saldo: <span className="font-semibold text-[#D4AF37]">{loyaltyPoints} PKT</span>
+                    Your Balance: <span className="font-semibold text-[#D4AF37]">{loyaltyPoints} PTS</span>
                   </h2>
                   <p className="text-gray-400 text-xs mt-2 uppercase tracking-widest">
-                    Zbierasz punkty za każde zamówienie i wymieniasz je na kupony rabatowe
+                    Earn reward points on every order and redeem them for luxury discount vouchers
                   </p>
                 </div>
 
                 <div className="bg-white/10 backdrop-blur-sm border border-[#D4AF37]/40 px-6 py-4 rounded-sm text-center">
                   <span className="text-[10px] uppercase tracking-[0.3em] text-[#D4AF37] font-bold block mb-1">
-                    Aktualny Status
+                    Current Tier
                   </span>
                   <span className="text-lg font-serif tracking-widest text-white font-bold block">
                     {tier.name}
                   </span>
                   <span className="text-[10px] text-gray-300 tracking-wider">
-                    Mnożnik punktów: {tier.multiplier}x
+                    Points Multiplier: {tier.multiplier}x
                   </span>
                 </div>
               </div>
@@ -488,7 +488,7 @@ const AccountPage: React.FC = () => {
               {/* Tier progress */}
               <div className="mt-8 pt-6 border-t border-white/10 relative z-10">
                 <div className="flex justify-between text-xs text-gray-300 uppercase tracking-widest mb-2 font-medium">
-                  <span>Postęp do kolejnego poziomu</span>
+                  <span>Progress to Next Tier</span>
                   <span>{tier.progress}%</span>
                 </div>
                 <div className="w-full h-2 bg-white/20 rounded-full overflow-hidden">
@@ -505,10 +505,10 @@ const AccountPage: React.FC = () => {
               <div className="flex items-center justify-between border-b border-gray-200 pb-4">
                 <div>
                   <h3 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-3xl text-[#1a1a1a] tracking-widest uppercase font-light">
-                    Wymień Punkty na Kupony Rabatowe
+                    Redeem Points for Discount Vouchers
                   </h3>
                   <p className="text-xs text-gray-500 uppercase tracking-widest mt-1">
-                    Wybierz nagrodę, a wygenerowany kupon pojawi się w Twoim portfelu poniżej
+                    Select your reward to generate an instant voucher code in your wallet below
                   </p>
                 </div>
               </div>
@@ -531,10 +531,10 @@ const AccountPage: React.FC = () => {
                         <div className="flex items-center justify-between mb-3">
                           <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-900 border border-amber-200 text-xs font-bold rounded-full">
                             <Coins className="w-3.5 h-3.5 text-[#D4AF37]" />
-                            {reward.pointsCost} PKT
+                            {reward.pointsCost} PTS
                           </span>
-                          <span className="text-sm font-bold text-green-700 font-mono">
-                            {reward.discountType === 'PERCENTAGE' ? `-${reward.discountValue}%` : `-${reward.discountValue.toFixed(2)}€`}
+                          <span className="text-sm font-bold text-emerald-700 font-mono">
+                            {reward.discountType === 'PERCENTAGE' ? `-${reward.discountValue}%` : `-€${reward.discountValue.toFixed(2)}`}
                           </span>
                         </div>
 
@@ -542,11 +542,11 @@ const AccountPage: React.FC = () => {
                           {reward.title}
                         </h4>
                         <p className="text-xs text-gray-500 leading-relaxed mb-4">
-                          {reward.description || 'Kupon rabatowy ważny na zakupy w sklepie Lunar.'}
+                          {reward.description || 'Exclusive discount voucher for the Lunar Boutique collection.'}
                         </p>
                         {reward.minOrderValue > 0 && (
                           <p className="text-[10px] text-gray-400 uppercase tracking-wider mb-4">
-                            Min. zamówienie: {reward.minOrderValue.toFixed(2)}€
+                            Min. order: €{reward.minOrderValue.toFixed(2)}
                           </p>
                         )}
                       </div>
@@ -566,19 +566,19 @@ const AccountPage: React.FC = () => {
                         }}
                         className={`w-full py-3.5 px-4 text-xs uppercase tracking-[0.2em] font-bold rounded-sm transition-all duration-300 flex items-center justify-center gap-2 ${
                           canAfford
-                            ? 'bg-[#1a1a1a] text-white hover:bg-[#D4AF37] shadow'
+                            ? 'bg-[#1a1a1a] text-white hover:bg-[#D4AF37] hover:text-black shadow'
                             : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                         }`}
                       >
                         {isRedeeming ? (
-                          <span>Generowanie...</span>
+                          <span>Generating...</span>
                         ) : canAfford ? (
                           <>
                             <Sparkles className="w-4 h-4 text-[#D4AF37]" />
-                            <span>Wymień za {reward.pointsCost} pkt</span>
+                            <span>Redeem for {reward.pointsCost} pts</span>
                           </>
                         ) : (
-                          <span>Brakuje {reward.pointsCost - loyaltyPoints} pkt</span>
+                          <span>Need {reward.pointsCost - loyaltyPoints} more pts</span>
                         )}
                       </button>
                     </div>
@@ -592,17 +592,17 @@ const AccountPage: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-3xl text-[#1a1a1a] tracking-widest uppercase font-light">
-                    Mój Portfel Kuponów ({userCoupons.filter(c => !c.isUsed).length} aktywnych)
+                    My Active Vouchers ({userCoupons.filter(c => !c.isUsed).length} available)
                   </h3>
                   <p className="text-xs text-gray-500 uppercase tracking-widest mt-1">
-                    Wykupione przez Ciebie kupony, gotowe do użycia w koszyku
+                    Your redeemed discount vouchers ready to be applied in checkout
                   </p>
                 </div>
                 <Link
                   to="/cart"
                   className="text-xs uppercase tracking-widest font-bold text-[#D4AF37] hover:text-black flex items-center gap-1 border-b border-[#D4AF37] pb-0.5"
                 >
-                  <span>Przejdź do Koszyka</span>
+                  <span>View Bag</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
@@ -611,10 +611,10 @@ const AccountPage: React.FC = () => {
                 <div className="text-center py-12 bg-gray-50 rounded-sm border border-dashed border-gray-200">
                   <Coins className="w-10 h-10 text-gray-300 mx-auto mb-3" />
                   <p className="text-xs uppercase tracking-widest text-gray-500">
-                    Nie masz jeszcze wygenerowanych kuponów
+                    No active discount vouchers in your wallet
                   </p>
                   <p className="text-[11px] text-gray-400 mt-1">
-                    Wymień swoje punkty powyżej, aby zdobyć kod rabatowy.
+                    Redeem your earned points above to generate a voucher code.
                   </p>
                 </div>
               ) : (
@@ -634,17 +634,17 @@ const AccountPage: React.FC = () => {
                         </span>
                         <span
                           className={`text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-wider ${
-                            coupon.isUsed ? 'bg-gray-200 text-gray-600' : 'bg-green-100 text-green-800'
+                            coupon.isUsed ? 'bg-gray-200 text-gray-600' : 'bg-emerald-100 text-emerald-800'
                           }`}
                         >
-                          {coupon.isUsed ? 'Wykorzystany' : 'Aktywny'}
+                          {coupon.isUsed ? 'Used' : 'Active'}
                         </span>
                       </div>
 
                       <div className="flex items-center justify-between text-xs text-gray-600 my-2">
-                        <span>Zniżka:</span>
-                        <span className="font-bold text-green-700 text-sm">
-                          {coupon.discountType === 'PERCENTAGE' ? `-${coupon.discountValue}%` : `-${coupon.discountValue.toFixed(2)}€`}
+                        <span>Discount:</span>
+                        <span className="font-bold text-emerald-700 text-sm">
+                          {coupon.discountType === 'PERCENTAGE' ? `-${coupon.discountValue}%` : `-€${coupon.discountValue.toFixed(2)}`}
                         </span>
                       </div>
 
@@ -660,14 +660,14 @@ const AccountPage: React.FC = () => {
                             className="flex-1 py-2 px-3 bg-gray-100 hover:bg-gray-200 text-black text-xs font-bold uppercase tracking-wider rounded flex items-center justify-center gap-1.5 transition-colors"
                           >
                             <Copy className="w-3.5 h-3.5" />
-                            <span>{copiedCouponCode === coupon.code ? 'Skopiowano!' : 'Kopiuj Kod'}</span>
+                            <span>{copiedCouponCode === coupon.code ? 'Copied!' : 'Copy Code'}</span>
                           </button>
 
                           <Link
                             to="/cart"
-                            className="py-2 px-4 bg-[#1a1a1a] hover:bg-[#D4AF37] text-white text-xs font-bold uppercase tracking-wider rounded transition-colors text-center"
+                            className="py-2 px-4 bg-[#1a1a1a] hover:bg-[#D4AF37] text-white hover:text-black text-xs font-bold uppercase tracking-wider rounded transition-colors text-center"
                           >
-                            Użyj
+                            Apply
                           </Link>
                         </div>
                       )}
@@ -680,7 +680,7 @@ const AccountPage: React.FC = () => {
             {/* POINTS HISTORY AUDIT */}
             <div className="w-full space-y-4 pt-6 border-t border-gray-200">
               <h3 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-2xl text-[#1a1a1a] tracking-widest uppercase font-light">
-                Historia Punktów
+                Points Ledger & History
               </h3>
 
               <div className="bg-white border border-gray-200 rounded-sm overflow-hidden">
@@ -690,11 +690,11 @@ const AccountPage: React.FC = () => {
                       <div>
                         <p className="font-medium text-black">{h.description}</p>
                         <p className="text-[10px] text-gray-400">
-                          {new Date(h.createdAt).toLocaleDateString('pl-PL')}
+                          {new Date(h.createdAt).toLocaleDateString('en-US')}
                         </p>
                       </div>
-                      <span className={`font-bold text-sm ${h.points > 0 ? 'text-green-600' : 'text-amber-700'}`}>
-                        {h.points > 0 ? `+${h.points}` : h.points} PKT
+                      <span className={`font-bold text-sm ${h.points > 0 ? 'text-emerald-600' : 'text-amber-700'}`}>
+                        {h.points > 0 ? `+${h.points}` : h.points} PTS
                       </span>
                     </div>
                   ))}

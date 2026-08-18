@@ -150,25 +150,25 @@ const ProductDetailPage: React.FC = () => {
             </div>
 
             {/* Loyalty Points Banner */}
-            <div className="mb-8 p-3.5 bg-gradient-to-r from-amber-50/80 via-white to-amber-50/50 border border-amber-200/80 rounded-lg flex items-center justify-between">
+            <div className="mb-8 p-3.5 bg-gradient-to-r from-amber-50/80 via-white to-amber-50/50 border border-amber-200/80 rounded-sm flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-full bg-amber-100 border border-amber-300 flex items-center justify-center">
-                  <Coins className="w-4 h-4 text-[#d4af37]" />
+                  <Coins className="w-4 h-4 text-[#D4AF37]" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-black">
-                    Zyskasz +{pointsToEarn} pkt w LUNAR Club
+                  <p className="text-xs font-bold text-[#1A1A1A]">
+                    Earn +{pointsToEarn} pts with LUNAR Club
                   </p>
                   <p className="text-[11px] text-gray-500">
-                    Wymieniaj punkty na kupony rabatowe w swoim profilu
+                    Redeem points for exclusive discount vouchers in your account
                   </p>
                 </div>
               </div>
               <Link
                 to="/account"
-                className="text-[10px] uppercase tracking-wider font-bold text-black hover:text-[#d4af37] underline whitespace-nowrap"
+                className="text-[10px] uppercase tracking-wider font-bold text-[#1A1A1A] hover:text-[#D4AF37] underline whitespace-nowrap ml-2"
               >
-                Sprawdź nagrody
+                View Rewards
               </Link>
             </div>
 

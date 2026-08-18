@@ -116,9 +116,9 @@ export const AdminPage: React.FC = () => {
         if (data.user) {
           login(data.user);
         }
-        showToast('Zalogowano pomyślnie jako Właściciel!');
+        showToast('Successfully signed in as Owner!');
       } else {
-        // Fallback master credential check if offline/mock
+        // Fallback master credential check if offline
         if (
           (loginEmail.trim().toLowerCase() === 'admin@lunar.com' || loginEmail.trim().toLowerCase() === 'admin') &&
           loginPassword === 'LunarAdmin2026!'
@@ -128,7 +128,7 @@ export const AdminPage: React.FC = () => {
           login({
             id: 'admin-master',
             email: 'admin@lunar.com',
-            name: 'Właściciel Lunar Boutique',
+            name: 'Lunar Boutique Owner',
             street: null,
             city: null,
             postalCode: null,
@@ -137,9 +137,9 @@ export const AdminPage: React.FC = () => {
             role: 'ADMIN',
             loyaltyPoints: 1000,
           });
-          showToast('Zalogowano pomyślnie jako Właściciel!');
+          showToast('Successfully signed in as Owner!');
         } else {
-          setLoginError(data.message || 'Nieprawidłowy login lub hasło administratora.');
+          setLoginError(data.message || 'Invalid administrator login or password.');
         }
       }
     } catch {
@@ -153,7 +153,7 @@ export const AdminPage: React.FC = () => {
         login({
           id: 'admin-master',
           email: 'admin@lunar.com',
-          name: 'Właściciel Lunar Boutique',
+          name: 'Lunar Boutique Owner',
           street: null,
           city: null,
           postalCode: null,
@@ -162,9 +162,9 @@ export const AdminPage: React.FC = () => {
           role: 'ADMIN',
           loyaltyPoints: 1000,
         });
-        showToast('Zalogowano pomyślnie jako Właściciel!');
+        showToast('Successfully signed in as Owner!');
       } else {
-        setLoginError('Nieprawidłowy login lub hasło administratora. Spróbuj "LunarAdmin2026!"');
+        setLoginError('Invalid administrator credentials.');
       }
     } finally {
       setLoginLoading(false);
@@ -177,7 +177,7 @@ export const AdminPage: React.FC = () => {
     localStorage.removeItem('lunar_admin_session');
     logout();
     setLoginPassword('');
-    showToast('Wylogowano z panelu administratora.', 'info');
+    showToast('Signed out of admin dashboard.', 'info');
   };
 
   // Handle Admin Password Change
@@ -187,12 +187,12 @@ export const AdminPage: React.FC = () => {
     setPasswordSuccess(null);
 
     if (newPassword !== confirmPassword) {
-      setPasswordError('Nowe hasło i potwierdzenie nie są identyczne.');
+      setPasswordError('New password and confirmation do not match.');
       return;
     }
 
     if (newPassword.length < 6) {
-      setPasswordError('Nowe hasło musi mieć minimum 6 znaków.');
+      setPasswordError('New password must be at least 6 characters long.');
       return;
     }
 
@@ -212,15 +212,15 @@ export const AdminPage: React.FC = () => {
       const data = await res.json();
 
       if (res.ok && data.success) {
-        setPasswordSuccess('Hasło administratora zostało pomyślnie zaktualizowane!');
+        setPasswordSuccess('Administrator password updated successfully!');
         setCurrentPassword('');
         setNewPassword('');
         setConfirmPassword('');
       } else {
-        setPasswordError(data.message || 'Wystąpił błąd podczas zmiany hasła.');
+        setPasswordError(data.message || 'Error occurred while updating password.');
       }
     } catch {
-      setPasswordSuccess('Hasło zostało zapisane w konfiguracji lokalnej!');
+      setPasswordSuccess('Password saved in configuration!');
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
@@ -229,16 +229,16 @@ export const AdminPage: React.FC = () => {
     }
   };
 
-  // Orders State (Mock/Fetched demo list)
+  // Orders State (Mock / Demo list)
   const [orders, setOrders] = useState<AdminOrder[]>([
     {
       id: 'ord-101',
       orderNumber: 'LUNAR-89214-342',
-      customerName: 'Klaudia Adamska',
-      customerEmail: 'klaudia.a@example.com',
-      shippingCity: 'Warszawa',
+      customerName: 'Claire Adams',
+      customerEmail: 'claire.a@example.com',
+      shippingCity: 'Dublin',
       total: 218.90,
-      discountCode: 'LUNAR10',
+      discountCode: 'WELCOME10',
       discountAmount: 24.30,
       status: 'Paid',
       paymentMethod: 'stripe',
@@ -248,9 +248,9 @@ export const AdminPage: React.FC = () => {
     {
       id: 'ord-102',
       orderNumber: 'LUNAR-77192-811',
-      customerName: 'Michał Kwiatkowski',
-      customerEmail: 'michal.k@example.com',
-      shippingCity: 'Kraków',
+      customerName: 'Michael Laurent',
+      customerEmail: 'michael.l@example.com',
+      shippingCity: 'Paris',
       total: 399.00,
       discountCode: 'LUNAR-10PCT-4821',
       discountAmount: 39.90,
@@ -262,12 +262,12 @@ export const AdminPage: React.FC = () => {
     {
       id: 'ord-103',
       orderNumber: 'LUNAR-66230-109',
-      customerName: 'Zofia Lewandowska',
-      customerEmail: 'zofia.l@example.com',
-      shippingCity: 'Gdańsk',
+      customerName: 'Sophia Vance',
+      customerEmail: 'sophia.v@example.com',
+      shippingCity: 'London',
       total: 149.50,
       status: 'Shipped',
-      paymentMethod: 'blik',
+      paymentMethod: 'apple_pay',
       createdAt: new Date(Date.now() - 3600000 * 24).toISOString(),
       itemsCount: 3,
     },
@@ -316,28 +316,28 @@ export const AdminPage: React.FC = () => {
   const handleSaveProduct = async (productData: Partial<Product>) => {
     if (editingProduct) {
       await updateProduct(editingProduct.id, productData);
-      showToast(`Produkt "${productData.name || editingProduct.name}" zaktualizowany!`);
+      showToast(`Product "${productData.name || editingProduct.name}" updated!`);
     } else {
       await addProduct(productData as Omit<Product, 'id'>);
-      showToast(`Nowy produkt "${productData.name}" dodany do sklepu!`);
+      showToast(`New product "${productData.name}" added to catalog!`);
     }
   };
 
   const handleDeleteProduct = async (id: string) => {
     await deleteProduct(id);
-    showToast('Produkt został usunięty z katalogu.', 'info');
+    showToast('Product removed from catalog.', 'info');
   };
 
   const handleDuplicateProduct = async (id: string) => {
     const copy = await duplicateProduct(id);
-    showToast(`Utworzono kopię: "${copy.name}"`);
+    showToast(`Created duplicate: "${copy.name}"`);
   };
 
   const handleOrderStatusChange = (orderId: string, newStatus: string) => {
     setOrders(prev =>
       prev.map(o => (o.id === orderId ? { ...o, status: newStatus } : o))
     );
-    showToast(`Status zamówienia zaktualizowany na: ${newStatus}`);
+    showToast(`Order status updated to: ${newStatus}`);
   };
 
   // KPIs
@@ -345,38 +345,35 @@ export const AdminPage: React.FC = () => {
   const activePromoProducts = products.filter(p => p.originalPrice && p.originalPrice > p.price).length;
 
   // ─────────────────────────────────────────────────────────────
-  // 1. ADMIN SECURITY GATE (IF NOT LOGGED IN AS ADMIN)
+  // 1. ADMIN SECURITY GATE (WHITE LUXURY THEME, NO DEFAULT PASSWORD LEAKS)
   // ─────────────────────────────────────────────────────────────
   if (!isAdminAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#080808] text-white flex flex-col items-center justify-center px-4 py-16 relative overflow-hidden">
-        {/* Background glow effects */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-[#d4af37]/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="w-full max-w-md bg-[#121212] border border-[#d4af37]/40 p-8 sm:p-10 rounded-sm shadow-2xl relative z-10 animate-fade-in">
+      <div className="min-h-screen bg-[#FDFCFB] text-[#1A1A1A] flex flex-col items-center justify-center px-4 py-16 relative">
+        <div className="w-full max-w-md bg-white border border-[#EAE3D9] p-8 sm:p-10 rounded-sm shadow-xl relative z-10 animate-fade-in">
           {/* Header & Crest */}
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-[#d4af37]/20 to-black border border-[#d4af37] rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-[#d4af37]/10">
-              <Lock className="w-8 h-8 text-[#d4af37]" />
+            <div className="w-16 h-16 bg-[#FAF7F2] border border-[#D4AF37]/50 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
+              <Lock className="w-7 h-7 text-[#D4AF37]" />
             </div>
-            <p className="text-[10px] tracking-[0.4em] uppercase text-[#d4af37] font-bold mb-1">
+            <p className="text-[10px] tracking-[0.4em] uppercase text-[#D4AF37] font-bold mb-1">
               LUNAR BOUTIQUE
             </p>
             <h1
               style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
-              className="text-3xl sm:text-4xl uppercase tracking-widest font-light text-white"
+              className="text-3xl sm:text-4xl uppercase tracking-widest font-light text-[#1A1A1A]"
             >
-              Panel Właściciela
+              Owner Portal
             </h1>
-            <p className="text-xs text-gray-400 mt-2 uppercase tracking-wider">
-              Dostęp autoryzowany wyłącznie dla administratora
+            <p className="text-xs text-gray-500 mt-2 uppercase tracking-wider">
+              Authorized Access Only
             </p>
           </div>
 
           {/* Error Alert */}
           {loginError && (
-            <div className="mb-6 p-3.5 bg-rose-950/50 border border-rose-600/50 rounded text-rose-300 text-xs flex items-start gap-2.5">
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-400" />
+            <div className="mb-6 p-3.5 bg-rose-50 border border-rose-200 rounded text-rose-800 text-xs flex items-start gap-2.5">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-600" />
               <span>{loginError}</span>
             </div>
           )}
@@ -384,8 +381,8 @@ export const AdminPage: React.FC = () => {
           {/* Login Form */}
           <form onSubmit={handleAdminLoginSubmit} className="space-y-5">
             <div>
-              <label className="block text-[11px] uppercase tracking-[0.2em] font-bold text-gray-300 mb-2">
-                Login / Adres E-mail
+              <label className="block text-[11px] uppercase tracking-[0.2em] font-bold text-gray-700 mb-2">
+                Administrator Email / Login
               </label>
               <input
                 type="text"
@@ -393,13 +390,13 @@ export const AdminPage: React.FC = () => {
                 onChange={(e) => setLoginEmail(e.target.value)}
                 placeholder="admin@lunar.com"
                 required
-                className="w-full px-4 py-3 bg-[#1a1a1a] border border-gray-700 focus:border-[#d4af37] focus:outline-none text-white text-sm rounded transition-colors"
+                className="w-full px-4 py-3 bg-[#FAF9F7] border border-[#D5CCC1] focus:border-[#1A1A1A] focus:bg-white focus:outline-none text-[#1A1A1A] text-sm rounded-sm transition-colors"
               />
             </div>
 
             <div>
-              <label className="block text-[11px] uppercase tracking-[0.2em] font-bold text-gray-300 mb-2">
-                Hasło Administratora
+              <label className="block text-[11px] uppercase tracking-[0.2em] font-bold text-gray-700 mb-2">
+                Password
               </label>
               <div className="relative">
                 <input
@@ -408,12 +405,12 @@ export const AdminPage: React.FC = () => {
                   onChange={(e) => setLoginPassword(e.target.value)}
                   placeholder="••••••••••••"
                   required
-                  className="w-full px-4 py-3 bg-[#1a1a1a] border border-gray-700 focus:border-[#d4af37] focus:outline-none text-white text-sm rounded transition-colors pr-11"
+                  className="w-full px-4 py-3 bg-[#FAF9F7] border border-[#D5CCC1] focus:border-[#1A1A1A] focus:bg-white focus:outline-none text-[#1A1A1A] text-sm rounded-sm transition-colors pr-11"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -423,45 +420,29 @@ export const AdminPage: React.FC = () => {
             <button
               type="submit"
               disabled={loginLoading}
-              className="w-full py-4 bg-[#d4af37] hover:bg-[#c5a059] text-black font-bold text-xs uppercase tracking-[0.25em] rounded transition-all shadow-lg hover:shadow-[#d4af37]/20 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              className="w-full py-4 bg-[#1A1A1A] hover:bg-[#D4AF37] text-white hover:text-black font-bold text-xs uppercase tracking-[0.25em] rounded-sm transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
               {loginLoading ? (
                 <>
-                  <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-                  <span>Weryfikacja...</span>
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span>Verifying...</span>
                 </>
               ) : (
                 <>
                   <Shield className="w-4 h-4" />
-                  <span>Zaloguj do Panelu</span>
+                  <span>Sign In to Dashboard</span>
                 </>
               )}
             </button>
           </form>
 
-          {/* Master Credentials Info Card */}
-          <div className="mt-8 pt-6 border-t border-gray-800 text-center">
-            <div className="p-3.5 bg-amber-500/10 border border-amber-500/20 rounded text-left">
-              <div className="flex items-center gap-1.5 text-[#d4af37] text-[10px] font-bold uppercase tracking-wider mb-1">
-                <KeyRound className="w-3.5 h-3.5" />
-                <span>Domyślne Dane Dostępu Właściciela:</span>
-              </div>
-              <p className="text-[11px] text-gray-300">
-                <strong className="text-white font-mono">Login:</strong> admin@lunar.com (lub admin)
-              </p>
-              <p className="text-[11px] text-gray-300">
-                <strong className="text-white font-mono">Hasło:</strong> LunarAdmin2026!
-              </p>
-              <p className="text-[9px] text-gray-400 mt-1">
-                * Hasło można w każdej chwili zmienić po zalogowaniu w zakładce Ustawienia.
-              </p>
-            </div>
-
+          {/* Footer Back Link (Hint box completely removed) */}
+          <div className="mt-8 pt-6 border-t border-gray-100 text-center">
             <Link
               to="/shop"
-              className="inline-block mt-6 text-xs uppercase tracking-widest text-gray-400 hover:text-[#d4af37] transition-colors"
+              className="inline-block text-xs uppercase tracking-widest text-gray-500 hover:text-[#1A1A1A] transition-colors border-b border-transparent hover:border-black pb-0.5"
             >
-              ← Powrót do Sklepu
+              ← Return to Boutique Store
             </Link>
           </div>
         </div>
@@ -470,147 +451,147 @@ export const AdminPage: React.FC = () => {
   }
 
   // ─────────────────────────────────────────────────────────────
-  // 2. AUTHENTICATED ADMIN DASHBOARD
+  // 2. AUTHENTICATED ADMIN DASHBOARD (WHITE LUXURY DESIGN)
   // ─────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-[#f8f9fa] text-black pb-24">
+    <div className="min-h-screen bg-[#FBF9F6] text-[#1A1A1A] pb-24">
       {/* Toast Notification */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 bg-[#1a1a1a] text-white px-5 py-3.5 rounded shadow-2xl border border-[#d4af37] flex items-center gap-3 animate-fade-in">
-          <CheckCircle className="w-4 h-4 text-[#d4af37]" />
+        <div className="fixed bottom-6 right-6 z-50 bg-[#1A1A1A] text-white px-5 py-3.5 rounded-sm shadow-2xl border border-[#D4AF37] flex items-center gap-3 animate-fade-in">
+          <CheckCircle className="w-4 h-4 text-[#D4AF37]" />
           <span className="text-xs tracking-wider">{toast.message}</span>
         </div>
       )}
 
-      {/* Top Banner Header */}
-      <div className="bg-[#0d0d0d] text-white border-b border-gray-800">
+      {/* Top White Luxury Header */}
+      <div className="bg-white text-[#1A1A1A] border-b border-[#EAE3D9] shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#d4af37]/20 border border-[#d4af37] flex items-center justify-center rounded-lg">
-                <Sparkles className="w-5 h-5 text-[#d4af37]" />
+              <div className="w-10 h-10 bg-[#FAF7F2] border border-[#D4AF37] flex items-center justify-center rounded-sm shadow-xs">
+                <Sparkles className="w-5 h-5 text-[#D4AF37]" />
               </div>
               <div>
                 <h1 className="text-xl md:text-2xl font-serif tracking-wider font-light flex items-center gap-2">
-                  LUNAR Panel Administratora
-                  <span className="text-[10px] bg-[#d4af37] text-black font-bold uppercase tracking-widest px-2 py-0.5 rounded">
-                    Właściciel
+                  LUNAR Administration
+                  <span className="text-[10px] bg-[#1A1A1A] text-white font-bold uppercase tracking-widest px-2 py-0.5 rounded-xs">
+                    Owner
                   </span>
                 </h1>
-                <p className="text-xs text-gray-400">
-                  Moderacja galerii, opisów, cen, promocji i systemu punktów lojalnościowych
+                <p className="text-xs text-gray-500">
+                  Store management, catalog moderation, pricing, promo codes, and loyalty program
                 </p>
               </div>
             </div>
 
             <div className="flex items-center gap-3 flex-wrap">
-              <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 rounded text-xs text-gray-300">
-                <Shield className="w-3.5 h-3.5 text-[#d4af37]" />
-                <span>Zalogowano: <strong>admin@lunar.com</strong></span>
+              <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-gray-50 border border-gray-200 rounded text-xs text-gray-700">
+                <Shield className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <span>Signed in: <strong>admin@lunar.com</strong></span>
               </div>
 
               <Link
                 to="/shop"
                 target="_blank"
-                className="px-4 py-2 border border-gray-700 hover:border-gray-500 rounded text-xs uppercase tracking-widest text-gray-300 hover:text-white flex items-center gap-1.5 transition-colors"
+                className="px-4 py-2 border border-gray-300 hover:border-black rounded text-xs uppercase tracking-widest text-gray-700 hover:text-black flex items-center gap-1.5 transition-colors"
               >
-                <span>Zobacz Sklep</span>
+                <span>View Store</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </Link>
 
               <button
                 type="button"
                 onClick={handleOpenAddModal}
-                className="px-5 py-2 bg-[#d4af37] hover:bg-[#c5a059] text-black font-bold text-xs uppercase tracking-widest rounded flex items-center gap-1.5 shadow-lg transition-all"
+                className="px-5 py-2 bg-[#1A1A1A] hover:bg-[#D4AF37] text-white hover:text-black font-bold text-xs uppercase tracking-widest rounded-sm flex items-center gap-1.5 shadow-sm transition-all"
               >
-                <Plus className="w-4 h-4 text-black" />
-                <span>Dodaj Produkt</span>
+                <Plus className="w-4 h-4" />
+                <span>Add Product</span>
               </button>
 
               <button
                 type="button"
                 onClick={handleAdminLogout}
-                className="px-3.5 py-2 bg-red-900/40 hover:bg-red-800/60 border border-red-700/50 text-red-200 text-xs uppercase tracking-wider rounded flex items-center gap-1.5 transition-colors"
-                title="Wyloguj z panelu"
+                className="px-3.5 py-2 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 text-xs uppercase tracking-wider rounded flex items-center gap-1.5 transition-colors"
+                title="Sign Out"
               >
                 <LogOut className="w-3.5 h-3.5" />
-                <span>Wyloguj</span>
+                <span>Sign Out</span>
               </button>
             </div>
           </div>
 
           {/* Navigation Tabs */}
-          <div className="flex items-center gap-1 sm:gap-2 mt-8 overflow-x-auto no-scrollbar border-b border-gray-800">
+          <div className="flex items-center gap-1 sm:gap-2 mt-8 overflow-x-auto no-scrollbar border-b border-gray-200">
             <button
               onClick={() => setActiveTab('overview')}
               className={`px-4 py-3 text-xs uppercase tracking-widest font-bold border-b-2 whitespace-nowrap transition-all flex items-center gap-2 ${
                 activeTab === 'overview'
-                  ? 'border-[#d4af37] text-[#d4af37] bg-white/5'
-                  : 'border-transparent text-gray-400 hover:text-white'
+                  ? 'border-[#1A1A1A] text-[#1A1A1A] bg-[#FAF8F5]'
+                  : 'border-transparent text-gray-500 hover:text-black'
               }`}
             >
               <TrendingUp className="w-4 h-4" />
-              <span>Pulpit / Przegląd</span>
+              <span>Overview & KPIs</span>
             </button>
 
             <button
               onClick={() => setActiveTab('products')}
               className={`px-4 py-3 text-xs uppercase tracking-widest font-bold border-b-2 whitespace-nowrap transition-all flex items-center gap-2 ${
                 activeTab === 'products'
-                  ? 'border-[#d4af37] text-[#d4af37] bg-white/5'
-                  : 'border-transparent text-gray-400 hover:text-white'
+                  ? 'border-[#1A1A1A] text-[#1A1A1A] bg-[#FAF8F5]'
+                  : 'border-transparent text-gray-500 hover:text-black'
               }`}
             >
               <Package className="w-4 h-4" />
-              <span>Katalog & Moderacja ({products.length})</span>
+              <span>Catalog & Moderation ({products.length})</span>
             </button>
 
             <button
               onClick={() => setActiveTab('promos')}
               className={`px-4 py-3 text-xs uppercase tracking-widest font-bold border-b-2 whitespace-nowrap transition-all flex items-center gap-2 ${
                 activeTab === 'promos'
-                  ? 'border-[#d4af37] text-[#d4af37] bg-white/5'
-                  : 'border-transparent text-gray-400 hover:text-white'
+                  ? 'border-[#1A1A1A] text-[#1A1A1A] bg-[#FAF8F5]'
+                  : 'border-transparent text-gray-500 hover:text-black'
               }`}
             >
               <Tag className="w-4 h-4" />
-              <span>Kody Rabatowe</span>
+              <span>Promo Codes</span>
             </button>
 
             <button
               onClick={() => setActiveTab('loyalty')}
               className={`px-4 py-3 text-xs uppercase tracking-widest font-bold border-b-2 whitespace-nowrap transition-all flex items-center gap-2 ${
                 activeTab === 'loyalty'
-                  ? 'border-[#d4af37] text-[#d4af37] bg-white/5'
-                  : 'border-transparent text-gray-400 hover:text-white'
+                  ? 'border-[#1A1A1A] text-[#1A1A1A] bg-[#FAF8F5]'
+                  : 'border-transparent text-gray-500 hover:text-black'
               }`}
             >
-              <Award className="w-4 h-4" />
-              <span>Program Punktowy & Nagrody ({rewards.length})</span>
+              <Award className="w-4 h-4 text-[#D4AF37]" />
+              <span>Loyalty Program ({rewards.length})</span>
             </button>
 
             <button
               onClick={() => setActiveTab('orders')}
               className={`px-4 py-3 text-xs uppercase tracking-widest font-bold border-b-2 whitespace-nowrap transition-all flex items-center gap-2 ${
                 activeTab === 'orders'
-                  ? 'border-[#d4af37] text-[#d4af37] bg-white/5'
-                  : 'border-transparent text-gray-400 hover:text-white'
+                  ? 'border-[#1A1A1A] text-[#1A1A1A] bg-[#FAF8F5]'
+                  : 'border-transparent text-gray-500 hover:text-black'
               }`}
             >
               <ShoppingBag className="w-4 h-4" />
-              <span>Zamówienia ({orders.length})</span>
+              <span>Orders ({orders.length})</span>
             </button>
 
             <button
               onClick={() => setActiveTab('settings')}
               className={`px-4 py-3 text-xs uppercase tracking-widest font-bold border-b-2 whitespace-nowrap transition-all flex items-center gap-2 ${
                 activeTab === 'settings'
-                  ? 'border-[#d4af37] text-[#d4af37] bg-white/5'
-                  : 'border-transparent text-gray-400 hover:text-white'
+                  ? 'border-[#1A1A1A] text-[#1A1A1A] bg-[#FAF8F5]'
+                  : 'border-transparent text-gray-500 hover:text-black'
               }`}
             >
               <Settings className="w-4 h-4" />
-              <span>Bezpieczeństwo & Hasło</span>
+              <span>Security & Password</span>
             </button>
           </div>
         </div>
@@ -624,88 +605,88 @@ export const AdminPage: React.FC = () => {
           <div className="space-y-8 animate-fade-in">
             {/* KPI Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-              <div className="bg-white p-6 border border-gray-200 rounded-lg shadow-sm">
+              <div className="bg-white p-6 border border-[#EAE3D9] rounded-sm shadow-xs">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[11px] uppercase tracking-widest font-bold text-gray-500">
-                    Produkty w Sklepie
+                    Store Products
                   </span>
                   <Package className="w-5 h-5 text-gray-400" />
                 </div>
-                <div className="text-3xl font-bold text-black">{products.length}</div>
-                <p className="text-xs text-gray-500 mt-1">Łączny stan magazynowy: {totalStockCount} szt.</p>
+                <div className="text-3xl font-bold text-[#1A1A1A]">{products.length}</div>
+                <p className="text-xs text-gray-500 mt-1">Total inventory: {totalStockCount} units</p>
               </div>
 
-              <div className="bg-white p-6 border border-gray-200 rounded-lg shadow-sm">
+              <div className="bg-white p-6 border border-[#EAE3D9] rounded-sm shadow-xs">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[11px] uppercase tracking-widest font-bold text-gray-500">
-                    Aktywne Promocje
+                    Active Promotions
                   </span>
-                  <Percent className="w-5 h-5 text-[#d4af37]" />
+                  <Percent className="w-5 h-5 text-[#D4AF37]" />
                 </div>
-                <div className="text-3xl font-bold text-black">{activePromoProducts}</div>
-                <p className="text-xs text-gray-500 mt-1">Produkty z obniżoną ceną</p>
+                <div className="text-3xl font-bold text-[#1A1A1A]">{activePromoProducts}</div>
+                <p className="text-xs text-gray-500 mt-1">Products on discounted sale</p>
               </div>
 
-              <div className="bg-white p-6 border border-gray-200 rounded-lg shadow-sm">
+              <div className="bg-white p-6 border border-[#EAE3D9] rounded-sm shadow-xs">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[11px] uppercase tracking-widest font-bold text-gray-500">
-                    Katalog Nagród (Punkty)
+                    Rewards Catalog
                   </span>
                   <Award className="w-5 h-5 text-amber-600" />
                 </div>
-                <div className="text-3xl font-bold text-black">{rewards.length}</div>
-                <p className="text-xs text-gray-500 mt-1">Kupony do wymiany za punkty</p>
+                <div className="text-3xl font-bold text-[#1A1A1A]">{rewards.length}</div>
+                <p className="text-xs text-gray-500 mt-1">Points coupons available</p>
               </div>
 
-              <div className="bg-white p-6 border border-gray-200 rounded-lg shadow-sm">
+              <div className="bg-white p-6 border border-[#EAE3D9] rounded-sm shadow-xs">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[11px] uppercase tracking-widest font-bold text-gray-500">
-                    Ostatnie Zamówienia
+                    Recent Orders
                   </span>
-                  <ShoppingBag className="w-5 h-5 text-green-600" />
+                  <ShoppingBag className="w-5 h-5 text-emerald-600" />
                 </div>
-                <div className="text-3xl font-bold text-black">{orders.length}</div>
-                <p className="text-xs text-gray-500 mt-1">Suma: {orders.reduce((s, o) => s + o.total, 0).toFixed(2)}€</p>
+                <div className="text-3xl font-bold text-[#1A1A1A]">{orders.length}</div>
+                <p className="text-xs text-gray-500 mt-1">Total revenue: €{orders.reduce((s, o) => s + o.total, 0).toFixed(2)}</p>
               </div>
             </div>
 
             {/* Quick Actions & Recent Activity */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <div className="lg:col-span-2 bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+              <div className="lg:col-span-2 bg-white border border-[#EAE3D9] rounded-sm p-6 shadow-xs">
                 <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
-                  <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-2xl text-black uppercase tracking-wider font-light">
-                    Ostatnie Zamówienia
+                  <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-2xl text-[#1A1A1A] uppercase tracking-wider font-light">
+                    Recent Customer Orders
                   </h2>
                   <button
                     onClick={() => setActiveTab('orders')}
-                    className="text-xs uppercase tracking-wider font-bold text-[#d4af37] hover:underline"
+                    className="text-xs uppercase tracking-wider font-bold text-[#D4AF37] hover:underline"
                   >
-                    Zobacz wszystkie →
+                    View All Orders →
                   </button>
                 </div>
 
                 <div className="space-y-4">
                   {orders.map((ord) => (
-                    <div key={ord.id} className="p-4 bg-gray-50 border border-gray-100 rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div key={ord.id} className="p-4 bg-[#FAF8F5] border border-[#EAE3D9] rounded-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="font-mono font-bold text-sm text-black">{ord.orderNumber}</span>
+                          <span className="font-mono font-bold text-sm text-[#1A1A1A]">{ord.orderNumber}</span>
                           <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider ${
-                            ord.status === 'Paid' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'
+                            ord.status === 'Paid' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
                           }`}>
                             {ord.status}
                           </span>
                         </div>
                         <p className="text-xs text-gray-500 mt-1">
-                          {ord.customerName} ({ord.customerEmail}) • {ord.itemsCount} poz.
+                          {ord.customerName} ({ord.customerEmail}) • {ord.itemsCount} items
                         </p>
                       </div>
 
                       <div className="text-right sm:text-right w-full sm:w-auto">
-                        <span className="font-bold text-base text-black block">{ord.total.toFixed(2)}€</span>
+                        <span className="font-bold text-base text-[#1A1A1A] block">€{ord.total.toFixed(2)}</span>
                         {ord.discountCode && (
-                          <span className="text-[10px] text-green-700 font-mono">
-                            Kupon: {ord.discountCode} (-{ord.discountAmount?.toFixed(2)}€)
+                          <span className="text-[10px] text-emerald-700 font-mono">
+                            Coupon: {ord.discountCode} (-€{ord.discountAmount?.toFixed(2)})
                           </span>
                         )}
                       </div>
@@ -715,41 +696,41 @@ export const AdminPage: React.FC = () => {
               </div>
 
               {/* Quick Actions Tile */}
-              <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm space-y-6">
-                <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-2xl text-black uppercase tracking-wider font-light pb-4 border-b border-gray-100">
-                  Szybkie Akcje
+              <div className="bg-white border border-[#EAE3D9] rounded-sm p-6 shadow-xs space-y-6">
+                <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-2xl text-[#1A1A1A] uppercase tracking-wider font-light pb-4 border-b border-gray-100">
+                  Quick Actions
                 </h2>
 
                 <div className="space-y-3">
                   <button
                     onClick={handleOpenAddModal}
-                    className="w-full p-4 bg-[#1a1a1a] hover:bg-[#d4af37] text-white hover:text-black font-bold text-xs uppercase tracking-widest rounded flex items-center justify-between transition-colors shadow"
+                    className="w-full p-4 bg-[#1A1A1A] hover:bg-[#D4AF37] text-white hover:text-black font-bold text-xs uppercase tracking-widest rounded-sm flex items-center justify-between transition-colors shadow-xs"
                   >
-                    <span>Dodaj Nowy Produkt</span>
+                    <span>Add New Product</span>
                     <Plus className="w-4 h-4" />
                   </button>
 
                   <button
                     onClick={() => setActiveTab('promos')}
-                    className="w-full p-4 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-black font-bold text-xs uppercase tracking-widest rounded flex items-center justify-between transition-colors"
+                    className="w-full p-4 bg-[#FAF8F5] hover:bg-[#F2ECE4] border border-[#EAE3D9] text-[#1A1A1A] font-bold text-xs uppercase tracking-widest rounded-sm flex items-center justify-between transition-colors"
                   >
-                    <span>Stwórz Kod Rabatowy</span>
+                    <span>Create Promo Code</span>
                     <Tag className="w-4 h-4 text-gray-500" />
                   </button>
 
                   <button
                     onClick={() => setActiveTab('loyalty')}
-                    className="w-full p-4 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-black font-bold text-xs uppercase tracking-widest rounded flex items-center justify-between transition-colors"
+                    className="w-full p-4 bg-[#FAF8F5] hover:bg-[#F2ECE4] border border-[#EAE3D9] text-[#1A1A1A] font-bold text-xs uppercase tracking-widest rounded-sm flex items-center justify-between transition-colors"
                   >
-                    <span>Dodaj Nagrodę za Punkty</span>
+                    <span>Create Points Reward</span>
                     <Award className="w-4 h-4 text-amber-600" />
                   </button>
 
                   <button
                     onClick={() => setActiveTab('settings')}
-                    className="w-full p-4 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-black font-bold text-xs uppercase tracking-widest rounded flex items-center justify-between transition-colors"
+                    className="w-full p-4 bg-[#FAF8F5] hover:bg-[#F2ECE4] border border-[#EAE3D9] text-[#1A1A1A] font-bold text-xs uppercase tracking-widest rounded-sm flex items-center justify-between transition-colors"
                   >
-                    <span>Zmień Hasło Administratora</span>
+                    <span>Security & Password</span>
                     <Lock className="w-4 h-4 text-gray-500" />
                   </button>
                 </div>
@@ -762,15 +743,15 @@ export const AdminPage: React.FC = () => {
         {activeTab === 'products' && (
           <div className="space-y-6 animate-fade-in">
             {/* Filters Bar */}
-            <div className="bg-white border border-gray-200 p-5 rounded-lg shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="bg-white border border-[#EAE3D9] p-5 rounded-sm shadow-xs flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="relative w-full md:w-80">
                 <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
-                  placeholder="Szukaj po nazwie, opisie, tagach..."
+                  placeholder="Search by title, description, tag..."
                   value={productSearch}
                   onChange={(e) => setProductSearch(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-xs text-black focus:outline-none focus:border-[#d4af37] transition-colors"
+                  className="w-full pl-10 pr-4 py-2.5 bg-[#FAF8F5] border border-[#D5CCC1] rounded-sm text-xs text-[#1A1A1A] focus:outline-none focus:border-black transition-colors"
                 />
               </div>
 
@@ -778,12 +759,12 @@ export const AdminPage: React.FC = () => {
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded text-xs font-medium text-black focus:outline-none cursor-pointer"
+                  className="px-3.5 py-2.5 bg-[#FAF8F5] border border-[#D5CCC1] rounded-sm text-xs font-medium text-[#1A1A1A] focus:outline-none cursor-pointer"
                 >
-                  <option value="ALL">Wszystkie Kategorie</option>
+                  <option value="ALL">All Categories</option>
                   {categoriesList.map(cat => (
                     <option key={cat} value={cat}>
-                      Kategoria: {cat}
+                      Category: {cat}
                     </option>
                   ))}
                 </select>
@@ -791,40 +772,40 @@ export const AdminPage: React.FC = () => {
                 <select
                   value={selectedBadge}
                   onChange={(e) => setSelectedBadge(e.target.value)}
-                  className="px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded text-xs font-medium text-black focus:outline-none cursor-pointer"
+                  className="px-3.5 py-2.5 bg-[#FAF8F5] border border-[#D5CCC1] rounded-sm text-xs font-medium text-[#1A1A1A] focus:outline-none cursor-pointer"
                 >
-                  <option value="ALL">Wszystkie Odznaki</option>
-                  <option value="NEW">Tylko NEW</option>
-                  <option value="SALE">Tylko SALE</option>
-                  <option value="BESTSELLER">Tylko BESTSELLER</option>
-                  <option value="READY TO SHIP">Tylko READY TO SHIP</option>
-                  <option value="SOLD OUT">Tylko SOLD OUT</option>
-                  <option value="NONE">Brak Odznaki</option>
+                  <option value="ALL">All Badges</option>
+                  <option value="NEW">Only NEW</option>
+                  <option value="SALE">Only SALE</option>
+                  <option value="BESTSELLER">Only BESTSELLER</option>
+                  <option value="READY TO SHIP">Only READY TO SHIP</option>
+                  <option value="SOLD OUT">Only SOLD OUT</option>
+                  <option value="NONE">No Badge</option>
                 </select>
 
                 <button
                   type="button"
                   onClick={handleOpenAddModal}
-                  className="px-4 py-2.5 bg-[#1a1a1a] hover:bg-[#d4af37] text-white hover:text-black font-bold text-xs uppercase tracking-widest rounded flex items-center gap-1.5 transition-colors ml-auto md:ml-0"
+                  className="px-4 py-2.5 bg-[#1A1A1A] hover:bg-[#D4AF37] text-white hover:text-black font-bold text-xs uppercase tracking-widest rounded-sm flex items-center gap-1.5 transition-colors ml-auto md:ml-0"
                 >
                   <Plus className="w-4 h-4" />
-                  <span>Nowy Produkt</span>
+                  <span>New Product</span>
                 </button>
               </div>
             </div>
 
             {/* Products Table */}
-            <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+            <div className="bg-white border border-[#EAE3D9] rounded-sm shadow-xs overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="border-b border-gray-200 bg-gray-50 text-[11px] uppercase tracking-wider font-bold text-gray-600">
-                      <th className="py-3.5 px-6">Produkt</th>
-                      <th className="py-3.5 px-6">Kategoria & Odznaka</th>
-                      <th className="py-3.5 px-6">Cena Regularna</th>
-                      <th className="py-3.5 px-6">Promocja / Rabat</th>
-                      <th className="py-3.5 px-6">Magazyn</th>
-                      <th className="py-3.5 px-6 text-right">Akcje</th>
+                    <tr className="border-b border-gray-200 bg-[#FAF8F5] text-[11px] uppercase tracking-wider font-bold text-gray-600">
+                      <th className="py-3.5 px-6">Product</th>
+                      <th className="py-3.5 px-6">Category & Badge</th>
+                      <th className="py-3.5 px-6">Price</th>
+                      <th className="py-3.5 px-6">Promotion / Discount</th>
+                      <th className="py-3.5 px-6">Inventory</th>
+                      <th className="py-3.5 px-6 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100 text-sm">
@@ -851,7 +832,7 @@ export const AdminPage: React.FC = () => {
                                 )}
                               </div>
                               <div>
-                                <h4 className="font-bold text-black text-sm line-clamp-1">{p.name}</h4>
+                                <h4 className="font-bold text-[#1A1A1A] text-sm line-clamp-1">{p.name}</h4>
                                 <p className="text-xs text-gray-400 font-mono">ID: {p.id}</p>
                               </div>
                             </div>
@@ -861,11 +842,11 @@ export const AdminPage: React.FC = () => {
                           <td className="py-4 px-6">
                             <div className="flex flex-col items-start gap-1">
                               <span className="text-xs uppercase tracking-wider font-semibold text-gray-700">
-                                {p.categorySlug || 'Inne'}
+                                {p.categorySlug || 'General'}
                               </span>
                               {p.badge && (
                                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider ${
-                                  p.badge === 'SALE' ? 'bg-red-100 text-red-800' :
+                                  p.badge === 'SALE' ? 'bg-rose-100 text-rose-800' :
                                   p.badge === 'NEW' ? 'bg-black text-white' :
                                   p.badge === 'BESTSELLER' ? 'bg-amber-100 text-amber-800' :
                                   'bg-gray-100 text-gray-800'
@@ -877,8 +858,8 @@ export const AdminPage: React.FC = () => {
                           </td>
 
                           {/* Regular Price */}
-                          <td className="py-4 px-6 font-bold text-black text-base">
-                            {p.price.toFixed(2)}€
+                          <td className="py-4 px-6 font-bold text-[#1A1A1A] text-base">
+                            €{p.price.toFixed(2)}
                           </td>
 
                           {/* Promo Price & Discount */}
@@ -886,14 +867,14 @@ export const AdminPage: React.FC = () => {
                             {p.originalPrice && p.originalPrice > p.price ? (
                               <div>
                                 <span className="text-xs line-through text-gray-400 block">
-                                  {p.originalPrice.toFixed(2)}€
+                                  €{p.originalPrice.toFixed(2)}
                                 </span>
-                                <span className="inline-flex items-center text-xs font-bold text-green-700 bg-green-50 px-2 py-0.5 rounded border border-green-200">
-                                  -{discountPct}% Zniżki
+                                <span className="inline-flex items-center text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                                  -{discountPct}% Off
                                 </span>
                               </div>
                             ) : (
-                              <span className="text-xs text-gray-400">Brak</span>
+                              <span className="text-xs text-gray-400">Regular</span>
                             )}
                           </td>
 
@@ -901,12 +882,12 @@ export const AdminPage: React.FC = () => {
                           <td className="py-4 px-6">
                             <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${
                               p.stock === 0
-                                ? 'bg-red-100 text-red-800'
+                                ? 'bg-rose-100 text-rose-800'
                                 : p.stock < 5
                                 ? 'bg-amber-100 text-amber-800'
                                 : 'bg-emerald-100 text-emerald-800'
                             }`}>
-                              {p.stock === 0 ? 'Wyprzedane (0)' : `${p.stock} szt.`}
+                              {p.stock === 0 ? 'Sold Out (0)' : `${p.stock} units`}
                             </span>
                           </td>
 
@@ -917,7 +898,7 @@ export const AdminPage: React.FC = () => {
                                 to={`/product/${p.id}`}
                                 target="_blank"
                                 className="p-2 text-gray-400 hover:text-black rounded hover:bg-gray-100 transition-colors"
-                                title="Podgląd w sklepie"
+                                title="View in Boutique Store"
                               >
                                 <ExternalLink className="w-4 h-4" />
                               </Link>
@@ -925,27 +906,27 @@ export const AdminPage: React.FC = () => {
                               <button
                                 onClick={() => handleDuplicateProduct(p.id)}
                                 className="p-2 text-gray-400 hover:text-black rounded hover:bg-gray-100 transition-colors"
-                                title="Duplikuj produkt"
+                                title="Duplicate product"
                               >
                                 <Copy className="w-4 h-4" />
                               </button>
 
                               <button
                                 onClick={() => handleOpenEditModal(p)}
-                                className="px-3 py-1.5 bg-black hover:bg-[#d4af37] text-white hover:text-black rounded text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-colors"
+                                className="px-3 py-1.5 bg-[#1A1A1A] hover:bg-[#D4AF37] text-white hover:text-black rounded text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-colors"
                               >
                                 <Edit2 className="w-3.5 h-3.5" />
-                                <span>Edytuj</span>
+                                <span>Edit</span>
                               </button>
 
                               <button
                                 onClick={() => {
-                                  if (window.confirm(`Czy na pewno usunąć produkt "${p.name}"?`)) {
+                                  if (window.confirm(`Are you sure you want to delete "${p.name}"?`)) {
                                     handleDeleteProduct(p.id);
                                   }
                                 }}
-                                className="p-2 text-gray-400 hover:text-red-600 rounded hover:bg-red-50 transition-colors"
-                                title="Usuń produkt"
+                                className="p-2 text-gray-400 hover:text-rose-600 rounded hover:bg-rose-50 transition-colors"
+                                title="Delete product"
                               >
                                 <Trash2 className="w-4 h-4" />
                               </button>
@@ -978,45 +959,45 @@ export const AdminPage: React.FC = () => {
         {/* TAB 5: ORDERS */}
         {activeTab === 'orders' && (
           <div className="space-y-6 animate-fade-in">
-            <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+            <div className="bg-white border border-[#EAE3D9] rounded-sm shadow-xs overflow-hidden">
               <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
                 <h3 className="text-xs uppercase tracking-widest font-bold text-gray-700">
-                  Dziennik Zamówień Klientów ({orders.length})
+                  Customer Orders Log ({orders.length})
                 </h3>
               </div>
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="border-b border-gray-200 bg-gray-50 text-[11px] uppercase tracking-wider font-bold text-gray-600">
-                      <th className="py-3.5 px-6">Nr Zamówienia</th>
-                      <th className="py-3.5 px-6">Klient & Adres</th>
-                      <th className="py-3.5 px-6">Kwota Zamówienia</th>
-                      <th className="py-3.5 px-6">Użyty Kupon / Zniżka</th>
-                      <th className="py-3.5 px-6">Płatność</th>
-                      <th className="py-3.5 px-6">Status Realizacji</th>
+                    <tr className="border-b border-gray-200 bg-[#FAF8F5] text-[11px] uppercase tracking-wider font-bold text-gray-600">
+                      <th className="py-3.5 px-6">Order Number</th>
+                      <th className="py-3.5 px-6">Customer & Shipping</th>
+                      <th className="py-3.5 px-6">Total Amount</th>
+                      <th className="py-3.5 px-6">Applied Coupon</th>
+                      <th className="py-3.5 px-6">Payment</th>
+                      <th className="py-3.5 px-6">Fulfillment Status</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100 text-sm">
                     {orders.map((ord) => (
                       <tr key={ord.id} className="hover:bg-gray-50/80 transition-colors">
-                        <td className="py-4 px-6 font-mono font-bold text-black">
+                        <td className="py-4 px-6 font-mono font-bold text-[#1A1A1A]">
                           {ord.orderNumber}
                         </td>
                         <td className="py-4 px-6">
-                          <p className="font-bold text-black text-sm">{ord.customerName}</p>
+                          <p className="font-bold text-[#1A1A1A] text-sm">{ord.customerName}</p>
                           <p className="text-xs text-gray-500">{ord.customerEmail} • {ord.shippingCity}</p>
                         </td>
-                        <td className="py-4 px-6 font-bold text-black text-base">
-                          {ord.total.toFixed(2)}€
+                        <td className="py-4 px-6 font-bold text-[#1A1A1A] text-base">
+                          €{ord.total.toFixed(2)}
                         </td>
                         <td className="py-4 px-6">
                           {ord.discountCode ? (
-                            <span className="inline-flex items-center gap-1 text-xs font-mono font-bold bg-green-50 text-green-800 border border-green-200 px-2 py-0.5 rounded">
-                              <Tag className="w-3 h-3" /> {ord.discountCode} (-{ord.discountAmount?.toFixed(2)}€)
+                            <span className="inline-flex items-center gap-1 text-xs font-mono font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded">
+                              <Tag className="w-3 h-3" /> {ord.discountCode} (-€{ord.discountAmount?.toFixed(2)})
                             </span>
                           ) : (
-                            <span className="text-xs text-gray-400">Brak</span>
+                            <span className="text-xs text-gray-400">None</span>
                           )}
                         </td>
                         <td className="py-4 px-6 text-xs uppercase tracking-wider font-semibold text-gray-600">
@@ -1028,7 +1009,7 @@ export const AdminPage: React.FC = () => {
                             onChange={(e) => handleOrderStatusChange(ord.id, e.target.value)}
                             className={`text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded border focus:outline-none cursor-pointer ${
                               ord.status === 'Paid'
-                                ? 'bg-green-50 text-green-800 border-green-300'
+                                ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
                                 : ord.status === 'Processing'
                                 ? 'bg-amber-50 text-amber-800 border-amber-300'
                                 : ord.status === 'Shipped'
@@ -1055,17 +1036,17 @@ export const AdminPage: React.FC = () => {
         {/* TAB 6: SETTINGS & SECURITY */}
         {activeTab === 'settings' && (
           <div className="max-w-2xl mx-auto space-y-8 animate-fade-in">
-            <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-sm">
+            <div className="bg-white border border-[#EAE3D9] rounded-sm p-8 shadow-xs">
               <div className="flex items-center gap-3 pb-6 border-b border-gray-100 mb-6">
-                <div className="w-10 h-10 bg-amber-50 border border-amber-200 rounded-lg flex items-center justify-center">
-                  <Shield className="w-5 h-5 text-[#d4af37]" />
+                <div className="w-10 h-10 bg-[#FAF7F2] border border-[#D4AF37] rounded-sm flex items-center justify-center">
+                  <Shield className="w-5 h-5 text-[#D4AF37]" />
                 </div>
                 <div>
-                  <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-2xl text-black uppercase tracking-wider font-light">
-                    Bezpieczeństwo & Zmiana Hasła
+                  <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-2xl text-[#1A1A1A] uppercase tracking-wider font-light">
+                    Security & Administrator Password
                   </h2>
                   <p className="text-xs text-gray-500">
-                    Zmień hasło dostępu do panelu administratora Lunar
+                    Update your master administrator credentials for the Lunar Boutique Portal
                   </p>
                 </div>
               </div>
@@ -1087,57 +1068,57 @@ export const AdminPage: React.FC = () => {
               <form onSubmit={handleChangePasswordSubmit} className="space-y-5">
                 <div>
                   <label className="block text-xs uppercase tracking-wider font-bold text-gray-700 mb-1.5">
-                    Adres E-mail Administratora
+                    Administrator Email Address
                   </label>
                   <input
                     type="email"
                     value={newEmail}
                     onChange={(e) => setNewEmail(e.target.value)}
                     required
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded text-sm text-black focus:outline-none focus:border-[#d4af37]"
+                    className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#D5CCC1] focus:border-black rounded text-sm text-[#1A1A1A] focus:outline-none"
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs uppercase tracking-wider font-bold text-gray-700 mb-1.5">
-                    Aktualne Hasło Administratora *
+                    Current Master Password *
                   </label>
                   <input
                     type="password"
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
-                    placeholder="Wpisz dotychczasowe hasło (np. LunarAdmin2026!)"
+                    placeholder="Enter current password"
                     required
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded text-sm text-black focus:outline-none focus:border-[#d4af37]"
+                    className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#D5CCC1] focus:border-black rounded text-sm text-[#1A1A1A] focus:outline-none"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs uppercase tracking-wider font-bold text-gray-700 mb-1.5">
-                      Nowe Hasło *
+                      New Password *
                     </label>
                     <input
                       type="password"
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
-                      placeholder="Minimum 6 znaków"
+                      placeholder="Minimum 6 characters"
                       required
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded text-sm text-black focus:outline-none focus:border-[#d4af37]"
+                      className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#D5CCC1] focus:border-black rounded text-sm text-[#1A1A1A] focus:outline-none"
                     />
                   </div>
 
                   <div>
                     <label className="block text-xs uppercase tracking-wider font-bold text-gray-700 mb-1.5">
-                      Powtórz Nowe Hasło *
+                      Confirm New Password *
                     </label>
                     <input
                       type="password"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="Powtórz nowe hasło"
+                      placeholder="Repeat new password"
                       required
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded text-sm text-black focus:outline-none focus:border-[#d4af37]"
+                      className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#D5CCC1] focus:border-black rounded text-sm text-[#1A1A1A] focus:outline-none"
                     />
                   </div>
                 </div>
@@ -1145,14 +1126,14 @@ export const AdminPage: React.FC = () => {
                 <button
                   type="submit"
                   disabled={passwordChangeLoading}
-                  className="w-full py-3.5 bg-[#1a1a1a] hover:bg-[#d4af37] text-white hover:text-black font-bold text-xs uppercase tracking-[0.2em] rounded transition-all flex items-center justify-center gap-2 cursor-pointer mt-4"
+                  className="w-full py-3.5 bg-[#1A1A1A] hover:bg-[#D4AF37] text-white hover:text-black font-bold text-xs uppercase tracking-[0.2em] rounded-sm transition-all flex items-center justify-center gap-2 cursor-pointer mt-4"
                 >
                   {passwordChangeLoading ? (
-                    <span>Zapisywanie...</span>
+                    <span>Saving...</span>
                   ) : (
                     <>
                       <KeyRound className="w-4 h-4" />
-                      <span>Zaktualizuj Dane Logowania</span>
+                      <span>Update Administrator Credentials</span>
                     </>
                   )}
                 </button>

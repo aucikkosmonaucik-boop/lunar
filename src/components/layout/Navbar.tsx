@@ -319,7 +319,7 @@ const Navbar: React.FC = () => {
           <Link
             to="/admin"
             className="hidden lg:flex items-center gap-1.5 px-3 py-1 bg-black text-white hover:bg-[#d4af37] hover:text-black transition-all rounded text-[11px] font-bold uppercase tracking-wider shadow-sm"
-            title="Panel Administratora (Moderacja galerii, cen, promocji, punkty)"
+            title="Owner Admin Portal (Product moderation, pricing, promo codes, loyalty program)"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>Admin</span>
