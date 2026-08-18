@@ -7,15 +7,16 @@ datasource db {
 }
 
 model User {
-  id         String   @id @default(cuid())
-  email      String   @unique
-  password   String
-  name       String?
-  street     String?
-  city       String?
-  postalCode String?
-  country    String?
+  id                String    @id @default(cuid())
+  email             String    @unique
+  password          String
+  name              String?
   phone             String?
+  street            String?
+  city              String?
+  postalCode        String?
+  country           String?
+  role              String    @default("USER") // "USER" | "ADMIN"
   verificationToken String?
   resetToken        String?
   resetTokenExpiry  DateTime?
@@ -24,31 +25,125 @@ model User {
   updatedAt         DateTime  @updatedAt
 }
 
+model Category {
+  id           String     @id @default(cuid())
+  name         String     @unique
+  slug         String     @unique
+  description  String?
+  image        String?
+  badge        String?
+  displayOrder Int        @default(0)
+  parentId     String?
+  parent       Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children     Category[] @relation("CategoryHierarchy")
+  products     Product[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model Product {
+  id            String      @id @default(cuid())
+  name          String
+  slug          String      @unique
+  description   String
+  price         Float
+  originalPrice Float?
+  image         String
+  images        String[]    @default([])
+  categorySlug  String
+  categoryId    String?
+  category      Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  subcategory   String?
+  badge         String? // "NEW" | "BESTSELLER" | "SALE" | "READY TO SHIP" | "SOLD OUT" | "GIFT SET" | "BRIDAL"
+  rating        Float       @default(5.0)
+  reviewCount   Int         @default(0)
+  stock         Int         @default(10)
+  tags          String[]    @default([])
+  features      String[]    @default([])
+  isAvailable   Boolean     @default(true)
+  isFeatured    Boolean     @default(false)
+  orderItems    OrderItem[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
 model Order {
   id                 String      @id @default(cuid())
+  orderNumber        String      @unique @default(cuid())
   userId             String?
   user               User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
-  customerEmail      String?
-  customerName       String?
+  
+  // Customer & Shipping Address info from checkout form
+  customerName       String
+  customerEmail      String
   shippingPhone      String?
-  shippingStreet     String?
-  shippingCity       String?
-  shippingPostalCode String?
-  shippingCountry    String?
+  shippingStreet     String
+  shippingCity       String
+  shippingPostalCode String
+  shippingCountry    String
+  orderNotes         String?
+
+  // Financial details
+  subtotal           Float       @default(0)
+  discountCode       String?
+  discountAmount     Float       @default(0)
+  shippingFee        Float       @default(0)
   total              Float
-  status             String      @default("Processing")
+
+  // Status & Payment details
+  status             String      @default("Processing") // "Pending" | "Processing" | "Paid" | "Shipped" | "Delivered" | "Cancelled"
+  paymentStatus      String      @default("pending")    // "pending" | "paid" | "failed" | "refunded"
+  paymentMethod      String      @default("card")       // "card" | "stripe" | "blik" | "transfer"
+  stripeSessionId    String?     @unique
+  stripePaymentIntentId String?
+
   items              OrderItem[]
   createdAt          DateTime    @default(now())
   updatedAt          DateTime    @updatedAt
 }
 
 model OrderItem {
-  id        String  @id @default(cuid())
-  orderId   String
-  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productId String
+  id              String   @id @default(cuid())
+  orderId         String
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId       String?
+  product         Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  name            String
+  price           Float
+  quantity        Int
+  image           String
+  selectedOptions String?
+  createdAt       DateTime @default(now())
+}
+
+model PromoCode {
+  id            String    @id @default(cuid())
+  code          String    @unique
+  discountPct   Float
+  discountAmount Float?
+  minOrderValue Float     @default(0)
+  isActive      Boolean   @default(true)
+  expiresAt     DateTime?
+  usageCount    Int       @default(0)
+  maxUses       Int?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
   name      String
-  price     Float
-  quantity  Int
-  image     String
+  email     String
+  phone     String?
+  subject   String?
+  message   String
+  status    String   @default("UNREAD") // "UNREAD" | "READ" | "ARCHIVED"
+  createdAt DateTime @default(now())
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
 }

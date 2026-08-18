@@ -1,6 +1,18 @@
 {
   "rewrites": [
     {
+      "source": "/api/products",
+      "destination": "/api/products-handler"
+    },
+    {
+      "source": "/api/categories",
+      "destination": "/api/categories-handler"
+    },
+    {
+      "source": "/api/promos",
+      "destination": "/api/promos-handler"
+    },
+    {
       "source": "/api/auth/:action",
       "destination": "/api/auth-handler?action=:action"
     },
