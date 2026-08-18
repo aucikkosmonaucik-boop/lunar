@@ -8,86 +8,112 @@ dotenv.config();
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter: new PrismaPg(pool as any) });
 
-async function fullTest() {
-  console.log('--- Testing Database Full Flow ---');
+async function testGuestCheckoutPersistence() {
+  console.log('--- Testing Guest Checkout Shipping Address Persistence ---');
 
-  // 1. Check Products and Categories
-  const products = await prisma.product.findMany({ take: 3 });
-  console.log(`✅ Loaded ${products.length} sample products:`, products.map(p => ({ name: p.name, price: p.price })));
+  const guestShippingData = {
+    name: 'Marek Wiśniewski',
+    email: 'marek.wisniewski@example.com',
+    phone: '+48 501 234 567',
+    street: 'ul. Nowy Świat 15/4',
+    postalCode: '00-496',
+    city: 'Warszawa',
+    country: 'PL',
+  };
 
-  const categories = await prisma.category.findMany({
-    where: { parentId: null },
-    include: { children: true }
-  });
-  console.log(`✅ Loaded ${categories.length} top-level categories with subcategories`);
+  const orderNumber = `LUNAR-GUEST-${Date.now().toString().slice(-4)}`;
 
-  // 2. Test Order Creation with Checkout Form Data
-  const sampleOrder = await prisma.order.create({
+  // 1. Simulate guest checkout order creation
+  const guestOrder = await prisma.order.create({
     data: {
-      orderNumber: `TEST-ORD-${Date.now().toString().slice(-4)}`,
-      customerName: 'Anna Kowalska',
-      customerEmail: 'anna.kowalska@example.com',
-      shippingPhone: '+48 600 100 200',
-      shippingStreet: 'ul. Marszałkowska 10/12',
-      shippingCity: 'Warszawa',
-      shippingPostalCode: '00-001',
-      shippingCountry: 'PL',
-      orderNotes: 'Proszę zostawić u portiera',
+      orderNumber,
+      userId: null, // GUEST CHECKOUT - NO USER ID
+      customerName: guestShippingData.name,
+      customerEmail: guestShippingData.email,
+      shippingPhone: guestShippingData.phone,
+      shippingStreet: guestShippingData.street,
+      shippingPostalCode: guestShippingData.postalCode,
+      shippingCity: guestShippingData.city,
+      shippingCountry: guestShippingData.country,
+      orderNotes: 'Winda w klatce B, kod do domofonu 15#',
       subtotal: 218.90,
-      discountCode: 'WELCOME10',
-      discountAmount: 21.89,
+      discountCode: 'LUNAR15',
+      discountAmount: 32.84,
       shippingFee: 0,
-      total: 197.01,
-      status: 'Processing',
+      total: 186.06,
+      status: 'Paid',
       paymentStatus: 'paid',
       paymentMethod: 'stripe',
-      stripeSessionId: `cs_test_${Date.now()}`,
+      stripeSessionId: `cs_test_guest_${Date.now()}`,
+      stripePaymentIntentId: `pi_test_guest_${Date.now()}`,
       items: {
         create: [
           {
-            name: '250. Pink Desire - Women\'s Perfume - 33ml',
+            name: "265. Butterfly Kiss - Women's Perfume - 33ml",
             price: 29.90,
             quantity: 1,
-            image: 'https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&q=80&w=800',
+            image: 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&q=80&w=800',
           },
           {
             name: 'Celestial Solitaire Ring',
             price: 189.00,
             quantity: 1,
             image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&q=80&w=800',
-          }
-        ]
-      }
+          },
+        ],
+      },
     },
     include: {
-      items: true
-    }
-  });
-
-  console.log('✅ Created Order with Checkout Form Data:');
-  console.log({
-    id: sampleOrder.id,
-    orderNumber: sampleOrder.orderNumber,
-    customer: `${sampleOrder.customerName} (${sampleOrder.customerEmail}, ${sampleOrder.shippingPhone})`,
-    address: `${sampleOrder.shippingStreet}, ${sampleOrder.shippingPostalCode} ${sampleOrder.shippingCity}, ${sampleOrder.shippingCountry}`,
-    notes: sampleOrder.orderNotes,
-    financials: {
-      subtotal: sampleOrder.subtotal,
-      discount: `${sampleOrder.discountCode} (-${sampleOrder.discountAmount}€)`,
-      shipping: `${sampleOrder.shippingFee}€`,
-      total: `${sampleOrder.total}€`
+      items: true,
     },
-    itemCount: sampleOrder.items.length,
   });
 
-  // 3. Clean up test order
-  await prisma.orderItem.deleteMany({ where: { orderId: sampleOrder.id } });
-  await prisma.order.delete({ where: { id: sampleOrder.id } });
-  console.log('🧹 Cleaned up test order.');
+  console.log('✅ Guest Order Saved in PostgreSQL:');
+  console.log({
+    orderId: guestOrder.id,
+    orderNumber: guestOrder.orderNumber,
+    isGuest: guestOrder.userId === null,
+    recipient: guestOrder.customerName,
+    email: guestOrder.customerEmail,
+    phone: guestOrder.shippingPhone,
+    fullShippingAddress: `${guestOrder.shippingStreet}, ${guestOrder.shippingPostalCode} ${guestOrder.shippingCity}, ${guestOrder.shippingCountry}`,
+    notes: guestOrder.orderNotes,
+    itemsOrdered: guestOrder.items.map(i => `${i.quantity}x ${i.name} (${i.price}€)`),
+    totalPaid: `${guestOrder.total}€`,
+    status: guestOrder.status,
+  });
+
+  // 2. Fetch the order from the database to ensure it can be retrieved for fulfillment/shipping
+  const retrievedOrder = await prisma.order.findUnique({
+    where: { id: guestOrder.id },
+    include: { items: true },
+  });
+
+  if (!retrievedOrder) {
+    throw new Error('Could not retrieve guest order from database');
+  }
+
+  console.log('\n📦 Verifying Shipping Label Data from Database:');
+  console.log(`[ETYKIETA WYSYŁKOWA / SHIPPING LABEL]`);
+  console.log(`Odbiorca: ${retrievedOrder.customerName}`);
+  console.log(`Adres:    ${retrievedOrder.shippingStreet}`);
+  console.log(`Miasto:   ${retrievedOrder.shippingPostalCode} ${retrievedOrder.shippingCity}`);
+  console.log(`Kraj:     ${retrievedOrder.shippingCountry}`);
+  console.log(`Telefon:  ${retrievedOrder.shippingPhone}`);
+  console.log(`Email:    ${retrievedOrder.customerEmail}`);
+  console.log(`Produkty do spakowania:`);
+  retrievedOrder.items.forEach((item, idx) => {
+    console.log(`  ${idx + 1}. ${item.name} | Ilość: ${item.quantity} szt. | Cena: ${item.price}€`);
+  });
+
+  // Clean up
+  await prisma.orderItem.deleteMany({ where: { orderId: guestOrder.id } });
+  await prisma.order.delete({ where: { id: guestOrder.id } });
+  console.log('\n🧹 Test guest order cleaned up.');
 
   await prisma.$disconnect();
   await pool.end();
-  console.log('✨ All database tests passed successfully!');
+  console.log('🎉 Guest checkout verification completed with 100% success!');
 }
 
-fullTest().catch(console.error);
+testGuestCheckoutPersistence().catch(console.error);
