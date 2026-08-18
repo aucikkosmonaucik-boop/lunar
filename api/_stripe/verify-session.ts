@@ -9,7 +9,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ message: 'Session ID is required' });
   }
 
-  // Handle Demo / Mock checkout simulation
+  // 1. Handle Demo / Mock checkout simulation
   if (sessionId.startsWith('mock_session_') || sessionId.startsWith('mock_sess_')) {
     let customAddress = null;
     if (req.query.address) {
@@ -20,26 +20,72 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     }
 
-    return res.status(200).json({
-      success: true,
-      demoMode: true,
-      order: {
-        id: `ORD-${Date.now().toString().slice(-6)}`,
-        status: 'Paid',
-        total: 189.00,
-        currency: 'EUR',
-        customerEmail: customAddress?.email || 'customer@example.com',
-        customerName: customAddress?.name || 'Valued Customer',
-        shippingAddress: {
-          line1: customAddress?.street || 'Grafton Street 42',
-          city: customAddress?.city || 'Dublin',
-          postalCode: customAddress?.postalCode || 'D02 X285',
-          country: customAddress?.country || 'Ireland',
-          phone: customAddress?.phone || '+353 1 234 5678',
+    try {
+      // Find existing order in Postgres
+      let order = await (prisma as any).order.findFirst({
+        where: { stripeSessionId: sessionId },
+        include: { items: true },
+      });
+
+      if (!order && customAddress) {
+        const orderNumber = `LUNAR-${Date.now().toString().slice(-6)}-${Math.floor(100 + Math.random() * 900)}`;
+        order = await (prisma as any).order.create({
+          data: {
+            orderNumber,
+            userId: null,
+            customerEmail: customAddress.email || 'guest@example.com',
+            customerName: customAddress.name || 'Guest Customer',
+            shippingPhone: customAddress.phone || null,
+            shippingStreet: customAddress.street || 'Grafton Street 42',
+            shippingCity: customAddress.city || 'Dublin',
+            shippingPostalCode: customAddress.postalCode || 'D02 X285',
+            shippingCountry: customAddress.country || 'IE',
+            total: 189.00,
+            subtotal: 189.00,
+            status: 'Paid',
+            paymentStatus: 'paid',
+            paymentMethod: 'demo',
+            stripeSessionId: sessionId,
+            items: {
+              create: [
+                {
+                  productId: '1',
+                  name: 'Celestial Solitaire Ring',
+                  price: 189.00,
+                  quantity: 1,
+                  image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&q=80&w=800',
+                },
+              ],
+            },
+          },
+          include: { items: true },
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        demoMode: true,
+        order: {
+          id: order?.orderNumber || `ORD-${Date.now().toString().slice(-6)}`,
+          status: order?.status || 'Paid',
+          total: order?.total || 189.00,
+          currency: 'EUR',
+          customerEmail: order?.customerEmail || customAddress?.email || 'customer@example.com',
+          customerName: order?.customerName || customAddress?.name || 'Valued Customer',
+          shippingPhone: order?.shippingPhone || customAddress?.phone || null,
+          shippingAddress: {
+            line1: order?.shippingStreet || customAddress?.street || 'Grafton Street 42',
+            city: order?.shippingCity || customAddress?.city || 'Dublin',
+            postalCode: order?.shippingPostalCode || customAddress?.postalCode || 'D02 X285',
+            country: order?.shippingCountry || customAddress?.country || 'Ireland',
+            phone: order?.shippingPhone || customAddress?.phone || null,
+          },
+          createdAt: order?.createdAt || new Date().toISOString(),
         },
-        createdAt: new Date().toISOString(),
-      },
-    });
+      });
+    } catch (err) {
+      console.error('Demo verification database error:', err);
+    }
   }
 
   const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
@@ -59,82 +105,89 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const isPaid = session.payment_status === 'paid';
     const total = (session.amount_total || 0) / 100;
-    const customerEmail = session.metadata?.customerEmail || session.customer_details?.email || session.customer_email || undefined;
+    const customerEmail = session.metadata?.customerEmail || session.customer_details?.email || session.customer_email || 'customer@lunar.ie';
     const customerName = session.metadata?.customerName || session.customer_details?.name || session.shipping_details?.name || 'Customer';
     const shippingPhone = session.metadata?.shippingPhone || session.customer_details?.phone || null;
-    const shippingStreet = session.metadata?.shippingStreet || session.shipping_details?.address?.line1 || null;
-    const shippingCity = session.metadata?.shippingCity || session.shipping_details?.address?.city || null;
-    const shippingPostalCode = session.metadata?.shippingPostalCode || session.shipping_details?.address?.postal_code || null;
-    const shippingCountry = session.metadata?.shippingCountry || session.shipping_details?.address?.country || null;
+    const shippingStreet = session.metadata?.shippingStreet || session.shipping_details?.address?.line1 || 'Shipping Address';
+    const shippingCity = session.metadata?.shippingCity || session.shipping_details?.address?.city || '';
+    const shippingPostalCode = session.metadata?.shippingPostalCode || session.shipping_details?.address?.postal_code || '';
+    const shippingCountry = session.metadata?.shippingCountry || session.shipping_details?.address?.country || 'PL';
     const userId = session.metadata?.userId && session.metadata.userId !== 'guest' ? session.metadata.userId : null;
 
     let savedOrder: any = null;
 
-    // Persist order in Prisma if paid
-    if (isPaid) {
-      try {
-        // Check if order with this total/customer was already created in the last 15 minutes
-        const existingOrder = await (prisma as any).order.findFirst({
-          where: {
-            ...(userId ? { userId } : { customerEmail }),
-            total,
-            createdAt: {
-              gte: new Date(Date.now() - 900000), // last 15 minutes
-            },
+    // Persist or Update Order in PostgreSQL
+    try {
+      // Find existing order by Stripe Session ID
+      const existingOrder = await (prisma as any).order.findFirst({
+        where: { stripeSessionId: session.id },
+        include: { items: true },
+      });
+
+      if (existingOrder) {
+        // Update order status to Paid once verified
+        savedOrder = await (prisma as any).order.update({
+          where: { id: existingOrder.id },
+          data: {
+            status: isPaid ? 'Paid' : existingOrder.status,
+            paymentStatus: isPaid ? 'paid' : existingOrder.paymentStatus,
+            stripePaymentIntentId: typeof session.payment_intent === 'string' ? session.payment_intent : null,
           },
           include: { items: true },
         });
-
-        if (!existingOrder) {
-          // Parse items summary metadata
-          let rawItems: any[] = [];
-          try {
-            if (session.metadata?.itemsSummary) {
-              rawItems = JSON.parse(session.metadata.itemsSummary);
-            }
-          } catch {
-            rawItems = [];
+        console.log(`✅ Order ${savedOrder.orderNumber} updated to status Paid in PostgreSQL.`);
+      } else if (isPaid) {
+        // Parse items summary metadata
+        let rawItems: any[] = [];
+        try {
+          if (session.metadata?.itemsSummary) {
+            rawItems = JSON.parse(session.metadata.itemsSummary);
           }
-
-          const orderNumber = `LUNAR-${Date.now().toString().slice(-6)}-${Math.floor(100 + Math.random() * 900)}`;
-
-          savedOrder = await (prisma as any).order.create({
-            data: {
-              orderNumber,
-              userId: userId || null,
-              customerEmail: customerEmail || 'customer@lunar.ie',
-              customerName: customerName || 'Valued Customer',
-              shippingPhone: shippingPhone || null,
-              shippingStreet: shippingStreet || 'Grafton Street',
-              shippingCity: shippingCity || 'Dublin',
-              shippingPostalCode: shippingPostalCode || 'D02',
-              shippingCountry: shippingCountry || 'IE',
-              total,
-              subtotal: total,
-              status: 'Paid',
-              paymentStatus: 'paid',
-              paymentMethod: 'stripe',
-              stripeSessionId: session.id,
-              items: {
-                create: rawItems.map((item: any) => ({
-                  productId: String(item.id || 'item'),
-                  name: String(item.name || 'Jewelry Piece'),
-                  price: Number(item.price) || 0,
-                  quantity: Number(item.qty) || 1,
-                  image: item.image || '',
-                })),
-              },
-            },
-            include: {
-              items: true,
-            },
-          });
-        } else {
-          savedOrder = existingOrder;
+        } catch {
+          rawItems = [];
         }
-      } catch (dbErr) {
-        console.error('Error saving order to Prisma:', dbErr);
+
+        const orderNumber = session.metadata?.orderNumber || `LUNAR-${Date.now().toString().slice(-6)}-${Math.floor(100 + Math.random() * 900)}`;
+
+        savedOrder = await (prisma as any).order.create({
+          data: {
+            orderNumber,
+            userId: userId || null, // null for guest checkout
+            customerEmail: customerEmail.trim(),
+            customerName: customerName.trim(),
+            shippingPhone: shippingPhone?.trim() || null,
+            shippingStreet: shippingStreet.trim(),
+            shippingCity: shippingCity.trim(),
+            shippingPostalCode: shippingPostalCode.trim(),
+            shippingCountry: shippingCountry.trim(),
+            total,
+            subtotal: Number(session.metadata?.subtotal) || total,
+            discountCode: session.metadata?.discountCode || null,
+            discountAmount: Number(session.metadata?.discountAmount) || 0,
+            shippingFee: Number(session.metadata?.shippingFee) || 0,
+            status: 'Paid',
+            paymentStatus: 'paid',
+            paymentMethod: 'stripe',
+            stripeSessionId: session.id,
+            stripePaymentIntentId: typeof session.payment_intent === 'string' ? session.payment_intent : null,
+            items: {
+              create: rawItems.map((item: any) => ({
+                productId: String(item.id || 'item'),
+                name: String(item.name || 'Jewelry Piece'),
+                price: Number(item.price) || 0,
+                quantity: Number(item.qty) || 1,
+                image: item.image || '',
+              })),
+            },
+          },
+          include: {
+            items: true,
+          },
+        });
+        console.log(`✅ Order ${savedOrder.orderNumber} (Guest/User) created in PostgreSQL.`);
       }
+    } catch (dbErr) {
+      console.error('Error saving/updating order in PostgreSQL:', dbErr);
     }
 
     return res.status(200).json({
@@ -152,6 +205,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           city: shippingCity,
           postal_code: shippingPostalCode,
           country: shippingCountry,
+          phone: shippingPhone,
         },
         amountTotal: total,
         currency: session.currency?.toUpperCase() || 'EUR',
