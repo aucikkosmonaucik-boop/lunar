@@ -22,16 +22,36 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const cleanInput = String(email).trim().toLowerCase();
 
-    // 1. Look up user by email or by 'admin' alias
-    let adminUser = await prisma.user.findFirst({
-      where: {
-        OR: [
-          { email: cleanInput },
-          { email: DEFAULT_ADMIN_EMAIL },
-        ],
-        role: 'ADMIN',
-      },
-    });
+    // 1. Look up user by email or admin alias with explicit select
+    let adminUser: {
+      id: string;
+      email: string;
+      password: string;
+      name: string | null;
+      role: string;
+      loyaltyPoints?: number;
+    } | null = null;
+
+    try {
+      adminUser = await prisma.user.findFirst({
+        where: {
+          OR: [
+            { email: cleanInput },
+            { email: DEFAULT_ADMIN_EMAIL },
+          ],
+        },
+        select: {
+          id: true,
+          email: true,
+          password: true,
+          name: true,
+          role: true,
+          loyaltyPoints: true,
+        },
+      });
+    } catch (e) {
+      console.warn('findFirst lookup error:', e);
+    }
 
     // 2. If no admin exists in DB yet, auto-provision master admin with default password
     if (!adminUser) {
@@ -45,6 +65,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
               name: 'Właściciel Lunar Boutique',
               role: 'ADMIN',
               loyaltyPoints: 1000,
+            },
+            select: {
+              id: true,
+              email: true,
+              password: true,
+              name: true,
+              role: true,
+              loyaltyPoints: true,
             },
           });
         } else {
@@ -88,7 +116,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         email: adminUser.email,
         name: adminUser.name,
         role: 'ADMIN',
-        loyaltyPoints: (adminUser as any).loyaltyPoints || 0,
+        loyaltyPoints: adminUser.loyaltyPoints || 0,
       },
       adminToken: token,
     });
