@@ -52,7 +52,7 @@ const OrderSuccessPage: React.FC = () => {
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.message || 'Nie udało się zweryfikować sesji płatności.');
+          throw new Error(data.message || 'Failed to verify payment session.');
         }
 
         if (data.demoMode || isDemo) {
@@ -75,7 +75,7 @@ const OrderSuccessPage: React.FC = () => {
         }
       } catch (err) {
         console.error('Session verification error:', err);
-        setError(err instanceof Error ? err.message : 'Weryfikacja nie powiodła się');
+        setError(err instanceof Error ? err.message : 'Verification failed');
       } finally {
         setLoading(false);
       }
@@ -89,7 +89,7 @@ const OrderSuccessPage: React.FC = () => {
       <div className="min-h-[70vh] bg-[#FAF8F5] flex flex-col items-center justify-center px-4">
         <Loader2 className="w-10 h-10 animate-spin text-[#C1A98F] mb-4" />
         <p className="text-xs uppercase tracking-[0.25em] text-[#1A1A1A] font-medium">
-          Weryfikacja Płatności i Zamówienia...
+          Verifying Payment & Order...
         </p>
       </div>
     );
@@ -105,9 +105,9 @@ const OrderSuccessPage: React.FC = () => {
             <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
             <div>
               <span className="font-semibold block mb-0.5 uppercase tracking-wider text-[11px]">
-                Informacja
+                Note
               </span>
-              {error}. Jeśli płatność została zrealizowana, zamówienie zostało zarejestrowane.
+              {error}. If your payment was processed, your order has been registered.
             </div>
           </div>
         )}
@@ -118,9 +118,9 @@ const OrderSuccessPage: React.FC = () => {
             <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
             <div>
               <span className="font-semibold block mb-0.5 uppercase tracking-wider text-[11px]">
-                Zamówienie Testowe / Tryb Demonstracyjny
+                Test Order / Demo Mode
               </span>
-              Zamówienie zostało złożone w trybie demonstracyjnym Stripe. Wszystkie dane wysyłki zostały pomyślnie przetworzone.
+              Order placed in Stripe demo mode. All shipping details have been successfully processed.
             </div>
           </div>
         )}
@@ -134,20 +134,20 @@ const OrderSuccessPage: React.FC = () => {
           </div>
 
           <p className="text-[10px] text-[#C1A98F] font-bold uppercase tracking-[0.35em] mb-2">
-            Zamówienie Przyjęte do Realizacji
+            Order Confirmed
           </p>
 
           <h1
             style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
             className="text-4xl sm:text-5xl text-[#1A1A1A] uppercase font-light tracking-wide mb-3"
           >
-            Dziękujemy za Zakupy
+            Thank You for Shopping
           </h1>
 
           <div className="w-12 h-[1px] bg-[#C1A98F] mx-auto mb-6" />
 
           <p className="text-gray-600 text-sm font-light leading-relaxed max-w-md mx-auto mb-8">
-            Płatność została pomyślnie zautoryzowana. Przygotowujemy Twoją biżuterię Lunar z najwyższą dbałością o każdy detal rzemiosła.
+            Your payment has been successfully authorised. We are preparing your Lunar jewellery with the highest attention to every detail of craftsmanship.
           </p>
 
           {/* Account Creation Welcome Alert if logged in */}
@@ -156,9 +156,9 @@ const OrderSuccessPage: React.FC = () => {
               <Sparkles className="w-4 h-4 text-[#C1A98F] shrink-0 mt-0.5" />
               <div className="text-xs text-gray-700">
                 <span className="font-semibold text-black uppercase tracking-wider block mb-0.5">
-                  Konto Lunar jest aktywne
+                  Lunar Account Active
                 </span>
-                Jesteś zalogowany jako <span className="font-medium text-black">{user.email}</span>. Możesz śledzić status swoich zamówień i edytować adres w panelu klienta.
+                You are signed in as <span className="font-medium text-black">{user.email}</span>. You can track your orders and edit your address in your account dashboard.
               </div>
             </div>
           )}
@@ -168,7 +168,7 @@ const OrderSuccessPage: React.FC = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#EAE3D9] gap-2">
               <div>
                 <span className="text-[10px] uppercase tracking-[0.2em] text-gray-400 block font-medium">
-                  Numer Referencyjny
+                  Reference Number
                 </span>
                 <span className="text-xs font-mono font-medium text-[#1A1A1A] break-all">
                   {sessionId ? (sessionId.length > 25 ? `${sessionId.slice(0, 22)}...` : sessionId) : `ORD-${Date.now().toString().slice(-6)}`}
@@ -177,11 +177,11 @@ const OrderSuccessPage: React.FC = () => {
 
               <div className="sm:text-right">
                 <span className="text-[10px] uppercase tracking-[0.2em] text-gray-400 block font-medium">
-                  Status Płatności
+                  Payment Status
                 </span>
                 <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 uppercase tracking-wider">
                   <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                  Opłacone i Potwierdzone
+                  Paid & Confirmed
                 </span>
               </div>
             </div>
@@ -191,7 +191,7 @@ const OrderSuccessPage: React.FC = () => {
                 {sessionData.customerEmail && (
                   <div>
                     <span className="text-[10px] uppercase tracking-[0.2em] text-gray-400 block mb-0.5">
-                      Potwierdzenie Wysłane Na
+                      Confirmation Sent To
                     </span>
                     <span className="font-medium text-[#1A1A1A]">{sessionData.customerEmail}</span>
                   </div>
@@ -200,7 +200,7 @@ const OrderSuccessPage: React.FC = () => {
                 {sessionData.amountTotal && (
                   <div>
                     <span className="text-[10px] uppercase tracking-[0.2em] text-gray-400 block mb-0.5">
-                      Łączna Kwota
+                      Total Amount
                     </span>
                     <span className="font-semibold text-base text-[#1A1A1A]">
                       €{sessionData.amountTotal.toFixed(2)}
@@ -211,7 +211,7 @@ const OrderSuccessPage: React.FC = () => {
                 {(sessionData.shippingAddress || sessionData.customerName) && (
                   <div className="sm:col-span-2 pt-3 border-t border-[#EAE3D9] space-y-1">
                     <span className="text-[10px] uppercase tracking-[0.2em] text-gray-400 block mb-1">
-                      Adres Dostawy Kurierskiej
+                      Courier Delivery Address
                     </span>
                     {sessionData.customerName && (
                       <div className="font-medium text-[#1A1A1A] flex items-center gap-1.5">
@@ -252,9 +252,9 @@ const OrderSuccessPage: React.FC = () => {
               <Truck className="w-4 h-4 text-[#C1A98F] shrink-0 mt-0.5" />
               <div>
                 <span className="text-[11px] font-semibold uppercase tracking-wider text-[#1A1A1A] block">
-                  Czas Dostawy
+                  Delivery Time
                 </span>
-                <span className="text-[11px] text-gray-500 font-light">2–4 dni robocze</span>
+                <span className="text-[11px] text-gray-500 font-light">2–4 business days</span>
               </div>
             </div>
 
@@ -262,9 +262,9 @@ const OrderSuccessPage: React.FC = () => {
               <Package className="w-4 h-4 text-[#C1A98F] shrink-0 mt-0.5" />
               <div>
                 <span className="text-[11px] font-semibold uppercase tracking-wider text-[#1A1A1A] block">
-                  Opakowanie
+                  Packaging
                 </span>
-                <span className="text-[11px] text-gray-500 font-light">Pudełko jubilerskie</span>
+                <span className="text-[11px] text-gray-500 font-light">Jewellery box included</span>
               </div>
             </div>
 
@@ -272,9 +272,9 @@ const OrderSuccessPage: React.FC = () => {
               <ShieldCheck className="w-4 h-4 text-[#C1A98F] shrink-0 mt-0.5" />
               <div>
                 <span className="text-[11px] font-semibold uppercase tracking-wider text-[#1A1A1A] block">
-                  Gwarancja
+                  Guarantee
                 </span>
-                <span className="text-[11px] text-gray-500 font-light">30 dni na zwrot</span>
+                <span className="text-[11px] text-gray-500 font-light">30-day returns</span>
               </div>
             </div>
           </div>
@@ -285,7 +285,7 @@ const OrderSuccessPage: React.FC = () => {
               to="/shop"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-[#1A1A1A] text-white text-[12px] uppercase tracking-[0.25em] py-4 px-8 hover:bg-[#333333] transition-colors font-medium group"
             >
-              <span>Wróć do Sklepu</span>
+              <span>Back to Shop</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
 
@@ -294,14 +294,14 @@ const OrderSuccessPage: React.FC = () => {
                 to="/account"
                 className="w-full sm:w-auto inline-flex items-center justify-center text-[12px] uppercase tracking-[0.25em] py-4 px-8 border border-[#1A1A1A] text-[#1A1A1A] hover:bg-[#FAF6F0] transition-colors font-medium"
               >
-                Panel Klienta i Zamówienia
+                My Orders & Account
               </Link>
             ) : (
               <Link
                 to="/login"
                 className="w-full sm:w-auto inline-flex items-center justify-center text-[12px] uppercase tracking-[0.25em] py-4 px-8 border border-[#1A1A1A] text-[#1A1A1A] hover:bg-[#FAF6F0] transition-colors font-medium"
               >
-                Zaloguj się
+                Sign In
               </Link>
             )}
           </div>

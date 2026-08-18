@@ -41,7 +41,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     if (!shippingAddress) {
-      return res.status(400).json({ message: 'Wymagany jest adres wysyłki' });
+      return res.status(400).json({ message: 'A shipping address is required' });
     }
 
     const order = await (prisma as any).order.create({

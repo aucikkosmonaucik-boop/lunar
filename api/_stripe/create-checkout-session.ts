@@ -57,7 +57,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   // 1. Mandatory Shipping Address Validation
   if (!shippingAddress) {
-    return res.status(400).json({ message: 'Wymagane jest podanie adresu wysyłki.' });
+    return res.status(400).json({ message: 'A shipping address is required.' });
   }
 
   const requiredFields: (keyof ShippingAddress)[] = ['name', 'email', 'phone', 'street', 'city', 'postalCode', 'country'];
@@ -65,14 +65,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   if (missingFields.length > 0) {
     return res.status(400).json({
-      message: 'Wszystkie pola adresu wysyłki są obowiązkowe.',
+      message: 'All shipping address fields are required.',
       missingFields,
     });
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(shippingAddress.email.trim())) {
-    return res.status(400).json({ message: 'Podano nieprawidłowy adres e-mail.' });
+    return res.status(400).json({ message: 'Invalid email address provided.' });
   }
 
   // 2. Extract logged-in user if token is present
@@ -98,7 +98,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!userId && accountOption?.createAccount) {
     const rawPassword = accountOption.password || '';
     if (rawPassword.length < 6) {
-      return res.status(400).json({ message: 'Hasło do konta musi zawierać co najmniej 6 znaków.' });
+      return res.status(400).json({ message: 'Account password must be at least 6 characters.' });
     }
 
     try {
@@ -108,7 +108,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       if (existingUser) {
         return res.status(400).json({
-          message: 'Konto o tym adresie e-mail już istnieje. Zaloguj się lub kontynuuj zakup jako gość.',
+          message: 'An account with this email already exists. Please sign in or continue as a guest.',
           code: 'USER_EXISTS',
         });
       }
@@ -157,7 +157,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       res.setHeader('Set-Cookie', cookie);
     } catch (err: unknown) {
       console.error('Account creation during checkout error:', err);
-      return res.status(500).json({ message: 'Błąd podczas tworzenia konta: ' + (err as Error).message });
+      return res.status(500).json({ message: 'Error creating account: ' + (err as Error).message });
     }
   } else if (userId && accountOption?.saveAddressToProfile) {
     // If user is already logged in and requested to update saved profile address
