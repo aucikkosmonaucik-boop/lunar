@@ -1,9 +1,10 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Search, SlidersHorizontal, Sparkles } from 'lucide-react';
-import { products, categories } from '../data/products';
+import { categories } from '../data/products';
 import type { SortOption } from '../types';
 import ProductCard from '../components/ui/ProductCard';
+import { useProducts } from '../hooks/useProducts';
 
 const sortOptions: { value: SortOption; label: string }[] = [
   { value: 'featured', label: 'Featured' },
@@ -14,6 +15,7 @@ const sortOptions: { value: SortOption; label: string }[] = [
 ];
 
 const ShopPage: React.FC = () => {
+  const { products } = useProducts();
   const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');

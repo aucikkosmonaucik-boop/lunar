@@ -31,6 +31,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         postalCode: true,
         country: true,
         phone: true,
+        role: true,
+        loyaltyPoints: true,
       } as any,
     });
 

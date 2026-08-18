@@ -13,6 +13,14 @@
       "destination": "/api/promos-handler"
     },
     {
+      "source": "/api/loyalty",
+      "destination": "/api/loyalty-handler"
+    },
+    {
+      "source": "/api/loyalty/:action",
+      "destination": "/api/loyalty-handler?action=:action"
+    },
+    {
       "source": "/api/auth/:action",
       "destination": "/api/auth-handler?action=:action"
     },

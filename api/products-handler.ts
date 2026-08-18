@@ -2,10 +2,161 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { prisma } from './_lib/prisma.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== 'GET' && req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method not allowed' });
+  // CORS / OPTIONS support
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
   }
 
+  // DELETE method
+  if (req.method === 'DELETE') {
+    try {
+      const { id } = req.query as { id?: string };
+      const bodyId = req.body?.id;
+      const targetId = id || bodyId;
+
+      if (!targetId) {
+        return res.status(400).json({ message: 'Product ID is required for deletion' });
+      }
+
+      await (prisma as any).product.delete({
+        where: { id: targetId },
+      });
+
+      return res.status(200).json({ success: true, message: 'Product deleted successfully' });
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error('Delete Product Error:', err);
+      return res.status(500).json({ message: 'Failed to delete product', error: err.message });
+    }
+  }
+
+  // PUT / PATCH: Update existing product
+  if (req.method === 'PUT' || req.method === 'PATCH') {
+    try {
+      const { id } = req.query as { id?: string };
+      const body = req.body || {};
+      const targetId = id || body.id;
+
+      if (!targetId) {
+        return res.status(400).json({ message: 'Product ID is required for update' });
+      }
+
+      const {
+        name,
+        slug,
+        description,
+        price,
+        originalPrice,
+        image,
+        images,
+        categorySlug,
+        categoryId,
+        subcategory,
+        badge,
+        rating,
+        reviewCount,
+        stock,
+        tags,
+        features,
+        isAvailable,
+        isFeatured,
+      } = body;
+
+      const updated = await (prisma as any).product.update({
+        where: { id: targetId },
+        data: {
+          ...(name !== undefined ? { name } : {}),
+          ...(slug !== undefined ? { slug } : {}),
+          ...(description !== undefined ? { description } : {}),
+          ...(price !== undefined ? { price: Number(price) } : {}),
+          ...(originalPrice !== undefined ? { originalPrice: originalPrice ? Number(originalPrice) : null } : {}),
+          ...(image !== undefined ? { image } : {}),
+          ...(images !== undefined ? { images: Array.isArray(images) ? images : [] } : {}),
+          ...(categorySlug !== undefined ? { categorySlug } : {}),
+          ...(categoryId !== undefined ? { categoryId: categoryId || null } : {}),
+          ...(subcategory !== undefined ? { subcategory } : {}),
+          ...(badge !== undefined ? { badge: badge || null } : {}),
+          ...(rating !== undefined ? { rating: Number(rating) } : {}),
+          ...(reviewCount !== undefined ? { reviewCount: Number(reviewCount) } : {}),
+          ...(stock !== undefined ? { stock: Number(stock) } : {}),
+          ...(tags !== undefined ? { tags: Array.isArray(tags) ? tags : [] } : {}),
+          ...(features !== undefined ? { features: Array.isArray(features) ? features : [] } : {}),
+          ...(isAvailable !== undefined ? { isAvailable: Boolean(isAvailable) } : {}),
+          ...(isFeatured !== undefined ? { isFeatured: Boolean(isFeatured) } : {}),
+        },
+      });
+
+      return res.status(200).json({ success: true, product: updated });
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error('Update Product Error:', err);
+      return res.status(500).json({ message: 'Failed to update product', error: err.message });
+    }
+  }
+
+  // POST: Create product (or single action if needed)
+  if (req.method === 'POST') {
+    try {
+      const body = req.body || {};
+      const {
+        name,
+        slug,
+        description,
+        price,
+        originalPrice,
+        image,
+        images,
+        categorySlug,
+        categoryId,
+        subcategory,
+        badge,
+        rating,
+        reviewCount,
+        stock,
+        tags,
+        features,
+        isAvailable,
+        isFeatured,
+      } = body;
+
+      if (!name || price === undefined) {
+        return res.status(400).json({ message: 'Name and price are required' });
+      }
+
+      const generatedSlug = slug || name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') + `-${Date.now().toString().slice(-4)}`;
+
+      const created = await (prisma as any).product.create({
+        data: {
+          name,
+          slug: generatedSlug,
+          description: description || '',
+          price: Number(price),
+          originalPrice: originalPrice ? Number(originalPrice) : null,
+          image: image || (images && images[0]) || 'https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&q=80&w=800',
+          images: Array.isArray(images) ? images : [],
+          categorySlug: categorySlug || 'jewelry',
+          categoryId: categoryId || null,
+          subcategory: subcategory || null,
+          badge: badge || null,
+          rating: rating !== undefined ? Number(rating) : 5.0,
+          reviewCount: reviewCount !== undefined ? Number(reviewCount) : 0,
+          stock: stock !== undefined ? Number(stock) : 10,
+          tags: Array.isArray(tags) ? tags : [],
+          features: Array.isArray(features) ? features : [],
+          isAvailable: isAvailable !== undefined ? Boolean(isAvailable) : true,
+          isFeatured: isFeatured !== undefined ? Boolean(isFeatured) : false,
+        },
+      });
+
+      return res.status(201).json({ success: true, product: created });
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error('Create Product Error:', err);
+      return res.status(500).json({ message: 'Failed to create product', error: err.message });
+    }
+  }
+
+  // GET: List or Single Product
   const {
     id,
     slug,
@@ -18,6 +169,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     featured,
     limit,
     offset,
+    includeHidden,
   } = req.query as Record<string, string>;
 
   try {
@@ -41,9 +193,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // Build filter where-clause
-    const where: any = {
-      isAvailable: true,
-    };
+    const where: any = {};
+    if (includeHidden !== 'true') {
+      where.isAvailable = true;
+    }
 
     if (category && category.toLowerCase() !== 'all') {
       const normalizedCat = category.toLowerCase().trim();

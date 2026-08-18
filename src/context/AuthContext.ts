@@ -9,6 +9,8 @@ export interface User {
   postalCode: string | null;
   country: string | null;
   phone: string | null;
+  role?: string; // 'USER' | 'ADMIN'
+  loyaltyPoints?: number;
 }
 
 export interface AuthContextType {

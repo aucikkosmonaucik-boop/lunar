@@ -1,21 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ShoppingBag, ArrowLeft, Check, Minus, Plus, Truck, RotateCcw, Shield, Heart } from 'lucide-react';
-import { products } from '../data/products';
+import { ShoppingBag, ArrowLeft, Check, Minus, Plus, Truck, RotateCcw, Shield, Heart, Coins, Image as ImageIcon } from 'lucide-react';
+import { useProducts } from '../hooks/useProducts';
 import { useCart } from '../hooks/useCart';
 import { useFavorites } from '../hooks/useFavorites';
+import { useLoyalty } from '../hooks/useLoyalty';
 import ProductCard from '../components/ui/ProductCard';
 
 const ProductDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { products, getProductById, getProductBySlug } = useProducts();
   const { addToCart } = useCart();
   const { toggleFavorite, isFavorite } = useFavorites();
+  const { calculatePointsToEarn } = useLoyalty();
+
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
 
-  const product = products.find(p => p.id === id);
-  const related = products.filter(p => p.id !== id && p.category === product?.category).slice(0, 4);
+  const product = id ? (getProductById(id) || getProductBySlug(id)) : undefined;
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    setActiveImageIndex(0);
+    setQty(1);
+  }, [id]);
 
   if (!product) {
     return (
@@ -28,7 +38,12 @@ const ProductDetailPage: React.FC = () => {
     );
   }
 
+  const galleryImages = product.images && product.images.length > 0 ? product.images : [product.image];
+  const activeImage = galleryImages[activeImageIndex] || product.image;
+  const related = products.filter(p => p.id !== product.id && p.category === product.category).slice(0, 4);
+
   const isSoldOut = product.stock === 0;
+  const pointsToEarn = calculatePointsToEarn(product.price * qty);
 
   const handleAddToCart = () => {
     addToCart(product, qty);
@@ -50,54 +65,129 @@ const ProductDetailPage: React.FC = () => {
 
         {/* Main content */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-24">
-          {/* Image */}
-          <div className="relative aspect-[4/5] bg-gray-50 overflow-hidden border border-wonders-border rounded-sm">
-            <img
-              src={product.image}
-              alt={product.name}
-              className={`w-full h-full object-cover ${isSoldOut ? 'opacity-60 grayscale-[0.5]' : ''}`}
-            />
-            {product.badge && (
-              <span className={`absolute top-6 left-6 text-[10px] font-bold px-4 py-1 uppercase tracking-widest
-                ${product.badge === 'SOLD OUT' ? 'bg-gray-100 text-gray-500' : 'bg-wonders-dark text-white'}`}>
-                {product.badge}
-              </span>
+          {/* Gallery Section */}
+          <div className="flex flex-col-reverse md:flex-row gap-4">
+            {/* Thumbnails list if multiple images */}
+            {galleryImages.length > 1 && (
+              <div className="flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto max-h-[500px] py-1">
+                {galleryImages.map((img, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setActiveImageIndex(idx)}
+                    className={`w-16 h-20 md:w-20 md:h-24 rounded overflow-hidden border-2 flex-shrink-0 transition-all ${
+                      activeImageIndex === idx
+                        ? 'border-black ring-1 ring-black shadow-md'
+                        : 'border-gray-200 opacity-70 hover:opacity-100'
+                    }`}
+                  >
+                    <img
+                      src={img}
+                      alt={`${product.name} thumbnail ${idx + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
             )}
+
+            {/* Main Active Image Container */}
+            <div className="relative flex-1 aspect-[4/5] bg-gray-50 overflow-hidden border border-wonders-border rounded-sm group">
+              <img
+                src={activeImage}
+                alt={product.name}
+                className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${isSoldOut ? 'opacity-60 grayscale-[0.5]' : ''}`}
+              />
+
+              {product.badge && (
+                <span className={`absolute top-6 left-6 text-[10px] font-bold px-4 py-1 uppercase tracking-widest shadow
+                  ${product.badge === 'SOLD OUT' ? 'bg-gray-100 text-gray-500' : product.badge === 'SALE' ? 'bg-red-600 text-white' : 'bg-wonders-dark text-white'}`}>
+                  {product.badge}
+                </span>
+              )}
+
+              {galleryImages.length > 1 && (
+                <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1.5">
+                  <ImageIcon className="w-3 h-3" />
+                  <span>{activeImageIndex + 1} / {galleryImages.length}</span>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Info */}
-          <div className="flex flex-col pt-12 lg:pt-32">
-            <p className="text-[14px] text-wonders-gold font-bold uppercase tracking-[0.3em] mb-4">Collection</p>
-            <h1 className="text-4xl md:text-6xl font-light uppercase tracking-[0.1em] text-wonders-dark mb-6 leading-tight">
-              {product.name}
-            </h1>
-
-            {/* Price */}
-            <div className="mb-8">
-              <span className="text-3xl font-bold text-wonders-dark tracking-wider">
-                {product.price.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}
-              </span>
-              {product.originalPrice && (
-                <span className="ml-4 text-xl text-wonders-muted line-through tracking-wider">
-                  {product.originalPrice.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}
+          <div className="flex flex-col pt-4 lg:pt-8">
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-[14px] text-wonders-gold font-bold uppercase tracking-[0.3em]">
+                {product.category}
+              </p>
+              {product.stock > 0 && (
+                <span className="text-[11px] font-bold text-green-700 bg-green-50 px-2.5 py-0.5 rounded border border-green-200">
+                  W magazynie ({product.stock} szt.)
                 </span>
               )}
             </div>
 
+            <h1 className="text-3xl md:text-5xl font-light uppercase tracking-[0.1em] text-wonders-dark mb-6 leading-tight">
+              {product.name}
+            </h1>
+
+            {/* Price & Discount */}
+            <div className="flex items-baseline gap-4 mb-6">
+              <span className="text-3xl font-bold text-wonders-dark tracking-wider">
+                {product.price.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}
+              </span>
+              {product.originalPrice && product.originalPrice > product.price && (
+                <>
+                  <span className="text-xl text-wonders-muted line-through tracking-wider">
+                    {product.originalPrice.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}
+                  </span>
+                  <span className="text-xs font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded border border-red-200 uppercase tracking-wider">
+                    -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% Zniżka
+                  </span>
+                </>
+              )}
+            </div>
+
+            {/* Loyalty Points Banner */}
+            <div className="mb-8 p-3.5 bg-gradient-to-r from-amber-50/80 via-white to-amber-50/50 border border-amber-200/80 rounded-lg flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-amber-100 border border-amber-300 flex items-center justify-center">
+                  <Coins className="w-4 h-4 text-[#d4af37]" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-black">
+                    Zyskasz +{pointsToEarn} pkt w LUNAR Club
+                  </p>
+                  <p className="text-[11px] text-gray-500">
+                    Wymieniaj punkty na kupony rabatowe w swoim profilu
+                  </p>
+                </div>
+              </div>
+              <Link
+                to="/account"
+                className="text-[10px] uppercase tracking-wider font-bold text-black hover:text-[#d4af37] underline whitespace-nowrap"
+              >
+                Sprawdź nagrody
+              </Link>
+            </div>
+
             {/* Description */}
-            <p className="text-wonders-muted text-base md:text-lg leading-relaxed mb-10 max-w-xl">
+            <p className="text-wonders-muted text-base leading-relaxed mb-8 max-w-xl whitespace-pre-line">
               {product.description}
             </p>
 
             {/* Features/Details */}
-            <div className="space-y-4 mb-10">
-              {product.features.map(f => (
-                <div key={f} className="flex items-center gap-3 text-[13px] uppercase tracking-widest text-wonders-dark font-medium">
-                  <span className="w-1.5 h-1.5 bg-wonders-gold rounded-full"></span>
-                  {f}
-                </div>
-              ))}
-            </div>
+            {product.features && product.features.length > 0 && (
+              <div className="space-y-3 mb-10">
+                {product.features.map(f => (
+                  <div key={f} className="flex items-center gap-3 text-[13px] uppercase tracking-widest text-wonders-dark font-medium">
+                    <span className="w-1.5 h-1.5 bg-wonders-gold rounded-full"></span>
+                    {f}
+                  </div>
+                ))}
+              </div>
+            )}
 
             {/* Qty + Cart */}
             <div className="flex flex-col sm:flex-row items-center gap-6 mb-12">
