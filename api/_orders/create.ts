@@ -13,13 +13,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const cookies = parse(req.headers.cookie || '');
   const token = cookies.auth_token;
 
-  if (!token) {
-    return res.status(401).json({ message: 'Unauthorized' });
+  let userId: string | null = null;
+  if (token) {
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
+      userId = decoded.userId;
+    } catch {
+      // Guest order
+    }
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
-    const { items, total } = req.body;
+    const { items, total, shippingAddress } = req.body;
 
     interface CartItem {
       product: {
@@ -35,9 +40,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ message: 'Cart is empty' });
     }
 
+    if (!shippingAddress) {
+      return res.status(400).json({ message: 'Wymagany jest adres wysyłki' });
+    }
+
     const order = await (prisma as any).order.create({
       data: {
-        userId: decoded.userId,
+        userId: userId || null,
+        customerEmail: shippingAddress.email || null,
+        customerName: shippingAddress.name || null,
+        shippingPhone: shippingAddress.phone || null,
+        shippingStreet: shippingAddress.street || null,
+        shippingCity: shippingAddress.city || null,
+        shippingPostalCode: shippingAddress.postalCode || null,
+        shippingCountry: shippingAddress.country || null,
         total: Number(total),
         status: 'Processing',
         items: {
@@ -62,9 +78,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   } catch (error: unknown) {
     const err = error as Error;
     console.error('Order Creation Error:', err);
-    if (err.name === 'JsonWebTokenError') {
-      return res.status(401).json({ message: 'Invalid token' });
-    }
     return res.status(500).json({ 
       message: 'Internal server error',
       error: err.message
