@@ -14,6 +14,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     let subHandler;
     switch (action) {
       case 'login': subHandler = (await import('./_auth/login.js')).default; break;
+      case 'admin-login': subHandler = (await import('./_auth/admin-login.js')).default; break;
+      case 'admin-change-password': subHandler = (await import('./_auth/admin-change-password.js')).default; break;
       case 'logout': subHandler = (await import('./_auth/logout.js')).default; break;
       case 'register': subHandler = (await import('./_auth/register.js')).default; break;
       case 'update': subHandler = (await import('./_auth/update.js')).default; break;
