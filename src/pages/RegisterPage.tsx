@@ -31,7 +31,7 @@ const RegisterPage: React.FC = () => {
       // Automatically redirect to login after success
       navigate('/login');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Wystąpił nieznany błąd');
+      setError(err instanceof Error ? err.message : 'An unknown error occurred');
     } finally {
       setLoading(false);
     }

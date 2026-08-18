@@ -136,7 +136,7 @@ const CartPage: React.FC = () => {
       setAppliedPromo({ code, discountPct: 15 });
       setPromoCode('');
     } else {
-      setPromoError('Nieprawidłowy kod. Wypróbuj "LUNAR10"');
+      setPromoError('Invalid code. Try "LUNAR10"');
     }
   };
 
@@ -150,42 +150,42 @@ const CartPage: React.FC = () => {
     const errors: Record<string, string> = {};
 
     if (!shippingName.trim()) {
-      errors.name = 'Imię i nazwisko jest wymagane';
+      errors.name = 'Full name is required';
     }
 
     if (!shippingEmail.trim()) {
-      errors.email = 'Adres e-mail jest wymagany';
+      errors.email = 'Email address is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(shippingEmail.trim())) {
-      errors.email = 'Wprowadź poprawny adres e-mail (np. jan@example.com)';
+      errors.email = 'Please enter a valid email address (e.g. jane@example.com)';
     }
 
     if (!shippingPhone.trim()) {
-      errors.phone = 'Numer telefonu jest wymagany dla kuriera';
+      errors.phone = 'Phone number is required for delivery';
     } else if (shippingPhone.trim().replace(/\D/g, '').length < 7) {
-      errors.phone = 'Wprowadź prawidłowy numer telefonu (min. 7 cyfr)';
+      errors.phone = 'Please enter a valid phone number (min. 7 digits)';
     }
 
     if (!shippingStreet.trim()) {
-      errors.street = 'Ulica i numer domu/lokalu są wymagane';
+      errors.street = 'Street address is required';
     }
 
     if (!shippingPostalCode.trim()) {
-      errors.postalCode = 'Kod pocztowy jest wymagany';
+      errors.postalCode = 'Postal code is required';
     }
 
     if (!shippingCity.trim()) {
-      errors.city = 'Miejscowość / Miasto jest wymagana';
+      errors.city = 'City is required';
     }
 
     if (!shippingCountry.trim()) {
-      errors.country = 'Wybierz kraj dostawy';
+      errors.country = 'Please select a delivery country';
     }
 
     if (!user && checkoutMode === 'create_account') {
       if (!accountPassword) {
-        errors.password = 'Wpisz hasło dla nowego konta';
+        errors.password = 'Please enter a password for your new account';
       } else if (accountPassword.length < 6) {
-        errors.password = 'Hasło musi zawierać co najmniej 6 znaków';
+        errors.password = 'Password must be at least 6 characters';
       }
     }
 
@@ -227,7 +227,7 @@ const CartPage: React.FC = () => {
 
     const isValid = validateForm();
     if (!isValid) {
-      setError('Uzupełnij wszystkie wymagane pola adresu wysyłki przed przejściem do płatności.');
+      setError('Please fill in all required shipping address fields before proceeding to payment.');
       return;
     }
 
@@ -261,7 +261,7 @@ const CartPage: React.FC = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Nie udało się zainicjować procesu płatności.');
+        throw new Error(data.message || 'Failed to initiate the payment process.');
       }
 
       if (data.user) {
@@ -271,11 +271,11 @@ const CartPage: React.FC = () => {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        throw new Error('Brak adresu URL sesji Stripe.');
+        throw new Error('No Stripe session URL received.');
       }
     } catch (err) {
       console.error('Checkout error:', err);
-      setError(err instanceof Error ? err.message : 'Wystąpił błąd podczas realizacji zamówienia');
+      setError(err instanceof Error ? err.message : 'An error occurred during checkout');
       setIsCheckingOut(false);
     }
   };
@@ -290,40 +290,40 @@ const CartPage: React.FC = () => {
           </div>
 
           <p className="text-[10px] text-[#C1A98F] font-bold uppercase tracking-[0.35em] mb-2">
-            Twój Koszyk
+            Your Bag
           </p>
 
           <h2
             style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
             className="text-4xl text-[#1A1A1A] uppercase font-light tracking-wide mb-3"
           >
-            Twój koszyk jest pusty
+            Your bag is empty
           </h2>
 
           <div className="w-10 h-[1px] bg-[#C1A98F] mx-auto mb-5" />
 
           <p className="text-gray-500 text-[13px] leading-relaxed mb-8 max-w-sm mx-auto font-light">
-            Odkryj naszą unikatową kolekcję ręcznie tworzonej biżuterii oraz luksusowych akcesoriów Lunar.
+            Discover our unique collection of handcrafted jewellery and luxury accessories by Lunar.
           </p>
 
           <Link
             to="/shop"
             className="inline-flex items-center justify-center gap-3 w-full bg-[#1A1A1A] text-white text-[12px] uppercase tracking-[0.25em] py-4 px-8 hover:bg-[#333333] transition-colors duration-200 mb-6 font-medium group"
           >
-            <span>Przeglądaj Kolekcję</span>
+            <span>Browse the Collection</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
 
           <div className="pt-6 border-t border-gray-100">
             <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-3 font-medium">
-              Popularne Kategorie
+              Popular Categories
             </p>
             <div className="flex flex-wrap items-center justify-center gap-2">
               {[
-                { label: 'Pierścionki', to: '/shop?category=rings' },
-                { label: 'Naszyjniki', to: '/shop?category=necklaces' },
-                { label: 'Kolczyki', to: '/shop?category=earrings' },
-                { label: 'Gotowe do wysyłki', to: '/shop?tag=ready-to-ship' },
+                { label: 'Rings', to: '/shop?category=rings' },
+                { label: 'Necklaces', to: '/shop?category=necklaces' },
+                { label: 'Earrings', to: '/shop?category=earrings' },
+                { label: 'Ready to Ship', to: '/shop?tag=ready-to-ship' },
               ].map((link) => (
                 <Link
                   key={link.label}
@@ -349,12 +349,12 @@ const CartPage: React.FC = () => {
           <div className="max-w-[1240px] mx-auto flex items-center justify-between">
             <div className="flex items-center gap-2.5 text-[12px] text-[#8A532B]">
               <AlertCircle className="w-4 h-4 shrink-0" />
-              <span>Płatność została anulowana. Twoje produkty nadal bezpiecznie czekają w koszyku.</span>
+              <span>Payment was cancelled. Your items are still safely waiting in your bag.</span>
             </div>
             <button
               onClick={() => setShowCanceledNotice(false)}
               className="text-gray-400 hover:text-gray-700 p-1"
-              aria-label="Zamknij powiadomienie"
+              aria-label="Dismiss notification"
             >
               <X className="w-4 h-4" />
             </button>
@@ -366,22 +366,22 @@ const CartPage: React.FC = () => {
         {/* ── Breadcrumb & Page Header ─────────────────── */}
         <div className="text-center mb-10 md:mb-14">
           <div className="flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.2em] text-gray-400 mb-3 font-light">
-            <Link to="/" className="hover:text-black transition-colors">Strona Główna</Link>
+            <Link to="/" className="hover:text-black transition-colors">Home</Link>
             <span>/</span>
-            <span className="text-black font-medium">Koszyk i Dostawa</span>
+            <span className="text-black font-medium">Bag & Delivery</span>
           </div>
 
           <h1
             style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
             className="text-4xl sm:text-5xl lg:text-6xl text-[#1A1A1A] tracking-wider uppercase font-light mb-3"
           >
-            Koszyk i Realizacja
+            Bag & Checkout
           </h1>
 
           <div className="w-12 h-[1px] bg-[#C1A98F] mx-auto mb-3" />
 
           <p className="text-gray-500 text-[12px] uppercase tracking-[0.25em] font-light">
-            {totalItems} {totalItems === 1 ? 'produkt w koszyku' : totalItems < 5 ? 'produkty w koszyku' : 'produktów w koszyku'}
+            {totalItems} {totalItems === 1 ? 'item in bag' : 'items in bag'}
           </p>
         </div>
 
@@ -398,16 +398,16 @@ const CartPage: React.FC = () => {
                   <Truck className="w-4 h-4 text-[#C1A98F]" />
                   <span className="text-[12px] font-medium tracking-wider uppercase text-[#1A1A1A]">
                     {isFreeShipping ? (
-                      <span className="text-emerald-700 font-semibold">Darmowa Ubezpieczona Dostawa Odblokowana!</span>
+                      <span className="text-emerald-700 font-semibold">Free Insured Delivery Unlocked!</span>
                     ) : (
                       <span>
-                        Dodaj produkty za <span className="font-semibold text-black">€{remainingForFreeShipping.toFixed(2)}</span>, aby otrzymać darmową dostawę
+                        Add <span className="font-semibold text-black">€{remainingForFreeShipping.toFixed(2)}</span> more for free delivery
                       </span>
                     )}
                   </span>
                 </div>
                 <span className="text-[11px] font-medium text-gray-400">
-                  Próg: €{FREE_SHIPPING_THRESHOLD}
+                  Threshold: €{FREE_SHIPPING_THRESHOLD}
                 </span>
               </div>
 
@@ -430,11 +430,11 @@ const CartPage: React.FC = () => {
                     1
                   </span>
                   <h2 className="text-[12px] uppercase tracking-[0.25em] font-semibold text-[#1A1A1A]">
-                    Wybrane Produkty
+                    Selected Items
                   </h2>
                 </div>
                 <span className="text-[11px] text-gray-400 font-light">
-                  {totalItems} {totalItems === 1 ? 'sztuka' : 'sztuk'}
+                  {totalItems} {totalItems === 1 ? 'item' : 'items'}
                 </span>
               </div>
 
@@ -483,10 +483,10 @@ const CartPage: React.FC = () => {
                           <div className="flex items-center gap-3 mt-1 text-[11px] text-gray-500 font-light">
                             <span className="inline-flex items-center gap-1 text-emerald-700">
                               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>
-                              W magazynie
+                              In Stock
                             </span>
                             <span>•</span>
-                            <span>Rękodzieło</span>
+                            <span>Handcrafted</span>
                           </div>
                         </div>
                       </div>
@@ -501,14 +501,14 @@ const CartPage: React.FC = () => {
                       {/* Quantity Controls (Col 9-10) */}
                       <div className="w-full sm:w-auto sm:col-span-2 flex items-center justify-between sm:justify-center">
                         <span className="sm:hidden text-xs text-gray-500 font-medium uppercase tracking-wider">
-                          Ilość:
+                          Qty:
                         </span>
                         <div className="inline-flex items-center border border-[#D5CCC1] bg-white">
                           <button
                             onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
                             disabled={item.quantity <= 1}
                             className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-black hover:bg-[#FAF6F0] disabled:opacity-30 disabled:hover:bg-white transition-colors"
-                            aria-label="Zmniejsz ilość"
+                            aria-label="Decrease quantity"
                           >
                             <Minus className="w-3 h-3" />
                           </button>
@@ -519,7 +519,7 @@ const CartPage: React.FC = () => {
                             onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
                             disabled={item.product.stock ? item.quantity >= item.product.stock : false}
                             className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-black hover:bg-[#FAF6F0] disabled:opacity-30 disabled:hover:bg-white transition-colors"
-                            aria-label="Zwiększ ilość"
+                            aria-label="Increase quantity"
                           >
                             <Plus className="w-3 h-3" />
                           </button>
@@ -537,8 +537,8 @@ const CartPage: React.FC = () => {
                         <button
                           onClick={() => removeFromCart(item.product.id)}
                           className="p-1.5 text-gray-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
-                          title="Usuń produkt"
-                          aria-label="Usuń produkt"
+                          title="Remove item"
+                          aria-label="Remove item"
                         >
                           <Trash2 className="w-4 h-4 stroke-[1.5]" />
                         </button>
@@ -556,14 +556,14 @@ const CartPage: React.FC = () => {
                   className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] font-medium text-[#1A1A1A] hover:text-[#C1A98F] transition-colors"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
-                  <span>Kontynuuj Zakupy</span>
+                  <span>Continue Shopping</span>
                 </Link>
 
                 <button
                   onClick={clearCart}
                   className="text-[11px] uppercase tracking-[0.25em] font-medium text-gray-400 hover:text-rose-600 transition-colors"
                 >
-                  Wyczyść Koszyk
+                  Clear Bag
                 </button>
               </div>
             </div>
@@ -580,10 +580,10 @@ const CartPage: React.FC = () => {
                   <div>
                     <h2 className="text-[13px] uppercase tracking-[0.25em] font-semibold text-[#1A1A1A] flex items-center gap-2">
                       <MapPin className="w-4 h-4 text-[#C1A98F]" />
-                      <span>Dane Dostawy i Odbiorcy</span>
+                      <span>Shipping & Recipient Details</span>
                     </h2>
                     <span className="text-[10px] text-amber-800 font-light uppercase tracking-wider block mt-0.5">
-                      * Pola obowiązkowe do nadania przesyłki
+                      * Required fields for delivery
                     </span>
                   </div>
                 </div>
@@ -591,8 +591,8 @@ const CartPage: React.FC = () => {
                 {user && (
                   <div className="flex items-center gap-2 px-3 py-1 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs">
                     <UserCheck className="w-3.5 h-3.5" />
-                    <span className="font-medium hidden sm:inline">Zalogowano: {user.name || user.email}</span>
-                    <span className="font-medium sm:hidden">Zalogowano</span>
+                    <span className="font-medium hidden sm:inline">Signed in: {user.name || user.email}</span>
+                    <span className="font-medium sm:hidden">Signed in</span>
                   </div>
                 )}
               </div>
@@ -603,7 +603,7 @@ const CartPage: React.FC = () => {
                 {!user ? (
                   <div className="space-y-3 pb-6 border-b border-[#F0EBE3]">
                     <span className="text-[11px] uppercase tracking-[0.25em] font-semibold text-[#1A1A1A] block">
-                      Wybierz sposób realizacji zamówienia:
+                      Choose how to place your order:
                     </span>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -626,13 +626,13 @@ const CartPage: React.FC = () => {
                               className="accent-[#1A1A1A]"
                             />
                             <span className="text-xs font-semibold uppercase tracking-wider text-[#1A1A1A]">
-                              Zakupy bez rejestracji
+                              Guest Checkout
                             </span>
                           </div>
-                          <span className="text-[10px] px-2 py-0.5 bg-gray-100 text-gray-600 font-medium">Gość</span>
+                          <span className="text-[10px] px-2 py-0.5 bg-gray-100 text-gray-600 font-medium">Guest</span>
                         </div>
                         <p className="text-[11px] text-gray-500 font-light pl-5 leading-relaxed">
-                          Szybkie zakupy bez tworzenia hasła. Potwierdzenie i status otrzymasz na podany e-mail.
+                          Quick checkout without creating a password. Confirmation and tracking will be sent to your email.
                         </p>
                       </label>
 
@@ -655,26 +655,26 @@ const CartPage: React.FC = () => {
                               className="accent-[#C1A98F]"
                             />
                             <span className="text-xs font-semibold uppercase tracking-wider text-[#1A1A1A] flex items-center gap-1.5">
-                              <span>Załóż konto z zamówieniem</span>
+                              <span>Create account with order</span>
                               <Sparkles className="w-3 h-3 text-[#C1A98F]" />
                             </span>
                           </div>
-                          <span className="text-[10px] px-2 py-0.5 bg-[#FAF0E4] text-[#8A532B] font-medium">Polecane</span>
+                          <span className="text-[10px] px-2 py-0.5 bg-[#FAF0E4] text-[#8A532B] font-medium">Recommended</span>
                         </div>
                         <p className="text-[11px] text-gray-600 font-light pl-5 leading-relaxed">
-                          Automatycznie utwórz konto Lunar, śledź przesyłkę online i zapisz adres do kolejnych zakupów.
+                          Automatically create a Lunar account, track your delivery online, and save your address for future orders.
                         </p>
                       </label>
                     </div>
 
                     {/* Returning Customer Quick Login Link */}
                     <div className="pt-2 flex items-center justify-between text-xs text-gray-500">
-                      <span>Masz już konto w Lunar?</span>
+                      <span>Already have a Lunar account?</span>
                       <Link
                         to="/login?redirect=/cart"
                         className="text-[#1A1A1A] font-medium hover:text-[#C1A98F] transition-colors underline underline-offset-4"
                       >
-                        Zaloguj się, aby wczytać dane →
+                        Sign in to load your details →
                       </Link>
                     </div>
 
@@ -682,14 +682,14 @@ const CartPage: React.FC = () => {
                     {checkoutMode === 'create_account' && (
                       <div className="mt-4 p-4 bg-[#FAF6F0] border border-[#E8DFD3] animate-fade-in space-y-2">
                         <label className="block text-[11px] uppercase tracking-[0.2em] font-medium text-[#1A1A1A]">
-                          Utwórz hasło do swojego nowego konta *
+                          Create a password for your new account *
                         </label>
                         <div className="relative">
                           <input
                             type={showPassword ? 'text' : 'password'}
                             value={accountPassword}
                             onChange={(e) => handleFieldChange('password', e.target.value)}
-                            placeholder="Wpisz hasło (minimum 6 znaków)"
+                            placeholder="Enter password (minimum 6 characters)"
                             className={`w-full px-3.5 py-2.5 text-xs bg-white border ${
                               formErrors.password ? 'border-rose-500 focus:ring-rose-200' : 'border-[#D5CCC1] focus:border-black'
                             } focus:outline-none pr-10`}
@@ -698,7 +698,7 @@ const CartPage: React.FC = () => {
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
                             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black"
-                            aria-label={showPassword ? 'Ukryj hasło' : 'Pokaż hasło'}
+                            aria-label={showPassword ? 'Hide password' : 'Show password'}
                           >
                             {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                           </button>
@@ -710,7 +710,7 @@ const CartPage: React.FC = () => {
                           </p>
                         ) : (
                           <p className="text-[10px] text-gray-500 font-light">
-                            Hasło posłuży do logowania i wglądu do historii zamówień.
+                            This password will be used to sign in and view your order history.
                           </p>
                         )}
                       </div>
@@ -727,7 +727,7 @@ const CartPage: React.FC = () => {
                         onChange={(e) => setSaveAddressToProfile(e.target.checked)}
                         className="accent-[#1A1A1A] w-4 h-4 rounded-none"
                       />
-                      <span>Zapisz/zaktualizuj ten adres jako domyślny w moim profilu Lunar</span>
+                      <span>Save / update this address as default in my Lunar profile</span>
                     </label>
                   </div>
                 )}
@@ -739,14 +739,14 @@ const CartPage: React.FC = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-[10px] uppercase tracking-[0.25em] font-medium text-gray-600 mb-1.5">
-                        Imię i Nazwisko Odbiorcy *
+                        Recipient Full Name *
                       </label>
                       <div className="relative">
                         <input
                           type="text"
                           value={shippingName}
                           onChange={(e) => handleFieldChange('name', e.target.value)}
-                          placeholder="np. Anna Kowalska"
+                          placeholder="e.g. Jane Smith"
                           className={`w-full px-3.5 py-2.5 text-xs bg-[#FAF8F5] border ${
                             formErrors.name ? 'border-rose-500 bg-rose-50/30' : 'border-[#D5CCC1] focus:border-black focus:bg-white'
                           } focus:outline-none transition-colors`}
@@ -762,14 +762,14 @@ const CartPage: React.FC = () => {
 
                     <div>
                       <label className="block text-[10px] uppercase tracking-[0.25em] font-medium text-gray-600 mb-1.5">
-                        Adres E-mail do Powiadomień *
+                        Email Address for Notifications *
                       </label>
                       <div className="relative">
                         <input
                           type="email"
                           value={shippingEmail}
                           onChange={(e) => handleFieldChange('email', e.target.value)}
-                          placeholder="np. anna.kowalska@example.com"
+                          placeholder="e.g. jane.smith@example.com"
                           className={`w-full px-3.5 py-2.5 text-xs bg-[#FAF8F5] border ${
                             formErrors.email ? 'border-rose-500 bg-rose-50/30' : 'border-[#D5CCC1] focus:border-black focus:bg-white'
                           } focus:outline-none transition-colors`}
@@ -788,14 +788,14 @@ const CartPage: React.FC = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-[10px] uppercase tracking-[0.25em] font-medium text-gray-600 mb-1.5">
-                        Numer Telefonu dla Kuriera *
+                        Phone Number for Courier *
                       </label>
                       <div className="relative">
                         <input
                           type="tel"
                           value={shippingPhone}
                           onChange={(e) => handleFieldChange('phone', e.target.value)}
-                          placeholder="+48 500 123 456"
+                          placeholder="+353 87 123 4567"
                           className={`w-full px-3.5 py-2.5 text-xs bg-[#FAF8F5] border ${
                             formErrors.phone ? 'border-rose-500 bg-rose-50/30' : 'border-[#D5CCC1] focus:border-black focus:bg-white'
                           } focus:outline-none transition-colors`}
@@ -811,7 +811,7 @@ const CartPage: React.FC = () => {
 
                     <div>
                       <label className="block text-[10px] uppercase tracking-[0.25em] font-medium text-gray-600 mb-1.5">
-                        Kraj Dostawy *
+                        Delivery Country *
                       </label>
                       <div className="relative">
                         <select
@@ -838,14 +838,14 @@ const CartPage: React.FC = () => {
                   {/* Row 3: Street Address */}
                   <div>
                     <label className="block text-[10px] uppercase tracking-[0.25em] font-medium text-gray-600 mb-1.5">
-                      Ulica i Numer Domu / Mieszkania *
+                      Street Address & House / Flat No. *
                     </label>
                     <div className="relative">
                       <input
                         type="text"
                         value={shippingStreet}
                         onChange={(e) => handleFieldChange('street', e.target.value)}
-                        placeholder="np. ul. Mokotowska 15 m. 4"
+                        placeholder="e.g. 15 Grafton Street, Apt 4"
                         className={`w-full px-3.5 py-2.5 text-xs bg-[#FAF8F5] border ${
                           formErrors.street ? 'border-rose-500 bg-rose-50/30' : 'border-[#D5CCC1] focus:border-black focus:bg-white'
                         } focus:outline-none transition-colors`}
@@ -863,13 +863,13 @@ const CartPage: React.FC = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-[10px] uppercase tracking-[0.25em] font-medium text-gray-600 mb-1.5">
-                        Kod Pocztowy *
+                        Postal Code *
                       </label>
                       <input
                         type="text"
                         value={shippingPostalCode}
                         onChange={(e) => handleFieldChange('postalCode', e.target.value)}
-                        placeholder="np. 00-561"
+                        placeholder="e.g. D02 XY45"
                         className={`w-full px-3.5 py-2.5 text-xs bg-[#FAF8F5] border ${
                           formErrors.postalCode ? 'border-rose-500 bg-rose-50/30' : 'border-[#D5CCC1] focus:border-black focus:bg-white'
                         } focus:outline-none transition-colors`}
@@ -883,13 +883,13 @@ const CartPage: React.FC = () => {
 
                     <div>
                       <label className="block text-[10px] uppercase tracking-[0.25em] font-medium text-gray-600 mb-1.5">
-                        Miejscowość / Miasto *
+                        City / Town *
                       </label>
                       <input
                         type="text"
                         value={shippingCity}
                         onChange={(e) => handleFieldChange('city', e.target.value)}
-                        placeholder="np. Warszawa"
+                        placeholder="e.g. Dublin"
                         className={`w-full px-3.5 py-2.5 text-xs bg-[#FAF8F5] border ${
                           formErrors.city ? 'border-rose-500 bg-rose-50/30' : 'border-[#D5CCC1] focus:border-black focus:bg-white'
                         } focus:outline-none transition-colors`}
@@ -912,9 +912,9 @@ const CartPage: React.FC = () => {
               <Gift className="w-5 h-5 text-[#C1A98F] shrink-0 mt-0.5" />
               <div className="text-[12px] text-gray-700 leading-relaxed font-light">
                 <span className="font-semibold text-black uppercase tracking-wider text-[11px] block mb-0.5">
-                  Luksusowe Opakowanie Prezentowe w Cenie
+                  Complimentary Luxury Gift Packaging
                 </span>
-                Każdy produkt Lunar pakowany jest w eleganckie, tłoczone pudełko jubilerskie przewiązane satynową wstążką, wraz z certyfikatem autentyczności.
+                Every Lunar piece is presented in an elegant embossed jewellery box tied with a satin ribbon, along with a certificate of authenticity.
               </div>
             </div>
 
@@ -926,17 +926,17 @@ const CartPage: React.FC = () => {
               
               <div className="flex items-center justify-between pb-5 border-b border-[#F0EBE3] mb-6">
                 <h2 className="text-[13px] uppercase tracking-[0.3em] font-semibold text-[#1A1A1A]">
-                  Podsumowanie
+                  Order Summary
                 </h2>
                 <span className="text-[11px] text-gray-400 tracking-wider">
-                  {totalItems} {totalItems === 1 ? 'pozycja' : 'pozycje'}
+                  {totalItems} {totalItems === 1 ? 'item' : 'items'}
                 </span>
               </div>
 
               {/* Breakdown Rows */}
               <div className="space-y-3.5 text-[13px] text-gray-600 mb-6">
                 <div className="flex justify-between items-center">
-                  <span className="font-light">Wartość produktów</span>
+                  <span className="font-light">Subtotal</span>
                   <span className="font-medium text-[#1A1A1A]">€{totalPrice.toFixed(2)}</span>
                 </div>
 
@@ -945,7 +945,7 @@ const CartPage: React.FC = () => {
                   <div className="flex justify-between items-center text-emerald-700">
                     <span className="flex items-center gap-1.5">
                       <Tag className="w-3.5 h-3.5" />
-                      <span>Rabat ({appliedPromo.code} -{appliedPromo.discountPct}%)</span>
+                      <span>Discount ({appliedPromo.code} -{appliedPromo.discountPct}%)</span>
                     </span>
                     <span className="font-medium">-€{discountAmount.toFixed(2)}</span>
                   </div>
@@ -954,32 +954,32 @@ const CartPage: React.FC = () => {
                 {/* Delivery */}
                 <div className="flex justify-between items-center">
                   <div className="flex flex-col">
-                    <span className="font-light">Ubezpieczona przesyłka</span>
-                    <span className="text-[10px] text-gray-400 font-light">2–4 dni robocze</span>
+                    <span className="font-light">Insured Delivery</span>
+                    <span className="text-[10px] text-gray-400 font-light">2–4 business days</span>
                   </div>
                   <span className={`font-medium ${isFreeShipping ? 'text-emerald-700 font-semibold' : 'text-[#1A1A1A]'}`}>
-                    {isFreeShipping ? 'GRATIS' : `€${shippingFee.toFixed(2)}`}
+                    {isFreeShipping ? 'FREE' : `€${shippingFee.toFixed(2)}`}
                   </span>
                 </div>
 
                 <div className="flex justify-between items-center text-[11px] text-gray-400 pt-1">
-                  <span>Podatek VAT</span>
-                  <span>Wliczony w cenę</span>
+                  <span>VAT</span>
+                  <span>Included</span>
                 </div>
               </div>
 
               {/* Shipping Address Status Badge */}
               <div className="border-t border-[#F0EBE3] pt-4 mb-6">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-500 font-light">Adres dostawy:</span>
+                  <span className="text-gray-500 font-light">Delivery address:</span>
                   {shippingStreet && shippingCity && shippingPostalCode ? (
                     <span className="text-emerald-700 font-medium flex items-center gap-1 text-[11px]">
                       <Check className="w-3.5 h-3.5" />
-                      <span>Wypełniony ({shippingCity})</span>
+                      <span>Filled ({shippingCity})</span>
                     </span>
                   ) : (
                     <span className="text-amber-700 font-medium text-[11px]">
-                      Wymaga wypełnienia
+                      Required
                     </span>
                   )}
                 </div>
@@ -995,14 +995,14 @@ const CartPage: React.FC = () => {
                         className="text-[11px] uppercase tracking-[0.2em] font-medium text-[#C1A98F] hover:text-[#1A1A1A] transition-colors flex items-center gap-1.5"
                       >
                         <Tag className="w-3.5 h-3.5" />
-                        <span>Posiadasz kod rabatowy?</span>
+                        <span>Have a promo code?</span>
                       </button>
                     ) : (
                       <form onSubmit={handleApplyPromo} className="mt-2">
                         <div className="flex gap-2">
                           <input
                             type="text"
-                            placeholder="Wpisz kod (np. LUNAR10)"
+                            placeholder="Enter code (e.g. LUNAR10)"
                             value={promoCode}
                             onChange={(e) => setPromoCode(e.target.value)}
                             className="flex-1 px-3 py-2 text-xs uppercase tracking-wider border border-[#D5CCC1] focus:outline-none focus:border-black bg-[#FAF8F5]"
@@ -1011,7 +1011,7 @@ const CartPage: React.FC = () => {
                             type="submit"
                             className="px-4 py-2 bg-[#1A1A1A] text-white text-[11px] uppercase tracking-wider font-medium hover:bg-[#333333] transition-colors"
                           >
-                            Zastosuj
+                            Apply
                           </button>
                         </div>
                         {promoError && (
@@ -1024,13 +1024,13 @@ const CartPage: React.FC = () => {
                   <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 px-3 py-2 text-xs text-emerald-800">
                     <span className="flex items-center gap-1.5 font-medium">
                       <Check className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>Kod {appliedPromo.code} naliczony!</span>
+                      <span>Code {appliedPromo.code} applied!</span>
                     </span>
                     <button
                       onClick={handleRemovePromo}
                       className="text-[11px] text-gray-500 hover:text-rose-600 uppercase tracking-wider font-semibold"
                     >
-                      Usuń
+                      Remove
                     </button>
                   </div>
                 )}
@@ -1041,9 +1041,9 @@ const CartPage: React.FC = () => {
                 <div className="flex justify-between items-baseline">
                   <div>
                     <span className="text-[12px] uppercase tracking-[0.25em] font-semibold text-[#1A1A1A] block">
-                      Łącznie do zapłaty
+                      Total Due
                     </span>
-                    <span className="text-[10px] text-gray-400 tracking-wider">Waluta: EUR</span>
+                    <span className="text-[10px] text-gray-400 tracking-wider">Currency: EUR</span>
                   </div>
                   <div className="text-right">
                     <span
@@ -1074,12 +1074,12 @@ const CartPage: React.FC = () => {
                 {isCheckingOut ? (
                   <>
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    <span>Łączenie ze Stripe...</span>
+                    <span>Connecting to Stripe...</span>
                   </>
                 ) : (
                   <>
                     <Lock className="w-3.5 h-3.5 text-[#C1A98F]" />
-                    <span>Przejdź do Płatności</span>
+                    <span>Proceed to Payment</span>
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </>
                 )}
@@ -1088,7 +1088,7 @@ const CartPage: React.FC = () => {
               {/* Payment Methods Badges */}
               <div className="mt-5 pt-5 border-t border-[#F0EBE3] text-center">
                 <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-3 font-medium">
-                  Bezpieczna Płatność Szyfrowana via Stripe
+                  Secure Encrypted Payment via Stripe
                 </p>
                 <div className="flex flex-wrap items-center justify-center gap-1.5 text-gray-500">
                   {['Visa', 'Mastercard', 'Apple Pay', 'Google Pay', 'BLIK', 'Klarna'].map((badge) => (
@@ -1106,15 +1106,15 @@ const CartPage: React.FC = () => {
               <div className="mt-6 pt-5 border-t border-[#F0EBE3] space-y-3 text-[11px] text-gray-500 font-light">
                 <div className="flex items-center gap-2.5">
                   <ShieldCheck className="w-4 h-4 text-[#C1A98F] shrink-0" />
-                  <span>Szyfrowanie 256-Bit SSL i ochrona kupującego</span>
+                  <span>256-Bit SSL encryption and buyer protection</span>
                 </div>
                 <div className="flex items-center gap-2.5">
                   <Truck className="w-4 h-4 text-[#C1A98F] shrink-0" />
-                  <span>Ubezpieczona przesyłka kurierska z trackingiem</span>
+                  <span>Insured tracked courier delivery</span>
                 </div>
                 <div className="flex items-center gap-2.5">
                   <RotateCcw className="w-4 h-4 text-[#C1A98F] shrink-0" />
-                  <span>30 dni na bezpłatny zwrot zamówienia</span>
+                  <span>30-day free returns on all orders</span>
                 </div>
               </div>
 

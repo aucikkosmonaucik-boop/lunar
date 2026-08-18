@@ -29,7 +29,7 @@ const ContactPage: React.FC = () => {
           Accept: 'application/json',
         },
         body: JSON.stringify({
-          access_key: '9822111f-4f42-40e0-b15a-9321a1d2fd24', // <-- Skonfigurowany klucz Web3Forms
+          access_key: '9822111f-4f42-40e0-b15a-9321a1d2fd24', // <-- Configured Web3Forms access key
           ...formData,
         }),
       });
