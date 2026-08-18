@@ -38,42 +38,42 @@ const LOCAL_REWARDS_KEY = 'lunar_local_rewards_catalog_v2';
 const INITIAL_REWARDS: LoyaltyReward[] = [
   {
     id: 'reward-1',
-    title: 'Kupon Rabatowy 10 PLN (2.50€)',
-    description: 'Rabat kwotowy na całe zamówienie od 20€.',
+    title: '€5 Voucher',
+    description: 'Fixed discount on entire cart for orders over €30.',
     pointsCost: 100,
     discountType: 'FIXED',
-    discountValue: 2.5,
-    minOrderValue: 20,
-    isActive: true,
-  },
-  {
-    id: 'reward-2',
-    title: 'Zniżka 10% na Cały Koszyk',
-    description: '10% rabatu na wszystkie produkty w koszyku.',
-    pointsCost: 200,
-    discountType: 'PERCENTAGE',
-    discountValue: 10,
+    discountValue: 5.0,
     minOrderValue: 30,
     isActive: true,
   },
   {
-    id: 'reward-3',
-    title: 'Kupon VIP 25 PLN (6.00€)',
-    description: 'Ekskluzywna zniżka dla stałych klientów Lunar.',
-    pointsCost: 350,
-    discountType: 'FIXED',
-    discountValue: 6.0,
+    id: 'reward-2',
+    title: '10% Off Entire Order',
+    description: '10% discount on all items in your luxury bag.',
+    pointsCost: 200,
+    discountType: 'PERCENTAGE',
+    discountValue: 10,
     minOrderValue: 40,
     isActive: true,
   },
   {
+    id: 'reward-3',
+    title: 'VIP €15 Gift Voucher',
+    description: 'Exclusive fixed discount for loyal Lunar Club patrons.',
+    pointsCost: 350,
+    discountType: 'FIXED',
+    discountValue: 15.0,
+    minOrderValue: 60,
+    isActive: true,
+  },
+  {
     id: 'reward-4',
-    title: 'Złoty Kupon 20% Zniżki',
-    description: 'Ekskluzywny rabat 20% na całe zamówienie biżuterii i perfum.',
+    title: 'Golden 20% Off Privilege',
+    description: 'Exclusive 20% luxury discount across fine jewelry & perfumes.',
     pointsCost: 500,
     discountType: 'PERCENTAGE',
     discountValue: 20,
-    minOrderValue: 50,
+    minOrderValue: 80,
     isActive: true,
   },
 ];
@@ -106,7 +106,7 @@ export const LoyaltyProvider: React.FC<{ children: ReactNode }> = ({ children })
         userId: user?.id || 'demo-user',
         points: 150,
         type: 'SIGNUP_BONUS',
-        description: 'Punkty powitalne w programie LUNAR Club',
+        description: 'LUNAR Club Welcome Bonus Points',
         createdAt: new Date().toISOString(),
       },
     ];
@@ -211,13 +211,13 @@ export const LoyaltyProvider: React.FC<{ children: ReactNode }> = ({ children })
   const redeemReward = async (rewardId: string): Promise<{ success: boolean; coupon?: UserCoupon; message: string }> => {
     const reward = rewards.find(r => r.id === rewardId);
     if (!reward) {
-      return { success: false, message: 'Nie znaleziono wybranej nagrody' };
+      return { success: false, message: 'Selected reward was not found' };
     }
 
     if (points < reward.pointsCost) {
       return {
         success: false,
-        message: `Brak wystarczającej liczby punktów. Posiadasz ${points} pkt, a wymagane jest ${reward.pointsCost} pkt.`,
+        message: `Insufficient points. You currently have ${points} pts, while ${reward.pointsCost} pts are required.`,
       };
     }
 
@@ -240,12 +240,12 @@ export const LoyaltyProvider: React.FC<{ children: ReactNode }> = ({ children })
               userId: user?.id || 'demo-user',
               points: -reward.pointsCost,
               type: 'REDEEM',
-              description: `Wymiana punktów na: ${reward.title} (Kod: ${data.coupon.code})`,
+              description: `Redeemed points for: ${reward.title} (Code: ${data.coupon.code})`,
               createdAt: new Date().toISOString(),
             },
             ...prev,
           ]);
-          return { success: true, coupon: data.coupon, message: 'Kupon został pomyślnie wygenerowany!' };
+          return { success: true, coupon: data.coupon, message: 'Reward coupon generated successfully!' };
         }
       }
     } catch (e) {
@@ -279,7 +279,7 @@ export const LoyaltyProvider: React.FC<{ children: ReactNode }> = ({ children })
         userId: user?.id || 'demo-user',
         points: -reward.pointsCost,
         type: 'REDEEM',
-        description: `Wymiana punktów na: ${reward.title} (Kod: ${code})`,
+        description: `Redeemed points for: ${reward.title} (Code: ${code})`,
         createdAt: new Date().toISOString(),
       },
       ...prev,
@@ -288,7 +288,7 @@ export const LoyaltyProvider: React.FC<{ children: ReactNode }> = ({ children })
     return {
       success: true,
       coupon: newCoupon,
-      message: 'Kupon został pomyślnie wygenerowany i dodany do Twojego portfela!',
+      message: 'Reward coupon generated successfully!',
     };
   };
 
@@ -334,7 +334,7 @@ export const LoyaltyProvider: React.FC<{ children: ReactNode }> = ({ children })
       // Create
       const newReward: LoyaltyReward = {
         id: `reward-${Date.now()}`,
-        title: rewardData.title || 'Nowy Kupon',
+        title: rewardData.title || 'New Voucher Reward',
         description: rewardData.description || '',
         pointsCost: Number(rewardData.pointsCost || 100),
         discountType: rewardData.discountType || 'FIXED',

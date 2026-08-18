@@ -26,21 +26,21 @@ export const LoyaltyAdminManager: React.FC = () => {
   const [rewardDesc, setRewardDesc] = useState('');
   const [rewardCost, setRewardCost] = useState<number | ''>(100);
   const [rewardType, setRewardType] = useState<'PERCENTAGE' | 'FIXED'>('FIXED');
-  const [rewardValue, setRewardValue] = useState<number | ''>(2.5);
-  const [rewardMinOrder, setRewardMinOrder] = useState<number | ''>(20);
+  const [rewardValue, setRewardValue] = useState<number | ''>(5.0);
+  const [rewardMinOrder, setRewardMinOrder] = useState<number | ''>(30);
   const [rewardActive, setRewardActive] = useState(true);
 
   // User Adjust State
   const [usersList, setUsersList] = useState<DemoUserRecord[]>([
-    { id: 'usr-1', name: 'Karolina Kowalska', email: 'karolina.k@example.com', points: 450, ordersCount: 5, couponsCount: 3 },
-    { id: 'usr-2', name: 'Piotr Nowak', email: 'piotr.nowak@example.com', points: 280, ordersCount: 2, couponsCount: 1 },
-    { id: 'usr-3', name: 'Anna Wiśniewska', email: 'anna.wisniewska@example.com', points: 1250, ordersCount: 12, couponsCount: 6 },
-    { id: 'usr-4', name: 'Marek Wójcik', email: 'marek.wojcik@example.com', points: 90, ordersCount: 1, couponsCount: 0 },
+    { id: 'usr-1', name: 'Caroline Taylor', email: 'caroline.t@example.com', points: 450, ordersCount: 5, couponsCount: 3 },
+    { id: 'usr-2', name: 'Peter Vance', email: 'peter.v@example.com', points: 280, ordersCount: 2, couponsCount: 1 },
+    { id: 'usr-3', name: 'Eleanor Dubois', email: 'eleanor.d@example.com', points: 1250, ordersCount: 12, couponsCount: 6 },
+    { id: 'usr-4', name: 'Marcus Wright', email: 'marcus.w@example.com', points: 90, ordersCount: 1, couponsCount: 0 },
   ]);
 
   const [selectedUser, setSelectedUser] = useState<DemoUserRecord | null>(null);
   const [adjustPointsValue, setAdjustPointsValue] = useState<number | ''>(50);
-  const [adjustReason, setAdjustReason] = useState('Premia za aktywność / konkurs');
+  const [adjustReason, setAdjustReason] = useState('Customer appreciation bonus');
   const [isAdjustModalOpen, setIsAdjustModalOpen] = useState(false);
 
   // Settings State
@@ -54,7 +54,7 @@ export const LoyaltyAdminManager: React.FC = () => {
     setRewardCost(150);
     setRewardType('PERCENTAGE');
     setRewardValue(10);
-    setRewardMinOrder(25);
+    setRewardMinOrder(30);
     setRewardActive(true);
     setIsModalOpen(true);
   };
@@ -76,17 +76,17 @@ export const LoyaltyAdminManager: React.FC = () => {
     setErrorMessage(null);
 
     if (!rewardTitle.trim()) {
-      setErrorMessage('Tytuł nagrody jest wymagany');
+      setErrorMessage('Reward title is required');
       return;
     }
 
     if (rewardCost === '' || Number(rewardCost) <= 0) {
-      setErrorMessage('Koszt punktowy musi być większy od 0');
+      setErrorMessage('Points cost must be greater than 0');
       return;
     }
 
     if (rewardValue === '' || Number(rewardValue) <= 0) {
-      setErrorMessage('Wartość zniżki musi być większa od 0');
+      setErrorMessage('Discount value must be greater than 0');
       return;
     }
 
@@ -102,14 +102,14 @@ export const LoyaltyAdminManager: React.FC = () => {
     });
 
     setIsModalOpen(false);
-    setSuccessMessage(`Kupon nagrodowy "${rewardTitle}" został zapisany!`);
+    setSuccessMessage(`Reward coupon "${rewardTitle}" saved successfully!`);
     setTimeout(() => setSuccessMessage(null), 4000);
   };
 
   const handleDeleteReward = async (id: string, title: string) => {
-    if (!window.confirm(`Czy na pewno chcesz usunąć nagrodę "${title}"?`)) return;
+    if (!window.confirm(`Are you sure you want to delete reward "${title}"?`)) return;
     await adminDeleteReward(id);
-    setSuccessMessage(`Nagroda została usunięta.`);
+    setSuccessMessage(`Reward deleted successfully.`);
     setTimeout(() => setSuccessMessage(null), 3000);
   };
 
@@ -127,23 +127,23 @@ export const LoyaltyAdminManager: React.FC = () => {
     );
 
     setIsAdjustModalOpen(false);
-    setSuccessMessage(`Zaktualizowano punkty dla użytkownika ${selectedUser.name} (${diff > 0 ? `+${diff}` : diff} pkt)!`);
+    setSuccessMessage(`Updated points for ${selectedUser.name} (${diff > 0 ? `+${diff}` : diff} pts)!`);
     setTimeout(() => setSuccessMessage(null), 4000);
   };
 
   return (
     <div className="space-y-6">
       {/* Top Banner & KPI */}
-      <div className="bg-gradient-to-r from-[#0d0d0d] via-[#1a1a1a] to-[#262626] text-white p-6 rounded-lg shadow-lg border border-gray-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div className="bg-white text-[#1A1A1A] p-6 rounded-sm shadow-xs border border-[#EAE3D9] flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div>
-          <div className="flex items-center gap-2 text-[#d4af37] text-xs uppercase tracking-widest font-bold mb-1">
-            <Coins className="w-4 h-4" /> LUNAR Club • Program Lojalnościowy
+          <div className="flex items-center gap-2 text-[#D4AF37] text-xs uppercase tracking-widest font-bold mb-1">
+            <Coins className="w-4 h-4" /> LUNAR Club • Loyalty Program
           </div>
-          <h2 className="text-2xl font-serif tracking-wider">
-            Zarządzanie Punktami za Zakupy i Sklepem Kuponów
+          <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-2xl font-light tracking-wider text-[#1A1A1A]">
+            Purchase Points & Rewards Management
           </h2>
-          <p className="text-xs text-gray-400 mt-1 max-w-xl">
-            Klienci zdobywają punkty za każde zakupy ({pointsPerCurrency} pkt za 1€/PLN), a następnie wymieniają je na unikalne kupony rabatowe.
+          <p className="text-xs text-gray-500 mt-1 max-w-xl">
+            Customers earn points automatically on every checkout ({pointsPerCurrency} pts per €1 spent) and redeem them into unique discount coupons.
           </p>
         </div>
 
@@ -151,58 +151,58 @@ export const LoyaltyAdminManager: React.FC = () => {
           <button
             type="button"
             onClick={openCreateModal}
-            className="px-5 py-2.5 bg-[#d4af37] text-black font-bold text-xs uppercase tracking-widest rounded hover:bg-[#c5a059] transition-all flex items-center gap-2 shadow-lg"
+            className="px-5 py-2.5 bg-[#1A1A1A] text-white hover:bg-[#D4AF37] hover:text-black font-bold text-xs uppercase tracking-widest rounded-sm transition-all flex items-center gap-2 shadow-xs"
           >
-            <Plus className="w-4 h-4 text-black" />
-            <span>Nowy Kupon za Punkty</span>
+            <Plus className="w-4 h-4" />
+            <span>New Points Reward</span>
           </button>
         </div>
       </div>
 
       {successMessage && (
-        <div className="p-4 bg-green-50 border border-green-200 text-green-800 text-sm rounded flex items-center gap-2 animate-fade-in">
-          <Check className="w-4 h-4 text-green-600" />
+        <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm rounded flex items-center gap-2 animate-fade-in">
+          <Check className="w-4 h-4 text-emerald-600" />
           <span>{successMessage}</span>
         </div>
       )}
 
       {/* Subtabs */}
-      <div className="flex border-b border-gray-200 bg-white px-4 rounded-t-lg">
+      <div className="flex border-b border-gray-200 bg-[#FAF8F5] px-4 rounded-t-sm">
         <button
           type="button"
           onClick={() => setActiveSubtab('rewards')}
           className={`py-3.5 px-5 text-xs uppercase tracking-widest font-bold border-b-2 transition-all flex items-center gap-2 ${
             activeSubtab === 'rewards'
-              ? 'border-black text-black'
+              ? 'border-black text-black bg-white'
               : 'border-transparent text-gray-500 hover:text-black'
           }`}
         >
-          <Award className="w-4 h-4 text-[#d4af37]" />
-          1. Katalog Nagród & Kuponów ({rewards.length})
+          <Award className="w-4 h-4 text-[#D4AF37]" />
+          1. Rewards Catalog ({rewards.length})
         </button>
         <button
           type="button"
           onClick={() => setActiveSubtab('users')}
           className={`py-3.5 px-5 text-xs uppercase tracking-widest font-bold border-b-2 transition-all flex items-center gap-2 ${
             activeSubtab === 'users'
-              ? 'border-black text-black'
+              ? 'border-black text-black bg-white'
               : 'border-transparent text-gray-500 hover:text-black'
           }`}
         >
           <Users className="w-4 h-4" />
-          2. Salda Klientów & Korekta Punktów
+          2. Customer Points Balances
         </button>
         <button
           type="button"
           onClick={() => setActiveSubtab('settings')}
           className={`py-3.5 px-5 text-xs uppercase tracking-widest font-bold border-b-2 transition-all flex items-center gap-2 ${
             activeSubtab === 'settings'
-              ? 'border-black text-black'
+              ? 'border-black text-black bg-white'
               : 'border-transparent text-gray-500 hover:text-black'
           }`}
         >
-          <Sparkles className="w-4 h-4 text-[#d4af37]" />
-          3. Zasady Programu & Mnożniki
+          <Sparkles className="w-4 h-4 text-[#D4AF37]" />
+          3. Program Rules & Multipliers
         </button>
       </div>
 
@@ -212,45 +212,45 @@ export const LoyaltyAdminManager: React.FC = () => {
           {rewards.map((reward) => (
             <div
               key={reward.id}
-              className={`bg-white border rounded-lg p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden ${
-                reward.isActive ? 'border-gray-200' : 'border-gray-200 opacity-60 bg-gray-50'
+              className={`bg-white border rounded-sm p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden ${
+                reward.isActive ? 'border-[#EAE3D9]' : 'border-gray-200 opacity-60 bg-gray-50'
               }`}
             >
               {/* Gold Top Accent */}
-              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#d4af37] to-[#c5a059]" />
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#D4AF37] to-[#f3e5ab]" />
 
               <div>
                 <div className="flex items-center justify-between mb-3 pt-1">
                   <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 bg-amber-50 text-amber-900 border border-amber-200 rounded-full">
-                    <Coins className="w-3 h-3 text-[#d4af37]" /> {reward.pointsCost} PKT
+                    <Coins className="w-3 h-3 text-[#D4AF37]" /> {reward.pointsCost} PTS
                   </span>
                   <span
                     className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider ${
-                      reward.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-600'
+                      reward.isActive ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-200 text-gray-600'
                     }`}
                   >
-                    {reward.isActive ? 'Aktywny' : 'Wyłączony'}
+                    {reward.isActive ? 'Active' : 'Disabled'}
                   </span>
                 </div>
 
-                <h3 className="font-serif text-base font-bold text-black mb-1">
+                <h3 className="font-serif text-base font-bold text-[#1A1A1A] mb-1">
                   {reward.title}
                 </h3>
                 <p className="text-xs text-gray-500 mb-4 line-clamp-2">
-                  {reward.description || 'Kupon rabatowy generowany automatycznie po wymianie punktów.'}
+                  {reward.description || 'Voucher coupon generated upon points redemption.'}
                 </p>
 
-                <div className="bg-gray-50 border border-gray-100 rounded p-2.5 text-xs space-y-1 mb-4">
+                <div className="bg-[#FAF8F5] border border-[#EAE3D9] rounded p-2.5 text-xs space-y-1 mb-4">
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Wartość rabatu:</span>
-                    <span className="font-bold text-green-700">
-                      {reward.discountType === 'PERCENTAGE' ? `-${reward.discountValue}%` : `-${reward.discountValue.toFixed(2)}€`}
+                    <span className="text-gray-500">Discount:</span>
+                    <span className="font-bold text-emerald-700">
+                      {reward.discountType === 'PERCENTAGE' ? `-${reward.discountValue}%` : `-€${reward.discountValue.toFixed(2)}`}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Min. koszyk:</span>
+                    <span className="text-gray-500">Min. order:</span>
                     <span className="font-medium text-gray-800">
-                      {reward.minOrderValue > 0 ? `${reward.minOrderValue.toFixed(2)}€` : 'Brak limitu'}
+                      {reward.minOrderValue > 0 ? `€${reward.minOrderValue.toFixed(2)}` : 'No minimum'}
                     </span>
                   </div>
                 </div>
@@ -262,14 +262,14 @@ export const LoyaltyAdminManager: React.FC = () => {
                   onClick={() => openEditModal(reward)}
                   className="text-xs font-bold text-gray-700 hover:text-black flex items-center gap-1"
                 >
-                  <Edit2 className="w-3.5 h-3.5" /> Edytuj
+                  <Edit2 className="w-3.5 h-3.5" /> Edit
                 </button>
                 <button
                   type="button"
                   onClick={() => handleDeleteReward(reward.id, reward.title)}
-                  className="text-xs font-bold text-red-600 hover:text-red-800 flex items-center gap-1"
+                  className="text-xs font-bold text-rose-600 hover:text-rose-800 flex items-center gap-1"
                 >
-                  <Trash2 className="w-3.5 h-3.5" /> Usuń
+                  <Trash2 className="w-3.5 h-3.5" /> Delete
                 </button>
               </div>
             </div>
@@ -279,14 +279,14 @@ export const LoyaltyAdminManager: React.FC = () => {
 
       {/* SUBTAB 2: USERS POINTS & ADJUSTMENTS */}
       {activeSubtab === 'users' && (
-        <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden animate-fade-in">
+        <div className="bg-white border border-[#EAE3D9] rounded-sm shadow-xs overflow-hidden animate-fade-in">
           <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
             <div>
               <h3 className="text-xs uppercase tracking-widest font-bold text-gray-700">
-                Konta Klientów & Salda Punktowe
+                Customer Balances & Points Ledger
               </h3>
               <p className="text-xs text-gray-400">
-                Możesz ręcznie korygować punkty lojalnościowe z notatką audytową.
+                Manually adjust customer points with an audit ledger reason.
               </p>
             </div>
           </div>
@@ -294,23 +294,23 @@ export const LoyaltyAdminManager: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-gray-200 bg-gray-50 text-[11px] uppercase tracking-wider font-bold text-gray-600">
-                  <th className="py-3.5 px-6">Klient</th>
+                <tr className="border-b border-gray-200 bg-[#FAF8F5] text-[11px] uppercase tracking-wider font-bold text-gray-600">
+                  <th className="py-3.5 px-6">Customer</th>
                   <th className="py-3.5 px-6">Email</th>
-                  <th className="py-3.5 px-6">Saldo Punktów</th>
-                  <th className="py-3.5 px-6">Poziom Klienta</th>
-                  <th className="py-3.5 px-6">Zamówienia</th>
-                  <th className="py-3.5 px-6 text-right">Akcje</th>
+                  <th className="py-3.5 px-6">Points Balance</th>
+                  <th className="py-3.5 px-6">Member Tier</th>
+                  <th className="py-3.5 px-6">Orders & Coupons</th>
+                  <th className="py-3.5 px-6 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 text-sm">
                 {usersList.map((usr) => (
                   <tr key={usr.id} className="hover:bg-gray-50/80 transition-colors">
-                    <td className="py-4 px-6 font-bold text-black">{usr.name}</td>
+                    <td className="py-4 px-6 font-bold text-[#1A1A1A]">{usr.name}</td>
                     <td className="py-4 px-6 text-gray-600">{usr.email}</td>
                     <td className="py-4 px-6">
                       <span className="inline-flex items-center gap-1.5 font-bold text-black bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full text-xs">
-                        <Coins className="w-3.5 h-3.5 text-[#d4af37]" /> {usr.points} PKT
+                        <Coins className="w-3.5 h-3.5 text-[#D4AF37]" /> {usr.points} PTS
                       </span>
                     </td>
                     <td className="py-4 px-6">
@@ -323,7 +323,7 @@ export const LoyaltyAdminManager: React.FC = () => {
                       </span>
                     </td>
                     <td className="py-4 px-6 text-gray-600">
-                      {usr.ordersCount} zam. ({usr.couponsCount} kuponów)
+                      {usr.ordersCount} orders ({usr.couponsCount} coupons)
                     </td>
                     <td className="py-4 px-6 text-right">
                       <button
@@ -331,12 +331,12 @@ export const LoyaltyAdminManager: React.FC = () => {
                         onClick={() => {
                           setSelectedUser(usr);
                           setAdjustPointsValue(50);
-                          setAdjustReason('Bonus lojalnościowy');
+                          setAdjustReason('Loyalty appreciation bonus');
                           setIsAdjustModalOpen(true);
                         }}
-                        className="px-3 py-1.5 bg-[#0d0d0d] text-white text-xs font-bold rounded hover:bg-gray-800 transition-colors"
+                        className="px-3 py-1.5 bg-[#1A1A1A] hover:bg-[#D4AF37] text-white hover:text-black text-xs font-bold rounded transition-colors"
                       >
-                        ± Koryguj Punkty
+                        ± Adjust Points
                       </button>
                     </td>
                   </tr>
@@ -349,15 +349,15 @@ export const LoyaltyAdminManager: React.FC = () => {
 
       {/* SUBTAB 3: SETTINGS */}
       {activeSubtab === 'settings' && (
-        <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-6 max-w-2xl animate-fade-in">
-          <h3 className="text-sm uppercase tracking-widest font-bold text-black border-b border-gray-100 pb-3 flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-[#d4af37]" /> Parametry Programu Punktowego
+        <div className="bg-white border border-[#EAE3D9] rounded-sm p-6 space-y-6 max-w-2xl animate-fade-in">
+          <h3 className="text-xs uppercase tracking-widest font-bold text-[#1A1A1A] border-b border-gray-100 pb-3 flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-[#D4AF37]" /> Loyalty Program Rate Parameters
           </h3>
 
           <div className="space-y-4">
             <div>
               <label className="block text-xs uppercase tracking-widest font-bold text-gray-700 mb-1.5">
-                Mnożnik punktów za wydaną kwotę (Punkty / 1€ lub 1 PLN)
+                Points Rate Multiplier (Points earned per €1 spent)
               </label>
               <input
                 type="number"
@@ -367,13 +367,13 @@ export const LoyaltyAdminManager: React.FC = () => {
                 className="w-full px-3.5 py-2.5 border border-gray-300 rounded font-bold text-sm focus:ring-1 focus:ring-black focus:outline-none"
               />
               <p className="text-[11px] text-gray-500 mt-1">
-                Przy wartości 10: Za zamówienie o wartości 100€ klient otrzymuje 1000 punktów.
+                Default 10: An order of €100 earns 1,000 loyalty points for the customer.
               </p>
             </div>
 
             <div>
               <label className="block text-xs uppercase tracking-widest font-bold text-gray-700 mb-1.5">
-                Punkty powitalne za rejestrację konta
+                Welcome Bonus Points on Registration
               </label>
               <input
                 type="number"
@@ -383,7 +383,7 @@ export const LoyaltyAdminManager: React.FC = () => {
                 className="w-full px-3.5 py-2.5 border border-gray-300 rounded font-bold text-sm focus:ring-1 focus:ring-black focus:outline-none"
               />
               <p className="text-[11px] text-gray-500 mt-1">
-                Przyznawane automatycznie po utworzeniu konta użytkownika.
+                Credited automatically to new customer accounts upon sign-up.
               </p>
             </div>
           </div>
@@ -392,12 +392,12 @@ export const LoyaltyAdminManager: React.FC = () => {
             <button
               type="button"
               onClick={() => {
-                setSuccessMessage('Zasady programu lojalnościowego zostały zapisane!');
+                setSuccessMessage('Loyalty program parameters saved successfully!');
                 setTimeout(() => setSuccessMessage(null), 3000);
               }}
-              className="px-6 py-2.5 bg-[#0d0d0d] text-white text-xs uppercase tracking-widest font-bold rounded hover:bg-gray-800 transition-all flex items-center gap-2 shadow"
+              className="px-6 py-2.5 bg-[#1A1A1A] hover:bg-[#D4AF37] text-white hover:text-black text-xs uppercase tracking-widest font-bold rounded-sm transition-all flex items-center gap-2 shadow-xs"
             >
-              <Check className="w-4 h-4 text-[#d4af37]" /> Zapisz Konfigurację
+              <Check className="w-4 h-4" /> Save Configuration
             </button>
           </div>
         </div>
@@ -405,17 +405,17 @@ export const LoyaltyAdminManager: React.FC = () => {
 
       {/* MODAL: CREATE / EDIT REWARD */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white border border-gray-200 shadow-2xl rounded-lg w-full max-w-lg overflow-hidden animate-fade-in">
-            <div className="flex items-center justify-between px-6 py-4 bg-[#0d0d0d] text-white">
-              <h3 className="font-serif text-base tracking-wider flex items-center gap-2">
-                <Award className="w-4 h-4 text-[#d4af37]" />
-                {editingReward ? 'Edytuj Kupon za Punkty' : 'Nowy Kupon do Sklepu Punktowego'}
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-[#EAE3D9] shadow-2xl rounded-sm w-full max-w-lg overflow-hidden animate-fade-in">
+            <div className="flex items-center justify-between px-6 py-4 bg-[#FAF8F5] border-b border-[#EAE3D9] text-[#1A1A1A]">
+              <h3 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-lg tracking-wider flex items-center gap-2 font-light">
+                <Award className="w-4 h-4 text-[#D4AF37]" />
+                {editingReward ? 'Edit Points Reward Coupon' : 'Create Points Reward Coupon'}
               </h3>
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="text-gray-400 hover:text-white"
+                className="text-gray-400 hover:text-black"
               >
                 ✕
               </button>
@@ -423,34 +423,34 @@ export const LoyaltyAdminManager: React.FC = () => {
 
             <form onSubmit={handleSaveReward} className="p-6 space-y-4">
               {errorMessage && (
-                <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded">
+                <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded">
                   {errorMessage}
                 </div>
               )}
 
               <div>
                 <label className="block text-xs uppercase tracking-widest font-bold text-gray-700 mb-1">
-                  Tytuł Kuponu *
+                  Reward Title *
                 </label>
                 <input
                   type="text"
                   required
                   value={rewardTitle}
                   onChange={(e) => setRewardTitle(e.target.value)}
-                  placeholder="np. Zniżka 15% na całe zakupy"
+                  placeholder="e.g. 15% Off Entire Boutique Order"
                   className="w-full px-3.5 py-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-black focus:outline-none"
                 />
               </div>
 
               <div>
                 <label className="block text-xs uppercase tracking-widest font-bold text-gray-700 mb-1">
-                  Opis dla Klienta
+                  Customer Description
                 </label>
                 <textarea
                   rows={2}
                   value={rewardDesc}
                   onChange={(e) => setRewardDesc(e.target.value)}
-                  placeholder="np. Ważny na całą biżuterię i perfumy przez 90 dni od wymiany."
+                  placeholder="e.g. Valid for 90 days across fine jewelry and extracted perfumes."
                   className="w-full px-3.5 py-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-black focus:outline-none"
                 />
               </div>
@@ -458,7 +458,7 @@ export const LoyaltyAdminManager: React.FC = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs uppercase tracking-widest font-bold text-gray-700 mb-1">
-                    Koszt w Punktach (PKT) *
+                    Cost in Points (PTS) *
                   </label>
                   <input
                     type="number"
@@ -467,22 +467,22 @@ export const LoyaltyAdminManager: React.FC = () => {
                     required
                     value={rewardCost}
                     onChange={(e) => setRewardCost(e.target.value === '' ? '' : parseInt(e.target.value, 10))}
-                    placeholder="np. 200"
+                    placeholder="e.g. 200"
                     className="w-full px-3.5 py-2 border border-gray-300 rounded font-bold text-sm focus:ring-1 focus:ring-black focus:outline-none"
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs uppercase tracking-widest font-bold text-gray-700 mb-1">
-                    Typ Zniżki
+                    Discount Type
                   </label>
                   <select
                     value={rewardType}
                     onChange={(e) => setRewardType(e.target.value as 'PERCENTAGE' | 'FIXED')}
                     className="w-full px-3.5 py-2 border border-gray-300 rounded text-sm bg-white focus:ring-1 focus:ring-black focus:outline-none"
                   >
-                    <option value="PERCENTAGE">Procentowa (%)</option>
-                    <option value="FIXED">Kwotowa (€ / PLN)</option>
+                    <option value="PERCENTAGE">Percentage (%)</option>
+                    <option value="FIXED">Fixed Amount (€)</option>
                   </select>
                 </div>
               </div>
@@ -490,7 +490,7 @@ export const LoyaltyAdminManager: React.FC = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs uppercase tracking-widest font-bold text-gray-700 mb-1">
-                    Wartość Zniżki *
+                    Discount Value *
                   </label>
                   <input
                     type="number"
@@ -499,21 +499,21 @@ export const LoyaltyAdminManager: React.FC = () => {
                     required
                     value={rewardValue}
                     onChange={(e) => setRewardValue(e.target.value === '' ? '' : parseFloat(e.target.value))}
-                    placeholder="np. 15"
+                    placeholder="e.g. 15"
                     className="w-full px-3.5 py-2 border border-gray-300 rounded font-bold text-sm focus:ring-1 focus:ring-black focus:outline-none"
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs uppercase tracking-widest font-bold text-gray-700 mb-1">
-                    Min. Koszyk (€)
+                    Min. Cart (€)
                   </label>
                   <input
                     type="number"
                     min="0"
                     value={rewardMinOrder}
                     onChange={(e) => setRewardMinOrder(e.target.value === '' ? '' : parseFloat(e.target.value))}
-                    placeholder="np. 30 (0 = brak)"
+                    placeholder="e.g. 30 (0 = no minimum)"
                     className="w-full px-3.5 py-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-black focus:outline-none"
                   />
                 </div>
@@ -527,7 +527,7 @@ export const LoyaltyAdminManager: React.FC = () => {
                     onChange={(e) => setRewardActive(e.target.checked)}
                     className="w-4 h-4 rounded text-black focus:ring-black"
                   />
-                  <span>Nagroda dostępna do zakupu dla klientów</span>
+                  <span>Reward available for customer points redemption</span>
                 </label>
               </div>
 
@@ -537,13 +537,13 @@ export const LoyaltyAdminManager: React.FC = () => {
                   onClick={() => setIsModalOpen(false)}
                   className="px-4 py-2 text-xs uppercase tracking-wider text-gray-600 hover:text-black"
                 >
-                  Anuluj
+                  Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2 bg-[#0d0d0d] text-white text-xs uppercase tracking-widest font-bold rounded hover:bg-gray-800 transition-all flex items-center gap-2 shadow"
+                  className="px-6 py-2 bg-[#1A1A1A] hover:bg-[#D4AF37] text-white hover:text-black text-xs uppercase tracking-widest font-bold rounded-sm transition-all flex items-center gap-2 shadow-xs"
                 >
-                  <Check className="w-4 h-4 text-[#d4af37]" /> Zapisz Nagrodę
+                  <Check className="w-4 h-4" /> Save Reward
                 </button>
               </div>
             </form>
@@ -553,54 +553,54 @@ export const LoyaltyAdminManager: React.FC = () => {
 
       {/* MODAL: ADJUST USER POINTS */}
       {isAdjustModalOpen && selectedUser && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white border border-gray-200 shadow-2xl rounded-lg w-full max-w-md overflow-hidden animate-fade-in">
-            <div className="flex items-center justify-between px-6 py-4 bg-[#0d0d0d] text-white">
-              <h3 className="font-serif text-base tracking-wider flex items-center gap-2">
-                <Coins className="w-4 h-4 text-[#d4af37]" /> Korekta Punktów Klienta
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-[#EAE3D9] shadow-2xl rounded-sm w-full max-w-md overflow-hidden animate-fade-in">
+            <div className="flex items-center justify-between px-6 py-4 bg-[#FAF8F5] border-b border-[#EAE3D9] text-[#1A1A1A]">
+              <h3 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-lg tracking-wider flex items-center gap-2 font-light">
+                <Coins className="w-4 h-4 text-[#D4AF37]" /> Adjust Customer Points
               </h3>
               <button
                 type="button"
                 onClick={() => setIsAdjustModalOpen(false)}
-                className="text-gray-400 hover:text-white"
+                className="text-gray-400 hover:text-black"
               >
                 ✕
               </button>
             </div>
 
             <form onSubmit={handleUserAdjustSubmit} className="p-6 space-y-4">
-              <div className="bg-gray-50 p-3 rounded border border-gray-200 text-sm">
-                <p className="font-bold text-black">{selectedUser.name}</p>
+              <div className="bg-[#FAF8F5] p-3.5 rounded-sm border border-[#EAE3D9] text-sm">
+                <p className="font-bold text-[#1A1A1A]">{selectedUser.name}</p>
                 <p className="text-xs text-gray-500">{selectedUser.email}</p>
-                <p className="text-xs text-black font-semibold mt-1">
-                  Aktualne saldo: <span className="text-[#d4af37] font-bold">{selectedUser.points} pkt</span>
+                <p className="text-xs text-[#1A1A1A] font-semibold mt-1">
+                  Current Balance: <span className="text-[#D4AF37] font-bold">{selectedUser.points} PTS</span>
                 </p>
               </div>
 
               <div>
                 <label className="block text-xs uppercase tracking-widest font-bold text-gray-700 mb-1">
-                  Liczba Punktów do Dodania / Odjęcia (+/-)
+                  Points Adjustment Amount (+ / -)
                 </label>
                 <input
                   type="number"
                   required
                   value={adjustPointsValue}
                   onChange={(e) => setAdjustPointsValue(e.target.value === '' ? '' : parseInt(e.target.value, 10))}
-                  placeholder="np. +100 lub -50"
+                  placeholder="e.g. +100 or -50"
                   className="w-full px-3.5 py-2 border border-gray-300 rounded font-bold text-base focus:ring-1 focus:ring-black focus:outline-none"
                 />
               </div>
 
               <div>
                 <label className="block text-xs uppercase tracking-widest font-bold text-gray-700 mb-1">
-                  Uzasadnienie / Notatka Audytowa
+                  Audit Ledger Reason Note
                 </label>
                 <input
                   type="text"
                   required
                   value={adjustReason}
                   onChange={(e) => setAdjustReason(e.target.value)}
-                  placeholder="np. Bonus za recenzję, Rekompensata itp."
+                  placeholder="e.g. VIP loyalty bonus, compensation, etc."
                   className="w-full px-3.5 py-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-black focus:outline-none"
                 />
               </div>
@@ -611,13 +611,13 @@ export const LoyaltyAdminManager: React.FC = () => {
                   onClick={() => setIsAdjustModalOpen(false)}
                   className="px-4 py-2 text-xs uppercase tracking-wider text-gray-600 hover:text-black"
                 >
-                  Anuluj
+                  Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2 bg-[#0d0d0d] text-white text-xs uppercase tracking-widest font-bold rounded hover:bg-gray-800 transition-all flex items-center gap-2 shadow"
+                  className="px-6 py-2 bg-[#1A1A1A] hover:bg-[#D4AF37] text-white hover:text-black text-xs uppercase tracking-widest font-bold rounded-sm transition-all flex items-center gap-2 shadow-xs"
                 >
-                  <Check className="w-4 h-4 text-[#d4af37]" /> Zastosuj Korektę
+                  <Check className="w-4 h-4" /> Apply Adjustment
                 </button>
               </div>
             </form>
@@ -627,3 +627,5 @@ export const LoyaltyAdminManager: React.FC = () => {
     </div>
   );
 };
+
+export default LoyaltyAdminManager;

@@ -17,7 +17,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ message: 'Email/Login i hasło są wymagane.' });
+      return res.status(400).json({ message: 'Email/Username and password are required.' });
     }
 
     const cleanInput = String(email).trim().toLowerCase();
@@ -62,7 +62,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             data: {
               email: DEFAULT_ADMIN_EMAIL,
               password: hashedPassword,
-              name: 'Właściciel Lunar Boutique',
+              name: 'Lunar Boutique Owner',
               role: 'ADMIN',
               loyaltyPoints: 1000,
             },
@@ -76,10 +76,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             },
           });
         } else {
-          return res.status(401).json({ message: 'Nieprawidłowe hasło administratora.' });
+          return res.status(401).json({ message: 'Invalid administrator password.' });
         }
       } else {
-        return res.status(401).json({ message: 'Nie znaleziono konta administratora.' });
+        return res.status(401).json({ message: 'Administrator account not found.' });
       }
     }
 
@@ -88,7 +88,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const isDirectMatch = password === DEFAULT_ADMIN_PASSWORD;
 
     if (!isMatch && !isDirectMatch) {
-      return res.status(401).json({ message: 'Nieprawidłowe hasło administratora.' });
+      return res.status(401).json({ message: 'Invalid administrator password.' });
     }
 
     // 4. Issue JWT Token with 7-day validity
@@ -110,7 +110,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     return res.status(200).json({
       success: true,
-      message: 'Zalogowano pomyślnie do panelu administratora.',
+      message: 'Signed in successfully to the owner dashboard.',
       user: {
         id: adminUser.id,
         email: adminUser.email,
@@ -124,7 +124,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const err = error as Error;
     console.error('Admin login error:', err);
     return res.status(500).json({ 
-      message: `Błąd logowania administratora: ${err.message}`, 
+      message: `Admin login error: ${err.message}`, 
       stack: err.stack 
     });
   }

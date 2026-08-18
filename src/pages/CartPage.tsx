@@ -174,7 +174,7 @@ const CartPage: React.FC = () => {
         setPromoCode('');
         return;
       } else {
-        setPromoError(data.message || 'Nieprawidłowy lub nieaktywny kod rabatowy');
+        setPromoError(data.message || 'Invalid or expired promo code');
         return;
       }
     } catch {
@@ -186,7 +186,7 @@ const CartPage: React.FC = () => {
         setAppliedPromo({ code, discountPct: 15 });
         setPromoCode('');
       } else {
-        setPromoError('Nieprawidłowy kod. Spróbuj "LUNAR10"');
+        setPromoError('Invalid code. Try "LUNAR10"');
       }
     }
   };
@@ -1001,17 +1001,17 @@ const CartPage: React.FC = () => {
                   <span className="font-medium text-[#1A1A1A]">€{totalPrice.toFixed(2)}</span>
                 </div>
 
-                {/* Promo Code Applied Row */}
-                {appliedPromo && (
-                  <div className="flex justify-between items-center text-emerald-700 bg-emerald-50/70 p-2.5 rounded border border-emerald-200">
-                    <span className="flex items-center gap-1.5 font-medium">
+                {/* Promo discount */}
+                {appliedPromo && discountAmount > 0 && (
+                  <div className="flex justify-between items-center text-emerald-700">
+                    <span className="flex items-center gap-1">
                       <Tag className="w-3.5 h-3.5" />
                       <span>
-                        Zniżka ({appliedPromo.code}{' '}
+                        Discount ({appliedPromo.code}{' '}
                         {appliedPromo.discountPct
                           ? `-${appliedPromo.discountPct}%`
                           : appliedPromo.discountAmount
-                          ? `-${appliedPromo.discountAmount.toFixed(2)}€`
+                          ? `-€${appliedPromo.discountAmount.toFixed(2)}`
                           : ''})
                       </span>
                     </span>
@@ -1024,14 +1024,14 @@ const CartPage: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <Coins className="w-4 h-4 text-[#D4AF37]" />
                     <div className="text-xs">
-                      <span className="font-semibold block">LUNAR Club Punkty:</span>
+                      <span className="font-semibold block">LUNAR Club Points:</span>
                       {user && (
-                        <span className="text-[10px] text-gray-500">Saldo: {loyaltyPoints} pkt</span>
+                        <span className="text-[10px] text-gray-500">Balance: {loyaltyPoints} pts</span>
                       )}
                     </div>
                   </div>
                   <span className="text-xs font-bold text-[#D4AF37] font-mono">
-                    +{pointsToEarn} PKT
+                    +{pointsToEarn} PTS
                   </span>
                 </div>
 
@@ -1079,14 +1079,14 @@ const CartPage: React.FC = () => {
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-[11px] font-bold text-amber-900 uppercase tracking-wider flex items-center gap-1.5">
                             <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
-                            Masz {userCoupons.filter(c => !c.isUsed).length} kupon(y) w portfelu:
+                            You have {userCoupons.filter(c => !c.isUsed).length} voucher(s) in wallet:
                           </span>
                           <button
                             type="button"
                             onClick={() => setIsLoyaltyCouponsOpen(!isLoyaltyCouponsOpen)}
                             className="text-[10px] uppercase tracking-wider font-bold text-black underline"
                           >
-                            {isLoyaltyCouponsOpen ? 'Ukryj' : 'Wybierz kupon'}
+                            {isLoyaltyCouponsOpen ? 'Hide' : 'Select Voucher'}
                           </button>
                         </div>
 
@@ -1100,8 +1100,8 @@ const CartPage: React.FC = () => {
                                 className="w-full text-left p-2 bg-white border border-amber-200 hover:border-black rounded flex items-center justify-between text-xs transition-colors"
                               >
                                 <span className="font-mono font-bold text-black">{c.code}</span>
-                                <span className="font-bold text-green-700">
-                                  {c.discountType === 'PERCENTAGE' ? `-${c.discountValue}%` : `-${c.discountValue.toFixed(2)}€`}
+                                <span className="font-bold text-emerald-700">
+                                  {c.discountType === 'PERCENTAGE' ? `-${c.discountValue}%` : `-€${c.discountValue.toFixed(2)}`}
                                 </span>
                               </button>
                             ))}
@@ -1116,14 +1116,14 @@ const CartPage: React.FC = () => {
                         className="text-[11px] uppercase tracking-[0.2em] font-medium text-[#C1A98F] hover:text-[#1A1A1A] transition-colors flex items-center gap-1.5"
                       >
                         <Tag className="w-3.5 h-3.5" />
-                        <span>Masz kod rabatowy? Wpisz tutaj</span>
+                        <span>Have a promo code? Enter here</span>
                       </button>
                     ) : (
                       <form onSubmit={handleApplyPromo} className="mt-2">
                         <div className="flex gap-2">
                           <input
                             type="text"
-                            placeholder="Wpisz kod (np. LUNAR10)"
+                            placeholder="Enter code (e.g. LUNAR10)"
                             value={promoCode}
                             onChange={(e) => setPromoCode(e.target.value)}
                             className="flex-1 px-3 py-2 text-xs uppercase tracking-wider border border-[#D5CCC1] focus:outline-none focus:border-black bg-[#FAF8F5]"
@@ -1132,7 +1132,7 @@ const CartPage: React.FC = () => {
                             type="submit"
                             className="px-4 py-2 bg-[#1A1A1A] text-white text-[11px] uppercase tracking-wider font-medium hover:bg-[#333333] transition-colors"
                           >
-                            Zastosuj
+                            Apply
                           </button>
                         </div>
                         {promoError && (
@@ -1145,13 +1145,13 @@ const CartPage: React.FC = () => {
                   <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 px-3 py-2 text-xs text-emerald-800">
                     <span className="flex items-center gap-1.5 font-medium">
                       <Check className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>Kupon {appliedPromo.code} aktywny!</span>
+                      <span>Voucher {appliedPromo.code} applied!</span>
                     </span>
                     <button
                       onClick={handleRemovePromo}
-                      className="text-[11px] text-gray-500 hover:text-rose-600 uppercase tracking-wider font-semibold"
+                      className="text-gray-400 hover:text-black font-semibold text-xs ml-2"
                     >
-                      Usuń
+                      Remove
                     </button>
                   </div>
                 )}

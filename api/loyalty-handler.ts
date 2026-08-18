@@ -21,39 +21,39 @@ function getAuthUserId(req: VercelRequest): string | null {
 // Default initial loyalty rewards if none exist in DB
 const DEFAULT_REWARDS = [
   {
-    title: 'Kupon rabatowy 10 PLN / 2.50€',
-    description: 'Zniżka na dowolne zamówienie biżuterii lub perfum.',
+    title: '€5 Voucher',
+    description: 'Fixed discount on entire cart for orders over €30.',
     pointsCost: 100,
     discountType: 'FIXED',
-    discountValue: 2.5,
-    minOrderValue: 20,
-    isActive: true,
-  },
-  {
-    title: 'Zniżka 10% na całe zakupy',
-    description: '10% rabatu na cały koszyk bez limitu wartości.',
-    pointsCost: 200,
-    discountType: 'PERCENTAGE',
-    discountValue: 10,
+    discountValue: 5.0,
     minOrderValue: 30,
     isActive: true,
   },
   {
-    title: 'Kupon VIP 25 PLN / 6.00€',
-    description: 'Ekskluzywny rabat dla stałych klientów.',
-    pointsCost: 350,
-    discountType: 'FIXED',
-    discountValue: 6.0,
+    title: '10% Off Entire Order',
+    description: '10% discount on all items in your luxury bag.',
+    pointsCost: 200,
+    discountType: 'PERCENTAGE',
+    discountValue: 10,
     minOrderValue: 40,
     isActive: true,
   },
   {
-    title: 'Złoty Kupon 20% Zniżki',
-    description: 'Maksymalny rabat 20% na całą kolekcję Lunar.',
+    title: 'VIP €15 Gift Voucher',
+    description: 'Exclusive fixed discount for loyal Lunar Club patrons.',
+    pointsCost: 350,
+    discountType: 'FIXED',
+    discountValue: 15.0,
+    minOrderValue: 60,
+    isActive: true,
+  },
+  {
+    title: 'Golden 20% Off Privilege',
+    description: 'Exclusive 20% luxury discount across fine jewelry & perfumes.',
     pointsCost: 500,
     discountType: 'PERCENTAGE',
     discountValue: 20,
-    minOrderValue: 50,
+    minOrderValue: 80,
     isActive: true,
   },
 ];
@@ -139,7 +139,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method === 'POST' && action === 'redeem') {
       const userId = getAuthUserId(req);
       if (!userId) {
-        return res.status(401).json({ message: 'Musisz być zalogowany, aby wymienić punkty' });
+        return res.status(401).json({ message: 'You must be signed in to redeem loyalty points' });
       }
 
       const { rewardId } = req.body || {};
@@ -152,12 +152,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         (prisma as any).loyaltyReward.findUnique({ where: { id: rewardId } }),
       ]);
 
-      if (!user) return res.status(404).json({ message: 'Użytkownik nie istnieje' });
-      if (!reward || !reward.isActive) return res.status(404).json({ message: 'Nagroda jest niedostępna' });
+      if (!user) return res.status(404).json({ message: 'User account not found' });
+      if (!reward || !reward.isActive) return res.status(404).json({ message: 'Selected reward is inactive or unavailable' });
 
       if ((user.loyaltyPoints || 0) < reward.pointsCost) {
         return res.status(400).json({
-          message: `Niewystarczająca liczba punktów. Masz ${user.loyaltyPoints || 0} pkt, a wymagane jest ${reward.pointsCost} pkt.`,
+          message: `Insufficient points. You currently have ${user.loyaltyPoints || 0} pts, while ${reward.pointsCost} pts are required.`,
         });
       }
 
@@ -194,14 +194,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             userId,
             points: -reward.pointsCost,
             type: 'REDEEM',
-            description: `Wymiana punktów na: ${reward.title} (Kod: ${code})`,
+            description: `Redeemed points for: ${reward.title} (Code: ${code})`,
           },
         }),
       ]);
 
       return res.status(200).json({
         success: true,
-        message: 'Kupon został pomyślnie wygenerowany!',
+        message: 'Reward coupon generated successfully!',
         coupon,
         remainingPoints: updatedUser.loyaltyPoints,
       });
@@ -213,7 +213,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       if (_action === 'delete' && id) {
         await (prisma as any).loyaltyReward.delete({ where: { id } });
-        return res.status(200).json({ success: true, message: 'Nagroda usunięta' });
+        return res.status(200).json({ success: true, message: 'Reward deleted successfully' });
       }
 
       if (id) {
@@ -273,13 +273,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           userId: targetUserId,
           points: pointsDiff,
           type: 'ADMIN_ADJUST',
-          description: reason || `Korekta administratora: ${pointsDiff > 0 ? `+${pointsDiff}` : pointsDiff} pkt`,
+          description: reason || `Admin manual adjustment: ${pointsDiff > 0 ? `+${pointsDiff}` : pointsDiff} pts`,
         },
       });
 
       return res.status(200).json({
         success: true,
-        message: 'Punkty zostały zaktualizowane',
+        message: 'Points balance updated successfully',
         newBalance: updatedUser.loyaltyPoints,
       });
     }
