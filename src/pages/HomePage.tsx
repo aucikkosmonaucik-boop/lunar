@@ -1,14 +1,24 @@
-import React from 'react';
-
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { useProducts } from '../hooks/useProducts';
+import ProductCard from '../components/ui/ProductCard';
 
 const HomePage: React.FC = () => {
-  const featuredChains = [
-    { id: 1, name: 'Classic Gold Chain', price: '120,00€', image: 'https://images.unsplash.com/photo-1599643478514-4a888f802c61?auto=format&fit=crop&q=80&w=800' },
-    { id: 2, name: 'Silver Pendent Necklace', price: '95,00€', image: 'https://images.unsplash.com/photo-1599643477877-530eb83abc8e?auto=format&fit=crop&q=80&w=800' },
-    { id: 3, name: 'Diamond Tennis Chain', price: '850,00€', image: 'https://images.unsplash.com/photo-1629224316810-9d8805b95e76?auto=format&fit=crop&q=80&w=800' },
-    { id: 4, name: 'Rose Gold Choker', price: '150,00€', image: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&q=80&w=800' },
-  ];
+  const { products } = useProducts();
+
+  const featuredChains = useMemo(() => {
+    const chains = products.filter(
+      (p) =>
+        p.category === 'necklaces' ||
+        p.category === 'bracelets' ||
+        p.tags?.some((t) => ['necklace', 'bracelets', 'chains', 'jewelry'].includes(t.toLowerCase()))
+    );
+    if (chains.length >= 4) {
+      return chains.slice(0, 4);
+    }
+    const jewelry = products.filter((p) => !p.category.startsWith('perfumes'));
+    return jewelry.slice(0, 4);
+  }, [products]);
 
   return (
     <div className="bg-white min-h-screen">
@@ -41,20 +51,8 @@ const HomePage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {featuredChains.map((chain) => (
-            <Link to="/shop?category=jewelry" key={chain.id} className="group block">
-              <div className="aspect-[4/5] bg-gray-100 mb-6 overflow-hidden relative">
-                <img 
-                  src={chain.image} 
-                  alt={chain.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
-                />
-              </div>
-              <div className="text-center">
-                <h3 className="text-sm md:text-base uppercase tracking-widest text-gray-900 mb-2 font-medium">{chain.name}</h3>
-                <p className="text-base md:text-lg text-gray-500">{chain.price}</p>
-              </div>
-            </Link>
+          {featuredChains.map((product) => (
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </section>
