@@ -499,19 +499,76 @@ async function main() {
     });
   }
 
-  // 4. Seed Master Admin / Owner Account
+  // 4. Seed Loyalty Rewards
+  console.log('🎁 Seeding Loyalty Rewards...');
+  const loyaltyRewardsData = [
+    {
+      title: '€2.50 Discount Voucher',
+      description: 'Discount on any fine jewelry or perfume order.',
+      pointsCost: 100,
+      discountType: 'FIXED',
+      discountValue: 2.5,
+      minOrderValue: 20,
+      isActive: true,
+    },
+    {
+      title: '10% Off Entire Order',
+      description: '10% discount on your entire cart with no order limit.',
+      pointsCost: 200,
+      discountType: 'PERCENTAGE',
+      discountValue: 10,
+      minOrderValue: 30,
+      isActive: true,
+    },
+    {
+      title: 'VIP €6.00 Gift Voucher',
+      description: 'Exclusive luxury discount for loyal Club patrons.',
+      pointsCost: 350,
+      discountType: 'FIXED',
+      discountValue: 6.0,
+      minOrderValue: 40,
+      isActive: true,
+    },
+    {
+      title: 'Golden 20% Off Privilege',
+      description: 'Maximum 20% discount across the entire Lunar collection.',
+      pointsCost: 500,
+      discountType: 'PERCENTAGE',
+      discountValue: 20,
+      minOrderValue: 50,
+      isActive: true,
+    },
+  ];
+
+  for (const item of loyaltyRewardsData) {
+    const existing = await prisma.loyaltyReward.findFirst({
+      where: { pointsCost: item.pointsCost },
+    });
+    if (existing) {
+      await prisma.loyaltyReward.update({
+        where: { id: existing.id },
+        data: item,
+      });
+    } else {
+      await prisma.loyaltyReward.create({
+        data: item,
+      });
+    }
+  }
+
+  // 5. Seed Master Admin / Owner Account
   console.log('👑 Seeding Master Admin User...');
   const adminHashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD || 'LunarAdmin2026!', 10);
   await prisma.user.upsert({
     where: { email: 'admin@lunar.com' },
     update: {
       role: 'ADMIN',
-      name: 'Właściciel Lunar Boutique',
+      name: 'Lunar Boutique Admin',
     },
     create: {
       email: 'admin@lunar.com',
       password: adminHashedPassword,
-      name: 'Właściciel Lunar Boutique',
+      name: 'Lunar Boutique Admin',
       role: 'ADMIN',
       loyaltyPoints: 1000,
     },
