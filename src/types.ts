@@ -78,3 +78,29 @@ export interface PromoCodeItem {
   maxUses?: number | null;
   createdAt?: string;
 }
+
+export interface Review {
+  id: string;
+  productId: string;
+  userId?: string | null;
+  authorName: string;
+  rating: number; // 1 to 5
+  title?: string;
+  comment: string;
+  verified?: boolean;
+  helpfulCount: number;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export interface ReviewStats {
+  averageRating: number;
+  totalReviews: number;
+  distribution: {
+    5: number;
+    4: number;
+    3: number;
+    2: number;
+    1: number;
+  };
+}

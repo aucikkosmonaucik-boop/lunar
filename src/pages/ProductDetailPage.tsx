@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ShoppingBag, ArrowLeft, Check, Minus, Plus, Truck, RotateCcw, Shield, Heart, Coins, Image as ImageIcon } from 'lucide-react';
+import { ShoppingBag, ArrowLeft, Check, Minus, Plus, Truck, RotateCcw, Shield, Heart, Coins, Image as ImageIcon, Star } from 'lucide-react';
 import { useProducts } from '../hooks/useProducts';
 import { useCart } from '../hooks/useCart';
 import { useFavorites } from '../hooks/useFavorites';
 import { useLoyalty } from '../hooks/useLoyalty';
 import ProductCard from '../components/ui/ProductCard';
+import { ProductReviews } from '../components/ui/ProductReviews';
 
 const ProductDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -21,11 +22,18 @@ const ProductDetailPage: React.FC = () => {
 
   const product = id ? (getProductById(id) || getProductBySlug(id)) : undefined;
 
+  const [currentRating, setCurrentRating] = useState(product?.rating || 5.0);
+  const [currentReviewCount, setCurrentReviewCount] = useState(product?.reviewCount || 0);
+
   useEffect(() => {
     window.scrollTo(0, 0);
     setActiveImageIndex(0);
     setQty(1);
-  }, [id]);
+    if (product) {
+      setCurrentRating(product.rating || 5.0);
+      setCurrentReviewCount(product.reviewCount || 0);
+    }
+  }, [id, product]);
 
   if (!product) {
     return (
@@ -117,20 +125,45 @@ const ProductDetailPage: React.FC = () => {
 
           {/* Info */}
           <div className="flex flex-col pt-4 lg:pt-8">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-2">
               <p className="text-[14px] text-wonders-gold font-bold uppercase tracking-[0.3em]">
                 {product.category}
               </p>
               {product.stock > 0 && (
                 <span className="text-[11px] font-bold text-green-700 bg-green-50 px-2.5 py-0.5 rounded border border-green-200">
-                  W magazynie ({product.stock} szt.)
+                  In Stock ({product.stock} available)
                 </span>
               )}
             </div>
 
-            <h1 className="text-3xl md:text-5xl font-light uppercase tracking-[0.1em] text-wonders-dark mb-6 leading-tight">
+            <h1 className="text-3xl md:text-5xl font-light uppercase tracking-[0.1em] text-wonders-dark mb-3 leading-tight">
               {product.name}
             </h1>
+
+            {/* Star Rating Header & Review Link */}
+            <a
+              href="#reviews"
+              className="inline-flex items-center gap-2.5 mb-6 group cursor-pointer w-fit"
+            >
+              <div className="flex items-center gap-0.5">
+                {[1, 2, 3, 4, 5].map((s) => (
+                  <Star
+                    key={s}
+                    className={`w-4 h-4 ${
+                      s <= Math.round(currentRating)
+                        ? 'text-[#D4AF37] fill-[#D4AF37]'
+                        : 'text-gray-300'
+                    }`}
+                  />
+                ))}
+              </div>
+              <span className="text-xs font-bold text-wonders-dark group-hover:text-wonders-gold transition-colors">
+                {currentRating.toFixed(1)}
+              </span>
+              <span className="text-xs text-wonders-muted group-hover:text-[#1A1A1A] group-hover:underline">
+                ({currentReviewCount} {currentReviewCount === 1 ? 'review' : 'reviews'})
+              </span>
+            </a>
 
             {/* Price & Discount */}
             <div className="flex items-baseline gap-4 mb-6">
@@ -143,7 +176,7 @@ const ProductDetailPage: React.FC = () => {
                     {product.originalPrice.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}
                   </span>
                   <span className="text-xs font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded border border-red-200 uppercase tracking-wider">
-                    -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% Zniżka
+                    -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% OFF
                   </span>
                 </>
               )}
@@ -257,6 +290,16 @@ const ProductDetailPage: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* Customer Reviews & Ratings Section */}
+        <ProductReviews
+          productId={product.id}
+          productName={product.name}
+          onReviewAdded={(newR, newC) => {
+            setCurrentRating(newR);
+            setCurrentReviewCount(newC);
+          }}
+        />
 
         {/* Related products */}
         {related.length > 0 && (

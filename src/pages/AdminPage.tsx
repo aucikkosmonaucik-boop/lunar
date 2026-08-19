@@ -24,6 +24,7 @@ import {
   Check,
   AlertCircle,
   KeyRound,
+  Star,
 } from 'lucide-react';
 import { useProducts } from '../hooks/useProducts';
 import { useLoyalty } from '../hooks/useLoyalty';
@@ -32,6 +33,7 @@ import type { Product } from '../types';
 import { ProductEditorModal } from '../components/admin/ProductEditorModal';
 import { PromoCodesManager } from '../components/admin/PromoCodesManager';
 import { LoyaltyAdminManager } from '../components/admin/LoyaltyAdminManager';
+import { ReviewsAdminManager } from '../components/admin/ReviewsAdminManager';
 
 interface AdminOrder {
   id: string;
@@ -67,7 +69,7 @@ export const AdminPage: React.FC = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
 
   // Tabs state
-  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'promos' | 'loyalty' | 'orders' | 'settings'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'promos' | 'loyalty' | 'orders' | 'reviews' | 'settings'>('overview');
 
   // Change Password form state
   const [currentPassword, setCurrentPassword] = useState('');
@@ -583,6 +585,18 @@ export const AdminPage: React.FC = () => {
             </button>
 
             <button
+              onClick={() => setActiveTab('reviews')}
+              className={`px-4 py-3 text-xs uppercase tracking-widest font-bold border-b-2 whitespace-nowrap transition-all flex items-center gap-2 ${
+                activeTab === 'reviews'
+                  ? 'border-[#1A1A1A] text-[#1A1A1A] bg-[#FAF8F5]'
+                  : 'border-transparent text-gray-500 hover:text-black'
+              }`}
+            >
+              <Star className="w-4 h-4 text-[#D4AF37]" />
+              <span>Reviews & Ratings</span>
+            </button>
+
+            <button
               onClick={() => setActiveTab('settings')}
               className={`px-4 py-3 text-xs uppercase tracking-widest font-bold border-b-2 whitespace-nowrap transition-all flex items-center gap-2 ${
                 activeTab === 'settings'
@@ -1033,7 +1047,12 @@ export const AdminPage: React.FC = () => {
           </div>
         )}
 
-        {/* TAB 6: SETTINGS & SECURITY */}
+        {/* TAB 6: CUSTOMER REVIEWS & RATINGS */}
+        {activeTab === 'reviews' && (
+          <ReviewsAdminManager />
+        )}
+
+        {/* TAB 7: SETTINGS & SECURITY */}
         {activeTab === 'settings' && (
           <div className="max-w-2xl mx-auto space-y-8 animate-fade-in">
             <div className="bg-white border border-[#EAE3D9] rounded-sm p-8 shadow-xs">

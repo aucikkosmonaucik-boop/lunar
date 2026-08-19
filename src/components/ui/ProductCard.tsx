@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingBag, Eye, Heart } from 'lucide-react';
+import { ShoppingBag, Eye, Heart, Star } from 'lucide-react';
 import type { Product } from '../../types';
 import { useCart } from '../../hooks/useCart';
 import { useFavorites } from '../../hooks/useFavorites';
@@ -66,14 +66,39 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
       {/* Info */}
       <div className="flex flex-col items-center px-2">
-        <p className="text-[10px] text-wonders-muted uppercase tracking-[0.2em] mb-2 font-medium">by Lunar</p>
+        <p className="text-[10px] text-wonders-muted uppercase tracking-[0.2em] mb-1.5 font-medium">by Lunar</p>
         <Link 
           to={`/product/${product.id}`}
-          className="text-xs font-semibold text-wonders-dark hover:text-wonders-gold transition-colors mb-3 uppercase tracking-wider line-clamp-2 max-w-[180px]"
+          className="text-xs font-semibold text-wonders-dark hover:text-wonders-gold transition-colors mb-2 uppercase tracking-wider line-clamp-2 max-w-[180px]"
         >
           {product.name}
         </Link>
-        <div className="flex items-center gap-2 mb-6">
+
+        {/* Rating Stars snippet */}
+        <div className="flex items-center gap-1 mb-2.5">
+          <div className="flex items-center">
+            {[1, 2, 3, 4, 5].map((s) => (
+              <Star
+                key={s}
+                className={`w-3 h-3 ${
+                  s <= Math.round(product.rating || 5)
+                    ? 'text-[#D4AF37] fill-[#D4AF37]'
+                    : 'text-gray-200'
+                }`}
+              />
+            ))}
+          </div>
+          <span className="text-[10px] font-bold text-[#1A1A1A]">
+            {(product.rating || 5.0).toFixed(1)}
+          </span>
+          {product.reviewCount !== undefined && product.reviewCount > 0 && (
+            <span className="text-[10px] text-gray-400">
+              ({product.reviewCount})
+            </span>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2 mb-5">
           <p className="text-xs font-bold text-wonders-gold tracking-[0.2em]">
             {product.price.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}
           </p>

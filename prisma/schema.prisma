@@ -24,6 +24,7 @@ model User {
   orders            Order[]
   pointsHistory     LoyaltyHistory[]
   userCoupons       UserCoupon[]
+  reviews           Review[]
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
 }
@@ -66,6 +67,7 @@ model Product {
   isAvailable   Boolean     @default(true)
   isFeatured    Boolean     @default(false)
   orderItems    OrderItem[]
+  reviews       Review[]
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 }
@@ -190,5 +192,24 @@ model LoyaltyHistory {
   description String
   orderId     String?
   createdAt   DateTime @default(now())
+}
+
+model Review {
+  id           String   @id @default(cuid())
+  productId    String
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId       String?
+  user         User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  authorName   String
+  rating       Int      // 1 to 5
+  title        String?
+  comment      String
+  verified     Boolean  @default(false)
+  helpfulCount Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([productId])
+  @@index([userId])
 }
 
