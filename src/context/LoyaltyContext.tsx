@@ -31,49 +31,49 @@ export interface LoyaltyContextType {
 
 export const LoyaltyContext = createContext<LoyaltyContextType | undefined>(undefined);
 
-const LOCAL_COUPONS_KEY = 'lunar_local_user_coupons_v2';
-const LOCAL_HISTORY_KEY = 'lunar_local_points_history_v2';
-const LOCAL_REWARDS_KEY = 'lunar_local_rewards_catalog_v2';
+const LOCAL_COUPONS_KEY = 'lunar_local_user_coupons_v3';
+const LOCAL_HISTORY_KEY = 'lunar_local_points_history_v3';
+const LOCAL_REWARDS_KEY = 'lunar_local_rewards_catalog_v3';
 
 const INITIAL_REWARDS: LoyaltyReward[] = [
   {
     id: 'reward-1',
-    title: '€5 Voucher',
-    description: 'Fixed discount on entire cart for orders over €30.',
+    title: '€2.50 Discount Voucher',
+    description: 'Discount on any fine jewelry or perfume order.',
     pointsCost: 100,
     discountType: 'FIXED',
-    discountValue: 5.0,
-    minOrderValue: 30,
+    discountValue: 2.5,
+    minOrderValue: 20,
     isActive: true,
   },
   {
     id: 'reward-2',
     title: '10% Off Entire Order',
-    description: '10% discount on all items in your luxury bag.',
+    description: '10% discount on your entire cart with no order limit.',
     pointsCost: 200,
     discountType: 'PERCENTAGE',
     discountValue: 10,
-    minOrderValue: 40,
+    minOrderValue: 30,
     isActive: true,
   },
   {
     id: 'reward-3',
-    title: 'VIP €15 Gift Voucher',
-    description: 'Exclusive fixed discount for loyal Lunar Club patrons.',
+    title: 'VIP €6.00 Gift Voucher',
+    description: 'Exclusive luxury discount for loyal Club patrons.',
     pointsCost: 350,
     discountType: 'FIXED',
-    discountValue: 15.0,
-    minOrderValue: 60,
+    discountValue: 6.0,
+    minOrderValue: 40,
     isActive: true,
   },
   {
     id: 'reward-4',
     title: 'Golden 20% Off Privilege',
-    description: 'Exclusive 20% luxury discount across fine jewelry & perfumes.',
+    description: 'Maximum 20% discount across the entire Lunar collection.',
     pointsCost: 500,
     discountType: 'PERCENTAGE',
     discountValue: 20,
-    minOrderValue: 80,
+    minOrderValue: 50,
     isActive: true,
   },
 ];
