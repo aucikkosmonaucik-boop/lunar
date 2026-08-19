@@ -53,14 +53,16 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ open, onClose }) => {
           ) : (
             items.map(item => (
               <div key={item.product.id} className="flex gap-4 p-3 rounded-xl bg-lunar-card border border-lunar-border">
-                <img
-                  src={item.product.image}
-                  alt={item.product.name}
-                  className="w-16 h-16 object-cover rounded-lg shrink-0"
-                />
+                <Link to={`/product/${item.product.id}`} onClick={onClose} className="shrink-0 block">
+                  <img
+                    src={item.product.image}
+                    alt={item.product.name}
+                    className="w-16 h-16 object-cover rounded-lg hover:opacity-85 transition-opacity"
+                  />
+                </Link>
                 <div className="flex-1 min-w-0">
                   <Link
-                    to={`/produkt/${item.product.id}`}
+                    to={`/product/${item.product.id}`}
                     onClick={onClose}
                     className="text-sm font-medium text-lunar-text hover:text-lunar-purple-light line-clamp-1 transition-colors"
                   >
