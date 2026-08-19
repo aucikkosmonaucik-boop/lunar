@@ -97,7 +97,7 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
 
     const newProduct: Product = {
       id: newId,
-      name: data.name || 'Nowy Produkt',
+      name: data.name || 'New Product',
       slug: data.slug || (data.name || 'product').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
       description: data.description || '',
       price: Number(data.price || 0),
@@ -203,7 +203,7 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
 
     const copyData: Partial<Product> = {
       ...existing,
-      name: `${existing.name} (Kopia)`,
+      name: `${existing.name} (Copy)`,
       slug: `${existing.slug || 'copy'}-${Date.now().toString().slice(-4)}`,
     };
     delete (copyData as any).id;
