@@ -60,3 +60,142 @@ export async function fetchCategories(): Promise<any[]> {
     }));
   }
 }
+
+// ----------------------------------------------------
+// Customer Reviews & Star Ratings API
+// ----------------------------------------------------
+import type { Review, ReviewStats } from '../types';
+import { getStoredReviews, saveStoredReviews, calculateReviewStats } from '../data/reviews';
+
+export async function fetchProductReviews(productId: string): Promise<{ reviews: Review[]; stats: ReviewStats }> {
+  try {
+    const res = await fetch(`/api/reviews?productId=${encodeURIComponent(productId)}`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.reviews && Array.isArray(data.reviews)) {
+        return {
+          reviews: data.reviews,
+          stats: data.stats || calculateReviewStats(data.reviews),
+        };
+      }
+    }
+  } catch (err) {
+    console.warn('API fetch for reviews failed, falling back to local store:', err);
+  }
+
+  // Fallback to local storage
+  const all = getStoredReviews();
+  const filtered = all.filter(r => r.productId === productId || r.productId === String(productId));
+  return {
+    reviews: filtered,
+    stats: calculateReviewStats(filtered),
+  };
+}
+
+export async function fetchAllReviews(): Promise<{ reviews: (Review & { product?: { name: string; image: string } })[] }> {
+  try {
+    const res = await fetch('/api/reviews?all=true');
+    if (res.ok) {
+      const data = await res.json();
+      if (data.reviews && Array.isArray(data.reviews)) {
+        return { reviews: data.reviews };
+      }
+    }
+  } catch (err) {
+    console.warn('API fetch for all reviews failed, falling back to local store:', err);
+  }
+
+  const all = getStoredReviews();
+  return { reviews: all };
+}
+
+export async function submitProductReview(data: {
+  productId: string;
+  authorName: string;
+  rating: number;
+  title?: string;
+  comment: string;
+  userId?: string | null;
+  verified?: boolean;
+}): Promise<{ review: Review; stats?: ReviewStats }> {
+  const newReview: Review = {
+    id: `rev-${Date.now()}`,
+    productId: data.productId,
+    authorName: data.authorName,
+    rating: data.rating,
+    title: data.title,
+    comment: data.comment,
+    userId: data.userId || null,
+    verified: data.verified ?? true,
+    helpfulCount: 0,
+    createdAt: new Date().toISOString(),
+  };
+
+  // Local storage save first (optimistic)
+  const current = getStoredReviews();
+  const updated = [newReview, ...current];
+  saveStoredReviews(updated);
+
+  try {
+    const res = await fetch('/api/reviews', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+
+    if (res.ok) {
+      const json = await res.json();
+      if (json.review) {
+        // Sync generated ID
+        const finalReview = { ...newReview, id: json.review.id };
+        const synced = updated.map(r => r.id === newReview.id ? finalReview : r);
+        saveStoredReviews(synced);
+        return { review: finalReview };
+      }
+    }
+  } catch (e) {
+    console.warn('Backend review submission skipped/failed:', e);
+  }
+
+  return { review: newReview };
+}
+
+export async function voteReviewHelpful(reviewId: string): Promise<boolean> {
+  // Update local storage
+  const current = getStoredReviews();
+  const updated = current.map(r => {
+    if (r.id === reviewId) {
+      return { ...r, helpfulCount: (r.helpfulCount || 0) + 1 };
+    }
+    return r;
+  });
+  saveStoredReviews(updated);
+
+  try {
+    await fetch(`/api/reviews?action=helpful&id=${reviewId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: reviewId }),
+    });
+  } catch (e) {
+    console.warn('Backend vote helpful skipped/failed:', e);
+  }
+
+  return true;
+}
+
+export async function deleteProductReview(reviewId: string): Promise<boolean> {
+  const current = getStoredReviews();
+  const updated = current.filter(r => r.id !== reviewId);
+  saveStoredReviews(updated);
+
+  try {
+    await fetch(`/api/reviews?id=${reviewId}`, {
+      method: 'DELETE',
+    });
+  } catch (e) {
+    console.warn('Backend delete review skipped/failed:', e);
+  }
+
+  return true;
+}

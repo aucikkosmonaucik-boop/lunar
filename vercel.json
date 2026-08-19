@@ -13,6 +13,14 @@
       "destination": "/api/promos-handler"
     },
     {
+      "source": "/api/reviews",
+      "destination": "/api/reviews-handler"
+    },
+    {
+      "source": "/api/reviews/:action",
+      "destination": "/api/reviews-handler?action=:action"
+    },
+    {
       "source": "/api/loyalty",
       "destination": "/api/loyalty-handler"
     },

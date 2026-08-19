@@ -556,7 +556,126 @@ async function main() {
     }
   }
 
-  // 5. Seed Master Admin / Owner Account
+  // 5. Seed Customer Reviews
+  console.log('✨ Seeding Customer Reviews...');
+  const seedReviewsData = [
+    {
+      productIdSlug: '250-pink-desire-women-s-perfume-33ml',
+      fallbackProductId: '1',
+      authorName: 'Charlotte Vance',
+      rating: 5,
+      title: 'Pure springtime elegance',
+      comment: 'The scent opens with subtle fresh peony and settles into a dreamy, velvety floral aroma. I receive compliments every single day at the gallery. Lasts over 8 hours on my pulse points!',
+      verified: true,
+      helpfulCount: 24,
+    },
+    {
+      productIdSlug: '250-pink-desire-women-s-perfume-33ml',
+      fallbackProductId: '1',
+      authorName: 'Elena Rostova',
+      rating: 5,
+      title: 'Compact luxury at its finest',
+      comment: 'The 33ml size is ideal for travel and evening clutches. The glass bottle feels weightless yet substantial. A warm, feminine and delightfully romantic aroma.',
+      verified: true,
+      helpfulCount: 15,
+    },
+    {
+      productIdSlug: '265-butterfly-kiss-women-s-perfume-33ml',
+      fallbackProductId: '2',
+      authorName: 'Genevieve Monet',
+      rating: 5,
+      title: 'Crisp white lilies and ethereal jasmine',
+      comment: 'So fresh and uplifting. It gives an immediate aura of clean sophistication. Packaging and atomiser spray dispersion are top-tier.',
+      verified: true,
+      helpfulCount: 31,
+    },
+    {
+      productIdSlug: 'silver-orbit-earrings',
+      fallbackProductId: '5',
+      authorName: 'Madeleine Thorne',
+      rating: 5,
+      title: 'Architectural minimalism done to perfection',
+      comment: 'The polished 925 sterling silver has a mirror-like sheen. They catch the light effortlessly without pulling down on my earlobes. Featherlight and exceptionally well crafted.',
+      verified: true,
+      helpfulCount: 38,
+    },
+    {
+      productIdSlug: 'golden-solar-necklace',
+      fallbackProductId: '6',
+      authorName: 'Julianne Ward',
+      rating: 5,
+      title: 'Warm radiance and breathtaking details',
+      comment: 'The sun pendant has intricate tactile rays that radiate luxury. The 18k gold tone is rich and warm, not brassy. The adjustable chain makes it versatile for different necklines.',
+      verified: true,
+      helpfulCount: 29,
+    },
+    {
+      productIdSlug: 'celestial-solitaire-ring',
+      fallbackProductId: '7',
+      authorName: 'Seraphina Leighton',
+      rating: 5,
+      title: 'Mesmerizing brilliance and timeless design',
+      comment: 'The emerald-cut zirconia has astonishing clarity and fire. The prong setting feels sturdy and snag-free against knitwear. Truly a staple in my fine jewelry collection.',
+      verified: true,
+      helpfulCount: 52,
+    },
+    {
+      productIdSlug: 'luna-pearl-drop-earrings',
+      fallbackProductId: '10',
+      authorName: 'Gwendolyn Frost',
+      rating: 5,
+      title: 'Natural baroque luster is extraordinary',
+      comment: 'Each pearl has its own organic contour and stunning orient. The gold huggie clasp snaps securely with a satisfying click. Ideal for special celebrations and daily understated luxury.',
+      verified: true,
+      helpfulCount: 47,
+    },
+    {
+      productIdSlug: 'ethereal-bridal-choker-earring-suite',
+      fallbackProductId: '14',
+      authorName: 'Vivienne St. Claire',
+      rating: 5,
+      title: 'Pure fairytale perfection for bridal wear',
+      comment: 'I wore this suite on my wedding day in Lake Como. The crystal cascades caught the sunset light magnificently in photos. The craftsmanship is haute couture standard.',
+      verified: true,
+      helpfulCount: 78,
+    },
+  ];
+
+  for (const rev of seedReviewsData) {
+    const prod = await prisma.product.findFirst({
+      where: {
+        OR: [
+          { slug: rev.productIdSlug },
+          { id: rev.fallbackProductId },
+        ],
+      },
+    });
+
+    if (prod) {
+      const existing = await prisma.review.findFirst({
+        where: {
+          productId: prod.id,
+          authorName: rev.authorName,
+        },
+      });
+
+      if (!existing) {
+        await prisma.review.create({
+          data: {
+            productId: prod.id,
+            authorName: rev.authorName,
+            rating: rev.rating,
+            title: rev.title,
+            comment: rev.comment,
+            verified: rev.verified,
+            helpfulCount: rev.helpfulCount,
+          },
+        });
+      }
+    }
+  }
+
+  // 6. Seed Master Admin / Owner Account
   console.log('👑 Seeding Master Admin User...');
   const adminHashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD || 'LunarAdmin2026!', 10);
   await prisma.user.upsert({
@@ -574,7 +693,7 @@ async function main() {
     },
   });
 
-  console.log('✅ Database seeded successfully with Master Admin!');
+  console.log('✅ Database seeded successfully with Master Admin & Reviews!');
 }
 
 main()
