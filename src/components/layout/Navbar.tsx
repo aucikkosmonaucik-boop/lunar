@@ -277,16 +277,7 @@ const Navbar: React.FC = () => {
               )}
             </div>
 
-            {/* 3. Ready to Ship */}
-            <Link
-              to="/shop?tag=ready-to-ship"
-              className="text-[14px] lg:text-[15px] tracking-widest text-[#1a1a1a] font-medium uppercase hover:text-gray-500 transition-colors flex flex-col items-center group"
-            >
-              <span>Ready to Ship</span>
-              <div className={`h-[1px] bg-black mt-1 transition-all duration-300 ${location.search.includes('ready-to-ship') ? 'w-full' : 'w-0 group-hover:w-full'}`} />
-            </Link>
-
-            {/* 4. Jewelry By Agatha G. */}
+            {/* 3. Jewelry By Agatha G. */}
             <Link
               to="/shop?category=jewelry"
               className="text-[14px] lg:text-[15px] tracking-widest text-[#1a1a1a] font-medium uppercase hover:text-gray-500 transition-colors flex flex-col items-center group"
@@ -295,7 +286,7 @@ const Navbar: React.FC = () => {
               <div className={`h-[1px] bg-black mt-1 transition-all duration-300 ${location.search.includes('jewelry') ? 'w-full' : 'w-0 group-hover:w-full'}`} />
             </Link>
 
-            {/* 5. Contact */}
+            {/* 4. Contact */}
             <Link
               to="/contact"
               className="text-[14px] lg:text-[15px] tracking-widest text-[#1a1a1a] font-medium uppercase hover:text-gray-500 transition-colors flex flex-col items-center group"
@@ -462,15 +453,6 @@ const Navbar: React.FC = () => {
               </div>
             )}
           </div>
-
-          {/* Ready to Ship */}
-          <Link
-            to="/shop?tag=ready-to-ship"
-            className="text-base tracking-widest uppercase font-medium py-2.5 border-b border-gray-100 text-[#1a1a1a]"
-            onClick={() => setMenuOpen(false)}
-          >
-            Ready to Ship
-          </Link>
 
           {/* Jewelry By Agatha G. */}
           <Link
