@@ -1,11 +1,9 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { prisma } from './_lib/prisma.js';
+import { handleCors } from './_lib/cors.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // CORS / OPTIONS support
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
+  if (handleCors(req, res)) return;
 
   // DELETE method
   if (req.method === 'DELETE') {

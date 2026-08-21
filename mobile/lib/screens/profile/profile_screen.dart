@@ -385,12 +385,13 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildMenuSection({required bool isDark, required List<Widget> items}) {
-    return Container(
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+    return Material(
+      color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
+        side: BorderSide(color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
       ),
+      clipBehavior: Clip.antiAlias,
       child: Column(
         children: items,
       ),

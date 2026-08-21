@@ -1,6 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { handleCors } from './_lib/cors.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (handleCors(req, res)) return;
   let action = req.query.action as string;
   
   // If query action is missing or literal string, try extracting from URL path
