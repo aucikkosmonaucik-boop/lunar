@@ -1,11 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingBag, User, Search, Menu, X, Heart, ChevronDown, ChevronRight, Sparkles } from 'lucide-react';
+import { ShoppingBag, User, Search, Menu, X, Heart, ChevronDown, ChevronRight, Sparkles, Smartphone } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
 import { useFavorites } from '../../hooks/useFavorites';
 import SearchOverlay from './SearchOverlay';
 import { useAuth } from '../../hooks/useAuth';
 import FavoritesDrawer from '../ui/FavoritesDrawer';
+import SmartAppBanner from '../ui/SmartAppBanner';
 
 interface DropdownItem {
   label: string;
@@ -96,6 +97,9 @@ const Navbar: React.FC = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm border-b border-gray-200">
+      {/* Smart Mobile App Install Banner */}
+      <SmartAppBanner />
+
       {/* Announcement Bar */}
       <div className="bg-[#fcdde5] py-2 overflow-hidden">
         <div className="text-center text-[12px] md:text-[13px] text-gray-900 font-medium tracking-[0.25em] uppercase flex items-center justify-center gap-2">
@@ -286,7 +290,21 @@ const Navbar: React.FC = () => {
               <div className={`h-[1px] bg-black mt-1 transition-all duration-300 ${location.search.includes('jewelry') ? 'w-full' : 'w-0 group-hover:w-full'}`} />
             </Link>
 
-            {/* 4. Contact */}
+            {/* 4. Mobile App */}
+            <Link
+              to="/app"
+              className="text-[14px] lg:text-[15px] tracking-widest text-[#1a1a1a] font-medium uppercase hover:text-gray-500 transition-colors flex flex-col items-center group"
+            >
+              <div className="flex items-center gap-1.5">
+                <span>App</span>
+                <span className="text-[9px] font-sans font-bold px-1.5 py-0.2 bg-[#C1A98F] text-black tracking-widest uppercase rounded">
+                  NEW
+                </span>
+              </div>
+              <div className={`h-[1px] bg-black mt-1 transition-all duration-300 ${location.pathname === '/app' ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+            </Link>
+
+            {/* 5. Contact */}
             <Link
               to="/contact"
               className="text-[14px] lg:text-[15px] tracking-widest text-[#1a1a1a] font-medium uppercase hover:text-gray-500 transition-colors flex flex-col items-center group"
@@ -461,6 +479,21 @@ const Navbar: React.FC = () => {
             onClick={() => setMenuOpen(false)}
           >
             Jewelry By Agatha G.
+          </Link>
+
+          {/* Mobile App */}
+          <Link
+            to="/app"
+            className="text-base tracking-widest uppercase font-medium py-2.5 border-b border-gray-100 text-[#1a1a1a] flex items-center justify-between"
+            onClick={() => setMenuOpen(false)}
+          >
+            <div className="flex items-center gap-2">
+              <Smartphone className="w-4 h-4 text-[#8c6d4f]" />
+              <span>Mobile App</span>
+            </div>
+            <span className="text-[9px] font-sans font-bold px-2 py-0.5 bg-[#C1A98F] text-black tracking-widest uppercase rounded">
+              INSTALL
+            </span>
           </Link>
 
           {/* Contact */}

@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useProducts } from '../hooks/useProducts';
 import ProductCard from '../components/ui/ProductCard';
+import AppDownloadSection from '../components/ui/AppDownloadSection';
 
 const HomePage: React.FC = () => {
   const { products } = useProducts();
@@ -79,6 +80,9 @@ const HomePage: React.FC = () => {
           </Link>
         </div>
       </section>
+
+      {/* Lunar Mobile App Download & Experience Section */}
+      <AppDownloadSection />
     </div>
   );
 };
