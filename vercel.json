@@ -19,6 +19,13 @@
       ]
     }
   ],
+  "redirects": [
+    {
+      "source": "/downloads/lunar-app.apk",
+      "destination": "https://github.com/aucikkosmonaucik-boop/lunar/releases/latest/download/lunar-app.apk",
+      "permanent": false
+    }
+  ],
   "rewrites": [
     {
       "source": "/api/products",

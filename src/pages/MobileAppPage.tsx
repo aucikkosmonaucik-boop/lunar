@@ -19,7 +19,7 @@ const MobileAppPage: React.FC = () => {
     setOpenFaq(openFaq === index ? null : index);
   };
 
-  const downloadApkUrl = '/downloads/lunar-app.apk';
+  const downloadApkUrl = 'https://github.com/aucikkosmonaucik-boop/lunar/releases/latest/download/lunar-app.apk';
 
   const faqs = [
     {
