@@ -1,7 +1,7 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import { prisma } from '../_lib/prisma.js';
+import { extractToken } from '../_lib/auth-util.js';
 import jwt from 'jsonwebtoken';
-import { parse } from 'cookie';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-in-production';
 
@@ -10,8 +10,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
-  const cookies = parse(req.headers.cookie || '');
-  const token = cookies.auth_token;
+  const token = extractToken(req);
 
   let userId: string | null = null;
   let userRole: string = 'USER';

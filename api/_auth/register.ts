@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { prisma } from '../_lib/prisma.js';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import { sendEmail } from '../_lib/email.js';
 import crypto from 'crypto';
 
@@ -57,7 +58,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       console.error('Failed to send verification email:', emailError);
     }
 
-    return res.status(201).json({ message: 'User created successfully. Please check your email to verify your account.', user });
+    const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-in-production';
+    const token = jwt.sign(
+      { userId: user.id, email: user.email },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    return res.status(201).json({
+      message: 'User created successfully. Please check your email to verify your account.',
+      token,
+      user,
+    });
   } catch (error) {
     const err = error as Error;
     console.error('Registration error:', err);
