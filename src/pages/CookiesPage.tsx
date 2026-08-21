@@ -21,7 +21,7 @@ const CookiesPage: React.FC = () => {
       setAnalytics(consent.preferences.analytics);
       setMarketing(consent.preferences.marketing);
       setPreferences(consent.preferences.preferences);
-      setConsentDate(new Date(consent.date).toLocaleDateString());
+      setConsentDate(new Date(consent.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }));
     }
 
     const handleConsentChange = (e: CustomEvent<CookieConsentState | null>) => {
@@ -29,7 +29,7 @@ const CookiesPage: React.FC = () => {
         setAnalytics(e.detail.preferences.analytics);
         setMarketing(e.detail.preferences.marketing);
         setPreferences(e.detail.preferences.preferences);
-        setConsentDate(new Date(e.detail.date).toLocaleDateString());
+        setConsentDate(new Date(e.detail.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }));
       } else {
         setConsentDate(null);
       }
@@ -46,7 +46,7 @@ const CookiesPage: React.FC = () => {
       marketing,
       preferences,
     });
-    setConsentDate(new Date(state.date).toLocaleDateString());
+    setConsentDate(new Date(state.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }));
     setSavedSuccess(true);
     setTimeout(() => setSavedSuccess(false), 3500);
   };
@@ -56,7 +56,7 @@ const CookiesPage: React.FC = () => {
     setAnalytics(true);
     setMarketing(true);
     setPreferences(true);
-    setConsentDate(new Date(state.date).toLocaleDateString());
+    setConsentDate(new Date(state.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }));
     setSavedSuccess(true);
     setTimeout(() => setSavedSuccess(false), 3500);
   };
@@ -78,13 +78,13 @@ const CookiesPage: React.FC = () => {
         {/* Page Header */}
         <div className="text-center mb-10 w-full flex flex-col items-center">
           <p className="text-[11px] text-[#8C6D4F] font-bold uppercase tracking-[0.45em] mb-4">
-            Polityka Prywatności i Plików Cookies
+            Privacy Preference &amp; Cookies
           </p>
           <h1 
             style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
             className="text-4xl md:text-6xl tracking-widest text-[#1a1a1a] uppercase font-light mb-6"
           >
-            Polityka Cookies
+            Cookies Policy
           </h1>
           <div className="w-12 h-[1px] bg-[#C1A98F] mx-auto" />
         </div>
@@ -98,10 +98,10 @@ const CookiesPage: React.FC = () => {
               </div>
               <div>
                 <h2 className="text-base md:text-lg font-semibold text-[#1A1A1A] uppercase tracking-wider">
-                  Twoje aktualne zgody
+                  Your Cookie Preferences
                 </h2>
                 <p className="text-xs text-gray-500">
-                  {consentDate ? `Ostatnio zaktualizowano: ${consentDate}` : 'Brak zapisanych niestandardowych preferencji'}
+                  {consentDate ? `Last updated: ${consentDate}` : 'Default privacy settings applied'}
                 </p>
               </div>
             </div>
@@ -109,7 +109,7 @@ const CookiesPage: React.FC = () => {
             {savedSuccess && (
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-medium animate-in fade-in">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>Preferencje zostały zapisane pomyślnie!</span>
+                <span>Preferences saved successfully!</span>
               </div>
             )}
           </div>
@@ -122,14 +122,14 @@ const CookiesPage: React.FC = () => {
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-sm font-semibold text-[#1A1A1A] uppercase tracking-wider">
-                    Pliki Niezbędne i Bezpieczeństwo
+                    Strictly Necessary &amp; Security
                   </span>
                   <span className="text-[10px] bg-[#C1A98F]/20 text-[#8C6D4F] px-2 py-0.5 rounded font-semibold uppercase">
-                    Zawsze aktywne
+                    Always Active
                   </span>
                 </div>
                 <p className="text-xs text-gray-600 max-w-xl leading-relaxed">
-                  Kluczowe dla prawidłowego działania witryny: logowanie użytkowników, zapamiętywanie koszyka, obsługa sesji oraz bezpieczna bramka płatności Stripe.
+                  Crucial for proper shop functionality: customer authentication, shopping bag persistence, navigation security, and encrypted Stripe checkout processing.
                 </p>
               </div>
               <div className="opacity-75 cursor-not-allowed pt-1 md:pt-0">
@@ -145,10 +145,10 @@ const CookiesPage: React.FC = () => {
             <div className="flex items-start md:items-center justify-between gap-4 pt-4 border-t border-gray-200/60">
               <div>
                 <span className="text-sm font-semibold text-[#1A1A1A] uppercase tracking-wider block mb-1">
-                  Pliki Analityczne i Wydajnościowe
+                  Performance &amp; Analytics
                 </span>
                 <p className="text-xs text-gray-600 max-w-xl leading-relaxed">
-                  Pozwalają nam zliczać wizyty i źródła ruchu, abyśmy mogli mierzyć i poprawiać wydajność naszego sklepu jubilerskiego.
+                  Allow us to count visits and traffic sources to measure and refine the performance, reliability, and speed of our luxury boutique.
                 </p>
               </div>
               <button
@@ -167,10 +167,10 @@ const CookiesPage: React.FC = () => {
             <div className="flex items-start md:items-center justify-between gap-4 pt-4 border-t border-gray-200/60">
               <div>
                 <span className="text-sm font-semibold text-[#1A1A1A] uppercase tracking-wider block mb-1">
-                  Pliki Preferencji i Funkcjonalne
+                  Preferences &amp; Functionality
                 </span>
                 <p className="text-xs text-gray-600 max-w-xl leading-relaxed">
-                  Umożliwiają zapamiętanie Twoich ustawień, takich jak lista ulubionych produktów (wishlist) oraz lokalne filtry przeglądania.
+                  Enable the website to remember your personal settings, such as your Wishlist items, viewing history, and regional preferences.
                 </p>
               </div>
               <button
@@ -189,10 +189,10 @@ const CookiesPage: React.FC = () => {
             <div className="flex items-start md:items-center justify-between gap-4 pt-4 border-t border-gray-200/60">
               <div>
                 <span className="text-sm font-semibold text-[#1A1A1A] uppercase tracking-wider block mb-1">
-                  Pliki Marketingowe i Reklamowe
+                  Marketing &amp; Targeted Advertising
                 </span>
                 <p className="text-xs text-gray-600 max-w-xl leading-relaxed">
-                  Stosowane do dopasowania treści reklamowych i rekomendacji nowych kolekcji do Twoich zainteresowań.
+                  Used to tailor promotional announcements and showcase personalized new arrivals and fine jewelry recommendations.
                 </p>
               </div>
               <button
@@ -217,7 +217,7 @@ const CookiesPage: React.FC = () => {
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 text-xs text-gray-500 hover:text-red-600 transition-colors"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              <span>Zresetuj wszystkie zgody</span>
+              <span>Reset All Preferences</span>
             </button>
 
             <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
@@ -226,14 +226,14 @@ const CookiesPage: React.FC = () => {
                 onClick={handleSave}
                 className="w-full sm:w-auto px-6 py-2.5 bg-white hover:bg-gray-50 text-[#1A1A1A] border border-[#C1A98F] rounded-lg text-xs font-semibold uppercase tracking-wider transition-colors"
               >
-                Zapisz moje preferencje
+                Save My Preferences
               </button>
               <button
                 type="button"
                 onClick={handleAcceptAll}
                 className="w-full sm:w-auto px-6 py-2.5 bg-[#1A1A1A] hover:bg-black text-[#FAF6F3] rounded-lg text-xs font-semibold uppercase tracking-wider transition-colors shadow-sm"
               >
-                Akceptuj wszystkie
+                Accept All Cookies
               </button>
             </div>
           </div>
@@ -245,40 +245,40 @@ const CookiesPage: React.FC = () => {
           
           <section className="w-full">
             <h2 className="text-xl md:text-2xl uppercase tracking-[0.2em] font-medium mb-4 text-center">
-              1. Czym są pliki cookies?
+              1. What are Cookies?
             </h2>
             <p className="text-[15px] text-gray-600 max-w-2xl mx-auto text-center">
-              Pliki cookies (ciasteczka) to małe pliki tekstowe zapisywane w Twojej przeglądarce internetowej podczas odwiedzania witryny https://mylunar.shop. Pozwalają one witrynie rozpoznać Twoje urządzenie i zapamiętać Twoje preferencje, co umożliwia płynne korzystanie ze sklepu.
+              Cookies are small data files stored on your browser or device when you visit https://mylunar.shop. They enable the website to identify your browser, remember your session state, and deliver a smooth, tailored luxury experience.
             </p>
           </section>
 
           <section className="w-full">
             <h2 className="text-xl md:text-2xl uppercase tracking-[0.2em] font-medium mb-4 text-center">
-              2. Jak Lunar wykorzystuje pliki cookies?
+              2. How Lunar Uses Cookies
             </h2>
             <p className="text-[15px] text-gray-600 max-w-2xl mx-auto mb-4 text-center">
-              W Lunar dbamy o najwyższy standard bezpieczeństwa i prywatności. Pliki cookies wykorzystujemy w następujących celach:
+              At Lunar, we treat your privacy and data security with utmost care. We utilize cookies for the following objectives:
             </p>
             <ul className="list-none text-[15px] text-gray-600 space-y-2 max-w-lg mx-auto">
-              <li className="text-center">• Utrzymanie aktywnej sesji logowania i zawartości koszyka zakupowego</li>
-              <li className="text-center">• Bezpieczne procesowanie transakcji płatniczych za pośrednictwem Stripe</li>
-              <li className="text-center">• Zapewnienie szybkiego ładowania zasobów i optymalizacji mobilnej</li>
-              <li className="text-center">• Anonimowa analiza statystyczna ruchu w celu udoskonalania oferty</li>
+              <li className="text-center">• Maintaining active authentication sessions and shopping cart contents</li>
+              <li className="text-center">• Secure and encrypted transaction handling via Stripe</li>
+              <li className="text-center">• Fast asset caching and seamless mobile optimization</li>
+              <li className="text-center">• Anonymous statistical insights to refine collections and service</li>
             </ul>
           </section>
 
           <section className="w-full">
             <h2 className="text-xl md:text-2xl uppercase tracking-[0.2em] font-medium mb-4 text-center">
-              3. Zarządzanie plikami cookies w przeglądarce
+              3. Managing Cookies in Your Browser
             </h2>
             <p className="text-[15px] text-gray-600 max-w-2xl mx-auto text-center">
-              W każdej chwili możesz zmienić ustawienia plików cookies za pomocą powyższego panelu lub bezpośrednio w opcjach swojej przeglądarki internetowej (Chrome, Safari, Firefox, Edge). Pamiętaj, że wyłączenie plików niezbędnych może wpłynąć na poprawne działanie koszyka i logowania.
+              You can adjust your cookie settings at any time using the control panel above or via your browser settings (Chrome, Safari, Firefox, Edge). Please note that disabling essential cookies may impact account access and checkout functionality.
             </p>
           </section>
 
           <div className="pt-12 border-t border-gray-100 mt-20 w-full text-center">
             <p className="text-[11px] uppercase tracking-widest text-gray-400">
-              Ostatnia aktualizacja: Sierpień 2026 &bull; Lunar Jewellery
+              Last updated: August 2026 &bull; Lunar Jewellery
             </p>
           </div>
 
