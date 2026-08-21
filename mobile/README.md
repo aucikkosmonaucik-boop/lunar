@@ -1,106 +1,78 @@
 # 📱 Lunar Store — Mobile App (Flutter for Android & iOS)
 
-Aplikacja mobilna e-commerce dla sklepu **LUNAR**, zintegrowana bezpośrednio z backendem Node.js / Prisma REST API (`/api/*`).
+A full-featured mobile e-commerce application for **LUNAR**, seamlessly integrated with the Node.js / Prisma REST API backend (`/api/*`).
 
 ---
 
-## 🌟 Główne Funkcjonalności
+## 🌟 Key Features
 
-- 🏠 **Ekran Startowy (Home):**
-  - Automatyczny carousel banerów promocyjnych (Nowości, Bridal, Bestsellery)
-  - Przewijany poziomo pasek kategorii z dedykowanymi ikonami
-  - Sekcje: *Polecane produkty*, *Nowości*, *Bestsellery*
-  - Baner promocyjny *Klubu LUNAR*
-- 📦 **Katalog & Wyszukiwarka (Shop / Explore):**
-  - Wyszukiwanie produktów po nazwie, opisie i tagach
-  - Filtrowanie po kategoriach oraz odznakach (`NEW`, `BESTSELLER`, `SALE`, `BRIDAL`)
-  - Sortowanie (Polecane, Najnowsze, Cena rosnąco/malejąco, Oceny)
-  - Paginacja / nieskończone przewijanie (Infinite Scroll)
-- 💎 **Karta & Szczegóły Produktu:**
-  - Galeria zdjęć w wysokiej rozdzielczości z wskaźnikami
-  - Informacje o cenie, rabacie, dostępności w magazynie
-  - Wybór ilości i wariantów
-  - Oceny gwiazdkowe oraz sekcja recenzji klientów z możliwością dodania nowej opinii
-- 🛒 **Koszyk & Zniżki:**
-  - Zarządzanie pozycjami i ilościami
-  - Pasek postępu darmowej dostawy (od 250 zł)
-  - Weryfikacja i naliczanie kodów rabatowych (`PromoCode`)
-  - Zniżki z punktów lojalnościowych
-- 💳 **Kasa i Płatności (Checkout):**
-  - Formularz danych adresowych z autouzupełnianiem dla zalogowanych użytkowników
-  - Wybór metody płatności: **BLIK**, **Karta płatnicza (Stripe / Apple Pay / Google Pay)**, **Szybki przelew**, **Pobranie**
-  - Ekran sukcesu z numerem zamówienia i podsumowaniem
-- 👤 **Konto Klienta & Autoryzacja:**
-  - Logowanie, rejestracja, reset hasła
-  - Podgląd punktów lojalnościowych i poziomu w klubie
-  - Edycja danych profilu i domyślnego adresu dostawy
-- 📜 **Historia & Śledzenie Zamówień:**
-  - Lista zamówień dla zalogowanego użytkownika
-  - Wyszukiwarka i śledzenie zamówień gościa (po numerze zamówienia i adresie e-mail)
-  - Oś czasu statusu przesyłki (*Przyjęte → W realizacji → Wysłane → Doręczone*)
-- ❤️ **Ulubione (Wishlist):**
-  - Zapisywanie produktów lokalnie (trwałe w pamięci urządzenia) z szybkim przenoszeniem do koszyka
-- 🌙 **Tryb Ciemny / Jasny (Dark / Light Mode):**
-  - Luksusowa, dopasowana kolorystyka Lunar Gold (`#C1A98F`) z przełącznikiem w profilu i na pasku głównym
+- 🏠 **Home Screen:**
+  - Automated promotional banner carousel (New Arrivals, Bridal, Bestsellers)
+  - Horizontal category selector with custom luxury icons
+  - Curated product sections: *Featured Pieces*, *New Arrivals*, *Bestsellers*
+  - *LUNAR Club* loyalty promotion card
+- 📦 **Catalog & Search (Explore):**
+  - Search by product title, description, and keywords
+  - Multi-category & badge filters (`NEW`, `BESTSELLER`, `SALE`, `BRIDAL`)
+  - Sorting (Featured, Newest, Price: Low to High, Price: High to Low, Highest Rated)
+  - Infinite scroll pagination
+- 💎 **Product Card & Details:**
+  - High-resolution image gallery with page indicator dots
+  - Pricing, discounts, and real-time inventory stock availability
+  - Quantity selector and options
+  - Star ratings and customer review drawer with instant review submission
+- 🛒 **Shopping Bag & Discounts:**
+  - Item management and quantity controls
+  - Dynamic free shipping threshold progress bar (free shipping from €100)
+  - Promo code validation & application (`PromoCode`)
+  - Loyalty point rewards
+- 💳 **Checkout & Payments:**
+  - Comprehensive shipping address form with autofill for authenticated users
+  - Payment options: **Credit / Debit Card (Stripe / Apple Pay / Google Pay)**, **BLIK**, **Direct Bank Transfer**, **Cash on Delivery**
+  - Order success confirmation screen with order reference and summary
+- 👤 **Account & Authentication:**
+  - Sign in, registration, password reset
+  - Loyalty points balance and Club tier status
+  - Edit profile details and default delivery address
+- 📜 **Order History & Tracking:**
+  - Authenticated user order history
+  - Guest order tracking (by reference number & email)
+  - Visual status timeline (*Placed → Processing → Shipped → Delivered*)
+- ❤️ **Wishlist:**
+  - Persistent saved items with fast add-to-bag actions
+- 🌙 **Dark & Light Themes:**
+  - Luxury Lunar Gold palette (`#C1A98F`) with instant theme toggling in profile and app bar
 
 ---
 
-## 🚀 Jak uruchomić aplikację?
+## 🚀 Getting Started
 
-### 1. Wymagania wstępne
-- Zainstalowany [Flutter SDK](https://docs.flutter.dev/get-started/install) (wersja >= 3.0.0)
-- Emulator Androida (Android Studio) lub symulator iOS (Xcode na macOS) / podłączone fizyczne urządzenie.
+### 1. Prerequisites
+- [Flutter SDK](https://docs.flutter.dev/get-started/install) installed (version >= 3.0.0)
+- Android Emulator, iOS Simulator, or a connected physical mobile device / Chrome browser.
 
-### 2. Instalacja zależności
-Przejdź do katalogu `mobile` i pobierz pakiety:
+### 2. Install Dependencies
+Navigate to the `mobile` directory:
 ```bash
 cd mobile
 flutter pub get
 ```
 
-### 3. Konfiguracja adresu API
-Domyślnie aplikacja automatycznie dobiera odpowiedni adres:
-- **Emulator Androida:** `http://10.0.2.2:3000`
-- **Symulator iOS:** `http://localhost:3000`
-- **Produkcja:** `https://mylunar.ie`
-
-Możesz w każdej chwili zmienić adres API w aplikacji w zakładce **Konto → Adres serwera API**.
-
-### 4. Uruchomienie w trybie developerskim
+### 3. Run the App
 ```bash
 flutter run
 ```
 
-### 5. Budowanie wersji produkcyjnej
-- **Android APK:**
-  ```bash
-  flutter build apk --release
-  ```
-- **Android App Bundle (Google Play):**
-  ```bash
-  flutter build appbundle --release
-  ```
-- **iOS IPA (App Store):**
-  ```bash
-  flutter build ipa --release
-  ```
-
 ---
 
-## 🏗️ Struktura Kodu
+## ⚙️ Configuration & API Endpoint
 
+The default API server is configured in [`lib/core/constants/api_constants.dart`](lib/core/constants/api_constants.dart):
+```dart
+static const String defaultBaseUrl = 'https://lunar-eight-bay.vercel.app';
 ```
-mobile/
-├── lib/
-│   ├── main.dart                     # Inicjalizacja, MultiProvider, ThemeMode
-│   ├── core/
-│   │   ├── constants/                # Kolory, motywy, stałe API
-│   │   ├── services/                 # ApiService (HTTP/JWT), StorageService (SharedPreferences)
-│   │   └── utils/                    # Formatowanie walut, dat, statusów
-│   ├── models/                       # Modele Product, Category, User, Cart, Order, Promo, Review
-│   ├── providers/                    # Stan: Auth, Cart, Wishlist, Product, Order, Theme
-│   ├── screens/                      # Ekrany UI (Home, Shop, Details, Cart, Checkout, Profile, Orders)
-│   └── widgets/                      # Komponenty wielokrotnego użytku (ProductCard, BannerCarousel, itp.)
-├── android/                          # Konfiguracja Android (AndroidManifest.xml)
-└── ios/                              # Konfiguracja iOS (Info.plist)
-```
+
+You can also change the API endpoint dynamically at runtime in the app:
+1. Open the **Account** tab.
+2. Tap **API Server Endpoint**.
+3. Enter your server URL and tap **Save**.

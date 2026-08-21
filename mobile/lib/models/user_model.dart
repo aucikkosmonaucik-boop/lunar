@@ -18,7 +18,7 @@ class User {
     this.street,
     this.city,
     this.postalCode,
-    this.country = 'Polska',
+    this.country = 'Ireland',
     this.role = 'USER',
     this.loyaltyPoints = 0,
   });
@@ -34,7 +34,7 @@ class User {
       street: json['street']?.toString(),
       city: json['city']?.toString(),
       postalCode: json['postalCode']?.toString(),
-      country: json['country']?.toString() ?? 'Polska',
+      country: json['country']?.toString() ?? 'Ireland',
       role: json['role']?.toString() ?? 'USER',
       loyaltyPoints: (json['loyaltyPoints'] as num?)?.toInt() ?? 0,
     );

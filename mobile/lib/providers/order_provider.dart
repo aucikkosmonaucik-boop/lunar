@@ -43,7 +43,7 @@ class OrderProvider extends ChangeNotifier {
     required String street,
     required String city,
     required String postalCode,
-    String country = 'Polska',
+    String country = 'Ireland',
     String? phone,
     String? orderNotes,
     String? discountCode,
