@@ -44,7 +44,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (success && mounted) {
       Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Konto utworzone pomyślnie!')),
+        const SnackBar(content: Text('Account created successfully! Welcome to Lunar.')),
       );
     }
   }
@@ -75,7 +75,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Stwórz konto',
+                  'Create Account',
                   style: GoogleFonts.cormorantGaramond(
                     fontSize: 30,
                     fontWeight: FontWeight.w700,
@@ -84,7 +84,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'Dołącz do nas i zbieraj punkty lojalnościowe za każde zakupy.',
+                  'Join Lunar and earn exclusive loyalty reward points on every purchase.',
                   style: TextStyle(
                     fontSize: 13,
                     color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
@@ -118,43 +118,43 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                 CustomTextField(
                   controller: _nameController,
-                  label: 'Imię i Nazwisko',
+                  label: 'Full Name',
                   prefixIcon: Icons.person_outline,
-                  validator: (v) => (v == null || v.trim().isEmpty) ? 'Podaj imię i nazwisko' : null,
+                  validator: (v) => (v == null || v.trim().isEmpty) ? 'Please enter your full name' : null,
                 ),
                 const SizedBox(height: 16),
 
                 CustomTextField(
                   controller: _emailController,
-                  label: 'Adres E-mail',
-                  hintText: 'twoj@email.pl',
+                  label: 'Email Address',
+                  hintText: 'user@example.com',
                   prefixIcon: Icons.email_outlined,
                   keyboardType: TextInputType.emailAddress,
-                  validator: (v) => (v == null || !v.contains('@')) ? 'Wprowadź prawidłowy adres e-mail' : null,
+                  validator: (v) => (v == null || !v.contains('@')) ? 'Please enter a valid email address' : null,
                 ),
                 const SizedBox(height: 16),
 
                 CustomTextField(
                   controller: _passwordController,
-                  label: 'Hasło',
+                  label: 'Password',
                   prefixIcon: Icons.lock_outline_rounded,
                   obscureText: _obscurePassword,
                   suffixIcon: IconButton(
                     icon: Icon(_obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined),
                     onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                   ),
-                  validator: (v) => (v == null || v.length < 6) ? 'Hasło musi mieć min. 6 znaków' : null,
+                  validator: (v) => (v == null || v.length < 6) ? 'Password must be at least 6 characters' : null,
                 ),
                 const SizedBox(height: 16),
 
                 CustomTextField(
                   controller: _confirmPasswordController,
-                  label: 'Powtórz hasło',
+                  label: 'Confirm Password',
                   prefixIcon: Icons.lock_outline_rounded,
                   obscureText: _obscurePassword,
                   validator: (v) {
                     if (v != _passwordController.text) {
-                      return 'Hasła nie są identyczne';
+                      return 'Passwords do not match';
                     }
                     return null;
                   },
@@ -162,7 +162,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 24),
 
                 CustomButton(
-                  text: 'Zarejestruj się',
+                  text: 'Sign Up',
                   isLoading: auth.isLoading,
                   onPressed: _submitRegister,
                 ),
@@ -172,7 +172,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Masz już konto? ',
+                      'Already have an account? ',
                       style: TextStyle(
                         fontSize: 13,
                         color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
@@ -185,7 +185,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         );
                       },
                       child: Text(
-                        'Zaloguj się',
+                        'Sign In',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w700,

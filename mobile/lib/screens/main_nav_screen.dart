@@ -68,12 +68,12 @@ class _MainNavScreenState extends State<MainNavScreen> {
             const BottomNavigationBarItem(
               icon: Icon(Icons.home_outlined),
               activeIcon: Icon(Icons.home_rounded),
-              label: 'Start',
+              label: 'Home',
             ),
             const BottomNavigationBarItem(
               icon: Icon(Icons.grid_view_outlined),
               activeIcon: Icon(Icons.grid_view_rounded),
-              label: 'Kategorie',
+              label: 'Categories',
             ),
             BottomNavigationBarItem(
               icon: Badge(
@@ -88,7 +88,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
                 backgroundColor: AppColors.primary,
                 child: const Icon(Icons.favorite_rounded),
               ),
-              label: 'Ulubione',
+              label: 'Wishlist',
             ),
             BottomNavigationBarItem(
               icon: Badge(
@@ -103,12 +103,12 @@ class _MainNavScreenState extends State<MainNavScreen> {
                 backgroundColor: AppColors.badgeSale,
                 child: const Icon(Icons.shopping_bag_rounded),
               ),
-              label: 'Koszyk',
+              label: 'Bag',
             ),
             const BottomNavigationBarItem(
               icon: Icon(Icons.person_outline_rounded),
               activeIcon: Icon(Icons.person_rounded),
-              label: 'Konto',
+              label: 'Account',
             ),
           ],
         ),

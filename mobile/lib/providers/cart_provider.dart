@@ -29,8 +29,8 @@ class CartProvider extends ChangeNotifier {
 
   double get shippingFee {
     if (subtotal == 0) return 0.0;
-    if (subtotal >= 250.0) return 0.0; // Free shipping above 250 PLN
-    return 15.0; // Standard shipping fee
+    if (subtotal >= 100.0) return 0.0; // Free shipping above €100
+    return 5.0; // Standard shipping fee €5.00
   }
 
   double get total {
@@ -94,7 +94,7 @@ class CartProvider extends ChangeNotifier {
       if (res is Map && res['promo'] != null) {
         final promo = PromoCode.fromJson(res['promo'] as Map<String, dynamic>);
         if (subtotal < promo.minOrderValue) {
-          _promoError = 'Wymagana minimalna wartość zamówienia: ${promo.minOrderValue.toStringAsFixed(2)} zł';
+          _promoError = 'Minimum order value required: €${promo.minOrderValue.toStringAsFixed(2)}';
           _isApplyingPromo = false;
           notifyListeners();
           return false;
@@ -106,12 +106,12 @@ class CartProvider extends ChangeNotifier {
         return true;
       }
       
-      _promoError = 'Nieprawidłowy lub nieaktywny kod rabatowy';
+      _promoError = 'Invalid or inactive promo code';
       _isApplyingPromo = false;
       notifyListeners();
       return false;
     } catch (e) {
-      _promoError = 'Błąd weryfikacji kodu: $e';
+      _promoError = 'Promo verification error: $e';
       _isApplyingPromo = false;
       notifyListeners();
       return false;

@@ -44,7 +44,7 @@ class OrderSuccessScreen extends StatelessWidget {
               const SizedBox(height: 24),
 
               Text(
-                'Dziękujemy za zamówienie!',
+                'Thank You for Your Order!',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.cormorantGaramond(
                   fontSize: 28,
@@ -55,7 +55,7 @@ class OrderSuccessScreen extends StatelessWidget {
               const SizedBox(height: 8),
 
               Text(
-                'Twoje zamówienie zostało przyjęte do realizacji. Potwierdzenie wysłaliśmy na adres:\n${order.customerEmail}',
+                'Your order has been confirmed. A receipt and tracking details have been sent to:\n${order.customerEmail}',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,
@@ -75,13 +75,13 @@ class OrderSuccessScreen extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    _buildRow('Numer zamówienia', '#${order.orderNumber}', isBold: true),
+                    _buildRow('Order Reference', '#${order.orderNumber}', isBold: true),
                     const Divider(height: 16),
-                    _buildRow('Kwota łączna', Formatters.formatPrice(order.total), isBold: true, color: AppColors.primary),
+                    _buildRow('Total Amount', Formatters.formatPrice(order.total), isBold: true, color: AppColors.primary),
                     const Divider(height: 16),
-                    _buildRow('Metoda płatności', order.paymentMethod.toUpperCase()),
+                    _buildRow('Payment Method', order.paymentMethod.toUpperCase()),
                     const Divider(height: 16),
-                    _buildRow('Status', Formatters.formatOrderStatus(order.status), color: AppColors.success),
+                    _buildRow('Order Status', Formatters.formatOrderStatus(order.status), color: AppColors.success),
                   ],
                 ),
               ),
@@ -90,7 +90,7 @@ class OrderSuccessScreen extends StatelessWidget {
 
               // Action Buttons
               CustomButton(
-                text: 'Zobacz szczegóły zamówienia',
+                text: 'View Order Details',
                 icon: Icons.receipt_long_outlined,
                 onPressed: () {
                   Navigator.of(context).push(
@@ -100,7 +100,7 @@ class OrderSuccessScreen extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               CustomButton(
-                text: 'Powrót do sklepu',
+                text: 'Back to Store',
                 isOutlined: true,
                 onPressed: () {
                   Navigator.of(context).pushAndRemoveUntil(

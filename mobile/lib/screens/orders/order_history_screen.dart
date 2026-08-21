@@ -45,7 +45,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with SingleTick
   Future<void> _trackGuestOrder() async {
     if (_orderNumController.text.trim().isEmpty || _emailController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Podaj numer zamówienia oraz adres e-mail')),
+        const SnackBar(content: Text('Please enter both order number and email address')),
       );
       return;
     }
@@ -62,7 +62,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with SingleTick
     } else if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Nie znaleziono zamówienia o podanych danych'),
+          content: Text('No order found matching the provided details'),
           backgroundColor: AppColors.error,
         ),
       );
@@ -78,7 +78,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with SingleTick
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Historia Zamówień',
+          'Order History',
           style: GoogleFonts.cormorantGaramond(fontSize: 22, fontWeight: FontWeight.w700),
         ),
         bottom: TabBar(
@@ -87,8 +87,8 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with SingleTick
           labelColor: isDark ? AppColors.primary : AppColors.lightText,
           unselectedLabelColor: Colors.grey,
           tabs: const [
-            Tab(text: 'Moje zamówienia'),
-            Tab(text: 'Śledź przesyłkę'),
+            Tab(text: 'My Orders'),
+            Tab(text: 'Track Order'),
           ],
         ),
       ),
@@ -99,16 +99,16 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with SingleTick
           !authProvider.isAuthenticated
               ? const EmptyStateView(
                   icon: Icons.lock_outline_rounded,
-                  title: 'Zaloguj się',
-                  message: 'Zaloguj się na swoje konto, aby zobaczyć historię zamówień.',
+                  title: 'Sign In',
+                  message: 'Sign in to your account to view your past order history.',
                 )
               : orderProvider.isLoading
                   ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
                   : orderProvider.orders.isEmpty
                       ? const EmptyStateView(
                           icon: Icons.receipt_long_outlined,
-                          title: 'Brak zamówień',
-                          message: 'Nie masz jeszcze żadnych zamówień na swoim koncie.',
+                          title: 'No Orders Yet',
+                          message: 'You have not placed any orders with this account yet.',
                         )
                       : RefreshIndicator(
                           color: AppColors.primary,
@@ -129,12 +129,12 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with SingleTick
             padding: const EdgeInsets.all(20),
             children: [
               Text(
-                'Sprawdź status zamówienia',
+                'Track Your Order',
                 style: GoogleFonts.cormorantGaramond(fontSize: 20, fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 8),
               Text(
-                'Wpisz numer zamówienia oraz adres e-mail użyty podczas zakupu.',
+                'Enter your order reference number and the email address used during checkout.',
                 style: TextStyle(
                   fontSize: 13,
                   color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
@@ -143,21 +143,21 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with SingleTick
               const SizedBox(height: 20),
               CustomTextField(
                 controller: _orderNumController,
-                label: 'Numer zamówienia',
-                hintText: 'np. LUNAR-123456-789',
+                label: 'Order Reference Number',
+                hintText: 'e.g. LUNAR-123456-789',
                 prefixIcon: Icons.tag_rounded,
               ),
               const SizedBox(height: 14),
               CustomTextField(
                 controller: _emailController,
-                label: 'Adres E-mail',
-                hintText: 'jan@example.com',
+                label: 'Email Address',
+                hintText: 'user@example.com',
                 prefixIcon: Icons.email_outlined,
                 keyboardType: TextInputType.emailAddress,
               ),
               const SizedBox(height: 24),
               CustomButton(
-                text: 'Sprawdź status',
+                text: 'Track Order Status',
                 icon: Icons.search_rounded,
                 isLoading: orderProvider.isLoading,
                 onPressed: _trackGuestOrder,
@@ -212,7 +212,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with SingleTick
             ),
             const SizedBox(height: 8),
             Text(
-              'Data: ${Formatters.formatDate(order.createdAt)}',
+              'Date: ${Formatters.formatDate(order.createdAt)}',
               style: TextStyle(
                 fontSize: 12,
                 color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
@@ -223,7 +223,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with SingleTick
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Pozycje: ${order.items.length} szt.',
+                  'Items: ${order.items.length}',
                   style: TextStyle(
                     fontSize: 13,
                     color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,

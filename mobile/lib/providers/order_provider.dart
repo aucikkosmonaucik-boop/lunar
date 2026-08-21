@@ -89,7 +89,7 @@ class OrderProvider extends ChangeNotifier {
         notifyListeners();
         return newOrder;
       }
-      throw ApiException('Nie udało się utworzyć zamówienia');
+      throw ApiException('Failed to create order');
     } catch (e) {
       _isLoading = false;
       _errorMessage = e.toString();
@@ -118,7 +118,7 @@ class OrderProvider extends ChangeNotifier {
       if (res is Map && res['order'] != null) {
         return OrderModel.fromJson(res['order'] as Map<String, dynamic>);
       }
-      throw ApiException('Nie znaleziono zamówienia');
+      throw ApiException('Order not found');
     } catch (e) {
       _isLoading = false;
       _errorMessage = e.toString();

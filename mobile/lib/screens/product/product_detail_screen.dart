@@ -25,7 +25,7 @@ class ProductDetailScreen extends StatefulWidget {
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   int _selectedImageIndex = 0;
   int _quantity = 1;
-  String? _selectedOption;
+  final String? _selectedOption = null;
   List<Review> _reviews = [];
   bool _isLoadingReviews = true;
 
@@ -72,7 +72,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Dodaj opinię',
+                    'Write a Review',
                     style: GoogleFonts.cormorantGaramond(fontSize: 22, fontWeight: FontWeight.w700),
                   ),
                   const SizedBox(height: 12),
@@ -91,17 +91,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   const SizedBox(height: 12),
                   TextField(
                     controller: nameController,
-                    decoration: const InputDecoration(labelText: 'Twoje imię'),
+                    decoration: const InputDecoration(labelText: 'Your Name'),
                   ),
                   const SizedBox(height: 12),
                   TextField(
                     controller: commentController,
                     maxLines: 3,
-                    decoration: const InputDecoration(labelText: 'Treść opinii'),
+                    decoration: const InputDecoration(labelText: 'Review Comments'),
                   ),
                   const SizedBox(height: 20),
                   CustomButton(
-                    text: 'Opublikuj opinię',
+                    text: 'Submit Review',
                     onPressed: () async {
                       if (nameController.text.trim().isEmpty || commentController.text.trim().isEmpty) return;
                       final prodProvider = context.read<ProductProvider>();
@@ -117,7 +117,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         _loadReviews();
                         if (mounted) {
                           messenger.showSnackBar(
-                            const SnackBar(content: Text('Dziękujemy za opinię!')),
+                            const SnackBar(content: Text('Thank you for your review!')),
                           );
                         }
                       }
@@ -245,7 +245,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       RatingStars(rating: product.rating, size: 16),
                       const SizedBox(width: 8),
                       Text(
-                        '${product.rating.toStringAsFixed(1)} (${product.reviewCount} opinii)',
+                        '${product.rating.toStringAsFixed(1)} (${product.reviewCount} reviews)',
                         style: TextStyle(
                           fontSize: 13,
                           color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
@@ -298,7 +298,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        product.stock > 0 ? 'Dostępny w magazynie (${product.stock} szt.)' : 'Produkt wyprzedany',
+                        product.stock > 0 ? 'In stock (${product.stock} available)' : 'Sold Out',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
@@ -311,12 +311,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
                   // Description
                   Text(
-                    'Opis produktu',
+                    'Product Description',
                     style: GoogleFonts.cormorantGaramond(fontSize: 18, fontWeight: FontWeight.w700),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    product.description.isNotEmpty ? product.description : 'Brak szczegółowego opisu.',
+                    product.description.isNotEmpty ? product.description : 'No detailed description available.',
                     style: TextStyle(
                       fontSize: 14,
                       height: 1.5,
@@ -328,7 +328,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   if (product.features.isNotEmpty) ...[
                     const SizedBox(height: 16),
                     Text(
-                      'Cechy produktu',
+                      'Highlights & Details',
                       style: GoogleFonts.cormorantGaramond(fontSize: 18, fontWeight: FontWeight.w700),
                     ),
                     const SizedBox(height: 8),
@@ -362,12 +362,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Opinie klientów (${_reviews.length})',
+                        'Customer Reviews (${_reviews.length})',
                         style: GoogleFonts.cormorantGaramond(fontSize: 18, fontWeight: FontWeight.w700),
                       ),
                       TextButton(
                         onPressed: _showAddReviewModal,
-                        child: const Text('+ Dodaj opinię', style: TextStyle(color: AppColors.primary)),
+                        child: const Text('+ Write a Review', style: TextStyle(color: AppColors.primary)),
                       ),
                     ],
                   ),
@@ -376,7 +376,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     const Center(child: CircularProgressIndicator(color: AppColors.primary))
                   else if (_reviews.isEmpty)
                     Text(
-                      'Brak opinii dla tego produktu. Bądź pierwszą osobą, która doda recenzję!',
+                      'No reviews yet. Be the first to share your thoughts on this piece!',
                       style: TextStyle(
                         fontSize: 13,
                         color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
@@ -469,7 +469,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               // Add to Cart Button
               Expanded(
                 child: CustomButton(
-                  text: 'Dodaj do koszyka • ${Formatters.formatPrice(product.price * _quantity)}',
+                  text: 'Add to Bag • ${Formatters.formatPrice(product.price * _quantity)}',
                   icon: Icons.shopping_bag_outlined,
                   onPressed: product.stock > 0
                       ? () {
@@ -480,7 +480,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               );
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Dodano $quantity szt. do koszyka'),
+                              content: Text('Added $quantity item(s) to bag'),
                               duration: const Duration(seconds: 2),
                               behavior: SnackBarBehavior.floating,
                             ),

@@ -22,31 +22,31 @@ class FavoritesScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Ulubione (${wishlistProvider.count})',
+          'Wishlist (${wishlistProvider.count})',
           style: GoogleFonts.cormorantGaramond(fontSize: 22, fontWeight: FontWeight.w700),
         ),
         actions: [
           if (wishlistProvider.count > 0)
             IconButton(
               icon: const Icon(Icons.delete_outline_rounded),
-              tooltip: 'Wyczyść ulubione',
+              tooltip: 'Clear wishlist',
               onPressed: () {
                 showDialog(
                   context: context,
                   builder: (ctx) => AlertDialog(
-                    title: const Text('Wyczyścić ulubione?'),
-                    content: const Text('Wszystkie zapisane produkty zostaną usunięte.'),
+                    title: const Text('Clear wishlist?'),
+                    content: const Text('All saved items will be removed from your wishlist.'),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(ctx),
-                        child: const Text('Anuluj'),
+                        child: const Text('Cancel'),
                       ),
                       TextButton(
                         onPressed: () {
                           wishlistProvider.clearWishlist();
                           Navigator.pop(ctx);
                         },
-                        child: const Text('Wyczyść', style: TextStyle(color: AppColors.error)),
+                        child: const Text('Clear', style: TextStyle(color: AppColors.error)),
                       ),
                     ],
                   ),
@@ -58,9 +58,9 @@ class FavoritesScreen extends StatelessWidget {
       body: favProducts.isEmpty
           ? EmptyStateView(
               icon: Icons.favorite_border_rounded,
-              title: 'Brak ulubionych produktów',
-              message: 'Kliknij ikonę serduszka przy dowolnym produkcie, aby zapisać go na później.',
-              buttonText: 'Przeglądaj sklep',
+              title: 'Your wishlist is empty',
+              message: 'Tap the heart icon on any product to save your favorite pieces for later.',
+              buttonText: 'Explore Collection',
               onButtonPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (_) => const ShopScreen()),

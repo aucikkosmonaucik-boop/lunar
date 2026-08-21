@@ -23,21 +23,21 @@ class ProfileScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Ustawienia API URL'),
+        title: const Text('API Server Settings'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Domyślny dla emulatora Androida: http://10.0.2.2:3000\nDla iOS symulatora: http://localhost:3000',
+              'Set server backend endpoint URL for products, auth, and orders.',
               style: TextStyle(fontSize: 12, color: Colors.grey),
             ),
             const SizedBox(height: 12),
             TextField(
               controller: controller,
               decoration: const InputDecoration(
-                labelText: 'Adres URL serwera',
-                hintText: 'https://twoj-sklep.vercel.app',
+                labelText: 'Server URL',
+                hintText: 'https://lunar-eight-bay.vercel.app',
               ),
             ),
           ],
@@ -48,11 +48,11 @@ class ProfileScreen extends StatelessWidget {
               await StorageService.setCustomBaseUrl('');
               if (context.mounted) Navigator.pop(ctx);
             },
-            child: const Text('Resetuj do domyślnego'),
+            child: const Text('Reset to Default'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Anuluj'),
+            child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () async {
@@ -66,11 +66,11 @@ class ProfileScreen extends StatelessWidget {
               if (context.mounted) {
                 Navigator.pop(ctx);
                 messenger.showSnackBar(
-                  SnackBar(content: Text('Zaktualizowano adres API: $newUrl i przeładowano dane!')),
+                  SnackBar(content: Text('Updated API server: $newUrl and reloaded data!')),
                 );
               }
             },
-            child: const Text('Zapisz', style: TextStyle(color: AppColors.primary)),
+            child: const Text('Save', style: TextStyle(color: AppColors.primary)),
           ),
         ],
       ),
@@ -87,7 +87,7 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Konto i Profil',
+          'Account & Profile',
           style: GoogleFonts.cormorantGaramond(fontSize: 22, fontWeight: FontWeight.w700),
         ),
       ),
@@ -116,12 +116,12 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 14),
                   Text(
-                    'Witaj w Lunar',
+                    'Welcome to Lunar',
                     style: GoogleFonts.cormorantGaramond(fontSize: 22, fontWeight: FontWeight.w700),
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    'Zaloguj się, aby zbierać punkty, śledzić zamówienia i korzystać ze specjalnych rabatów.',
+                    'Sign in to earn reward points, track orders, and unlock member-only benefits.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 13,
@@ -133,7 +133,7 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       Expanded(
                         child: CustomButton(
-                          text: 'Zaloguj się',
+                          text: 'Sign In',
                           onPressed: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(builder: (_) => const LoginScreen()),
@@ -144,7 +144,7 @@ class ProfileScreen extends StatelessWidget {
                       const SizedBox(width: 10),
                       Expanded(
                         child: CustomButton(
-                          text: 'Rejestracja',
+                          text: 'Register',
                           isOutlined: true,
                           onPressed: () {
                             Navigator.of(context).push(
@@ -173,7 +173,7 @@ class ProfileScreen extends StatelessWidget {
                     radius: 30,
                     backgroundColor: AppColors.primary,
                     child: Text(
-                      user?.name?.isNotEmpty == true ? user!.name![0].toUpperCase() : 'U',
+                      (user?.name != null && user!.name!.isNotEmpty) ? user.name![0].toUpperCase() : 'U',
                       style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: Colors.white),
                     ),
                   ),
@@ -183,7 +183,7 @@ class ProfileScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          user?.name ?? 'Klient Lunar',
+                          user?.name ?? 'Lunar Member',
                           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                         ),
                         const SizedBox(height: 2),
@@ -240,7 +240,7 @@ class ProfileScreen extends StatelessWidget {
                           const Icon(Icons.stars_rounded, color: AppColors.accent, size: 20),
                           const SizedBox(width: 6),
                           Text(
-                            'Punkty Klubowe',
+                            'Club Reward Points',
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
@@ -251,7 +251,7 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        '${user?.loyaltyPoints ?? 0} pkt',
+                        '${user?.loyaltyPoints ?? 0} pts',
                         style: GoogleFonts.cormorantGaramond(
                           fontSize: 26,
                           fontWeight: FontWeight.w700,
@@ -267,7 +267,7 @@ class ProfileScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: const Text(
-                      'Klub LUNAR',
+                      'LUNAR Club',
                       style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w700),
                     ),
                   ),
@@ -284,8 +284,8 @@ class ProfileScreen extends StatelessWidget {
             items: [
               _buildMenuItem(
                 icon: Icons.receipt_long_outlined,
-                title: 'Historia zamówień',
-                subtitle: 'Przeglądaj swoje złożone zamówienia',
+                title: 'Order History',
+                subtitle: 'View and track past orders',
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(builder: (_) => const OrderHistoryScreen()),
@@ -295,8 +295,8 @@ class ProfileScreen extends StatelessWidget {
               if (auth.isAuthenticated)
                 _buildMenuItem(
                   icon: Icons.person_outline_rounded,
-                  title: 'Edytuj dane i adres',
-                  subtitle: 'Imię, numer telefonu, adres do wysyłki',
+                  title: 'Edit Profile & Address',
+                  subtitle: 'Name, phone number, default shipping address',
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(builder: (_) => const EditProfileScreen()),
@@ -305,8 +305,8 @@ class ProfileScreen extends StatelessWidget {
                 ),
               _buildMenuItem(
                 icon: isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
-                title: 'Tryb ciemny',
-                subtitle: isDark ? 'Włączony' : 'Wyłączony',
+                title: 'Dark Theme',
+                subtitle: isDark ? 'Enabled' : 'Disabled',
                 trailing: Switch(
                   value: themeProvider.isDarkMode,
                   activeThumbColor: AppColors.primary,
@@ -315,7 +315,7 @@ class ProfileScreen extends StatelessWidget {
               ),
               _buildMenuItem(
                 icon: Icons.dns_outlined,
-                title: 'Adres serwera API',
+                title: 'API Server Endpoint',
                 subtitle: StorageService.getCustomBaseUrl() ?? ApiConstants.baseUrl,
                 onTap: () => _showApiSettingsDialog(context),
               ),
@@ -329,46 +329,46 @@ class ProfileScreen extends StatelessWidget {
             items: [
               _buildMenuItem(
                 icon: Icons.security_outlined,
-                title: 'Polityka prywatności i regulamin',
+                title: 'Privacy Policy & Terms',
                 onTap: () {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Dostępne na stronie https://mylunar.ie')),
+                    const SnackBar(content: Text('Available online at https://mylunar.ie')),
                   );
                 },
               ),
               _buildMenuItem(
                 icon: Icons.support_agent_outlined,
-                title: 'Pomoc i Kontakt',
-                subtitle: 'kontakt@mylunar.ie',
+                title: 'Help & Contact',
+                subtitle: 'contact@mylunar.ie',
                 onTap: () {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Napisz do nas: kontakt@mylunar.ie')),
+                    const SnackBar(content: Text('Contact support: contact@mylunar.ie')),
                   );
                 },
               ),
               if (auth.isAuthenticated)
                 _buildMenuItem(
                   icon: Icons.logout_rounded,
-                  title: 'Wyloguj się',
+                  title: 'Sign Out',
                   textColor: AppColors.error,
                   iconColor: AppColors.error,
                   onTap: () {
                     showDialog(
                       context: context,
                       builder: (ctx) => AlertDialog(
-                        title: const Text('Wylogowanie'),
-                        content: const Text('Czy na pewno chcesz się wylogować?'),
+                        title: const Text('Sign Out'),
+                        content: const Text('Are you sure you want to sign out?'),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(ctx),
-                            child: const Text('Anuluj'),
+                            child: const Text('Cancel'),
                           ),
                           TextButton(
                             onPressed: () {
                               auth.logout();
                               Navigator.pop(ctx);
                             },
-                            child: const Text('Wyloguj', style: TextStyle(color: AppColors.error)),
+                            child: const Text('Sign Out', style: TextStyle(color: AppColors.error)),
                           ),
                         ],
                       ),

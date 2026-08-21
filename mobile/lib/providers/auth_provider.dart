@@ -73,7 +73,7 @@ class AuthProvider extends ChangeNotifier {
         notifyListeners();
         return true;
       }
-      throw ApiException('Nieoczekiwana odpowiedź serwera');
+      throw ApiException('Unexpected server response');
     } catch (e) {
       _isLoading = false;
       _errorMessage = e.toString();
@@ -114,7 +114,7 @@ class AuthProvider extends ChangeNotifier {
         notifyListeners();
         return true;
       }
-      throw ApiException('Nieoczekiwana odpowiedź serwera');
+      throw ApiException('Unexpected server response');
     } catch (e) {
       _isLoading = false;
       _errorMessage = e.toString();
@@ -160,7 +160,7 @@ class AuthProvider extends ChangeNotifier {
         notifyListeners();
         return true;
       }
-      throw ApiException('Nie udało się zaktualizować profilu');
+      throw ApiException('Failed to update profile');
     } catch (e) {
       _isLoading = false;
       _errorMessage = e.toString();

@@ -35,15 +35,15 @@ class _CartScreenState extends State<CartScreen> {
       return Scaffold(
         appBar: AppBar(
           title: Text(
-            'Koszyk',
+            'Shopping Bag',
             style: GoogleFonts.cormorantGaramond(fontSize: 22, fontWeight: FontWeight.w700),
           ),
         ),
         body: EmptyStateView(
           icon: Icons.shopping_bag_outlined,
-          title: 'Twój koszyk jest pusty',
-          message: 'Dodaj do koszyka wyjątkowe produkty z naszej kolekcji.',
-          buttonText: 'Przejdź do zakupów',
+          title: 'Your shopping bag is empty',
+          message: 'Explore our catalog and add exquisite jewelry & fragrances to your bag.',
+          buttonText: 'Start Shopping',
           onButtonPressed: () {
             Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const ShopScreen()),
@@ -56,30 +56,30 @@ class _CartScreenState extends State<CartScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Koszyk (${cartProvider.itemCount})',
+          'Shopping Bag (${cartProvider.itemCount})',
           style: GoogleFonts.cormorantGaramond(fontSize: 22, fontWeight: FontWeight.w700),
         ),
         actions: [
           IconButton(
             icon: const Icon(Icons.delete_sweep_outlined),
-            tooltip: 'Wyczyść koszyk',
+            tooltip: 'Clear bag',
             onPressed: () {
               showDialog(
                 context: context,
                 builder: (ctx) => AlertDialog(
-                  title: const Text('Wyczyścić koszyk?'),
-                  content: const Text('Wszystkie produkty zostaną usunięte z koszyka.'),
+                  title: const Text('Clear shopping bag?'),
+                  content: const Text('All items will be removed from your bag.'),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(ctx),
-                      child: const Text('Anuluj'),
+                      child: const Text('Cancel'),
                     ),
                     TextButton(
                       onPressed: () {
                         cartProvider.clearCart();
                         Navigator.pop(ctx);
                       },
-                      child: const Text('Wyczyść', style: TextStyle(color: AppColors.error)),
+                      child: const Text('Clear', style: TextStyle(color: AppColors.error)),
                     ),
                   ],
                 ),
@@ -105,16 +105,16 @@ class _CartScreenState extends State<CartScreen> {
                 Row(
                   children: [
                     Icon(
-                      cartProvider.subtotal >= 250 ? Icons.check_circle_rounded : Icons.local_shipping_outlined,
+                      cartProvider.subtotal >= 100 ? Icons.check_circle_rounded : Icons.local_shipping_outlined,
                       size: 18,
-                      color: cartProvider.subtotal >= 250 ? AppColors.success : AppColors.primary,
+                      color: cartProvider.subtotal >= 100 ? AppColors.success : AppColors.primary,
                     ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        cartProvider.subtotal >= 250
-                            ? 'Gratulacje! Masz darmową dostawę 🎉'
-                            : 'Dodaj produkty za ${Formatters.formatPrice(250 - cartProvider.subtotal)}, aby otrzymać darmową dostawę!',
+                        cartProvider.subtotal >= 100
+                            ? 'Congratulations! You qualified for free shipping 🎉'
+                            : 'Add ${Formatters.formatPrice(100 - cartProvider.subtotal)} more to qualify for free shipping!',
                         style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
                       ),
                     ),
@@ -124,10 +124,10 @@ class _CartScreenState extends State<CartScreen> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(4),
                   child: LinearProgressIndicator(
-                    value: (cartProvider.subtotal / 250.0).clamp(0.0, 1.0),
+                    value: (cartProvider.subtotal / 100.0).clamp(0.0, 1.0),
                     backgroundColor: isDark ? Colors.white10 : Colors.black12,
                     valueColor: AlwaysStoppedAnimation<Color>(
-                      cartProvider.subtotal >= 250 ? AppColors.success : AppColors.primary,
+                      cartProvider.subtotal >= 100 ? AppColors.success : AppColors.primary,
                     ),
                     minHeight: 5,
                   ),
@@ -256,7 +256,7 @@ class _CartScreenState extends State<CartScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Kod rabatowy',
+                  'Promo Code',
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
@@ -297,7 +297,7 @@ class _CartScreenState extends State<CartScreen> {
                           controller: _promoController,
                           textCapitalization: TextCapitalization.characters,
                           decoration: InputDecoration(
-                            hintText: 'Wpisz kod (np. LUNAR10)',
+                            hintText: 'Enter code (e.g. LUNAR10)',
                             contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                             isDense: true,
                             errorText: cartProvider.promoError,
@@ -306,7 +306,7 @@ class _CartScreenState extends State<CartScreen> {
                       ),
                       const SizedBox(width: 10),
                       CustomButton(
-                        text: 'Dodaj',
+                        text: 'Apply',
                         width: 80,
                         height: 42,
                         isLoading: cartProvider.isApplyingPromo,
@@ -337,30 +337,30 @@ class _CartScreenState extends State<CartScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Podsumowanie zamówienia',
+                  'Order Summary',
                   style: GoogleFonts.cormorantGaramond(fontSize: 18, fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: 12),
-                _buildSummaryRow('Wartość produktów', Formatters.formatPrice(cartProvider.subtotal)),
+                _buildSummaryRow('Subtotal', Formatters.formatPrice(cartProvider.subtotal)),
                 if (cartProvider.promoDiscountAmount > 0) ...[
                   const SizedBox(height: 6),
                   _buildSummaryRow(
-                    'Rabat z kodu',
+                    'Promo Discount',
                     '-${Formatters.formatPrice(cartProvider.promoDiscountAmount)}',
                     color: AppColors.success,
                   ),
                 ],
                 const SizedBox(height: 6),
                 _buildSummaryRow(
-                  'Dostawa',
-                  cartProvider.shippingFee == 0 ? 'Darmowa' : Formatters.formatPrice(cartProvider.shippingFee),
+                  'Shipping',
+                  cartProvider.shippingFee == 0 ? 'Free' : Formatters.formatPrice(cartProvider.shippingFee),
                   color: cartProvider.shippingFee == 0 ? AppColors.success : null,
                 ),
                 const Divider(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Łącznie do zapłaty', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                    const Text('Total', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
                     Text(
                       Formatters.formatPrice(cartProvider.total),
                       style: TextStyle(
@@ -379,7 +379,7 @@ class _CartScreenState extends State<CartScreen> {
 
           // Checkout Button
           CustomButton(
-            text: 'Przejdź do kasy (${Formatters.formatPrice(cartProvider.total)})',
+            text: 'Proceed to Checkout (${Formatters.formatPrice(cartProvider.total)})',
             icon: Icons.lock_outline_rounded,
             onPressed: () {
               Navigator.of(context).push(

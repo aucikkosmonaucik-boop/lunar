@@ -2,22 +2,26 @@ import 'package:intl/intl.dart';
 
 class Formatters {
   static final NumberFormat _currencyFormat = NumberFormat.currency(
-    locale: 'pl_PL',
-    symbol: 'zł',
+    locale: 'en_IE',
+    symbol: '€',
     decimalDigits: 2,
   );
 
-  static final DateFormat _dateFormat = DateFormat('dd.MM.yyyy, HH:mm');
-  static final DateFormat _shortDateFormat = DateFormat('dd MMM yyyy', 'pl');
+  static final DateFormat _dateFormat = DateFormat('dd MMM yyyy, HH:mm', 'en');
+  static final DateFormat _shortDateFormat = DateFormat('dd MMM yyyy', 'en');
 
   static String formatPrice(num? price) {
-    if (price == null) return '0,00 zł';
+    if (price == null) return '€0.00';
     return _currencyFormat.format(price);
   }
 
   static String formatDate(DateTime? date) {
     if (date == null) return '-';
-    return _dateFormat.format(date);
+    try {
+      return _dateFormat.format(date);
+    } catch (_) {
+      return '${date.day}/${date.month}/${date.year}';
+    }
   }
 
   static String formatShortDate(DateTime? date) {
@@ -25,39 +29,39 @@ class Formatters {
     try {
       return _shortDateFormat.format(date);
     } catch (_) {
-      return '${date.day}.${date.month}.${date.year}';
+      return '${date.day}/${date.month}/${date.year}';
     }
   }
 
   static String formatOrderStatus(String? status) {
     switch (status?.toLowerCase()) {
       case 'pending':
-        return 'Oczekujące';
+        return 'Pending';
       case 'processing':
-        return 'W realizacji';
+        return 'Processing';
       case 'paid':
-        return 'Opłacone';
+        return 'Paid';
       case 'shipped':
-        return 'Wysłane';
+        return 'Shipped';
       case 'delivered':
-        return 'Dostarczone';
+        return 'Delivered';
       case 'cancelled':
-        return 'Anulowane';
+        return 'Cancelled';
       default:
-        return status ?? 'Nieznany';
+        return status ?? 'Unknown';
     }
   }
 
   static String formatPaymentStatus(String? status) {
     switch (status?.toLowerCase()) {
       case 'paid':
-        return 'Opłacono';
+        return 'Paid';
       case 'pending':
-        return 'Oczekuje na wpłatę';
+        return 'Pending Payment';
       case 'failed':
-        return 'Płatność nieudana';
+        return 'Payment Failed';
       case 'refunded':
-        return 'Zwrócono';
+        return 'Refunded';
       default:
         return status ?? '-';
     }

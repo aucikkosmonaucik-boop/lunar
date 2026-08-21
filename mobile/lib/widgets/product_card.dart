@@ -198,7 +198,7 @@ class ProductCard extends StatelessWidget {
                           context.read<CartProvider>().addToCart(product);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Dodano ${product.name} do koszyka'),
+                              content: Text('Added ${product.name} to bag'),
                               duration: const Duration(seconds: 2),
                               behavior: SnackBarBehavior.floating,
                             ),
