@@ -38,9 +38,17 @@ jobs:
           chmod +x mobile/android/gradlew
 
       - name: Build APK Release
+        id: build_step
         run: |
           cd mobile
-          flutter build apk --release --no-tree-shake-icons --verbose
+          flutter build apk --release --no-tree-shake-icons --verbose 2>&1 | tee ../build_log.txt
+
+      - name: Upload Build Log On Failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-failure-log
+          path: build_log.txt
 
       - name: Prepare APK Asset
         run: |
