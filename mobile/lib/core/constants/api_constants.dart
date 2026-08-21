@@ -1,23 +1,6 @@
-import 'package:flutter/foundation.dart';
-
 class ApiConstants {
-  // Default base URL for local development or production
-  static String get defaultBaseUrl {
-    if (kReleaseMode) {
-      return 'https://mylunar.ie'; // Replace with production URL
-    }
-    
-    // In debug mode, handle emulator vs localhost vs desktop vs web
-    if (!kIsWeb) {
-      if (defaultTargetPlatform == TargetPlatform.android) {
-        return 'http://10.0.2.2:3000'; // Android emulator to host localhost:3000
-      }
-      if (defaultTargetPlatform == TargetPlatform.iOS) {
-        return 'http://localhost:3000'; // iOS simulator
-      }
-    }
-    return 'http://localhost:3000';
-  }
+  // Default base URL for live Vercel deployment
+  static const String defaultBaseUrl = 'https://lunar-eight-bay.vercel.app';
 
   static String baseUrl = defaultBaseUrl;
 

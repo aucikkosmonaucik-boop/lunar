@@ -5,6 +5,7 @@ import '../../core/constants/api_constants.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/storage_service.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/product_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../widgets/custom_button.dart';
 import '../auth/login_screen.dart';
@@ -55,10 +56,19 @@ class ProfileScreen extends StatelessWidget {
           ),
           TextButton(
             onPressed: () async {
-              if (controller.text.trim().isNotEmpty) {
-                await StorageService.setCustomBaseUrl(controller.text.trim());
+              final prodProvider = context.read<ProductProvider>();
+              final messenger = ScaffoldMessenger.of(context);
+              final newUrl = controller.text.trim();
+              if (newUrl.isNotEmpty) {
+                await StorageService.setCustomBaseUrl(newUrl);
+                await prodProvider.loadInitialData();
               }
-              if (context.mounted) Navigator.pop(ctx);
+              if (context.mounted) {
+                Navigator.pop(ctx);
+                messenger.showSnackBar(
+                  SnackBar(content: Text('Zaktualizowano adres API: $newUrl i przeładowano dane!')),
+                );
+              }
             },
             child: const Text('Zapisz', style: TextStyle(color: AppColors.primary)),
           ),
