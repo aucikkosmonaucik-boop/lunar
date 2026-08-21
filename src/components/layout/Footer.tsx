@@ -56,7 +56,7 @@ const Footer: React.FC = () => {
             onClick={() => window.dispatchEvent(new CustomEvent('lunar_open_cookie_settings'))}
             className="text-[14px] uppercase tracking-widest text-[#8C6D4F] hover:text-[#1a1a1a] transition-colors font-medium cursor-pointer"
           >
-            Ustawienia Cookies
+            Cookie Settings
           </button>
         </div>
       </div>

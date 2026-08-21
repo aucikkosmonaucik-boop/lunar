@@ -92,8 +92,8 @@ const CookieConsentBanner: React.FC = () => {
           setIsVisible(true);
         }}
         className="fixed bottom-4 left-4 z-40 p-2.5 bg-white/90 hover:bg-white text-[#1A1A1A] border border-[#EDE6DF] hover:border-[#C1A98F] rounded-full shadow-md backdrop-blur transition-all duration-300 group flex items-center gap-2"
-        aria-label="Ustawienia plików cookies"
-        title="Ustawienia plików cookies"
+        aria-label="Cookie Preferences"
+        title="Cookie Preferences"
       >
         <CookieIcon className="w-4 h-4 text-[#8C6D4F] group-hover:scale-110 transition-transform" />
         <span className="text-[11px] font-medium tracking-wider uppercase text-[#78716C] group-hover:text-[#1A1A1A] hidden sm:inline-block pr-1">
@@ -115,10 +115,10 @@ const CookieConsentBanner: React.FC = () => {
             </div>
             <div>
               <span className="text-[10px] font-semibold tracking-[0.25em] uppercase text-[#8C6D4F] block">
-                Prywatność i transparentność
+                Privacy &amp; Transparency
               </span>
               <h3 className="font-serif text-lg sm:text-xl font-medium text-[#1A1A1A]">
-                Ustawienia plików cookies w Lunar
+                Cookie Preferences at Lunar
               </h3>
             </div>
           </div>
@@ -126,7 +126,7 @@ const CookieConsentBanner: React.FC = () => {
           <button
             onClick={() => setIsVisible(false)}
             className="text-gray-400 hover:text-[#1A1A1A] transition-colors p-1"
-            aria-label="Zamknij"
+            aria-label="Close"
           >
             <X className="w-4 h-4" />
           </button>
@@ -134,9 +134,9 @@ const CookieConsentBanner: React.FC = () => {
 
         {/* Description */}
         <p className="text-xs sm:text-sm text-gray-600 leading-relaxed mb-4">
-          Używamy plików cookies (ciasteczek), aby zapewnić prawidłowe działanie naszego sklepu, zapamiętać zawartość koszyka, bezpiecznie przetwarzać płatności oraz dostosować ofertę biżuterii i zapachów do Twoich preferencji. Dowiedz się więcej w naszej{' '}
+          We use cookies to ensure the smooth operation of our store, remember your cart, securely process payments, and personalize your fine jewelry and fragrance shopping experience. Learn more in our{' '}
           <Link to="/cookies" className="text-[#8C6D4F] underline hover:text-[#1A1A1A] transition-colors">
-            Polityce Cookies
+            Cookie Policy
           </Link>
           .
         </p>
@@ -150,14 +150,14 @@ const CookieConsentBanner: React.FC = () => {
               <div className="space-y-0.5">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-semibold text-[#1A1A1A] uppercase tracking-wider">
-                    Niezbędne i techniczne
+                    Strictly Necessary &amp; Security
                   </span>
                   <span className="text-[9px] bg-[#C1A98F]/20 text-[#8C6D4F] px-2 py-0.5 rounded font-semibold uppercase">
-                    Wymagane
+                    Required
                   </span>
                 </div>
                 <p className="text-xs text-gray-500">
-                  Umożliwiają logowanie, sesję koszyka, nawigację oraz bezpieczne płatności Stripe.
+                  Essential for authentication, shopping cart persistence, navigation, and secure Stripe checkout.
                 </p>
               </div>
               <div className="relative inline-flex items-center cursor-not-allowed opacity-75">
@@ -173,10 +173,10 @@ const CookieConsentBanner: React.FC = () => {
             <div className="flex items-center justify-between gap-4 pb-3 border-b border-gray-200/60">
               <div className="space-y-0.5">
                 <span className="text-xs font-semibold text-[#1A1A1A] uppercase tracking-wider block">
-                  Wydajnościowe i analityczne
+                  Performance &amp; Analytics
                 </span>
                 <p className="text-xs text-gray-500">
-                  Pomagają nam badać ruch w sklepie oraz ulepszać szybkość i działanie witryny.
+                  Help us measure website traffic, analyze user journeys, and optimize site loading speed and performance.
                 </p>
               </div>
               <button
@@ -195,10 +195,10 @@ const CookieConsentBanner: React.FC = () => {
             <div className="flex items-center justify-between gap-4 pb-3 border-b border-gray-200/60">
               <div className="space-y-0.5">
                 <span className="text-xs font-semibold text-[#1A1A1A] uppercase tracking-wider block">
-                  Preferencje i personalizacja
+                  Preferences &amp; Functionality
                 </span>
                 <p className="text-xs text-gray-500">
-                  Zapamiętują wybraną walutę, ulubione produkty na liście życzeń oraz historię przeglądania.
+                  Remember your wishlist favorites, currency choices, and tailored preferences across sessions.
                 </p>
               </div>
               <button
@@ -217,10 +217,10 @@ const CookieConsentBanner: React.FC = () => {
             <div className="flex items-center justify-between gap-4">
               <div className="space-y-0.5">
                 <span className="text-xs font-semibold text-[#1A1A1A] uppercase tracking-wider block">
-                  Marketingowe i reklamowe
+                  Marketing &amp; Advertising
                 </span>
                 <p className="text-xs text-gray-500">
-                  Umożliwiają wyświetlanie spersonalizowanych rekomendacji i promocji w sieci.
+                  Enable relevant product recommendations, curated offers, and promotional campaigns.
                 </p>
               </div>
               <button
@@ -246,7 +246,7 @@ const CookieConsentBanner: React.FC = () => {
             className="inline-flex items-center justify-center gap-1.5 text-xs text-[#78716C] hover:text-[#1A1A1A] font-medium py-2 transition-colors order-last sm:order-first"
           >
             <Settings2 className="w-3.5 h-3.5 text-[#8C6D4F]" />
-            <span>{showCustomizer ? 'Ukryj szczegóły' : 'Dostosuj preferencje'}</span>
+            <span>{showCustomizer ? 'Hide Details' : 'Customize Preferences'}</span>
             {showCustomizer ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
           </button>
 
@@ -257,7 +257,7 @@ const CookieConsentBanner: React.FC = () => {
                 onClick={handleSaveCustom}
                 className="w-full sm:w-auto px-5 py-2.5 bg-[#FAF6F3] hover:bg-[#F2ECE6] text-[#1A1A1A] border border-[#C1A98F] rounded-lg text-xs font-semibold uppercase tracking-wider transition-colors"
               >
-                Zapisz wybrane
+                Save Preferences
               </button>
             ) : (
               <button
@@ -265,7 +265,7 @@ const CookieConsentBanner: React.FC = () => {
                 onClick={handleAcceptNecessary}
                 className="w-full sm:w-auto px-5 py-2.5 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 rounded-lg text-xs font-semibold uppercase tracking-wider transition-colors"
               >
-                Tylko niezbędne
+                Essential Only
               </button>
             )}
 
@@ -274,7 +274,7 @@ const CookieConsentBanner: React.FC = () => {
               onClick={handleAcceptAll}
               className="w-full sm:w-auto px-6 py-2.5 bg-[#1A1A1A] hover:bg-black text-[#FAF6F3] rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow"
             >
-              Zaakceptuj wszystkie
+              Accept All
             </button>
           </div>
         </div>
