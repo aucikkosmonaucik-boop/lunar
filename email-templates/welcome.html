@@ -1,266 +1,133 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
   <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to Lunar 2026</title>
+  <title>Witaj w Lunar — Twoje konto jest aktywne</title>
+  <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Jost:wght@300;400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Inter:wght@300;400;500;600&display=swap');
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+    table { border-collapse: collapse !important; }
+    body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; background-color: #FAF6F3; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
 
-    body {
-      background-color: #f0e9e4;
-      font-family: 'Jost', 'Helvetica Neue', Arial, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      color: #1a1a1a;
+    @media screen and (max-width: 600px) {
+      .email-container { width: 100% !important; margin: auto !important; }
+      .fluid-padding { padding-left: 24px !important; padding-right: 24px !important; }
+      .headline { font-size: 28px !important; line-height: 36px !important; }
+      .brand-title { font-size: 32px !important; }
     }
-
-    .wrapper {
-      max-width: 580px;
-      margin: 48px auto;
-      background-color: #f5eeeb;
-      border: 1px solid #ddd0c8;
-    }
-
-    /* Header */
-    .header {
-      padding: 48px 48px 36px;
-      text-align: center;
-      border-bottom: 1px solid #ddd0c8;
-    }
-
-    .header-brand {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 52px;
-      letter-spacing: 0.25em;
-      color: #1a1a1a;
-      text-transform: uppercase;
-      line-height: 1;
-      font-weight: 400;
-    }
-
-    .header-year {
-      font-size: 11px;
-      letter-spacing: 0.55em;
-      color: #1a1a1a;
-      margin-top: 6px;
-      font-weight: 300;
-      text-transform: uppercase;
-    }
-
-    /* Hero */
-    .hero {
-      padding: 52px 48px 40px;
-      text-align: center;
-    }
-
-    .eyebrow {
-      font-size: 10px;
-      letter-spacing: 0.35em;
-      text-transform: uppercase;
-      color: #8a7e78;
-      font-weight: 500;
-      margin-bottom: 24px;
-    }
-
-    .headline {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 38px;
-      letter-spacing: 0.08em;
-      color: #1a1a1a;
-      font-weight: 400;
-      line-height: 1.3;
-      margin-bottom: 24px;
-    }
-
-    .divider {
-      width: 40px;
-      height: 1px;
-      background: #c8b8ae;
-      margin: 0 auto 28px;
-    }
-
-    .body-text {
-      font-size: 14px;
-      line-height: 1.8;
-      color: #5e5e5e;
-      font-weight: 300;
-      letter-spacing: 0.02em;
-      margin-bottom: 40px;
-      max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    /* Perks */
-    .perks {
-      margin: 0 48px 48px;
-      border-top: 1px solid #ddd0c8;
-      border-bottom: 1px solid #ddd0c8;
-      padding: 36px 0;
-    }
-
-    .perks-title {
-      font-size: 10px;
-      letter-spacing: 0.35em;
-      text-transform: uppercase;
-      color: #8a7e78;
-      text-align: center;
-      margin-bottom: 28px;
-    }
-
-    .perks-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .perk-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 16px;
-      padding: 0 16px;
-    }
-
-    .perk-icon {
-      width: 20px;
-      height: 20px;
-      min-width: 20px;
-      margin-top: 2px;
-      color: #1a1a1a;
-    }
-
-    .perk-text {
-      font-size: 13px;
-      color: #5e5e5e;
-      font-weight: 300;
-      line-height: 1.6;
-      letter-spacing: 0.02em;
-    }
-
-    .perk-text strong {
-      font-weight: 500;
-      color: #1a1a1a;
-      display: block;
-      font-size: 11px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      margin-bottom: 2px;
-    }
-
-    /* CTA */
-    .cta-wrap { text-align: center; padding: 0 48px 48px; }
-
-    .btn {
-      display: inline-block;
-      background-color: #1a1a1a;
-      color: #f5eeeb !important;
-      text-decoration: none;
-      font-size: 11px;
-      letter-spacing: 0.35em;
-      text-transform: uppercase;
-      font-weight: 500;
-      padding: 18px 48px;
-      font-family: 'Jost', Arial, sans-serif;
-    }
-
-    /* Footer */
-    .footer {
-      border-top: 1px solid #ddd0c8;
-      padding: 28px 48px;
-      text-align: center;
-    }
-
-    .footer-text {
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: #b0a49e;
-      line-height: 2;
-    }
-
-    .footer-text a { color: #b0a49e; text-decoration: underline; }
   </style>
 </head>
-<body>
-  <div class="wrapper">
-
-    <!-- Header -->
-    <div class="header">
-      <div class="header-brand">Lunar</div>
-      <div class="header-year">2026</div>
-    </div>
-
-    <!-- Hero -->
-    <div class="hero">
-      <p class="eyebrow">You're In</p>
-      <h1 class="headline">Welcome, {{FIRST_NAME}}</h1>
-      <div class="divider"></div>
-      <p class="body-text">
-        Your account has been verified and is ready to use.
-        Discover our curated collections and enjoy a seamless,
-        elevated shopping experience — crafted just for you.
-      </p>
-    </div>
-
-    <!-- Perks -->
-    <div class="perks">
-      <p class="perks-title">What's waiting for you</p>
-      <ul class="perks-list">
-        <li class="perk-item">
-          <!-- Icon: Bag -->
-          <svg class="perk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <path d="M16 10a4 4 0 0 1-8 0"/>
-          </svg>
-          <div class="perk-text">
-            <strong>Curated Collections</strong>
-            Explore our full range of Jewelry by Agatha G. and new arrivals added each season.
-          </div>
-        </li>
-        <li class="perk-item">
-          <!-- Icon: Heart -->
-          <svg class="perk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-          </svg>
-          <div class="perk-text">
-            <strong>Save Your Favourites</strong>
-            Wishlist pieces you love and come back to them whenever you're ready.
-          </div>
-        </li>
-        <li class="perk-item">
-          <!-- Icon: Truck -->
-          <svg class="perk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="1" y="3" width="15" height="13" rx="1"/>
-            <path d="M16 8h4l3 5v4h-7V8z"/>
-            <circle cx="5.5" cy="18.5" r="2.5"/>
-            <circle cx="18.5" cy="18.5" r="2.5"/>
-          </svg>
-          <div class="perk-text">
-            <strong>Free Shipping Over $50</strong>
-            Enjoy complimentary delivery on all qualifying orders, directly to your door.
-          </div>
-        </li>
-      </ul>
-    </div>
-
-    <!-- CTA -->
-    <div class="cta-wrap">
-      <a href="{{SHOP_URL}}" class="btn">Explore the Collection</a>
-    </div>
-
-    <!-- Footer -->
-    <div class="footer">
-      <p class="footer-text">
-        © 2026 Lunar Boutique &nbsp;·&nbsp;
-        <a href="{{UNSUBSCRIBE_URL}}">Unsubscribe</a> &nbsp;·&nbsp;
-        <a href="{{PRIVACY_URL}}">Privacy Policy</a>
-      </p>
-    </div>
-
+<body style="margin: 0; padding: 0; background-color: #FAF6F3; -webkit-font-smoothing: antialiased;">
+  <!-- Preheader -->
+  <div style="display: none; font-size: 1px; color: #FAF6F3; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;">
+    Twoje konto Lunar zostało pomyślnie aktywowane. Odkryj kolekcje perfum i biżuterii.
   </div>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #FAF6F3; table-layout: fixed;">
+    <tr>
+      <td align="center" style="padding: 40px 16px 60px;">
+        
+        <!-- Main Email Container -->
+        <table border="0" cellpadding="0" cellspacing="0" width="600" class="email-container" style="max-width: 600px; width: 100%; background-color: #FFFFFF; border: 1px solid #EDE6DF; border-radius: 4px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); overflow: hidden;">
+          
+          <!-- Header Banner -->
+          <tr>
+            <td align="center" style="background-color: #1A1A1A; padding: 44px 30px 36px; border-bottom: 2px solid #C1A98F;">
+              <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="padding-bottom: 12px;">
+                    <div style="width: 38px; height: 38px; border-radius: 50%; background-color: rgba(193, 169, 143, 0.15); border: 1px solid #C1A98F; display: inline-block; line-height: 38px; text-align: center;">
+                      <span style="font-size: 18px; color: #C1A98F;">&#9789;</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center">
+                    <span class="brand-title" style="font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif; font-size: 38px; font-weight: 400; letter-spacing: 0.28em; text-transform: uppercase; color: #FAF6F3; display: block; margin-left: 0.28em;">
+                      LUNAR
+                    </span>
+                    <span style="font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 400; letter-spacing: 0.45em; text-transform: uppercase; color: #C1A98F; display: block; margin-top: 6px; margin-left: 0.45em;">
+                      Fine Jewelry &amp; Perfumes
+                    </span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Body Content -->
+          <tr>
+            <td class="fluid-padding" style="padding: 48px 48px 36px; text-align: center; background-color: #FFFFFF;">
+              
+              <!-- Badge -->
+              <table border="0" cellpadding="0" cellspacing="0" align="center" style="margin: 0 auto 20px;">
+                <tr>
+                  <td style="padding: 5px 16px; background-color: #FAF6F3; border: 1px solid #EDE6DF; border-radius: 50px;">
+                    <span style="font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase; color: #8C6D4F;">
+                      Konto Aktywne
+                    </span>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Headline -->
+              <h1 class="headline" style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 34px; font-weight: 400; line-height: 42px; letter-spacing: 0.05em; color: #1A1A1A; margin: 0 0 16px;">
+                Witaj w Lunar, {{FIRST_NAME}}
+              </h1>
+
+              <!-- Divider -->
+              <div style="width: 44px; height: 1px; background-color: #C1A98F; margin: 0 auto 26px;"></div>
+
+              <p style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 300; line-height: 24px; color: #5E5E5E; letter-spacing: 0.02em; margin: 0 0 36px; max-width: 440px; display: inline-block;">
+                Twój adres e-mail został pomyślnie zweryfikowany. Możesz teraz wygodnie składać zamówienia, zbierać punkty za zakupy i korzystać ze specjalnych ofert dla klubowiczów.
+              </p>
+
+              <!-- CTA Button -->
+              <table border="0" cellpadding="0" cellspacing="0" align="center" style="margin: 0 auto 36px;">
+                <tr>
+                  <td align="center" style="border-radius: 4px; background-color: #1A1A1A; border: 1px solid #C1A98F;">
+                    <a href="{{SHOP_URL}}/shop" target="_blank" style="font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase; color: #FAF6F3; text-decoration: none; padding: 18px 44px; display: inline-block; border-radius: 4px;">
+                      Odkryj Kolekcję
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td class="fluid-padding" style="padding: 36px 48px; background-color: #FAF6F3; border-top: 1px solid #EDE6DF; text-align: center;">
+              <p style="font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.25em; text-transform: uppercase; margin: 0 0 14px;">
+                <a href="{{SHOP_URL}}" style="color: #5E5E5E; text-decoration: none; margin: 0 10px;">Sklep</a> &nbsp;·&nbsp;
+                <a href="{{PRIVACY_URL}}" style="color: #5E5E5E; text-decoration: none; margin: 0 10px;">Regulamin</a> &nbsp;·&nbsp;
+                <a href="{{UNSUBSCRIBE_URL}}" style="color: #5E5E5E; text-decoration: none; margin: 0 10px;">Kontakt</a>
+              </p>
+              <p style="font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #B0A49E; margin: 0;">
+                &copy; 2026 Lunar Jewellery &bull; <a href="https://mylunar.shop" style="color: #B0A49E; text-decoration: none;">mylunar.shop</a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
 </body>
 </html>
