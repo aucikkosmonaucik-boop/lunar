@@ -40,14 +40,7 @@ jobs:
       - name: Build APK Release
         run: |
           cd mobile
-          flutter build apk --release --no-tree-shake-icons
-
-      - name: Show Diagnostics If Failed
-        if: failure()
-        run: |
-          echo "=== BUILD FAILED: CHECKING DIRECTORIES ==="
-          ls -la mobile/ || true
-          ls -la mobile/android/ || true
+          flutter build apk --release --no-tree-shake-icons > ../build_out.txt 2>&1 || (cat ../build_out.txt && exit 1)
 
       - name: Prepare APK Asset
         run: |
