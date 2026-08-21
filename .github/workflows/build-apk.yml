@@ -40,7 +40,15 @@ jobs:
       - name: Build APK Release
         run: |
           cd mobile
-          flutter build apk --release --no-tree-shake-icons > ../build_out.txt 2>&1 || (cat ../build_out.txt && exit 1)
+          if ! flutter build apk --release --no-tree-shake-icons --verbose > ../build_out.txt 2>&1; then
+            echo "## ❌ Build APK Failed" >> $GITHUB_STEP_SUMMARY
+            echo '```text' >> $GITHUB_STEP_SUMMARY
+            tail -n 120 ../build_out.txt >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat ../build_out.txt
+            exit 1
+          fi
+          echo "## ✅ Build APK Succeeded" >> $GITHUB_STEP_SUMMARY
 
       - name: Prepare APK Asset
         run: |
