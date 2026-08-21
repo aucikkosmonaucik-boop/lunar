@@ -53,13 +53,13 @@ jobs:
       - name: Prepare APK Asset
         run: |
           mkdir -p build-output
-          APK_PATH=$(find . -type f -name "app-release.apk" -o -name "app-*-release.apk" -o -name "*.apk" | head -n 1)
-          if [ -z "$APK_PATH" ]; then
+          APK_FILE=$(find . -type f -name "*.apk" -print -quit)
+          if [ -z "$APK_FILE" ]; then
             echo "ERROR: No APK found!"
             exit 1
           fi
-          echo "Found APK at: $APK_PATH"
-          cp "$APK_PATH" build-output/lunar-app.apk
+          echo "Found APK: $APK_FILE"
+          cp "$APK_FILE" build-output/lunar-app.apk
           ls -lh build-output/lunar-app.apk
 
       - name: Upload APK Artifact
