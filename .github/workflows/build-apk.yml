@@ -40,21 +40,7 @@ jobs:
       - name: Build APK Release
         run: |
           cd mobile
-          flutter build apk --release --no-tree-shake-icons --verbose > ../build_out.txt 2>&1
-
-      - name: Push Log Branch If Build Failed
-        if: always()
-        run: |
-          if [ ! -f mobile/build/app/outputs/flutter-apk/app-release.apk ] && [ ! -f build/app/outputs/flutter-apk/app-release.apk ] && [ -z "$(find . -name "*.apk" -type f)" ]; then
-            git config user.name "github-actions"
-            git config user.email "github-actions@github.com"
-            git checkout -B ci-log
-            tail -n 300 build_out.txt > failure_log.txt
-            git add failure_log.txt
-            git commit -m "ci failure log [skip ci]" || true
-            git push -f origin ci-log || true
-            exit 1
-          fi
+          flutter build apk --release --no-tree-shake-icons --android-skip-build-dependency-validation > ../build_out.txt 2>&1 || (cat ../build_out.txt && exit 1)
 
       - name: Prepare APK Asset
         run: |
