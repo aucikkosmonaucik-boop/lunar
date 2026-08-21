@@ -37,7 +37,7 @@ class ProfileScreen extends StatelessWidget {
               controller: controller,
               decoration: const InputDecoration(
                 labelText: 'Server URL',
-                hintText: 'https://lunar-eight-bay.vercel.app',
+                hintText: 'https://mylunar.shop',
               ),
             ),
           ],
@@ -332,17 +332,17 @@ class ProfileScreen extends StatelessWidget {
                 title: 'Privacy Policy & Terms',
                 onTap: () {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Available online at https://mylunar.ie')),
+                    const SnackBar(content: Text('Available online at https://mylunar.shop')),
                   );
                 },
               ),
               _buildMenuItem(
                 icon: Icons.support_agent_outlined,
                 title: 'Help & Contact',
-                subtitle: 'contact@mylunar.ie',
+                subtitle: 'contact@mylunar.shop',
                 onTap: () {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Contact support: contact@mylunar.ie')),
+                    const SnackBar(content: Text('Contact support: contact@mylunar.shop')),
                   );
                 },
               ),

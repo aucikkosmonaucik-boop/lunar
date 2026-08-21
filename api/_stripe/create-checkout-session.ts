@@ -206,7 +206,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const shippingFee = isFreeShipping ? 0 : 10;
   const finalTotal = priceAfterDiscount + shippingFee;
 
-  const origin = req.headers.origin || req.headers.referer?.replace(/\/$/, '') || process.env.APP_URL || 'http://localhost:5173';
+  const origin = req.headers.origin || req.headers.referer?.replace(/\/$/, '') || process.env.APP_URL || 'https://mylunar.shop';
   const orderNumber = `LUNAR-${Date.now().toString().slice(-6)}-${Math.floor(100 + Math.random() * 900)}`;
 
   // 5. Handle Demo Mode (when Stripe secret key is not configured or in testing)

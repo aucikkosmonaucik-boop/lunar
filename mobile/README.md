@@ -69,7 +69,7 @@ flutter run
 
 The default API server is configured in [`lib/core/constants/api_constants.dart`](lib/core/constants/api_constants.dart):
 ```dart
-static const String defaultBaseUrl = 'https://lunar-eight-bay.vercel.app';
+static const String defaultBaseUrl = 'https://mylunar.shop';
 ```
 
 You can also change the API endpoint dynamically at runtime in the app:

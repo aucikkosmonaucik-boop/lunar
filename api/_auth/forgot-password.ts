@@ -33,7 +33,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       },
     });
 
-    const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://mylunar.ie'}/reset-password?token=${resetToken}`;
+    const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://mylunar.shop'}/reset-password?token=${resetToken}`;
 
     await sendEmail({
       to: email,
