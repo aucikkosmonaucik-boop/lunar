@@ -40,20 +40,20 @@ jobs:
       - name: Build APK Release
         run: |
           cd mobile
-          flutter build apk --release --no-tree-shake-icons --verbose 2>&1 | tee ../build.log
+          flutter build apk --release --no-tree-shake-icons
 
-      - name: Upload Build Log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: flutter-build-log
-          path: build.log
+      - name: Show Diagnostics If Failed
+        if: failure()
+        run: |
+          echo "=== BUILD FAILED: CHECKING DIRECTORIES ==="
+          ls -la mobile/ || true
+          ls -la mobile/android/ || true
 
       - name: Prepare APK Asset
         run: |
-          echo "=== LAST 30 LINES OF BUILD.LOG ==="
-          tail -n 30 build.log || true
           mkdir -p build-output
+          echo "=== SEARCHING FOR APK ==="
+          find . -name "*.apk"
           APKS=( $(find . -name "*.apk" -type f) )
           echo "Found APK count: ${#APKS[@]}"
           for apk in "${APKS[@]}"; do
