@@ -38,27 +38,24 @@ jobs:
           chmod +x mobile/android/gradlew
 
       - name: Build APK Release
-        id: build_step
         run: |
           cd mobile
-          flutter build apk --release --no-tree-shake-icons --verbose 2>&1 | tee ../build_log.txt
-
-      - name: Upload Build Log On Failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-failure-log
-          path: build_log.txt
+          flutter build apk --release --no-tree-shake-icons
 
       - name: Prepare APK Asset
         run: |
           mkdir -p build-output
-          APK_FILE=$(find . -type f -name "*.apk" -print -quit)
+          echo "=== Scanning for APK files ==="
+          find . -name "*.apk" || true
+          APK_FILE=$(find . -path "*/outputs/*" -name "*.apk" -type f | head -n 1)
           if [ -z "$APK_FILE" ]; then
-            echo "ERROR: No APK found!"
+            APK_FILE=$(find . -name "*.apk" -type f | head -n 1)
+          fi
+          if [ -z "$APK_FILE" ]; then
+            echo "ERROR: No APK found anywhere in workspace!"
             exit 1
           fi
-          echo "Found APK: $APK_FILE"
+          echo "Found APK at: $APK_FILE"
           cp "$APK_FILE" build-output/lunar-app.apk
           ls -lh build-output/lunar-app.apk
 
