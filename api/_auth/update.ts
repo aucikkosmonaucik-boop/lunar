@@ -1,8 +1,8 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import { prisma } from '../_lib/prisma.js';
+import { extractToken } from '../_lib/auth-util.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { parse } from 'cookie';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-in-production';
 
@@ -12,8 +12,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const cookies = parse(req.headers.cookie || '');
-    const token = cookies.auth_token;
+    const token = extractToken(req);
 
     if (!token) {
       return res.status(401).json({ message: 'Unauthorized' });
