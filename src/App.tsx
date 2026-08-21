@@ -19,6 +19,7 @@ import AdminPage from './pages/AdminPage';
 import TermsPage from './pages/TermsPage';
 import CookiesPage from './pages/CookiesPage';
 import OrderSuccessPage from './pages/OrderSuccessPage';
+import MobileAppPage from './pages/MobileAppPage';
 
 const App: React.FC = () => {
   return (
@@ -44,6 +45,7 @@ const App: React.FC = () => {
                       <Route path="/admin" element={<AdminPage />} />
                       <Route path="/terms" element={<TermsPage />} />
                       <Route path="/cookies" element={<CookiesPage />} />
+                      <Route path="/app" element={<MobileAppPage />} />
                     </Routes>
                   </main>
                   <Footer />
