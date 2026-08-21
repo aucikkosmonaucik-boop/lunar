@@ -33,6 +33,10 @@ jobs:
           cd mobile
           flutter pub get
 
+      - name: Make Gradlew Executable
+        run: |
+          chmod +x mobile/android/gradlew
+
       - name: Build APK Release
         run: |
           cd mobile
