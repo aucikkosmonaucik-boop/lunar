@@ -40,7 +40,14 @@ jobs:
       - name: Build APK Release
         run: |
           cd mobile
-          flutter build apk --release --no-tree-shake-icons
+          flutter build apk --release --no-tree-shake-icons --verbose 2>&1 | tee ../build.log
+
+      - name: Upload Build Log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: flutter-build-log
+          path: build.log
 
       - name: Prepare APK Asset
         run: |
