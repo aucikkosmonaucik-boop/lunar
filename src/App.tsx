@@ -20,6 +20,7 @@ import TermsPage from './pages/TermsPage';
 import CookiesPage from './pages/CookiesPage';
 import OrderSuccessPage from './pages/OrderSuccessPage';
 import MobileAppPage from './pages/MobileAppPage';
+import CookieConsentBanner from './components/ui/CookieConsentBanner';
 
 const App: React.FC = () => {
   return (
@@ -49,6 +50,7 @@ const App: React.FC = () => {
                     </Routes>
                   </main>
                   <Footer />
+                  <CookieConsentBanner />
                 </div>
               </Router>
             </FavoritesProvider>

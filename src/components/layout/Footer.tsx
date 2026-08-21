@@ -38,7 +38,7 @@ const Footer: React.FC = () => {
           </a>
         </div>
 
-        <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
+        <div className="flex flex-wrap justify-center items-center gap-8 md:gap-14">
           <Link to="/app" className="text-[14px] uppercase tracking-widest text-[#5e5e5e] hover:text-black transition-colors font-medium">
             Mobile App
           </Link>
@@ -51,6 +51,13 @@ const Footer: React.FC = () => {
           <Link to="/cookies" className="text-[14px] uppercase tracking-widest text-[#5e5e5e] hover:text-black transition-colors font-medium">
             Cookies
           </Link>
+          <button 
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent('lunar_open_cookie_settings'))}
+            className="text-[14px] uppercase tracking-widest text-[#8C6D4F] hover:text-[#1a1a1a] transition-colors font-medium cursor-pointer"
+          >
+            Ustawienia Cookies
+          </button>
         </div>
       </div>
 
