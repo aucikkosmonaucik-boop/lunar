@@ -39,7 +39,7 @@ const FavoritesDrawer: React.FC<FavoritesDrawerProps> = ({ isOpen, onClose }) =>
               My
             </span>
             <span className="font-serif text-[14px] tracking-[0.3em] text-[#1a1a1a] uppercase -mt-3">
-              Lunar.ie
+              Lunar
             </span>
           </Link>
           <div className="flex flex-col items-end gap-1">

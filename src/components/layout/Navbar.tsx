@@ -144,7 +144,7 @@ const Navbar: React.FC = () => {
               <span 
                 className="font-serif text-xl md:text-[28px] tracking-[0.4em] text-[#1a1a1a] uppercase -mt-4 md:-mt-6 transition-transform duration-500 group-hover:scale-105"
               >
-                Lunar.ie
+                Lunar
               </span>
             </div>
           </Link>
