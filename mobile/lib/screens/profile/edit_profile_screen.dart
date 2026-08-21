@@ -34,7 +34,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _streetController = TextEditingController(text: user?.street ?? '');
     _cityController = TextEditingController(text: user?.city ?? '');
     _postalCodeController = TextEditingController(text: user?.postalCode ?? '');
-    _countryController = TextEditingController(text: user?.country ?? 'Polska');
+    _countryController = TextEditingController(text: user?.country ?? 'Ireland');
     _newPasswordController = TextEditingController();
   }
 
@@ -68,7 +68,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     if (success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Dane profilu zostały zaktualizowane')),
+        const SnackBar(content: Text('Profile details updated successfully!')),
       );
       Navigator.pop(context);
     }
@@ -81,7 +81,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Edycja Danych',
+          'Edit Profile',
           style: GoogleFonts.cormorantGaramond(fontSize: 22, fontWeight: FontWeight.w700),
         ),
       ),
@@ -93,28 +93,28 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Dane kontaktowe',
+                'Contact Information',
                 style: GoogleFonts.cormorantGaramond(fontSize: 18, fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 14),
               CustomTextField(
                 controller: _nameController,
-                label: 'Imię i Nazwisko',
+                label: 'Full Name',
                 prefixIcon: Icons.person_outline,
-                validator: (v) => (v == null || v.trim().isEmpty) ? 'Podaj imię' : null,
+                validator: (v) => (v == null || v.trim().isEmpty) ? 'Please enter your name' : null,
               ),
               const SizedBox(height: 12),
               CustomTextField(
                 controller: _emailController,
-                label: 'Adres E-mail',
+                label: 'Email Address',
                 prefixIcon: Icons.email_outlined,
                 keyboardType: TextInputType.emailAddress,
-                validator: (v) => (v == null || !v.contains('@')) ? 'Podaj prawidłowy e-mail' : null,
+                validator: (v) => (v == null || !v.contains('@')) ? 'Please enter a valid email' : null,
               ),
               const SizedBox(height: 12),
               CustomTextField(
                 controller: _phoneController,
-                label: 'Numer telefonu',
+                label: 'Phone Number',
                 prefixIcon: Icons.phone_outlined,
                 keyboardType: TextInputType.phone,
               ),
@@ -122,13 +122,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               const Divider(height: 32),
 
               Text(
-                'Domyślny adres dostawy',
+                'Default Delivery Address',
                 style: GoogleFonts.cormorantGaramond(fontSize: 18, fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 14),
               CustomTextField(
                 controller: _streetController,
-                label: 'Ulica i numer',
+                label: 'Street Address & Apt',
                 prefixIcon: Icons.home_outlined,
               ),
               const SizedBox(height: 12),
@@ -138,8 +138,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     flex: 2,
                     child: CustomTextField(
                       controller: _postalCodeController,
-                      label: 'Kod pocztowy',
-                      hintText: '00-000',
+                      label: 'Postal Code / Eircode',
+                      hintText: 'e.g. D02 X285',
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -147,7 +147,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     flex: 3,
                     child: CustomTextField(
                       controller: _cityController,
-                      label: 'Miasto',
+                      label: 'City / Town',
                     ),
                   ),
                 ],
@@ -155,19 +155,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               const SizedBox(height: 12),
               CustomTextField(
                 controller: _countryController,
-                label: 'Kraj',
+                label: 'Country',
               ),
 
               const Divider(height: 32),
 
               Text(
-                'Zmień hasło (opcjonalnie)',
+                'Security & Password (optional)',
                 style: GoogleFonts.cormorantGaramond(fontSize: 18, fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 14),
               CustomTextField(
                 controller: _newPasswordController,
-                label: 'Nowe hasło (pozostaw puste, aby nie zmieniać)',
+                label: 'New Password (leave blank to keep current)',
                 prefixIcon: Icons.lock_outline_rounded,
                 obscureText: true,
               ),
@@ -175,7 +175,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               const SizedBox(height: 28),
 
               CustomButton(
-                text: 'Zapisz zmiany',
+                text: 'Save Changes',
                 isLoading: auth.isLoading,
                 onPressed: _saveProfile,
               ),

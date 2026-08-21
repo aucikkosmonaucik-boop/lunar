@@ -36,7 +36,7 @@ class OrderDetailScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Status zamówienia',
+                  'Order Status',
                   style: GoogleFonts.cormorantGaramond(fontSize: 18, fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: 16),
@@ -59,7 +59,7 @@ class OrderDetailScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Zamówione produkty (${order.items.length})',
+                  'Ordered Items (${order.items.length})',
                   style: GoogleFonts.cormorantGaramond(fontSize: 18, fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: 12),
@@ -119,7 +119,7 @@ class OrderDetailScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Adres dostawy',
+                  'Delivery Address',
                   style: GoogleFonts.cormorantGaramond(fontSize: 18, fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: 12),
@@ -152,26 +152,26 @@ class OrderDetailScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Płatność i podsumowanie',
+                  'Payment & Summary',
                   style: GoogleFonts.cormorantGaramond(fontSize: 18, fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: 12),
-                _buildRow('Wartość produktów', Formatters.formatPrice(order.subtotal)),
+                _buildSummaryRow('Subtotal', Formatters.formatPrice(order.subtotal)),
                 if (order.discountAmount > 0) ...[
                   const SizedBox(height: 6),
-                  _buildRow('Rabat (${order.discountCode ?? ""})', '-${Formatters.formatPrice(order.discountAmount)}', color: AppColors.success),
+                  _buildRow('Discount (${order.discountCode ?? ""})', '-${Formatters.formatPrice(order.discountAmount)}', color: AppColors.success),
                 ],
                 const SizedBox(height: 6),
-                _buildRow('Dostawa', order.shippingFee == 0 ? 'Darmowa' : Formatters.formatPrice(order.shippingFee)),
+                _buildRow('Shipping', order.shippingFee == 0 ? 'Free' : Formatters.formatPrice(order.shippingFee)),
                 const SizedBox(height: 6),
-                _buildRow('Metoda płatności', order.paymentMethod.toUpperCase()),
+                _buildRow('Payment Method', order.paymentMethod.toUpperCase()),
                 const SizedBox(height: 6),
-                _buildRow('Status płatności', Formatters.formatPaymentStatus(order.paymentStatus)),
+                _buildRow('Payment Status', Formatters.formatPaymentStatus(order.paymentStatus)),
                 const Divider(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Suma', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                    const Text('Total', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
                     Text(
                       Formatters.formatPrice(order.total),
                       style: TextStyle(
@@ -193,10 +193,10 @@ class OrderDetailScreen extends StatelessWidget {
   }
 
   Widget _buildTimeline(String currentStatus) {
-    final statuses = ['Pending', 'Processing', 'Shipped', 'Delivered'];
-    final labels = ['Przyjęte', 'W realizacji', 'Wysłane', 'Doręczone'];
+    final statuses = ['pending', 'processing', 'shipped', 'delivered'];
+    final labels = ['Placed', 'Processing', 'Shipped', 'Delivered'];
 
-    int currentIndex = statuses.indexOf(currentStatus);
+    int currentIndex = statuses.indexOf(currentStatus.toLowerCase());
     if (currentIndex == -1) currentIndex = 1;
 
     return Row(
@@ -256,6 +256,16 @@ class OrderDetailScreen extends StatelessWidget {
           ),
         );
       }),
+    );
+  }
+
+  Widget _buildSummaryRow(String label, String value, {Color? color}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label, style: const TextStyle(fontSize: 13, color: Colors.grey)),
+        Text(value, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: color)),
+      ],
     );
   }
 

@@ -68,7 +68,7 @@ class ApiService {
       return body;
     }
 
-    String errorMessage = 'Wystąpił błąd komunikacji (${response.statusCode})';
+    String errorMessage = 'A network communication error occurred (${response.statusCode})';
     if (body is Map && body.containsKey('message')) {
       errorMessage = body['message'].toString();
     }
@@ -91,12 +91,12 @@ class ApiService {
 
       return _processResponse(response);
     } on SocketException {
-      throw ApiException('Brak połączenia z serwerem. Sprawdź swoje połączenie internetowe.');
+      throw ApiException('Unable to connect to the server. Please check your internet connection.');
     } on http.ClientException catch (e) {
-      throw ApiException('Błąd połączenia: ${e.message}');
+      throw ApiException('Connection error: ${e.message}');
     } catch (e) {
       if (e is ApiException) rethrow;
-      throw ApiException('Nieoczekiwany błąd: $e');
+      throw ApiException('Unexpected error: $e');
     }
   }
 
@@ -112,10 +112,10 @@ class ApiService {
 
       return _processResponse(response);
     } on SocketException {
-      throw ApiException('Brak połączenia z serwerem.');
+      throw ApiException('Unable to connect to the server.');
     } catch (e) {
       if (e is ApiException) rethrow;
-      throw ApiException('Nieoczekiwany błąd: $e');
+      throw ApiException('Unexpected error: $e');
     }
   }
 
@@ -131,10 +131,10 @@ class ApiService {
 
       return _processResponse(response);
     } on SocketException {
-      throw ApiException('Brak połączenia z serwerem.');
+      throw ApiException('Unable to connect to the server.');
     } catch (e) {
       if (e is ApiException) rethrow;
-      throw ApiException('Nieoczekiwany błąd: $e');
+      throw ApiException('Unexpected error: $e');
     }
   }
 
@@ -150,10 +150,10 @@ class ApiService {
 
       return _processResponse(response);
     } on SocketException {
-      throw ApiException('Brak połączenia z serwerem.');
+      throw ApiException('Unable to connect to the server.');
     } catch (e) {
       if (e is ApiException) rethrow;
-      throw ApiException('Nieoczekiwany błąd: $e');
+      throw ApiException('Unexpected error: $e');
     }
   }
 }

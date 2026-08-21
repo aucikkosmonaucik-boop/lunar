@@ -39,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (success && mounted) {
       Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Zalogowano pomyślnie! Witamy w Lunar.')),
+        const SnackBar(content: Text('Logged in successfully! Welcome to Lunar.')),
       );
     }
   }
@@ -49,21 +49,21 @@ class _LoginScreenState extends State<LoginScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Reset hasła'),
+        title: const Text('Reset Password'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Podaj adres e-mail przypisany do Twojego konta. Wyślemy link do zresetowania hasła.'),
+            const Text('Enter the email address associated with your account. We will send you password reset instructions.'),
             const SizedBox(height: 12),
             TextField(
               controller: emailCtrl,
               keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(labelText: 'Adres e-mail'),
+              decoration: const InputDecoration(labelText: 'Email Address'),
             ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Anuluj')),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
           TextButton(
             onPressed: () async {
               if (emailCtrl.text.trim().isNotEmpty) {
@@ -71,12 +71,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 await context.read<AuthProvider>().forgotPassword(emailCtrl.text.trim());
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Jeśli konto istnieje, wysłano instrukcje resetowania hasła.')),
+                    const SnackBar(content: Text('If the account exists, reset instructions have been sent.')),
                   );
                 }
               }
             },
-            child: const Text('Wyślij', style: TextStyle(color: AppColors.primary)),
+            child: const Text('Send', style: TextStyle(color: AppColors.primary)),
           ),
         ],
       ),
@@ -109,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Witaj ponownie',
+                  'Welcome Back',
                   style: GoogleFonts.cormorantGaramond(
                     fontSize: 30,
                     fontWeight: FontWeight.w700,
@@ -118,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'Zaloguj się, aby mieć dostęp do historii zamówień i punktów lojalnościowych.',
+                  'Sign in to access your order history, wishlist, and exclusive Club rewards.',
                   style: TextStyle(
                     fontSize: 13,
                     color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
@@ -152,24 +152,24 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 CustomTextField(
                   controller: _emailController,
-                  label: 'Adres E-mail',
-                  hintText: 'twoj@email.pl',
+                  label: 'Email Address',
+                  hintText: 'user@example.com',
                   prefixIcon: Icons.email_outlined,
                   keyboardType: TextInputType.emailAddress,
-                  validator: (v) => (v == null || !v.contains('@')) ? 'Wprowadź prawidłowy adres e-mail' : null,
+                  validator: (v) => (v == null || !v.contains('@')) ? 'Please enter a valid email address' : null,
                 ),
                 const SizedBox(height: 16),
 
                 CustomTextField(
                   controller: _passwordController,
-                  label: 'Hasło',
+                  label: 'Password',
                   prefixIcon: Icons.lock_outline_rounded,
                   obscureText: _obscurePassword,
                   suffixIcon: IconButton(
                     icon: Icon(_obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined),
                     onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                   ),
-                  validator: (v) => (v == null || v.length < 6) ? 'Hasło musi mieć co najmniej 6 znaków' : null,
+                  validator: (v) => (v == null || v.length < 6) ? 'Password must be at least 6 characters' : null,
                 ),
                 const SizedBox(height: 8),
 
@@ -178,7 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: TextButton(
                     onPressed: _showForgotPasswordDialog,
                     child: Text(
-                      'Nie pamiętasz hasła?',
+                      'Forgot password?',
                       style: TextStyle(
                         fontSize: 12,
                         color: isDark ? AppColors.primary : AppColors.primaryDark,
@@ -190,7 +190,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 16),
 
                 CustomButton(
-                  text: 'Zaloguj się',
+                  text: 'Sign In',
                   isLoading: auth.isLoading,
                   onPressed: _submitLogin,
                 ),
@@ -200,7 +200,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Nie masz jeszcze konta? ',
+                      "Don't have an account? ",
                       style: TextStyle(
                         fontSize: 13,
                         color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
@@ -213,7 +213,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         );
                       },
                       child: Text(
-                        'Zarejestruj się',
+                        'Sign Up',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w700,

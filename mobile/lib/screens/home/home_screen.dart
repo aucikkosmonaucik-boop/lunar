@@ -19,10 +19,10 @@ class HomeScreen extends StatelessWidget {
 
     final sampleBanners = [
       BannerItem(
-        title: 'Nowa Kolekcja Wiosna / Lato',
-        subtitle: 'Odkryj minimalistyczną biżuterię ze złota i srebra',
+        title: 'Spring / Summer Collection',
+        subtitle: 'Discover minimalist gold & silver jewelry',
         imageUrl: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&q=80&w=1200',
-        badge: 'NOWOŚCI',
+        badge: 'NEW',
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(
@@ -32,8 +32,8 @@ class HomeScreen extends StatelessWidget {
         },
       ),
       BannerItem(
-        title: 'Kolekcja Ślubna Bridal',
-        subtitle: 'Wyjątkowe akcenty na Twój najważniejszy dzień',
+        title: 'Bridal Collection',
+        subtitle: 'Distinctive accents for your memorable moments',
         imageUrl: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&q=80&w=1200',
         badge: 'BRIDAL',
         onTap: () {
@@ -45,8 +45,8 @@ class HomeScreen extends StatelessWidget {
         },
       ),
       BannerItem(
-        title: 'Bestsellery Lunar',
-        subtitle: 'Najczęściej wybierane przez nasze klientki',
+        title: 'Lunar Bestsellers',
+        subtitle: 'Most cherished designs chosen by our patrons',
         imageUrl: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&q=80&w=1200',
         badge: 'BESTSELLER',
         onTap: () {
@@ -73,12 +73,12 @@ class HomeScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined),
-            tooltip: 'Zmień motyw',
+            tooltip: 'Toggle Theme',
             onPressed: () => context.read<ThemeProvider>().toggleTheme(),
           ),
           IconButton(
             icon: const Icon(Icons.search_rounded),
-            tooltip: 'Szukaj',
+            tooltip: 'Search',
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const ShopScreen()),
@@ -106,7 +106,7 @@ class HomeScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Kategorie',
+                      'Categories',
                       style: GoogleFonts.cormorantGaramond(
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
@@ -120,7 +120,7 @@ class HomeScreen extends StatelessWidget {
                         );
                       },
                       child: Text(
-                        'Zobacz wszystkie',
+                        'See all',
                         style: TextStyle(
                           fontSize: 12,
                           color: isDark ? AppColors.primary : AppColors.primaryDark,
@@ -191,7 +191,7 @@ class HomeScreen extends StatelessWidget {
             if (productProvider.featuredProducts.isNotEmpty) ...[
               _buildSectionHeader(
                 context,
-                title: 'Polecane produkty',
+                title: 'Featured Pieces',
                 onViewAll: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(builder: (_) => const ShopScreen()),
@@ -234,7 +234,7 @@ class HomeScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Klub LUNAR',
+                          'LUNAR Club',
                           style: GoogleFonts.cormorantGaramond(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
@@ -243,7 +243,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'Zbieraj punkty za każde zakupy i wymieniaj na rabaty.',
+                          'Earn rewards on every purchase and redeem for exclusive vouchers.',
                           style: TextStyle(
                             fontSize: 12,
                             color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
@@ -261,7 +261,7 @@ class HomeScreen extends StatelessWidget {
             if (productProvider.newArrivals.isNotEmpty) ...[
               _buildSectionHeader(
                 context,
-                title: 'Nowości',
+                title: 'New Arrivals',
                 onViewAll: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(builder: (_) => const ShopScreen(initialBadge: 'NEW')),
@@ -277,7 +277,7 @@ class HomeScreen extends StatelessWidget {
             if (productProvider.bestsellers.isNotEmpty) ...[
               _buildSectionHeader(
                 context,
-                title: 'Bestsellery',
+                title: 'Bestsellers',
                 onViewAll: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(builder: (_) => const ShopScreen(initialBadge: 'BESTSELLER')),
@@ -312,7 +312,7 @@ class HomeScreen extends StatelessWidget {
           TextButton(
             onPressed: onViewAll,
             child: Text(
-              'Wszystkie >',
+              'View all >',
               style: TextStyle(
                 fontSize: 12,
                 color: isDark ? AppColors.primary : AppColors.primaryDark,
@@ -345,17 +345,17 @@ class HomeScreen extends StatelessWidget {
 
   IconData _getCategoryIcon(String slug) {
     final lower = slug.toLowerCase();
-    if (lower.contains('earring') || lower.contains('kolczyki')) {
+    if (lower.contains('earring')) {
       return Icons.flare_rounded;
-    } else if (lower.contains('ring') || lower.contains('pierscionki')) {
+    } else if (lower.contains('ring')) {
       return Icons.trip_origin_rounded;
-    } else if (lower.contains('necklace') || lower.contains('naszyjniki')) {
+    } else if (lower.contains('necklace')) {
       return Icons.all_inclusive_rounded;
-    } else if (lower.contains('bracelet') || lower.contains('bransoletki')) {
+    } else if (lower.contains('bracelet')) {
       return Icons.donut_large_rounded;
-    } else if (lower.contains('bridal') || lower.contains('slub')) {
+    } else if (lower.contains('bridal')) {
       return Icons.diamond_rounded;
-    } else if (lower.contains('perfume') || lower.contains('perfumy')) {
+    } else if (lower.contains('perfume')) {
       return Icons.water_drop_outlined;
     }
     return Icons.auto_awesome_rounded;

@@ -20,29 +20,32 @@ class CheckoutScreen extends StatefulWidget {
 class _CheckoutScreenState extends State<CheckoutScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  late TextEditingController _nameController;
-  late TextEditingController _emailController;
-  late TextEditingController _phoneController;
-  late TextEditingController _streetController;
-  late TextEditingController _cityController;
-  late TextEditingController _postalCodeController;
-  late TextEditingController _countryController;
-  late TextEditingController _notesController;
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _streetController = TextEditingController();
+  final _cityController = TextEditingController();
+  final _postalCodeController = TextEditingController();
+  final _countryController = TextEditingController(text: 'Ireland');
+  final _notesController = TextEditingController();
 
-  String _selectedPaymentMethod = 'blik'; // 'blik', 'card', 'transfer', 'cod'
+  String _selectedPaymentMethod = 'card';
 
   @override
   void initState() {
     super.initState();
-    final user = context.read<AuthProvider>().user;
-    _nameController = TextEditingController(text: user?.name ?? '');
-    _emailController = TextEditingController(text: user?.email ?? '');
-    _phoneController = TextEditingController(text: user?.phone ?? '');
-    _streetController = TextEditingController(text: user?.street ?? '');
-    _cityController = TextEditingController(text: user?.city ?? '');
-    _postalCodeController = TextEditingController(text: user?.postalCode ?? '');
-    _countryController = TextEditingController(text: user?.country ?? 'Polska');
-    _notesController = TextEditingController();
+    final auth = context.read<AuthProvider>();
+    if (auth.user != null) {
+      _nameController.text = auth.user!.name ?? '';
+      _emailController.text = auth.user!.email;
+      _phoneController.text = auth.user!.phone ?? '';
+      _streetController.text = auth.user!.street ?? '';
+      _cityController.text = auth.user!.city ?? '';
+      _postalCodeController.text = auth.user!.postalCode ?? '';
+      if (auth.user!.country != null && auth.user!.country!.isNotEmpty) {
+        _countryController.text = auth.user!.country!;
+      }
+    }
   }
 
   @override
@@ -93,7 +96,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     } else if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(orderProvider.errorMessage ?? 'Wystąpił błąd podczas składania zamówienia'),
+          content: Text(orderProvider.errorMessage ?? 'An error occurred while placing your order.'),
           backgroundColor: AppColors.error,
         ),
       );
@@ -109,7 +112,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Kasa i Płatność',
+          'Checkout',
           style: GoogleFonts.cormorantGaramond(fontSize: 22, fontWeight: FontWeight.w700),
         ),
       ),
@@ -121,37 +124,37 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             // Section 1: Shipping Address
             _buildSectionCard(
               isDark: isDark,
-              title: 'Dane do wysyłki',
+              title: 'Shipping Information',
               icon: Icons.local_shipping_outlined,
               children: [
                 CustomTextField(
                   controller: _nameController,
-                  label: 'Imię i Nazwisko *',
+                  label: 'Full Name *',
                   prefixIcon: Icons.person_outline,
-                  validator: (v) => (v == null || v.trim().isEmpty) ? 'Podaj imię i nazwisko' : null,
+                  validator: (v) => (v == null || v.trim().isEmpty) ? 'Please enter full name' : null,
                 ),
                 const SizedBox(height: 12),
                 CustomTextField(
                   controller: _emailController,
-                  label: 'Adres E-mail *',
+                  label: 'Email Address *',
                   prefixIcon: Icons.email_outlined,
                   keyboardType: TextInputType.emailAddress,
-                  validator: (v) => (v == null || !v.contains('@')) ? 'Podaj prawidłowy adres e-mail' : null,
+                  validator: (v) => (v == null || !v.contains('@')) ? 'Please enter a valid email address' : null,
                 ),
                 const SizedBox(height: 12),
                 CustomTextField(
                   controller: _phoneController,
-                  label: 'Numer telefonu *',
+                  label: 'Phone Number *',
                   prefixIcon: Icons.phone_outlined,
                   keyboardType: TextInputType.phone,
-                  validator: (v) => (v == null || v.trim().isEmpty) ? 'Podaj numer telefonu' : null,
+                  validator: (v) => (v == null || v.trim().isEmpty) ? 'Please enter phone number' : null,
                 ),
                 const SizedBox(height: 12),
                 CustomTextField(
                   controller: _streetController,
-                  label: 'Ulica i numer domu/lokalu *',
+                  label: 'Street Address & House / Apt *',
                   prefixIcon: Icons.home_outlined,
-                  validator: (v) => (v == null || v.trim().isEmpty) ? 'Podaj adres' : null,
+                  validator: (v) => (v == null || v.trim().isEmpty) ? 'Please enter street address' : null,
                 ),
                 const SizedBox(height: 12),
                 Row(
@@ -160,9 +163,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       flex: 2,
                       child: CustomTextField(
                         controller: _postalCodeController,
-                        label: 'Kod pocztowy *',
-                        hintText: '00-000',
-                        validator: (v) => (v == null || v.trim().isEmpty) ? 'Podaj kod' : null,
+                        label: 'Postal Code / Eircode *',
+                        validator: (v) => (v == null || v.trim().isEmpty) ? 'Required' : null,
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -170,8 +172,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       flex: 3,
                       child: CustomTextField(
                         controller: _cityController,
-                        label: 'Miejscowość *',
-                        validator: (v) => (v == null || v.trim().isEmpty) ? 'Podaj miasto' : null,
+                        label: 'City / Town *',
+                        validator: (v) => (v == null || v.trim().isEmpty) ? 'Required' : null,
                       ),
                     ),
                   ],
@@ -179,13 +181,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 const SizedBox(height: 12),
                 CustomTextField(
                   controller: _countryController,
-                  label: 'Kraj',
-                  readOnly: true,
+                  label: 'Country',
                 ),
                 const SizedBox(height: 12),
                 CustomTextField(
                   controller: _notesController,
-                  label: 'Uwagi do zamówienia (opcjonalnie)',
+                  label: 'Order Notes (optional)',
                   maxLines: 2,
                 ),
               ],
@@ -196,34 +197,34 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             // Section 2: Payment Method
             _buildSectionCard(
               isDark: isDark,
-              title: 'Metoda płatności',
+              title: 'Payment Method',
               icon: Icons.payment_outlined,
               children: [
                 _buildPaymentOption(
-                  id: 'blik',
-                  title: 'BLIK',
-                  subtitle: 'Szybka i bezpieczna płatność kodem BLIK',
-                  icon: Icons.flash_on_rounded,
-                  color: const Color(0xFFE6007E),
-                ),
-                _buildPaymentOption(
                   id: 'card',
-                  title: 'Karta płatnicza / Stripe',
+                  title: 'Credit / Debit Card (Stripe)',
                   subtitle: 'Visa, Mastercard, Apple Pay, Google Pay',
                   icon: Icons.credit_card_rounded,
                   color: AppColors.primary,
                 ),
                 _buildPaymentOption(
+                  id: 'blik',
+                  title: 'BLIK',
+                  subtitle: 'Instant mobile PIN code payment',
+                  icon: Icons.flash_on_rounded,
+                  color: const Color(0xFFE6007E),
+                ),
+                _buildPaymentOption(
                   id: 'transfer',
-                  title: 'Szybki przelew online',
-                  subtitle: 'Przelewy24 / PayU / Bank transfer',
+                  title: 'Direct Bank Transfer / Wire',
+                  subtitle: 'Online banking transfer / Wire',
                   icon: Icons.account_balance_rounded,
                   color: AppColors.info,
                 ),
                 _buildPaymentOption(
                   id: 'cod',
-                  title: 'Płatność przy odbiorze',
-                  subtitle: 'Płatność gotówką lub kartą u kuriera',
+                  title: 'Cash on Delivery',
+                  subtitle: 'Pay upon parcel delivery',
                   icon: Icons.local_atm_rounded,
                   color: AppColors.warning,
                 ),
@@ -235,21 +236,21 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             // Section 3: Summary
             _buildSectionCard(
               isDark: isDark,
-              title: 'Podsumowanie płatności',
+              title: 'Payment Summary',
               icon: Icons.receipt_long_outlined,
               children: [
-                _buildRow('Wartość koszyka', Formatters.formatPrice(cartProvider.subtotal)),
+                _buildRow('Subtotal', Formatters.formatPrice(cartProvider.subtotal)),
                 if (cartProvider.promoDiscountAmount > 0) ...[
                   const SizedBox(height: 6),
-                  _buildRow('Rabat', '-${Formatters.formatPrice(cartProvider.promoDiscountAmount)}', color: AppColors.success),
+                  _buildRow('Discount', '-${Formatters.formatPrice(cartProvider.promoDiscountAmount)}', color: AppColors.success),
                 ],
                 const SizedBox(height: 6),
-                _buildRow('Dostawa', cartProvider.shippingFee == 0 ? 'Gratis' : Formatters.formatPrice(cartProvider.shippingFee)),
+                _buildRow('Shipping', cartProvider.shippingFee == 0 ? 'Free' : Formatters.formatPrice(cartProvider.shippingFee)),
                 const Divider(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Do zapłaty', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                    const Text('Total to Pay', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
                     Text(
                       Formatters.formatPrice(cartProvider.total),
                       style: TextStyle(
@@ -267,7 +268,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
             // Submit Button
             CustomButton(
-              text: 'Zamawiam i płacę • ${Formatters.formatPrice(cartProvider.total)}',
+              text: 'Place Order • ${Formatters.formatPrice(cartProvider.total)}',
               icon: Icons.lock_rounded,
               isLoading: orderProvider.isLoading,
               onPressed: _submitOrder,

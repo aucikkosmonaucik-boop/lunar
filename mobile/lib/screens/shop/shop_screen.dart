@@ -56,11 +56,11 @@ class _ShopScreenState extends State<ShopScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final sortOptions = [
-      {'key': 'featured', 'label': 'Polecane'},
-      {'key': 'newest', 'label': 'Najnowsze'},
-      {'key': 'price-asc', 'label': 'Cena: od najniższej'},
-      {'key': 'price-desc', 'label': 'Cena: od najwyższej'},
-      {'key': 'rating', 'label': 'Najwyżej oceniane'},
+      {'key': 'featured', 'label': 'Featured'},
+      {'key': 'newest', 'label': 'Newest'},
+      {'key': 'price-asc', 'label': 'Price: Low to High'},
+      {'key': 'price-desc', 'label': 'Price: High to Low'},
+      {'key': 'rating', 'label': 'Highest Rated'},
     ];
 
     showModalBottomSheet(
@@ -80,7 +80,7 @@ class _ShopScreenState extends State<ShopScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Text(
-                    'Sortuj według',
+                    'Sort by',
                     style: GoogleFonts.cormorantGaramond(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
@@ -121,7 +121,7 @@ class _ShopScreenState extends State<ShopScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Katalog',
+          'Catalog',
           style: GoogleFonts.cormorantGaramond(
             fontSize: 22,
             fontWeight: FontWeight.w700,
@@ -130,7 +130,7 @@ class _ShopScreenState extends State<ShopScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.sort_rounded),
-            tooltip: 'Sortowanie',
+            tooltip: 'Sort',
             onPressed: () => _showSortBottomSheet(context),
           ),
         ],
@@ -144,7 +144,7 @@ class _ShopScreenState extends State<ShopScreen> {
               controller: _searchController,
               onSubmitted: (val) => provider.setSearchQuery(val),
               decoration: InputDecoration(
-                hintText: 'Szukaj biżuterii, kolczyków, pierścionków...',
+                hintText: 'Search jewelry, earrings, rings, perfumes...',
                 prefixIcon: const Icon(Icons.search_rounded),
                 suffixIcon: _searchController.text.isNotEmpty
                     ? IconButton(
@@ -168,7 +168,7 @@ class _ShopScreenState extends State<ShopScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               children: [
                 _buildCategoryChip(
-                  label: 'Wszystkie',
+                  label: 'All',
                   isSelected: provider.selectedCategory == null || provider.selectedCategory == 'all',
                   onTap: () => provider.setCategory('all'),
                 ),
@@ -185,17 +185,17 @@ class _ShopScreenState extends State<ShopScreen> {
           ),
           const SizedBox(height: 8),
 
-          // Badge Quick Filters (New, Sale, Bestseller)
+          // Badge Quick Filters (New, Sale, Bestseller, Bridal)
           SizedBox(
             height: 36,
             child: ListView(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 16),
               children: [
-                _buildBadgeFilterChip('NEW', 'Nowości', provider),
-                _buildBadgeFilterChip('BESTSELLER', 'Bestsellery', provider),
-                _buildBadgeFilterChip('SALE', 'Promocje', provider),
-                _buildBadgeFilterChip('BRIDAL', 'Ślubne', provider),
+                _buildBadgeFilterChip('NEW', 'New Arrivals', provider),
+                _buildBadgeFilterChip('BESTSELLER', 'Bestsellers', provider),
+                _buildBadgeFilterChip('SALE', 'Sale', provider),
+                _buildBadgeFilterChip('BRIDAL', 'Bridal', provider),
               ],
             ),
           ),
@@ -208,7 +208,7 @@ class _ShopScreenState extends State<ShopScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Znaleziono: ${provider.totalCount}',
+                  'Found: ${provider.totalCount} items',
                   style: TextStyle(
                     fontSize: 12,
                     color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
@@ -221,7 +221,7 @@ class _ShopScreenState extends State<ShopScreen> {
                       provider.clearFilters();
                     },
                     child: Text(
-                      'Wyczyść filtry',
+                      'Clear filters',
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
@@ -241,9 +241,9 @@ class _ShopScreenState extends State<ShopScreen> {
                 : provider.products.isEmpty
                     ? EmptyStateView(
                         icon: Icons.search_off_rounded,
-                        title: 'Brak produktów',
-                        message: 'Nie znaleziono produktów spełniających wybrane kryteria.',
-                        buttonText: 'Wyczyść filtry',
+                        title: 'No products found',
+                        message: 'We could not find any products matching your selected criteria.',
+                        buttonText: 'Clear filters',
                         onButtonPressed: () {
                           _searchController.clear();
                           provider.clearFilters();
