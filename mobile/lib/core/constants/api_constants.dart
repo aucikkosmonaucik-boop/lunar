@@ -1,6 +1,6 @@
 class ApiConstants {
-  // Default base URL for live Vercel deployment
-  static const String defaultBaseUrl = 'https://lunar-eight-bay.vercel.app';
+  // Default base URL for live deployment
+  static const String defaultBaseUrl = 'https://mylunar.shop';
 
   static String baseUrl = defaultBaseUrl;
 

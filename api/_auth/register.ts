@@ -45,7 +45,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // Send verification email
     try {
-      const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://mylunar.ie'}/verify-email?token=${verificationToken}`;
+      const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://mylunar.shop'}/verify-email?token=${verificationToken}`;
       await sendEmail({
         to: email,
         subject: 'Verify Your Account — Lunar',

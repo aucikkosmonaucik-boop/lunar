@@ -19,7 +19,7 @@ const TermsPage: React.FC = () => {
           <section className="w-full">
             <h2 className="text-xl md:text-2xl uppercase tracking-[0.2em] font-medium mb-6 text-center">1. Introduction</h2>
             <p className="text-[15px] text-gray-600 mb-4 text-center">
-              Welcome to Lunar. These Terms of Service govern your use of our website located at mylunar.ie operated by Lunar Jewellery.
+              Welcome to Lunar. These Terms of Service govern your use of our website located at mylunar.shop operated by Lunar Jewellery.
             </p>
             <p className="text-[15px] text-gray-600 text-center">
               By accessing or using our website, you agree to be bound by these terms. If you disagree with any part of the terms, you may not access the service.

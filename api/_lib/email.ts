@@ -31,9 +31,9 @@ export async function sendEmail({
 
     // Default placeholders if not provided
     const defaults = {
-      SHOP_URL: process.env.NEXT_PUBLIC_APP_URL || 'https://mylunar.ie',
-      PRIVACY_URL: `${process.env.NEXT_PUBLIC_APP_URL || 'https://mylunar.ie'}/privacy`,
-      UNSUBSCRIBE_URL: `${process.env.NEXT_PUBLIC_APP_URL || 'https://mylunar.ie'}/unsubscribe`,
+      SHOP_URL: process.env.NEXT_PUBLIC_APP_URL || 'https://mylunar.shop',
+      PRIVACY_URL: `${process.env.NEXT_PUBLIC_APP_URL || 'https://mylunar.shop'}/privacy`,
+      UNSUBSCRIBE_URL: `${process.env.NEXT_PUBLIC_APP_URL || 'https://mylunar.shop'}/unsubscribe`,
     };
 
     Object.entries(defaults).forEach(([key, value]) => {

@@ -44,7 +44,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // Redirect to a success page or login
-    return res.redirect(`${process.env.NEXT_PUBLIC_APP_URL || 'https://mylunar.ie'}/login?verified=true`);
+    return res.redirect(`${process.env.NEXT_PUBLIC_APP_URL || 'https://mylunar.shop'}/login?verified=true`);
   } catch (error) {
     console.error('Email verification error:', error);
     return res.status(500).json({ message: 'Internal server error' });
