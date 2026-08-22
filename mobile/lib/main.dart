@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'core/constants/app_theme.dart';
+import 'core/services/deep_link_service.dart';
 import 'core/services/storage_service.dart';
 import 'providers/auth_provider.dart';
 import 'providers/cart_provider.dart';
@@ -13,6 +14,7 @@ import 'screens/main_nav_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await StorageService.init();
+  DeepLinkService.init();
 
   runApp(
     MultiProvider(
@@ -39,6 +41,7 @@ class LunarApp extends StatelessWidget {
     return MaterialApp(
       title: 'LUNAR Store',
       debugShowCheckedModeBanner: false,
+      navigatorKey: DeepLinkService.navigatorKey,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: themeProvider.themeMode,

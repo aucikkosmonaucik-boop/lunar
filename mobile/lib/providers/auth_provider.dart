@@ -190,6 +190,33 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> resetPassword({
+    required String token,
+    required String newPassword,
+  }) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      await ApiService.post(
+        ApiConstants.authResetPassword,
+        body: {
+          'token': token.trim(),
+          'password': newPassword,
+        },
+      );
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _isLoading = false;
+      _errorMessage = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
+
   Future<bool> resendVerification(String email) async {
     _isLoading = true;
     _errorMessage = null;

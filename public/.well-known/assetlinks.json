@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.lunar.store.lunar_mobile",
+      "sha256_cert_fingerprints": [
+        "9D:7E:59:35:4D:93:A9:B0:9E:7E:3E:42:C0:7D:7A:46:A4:91:66:79:E6:B5:D2:03:DB:E9:8B:D6:0E:53:86:2C"
+      ]
+    }
+  }
+]
