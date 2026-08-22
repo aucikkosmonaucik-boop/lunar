@@ -62,6 +62,17 @@ export function getCookieConsent(): CookieConsentState | null {
   return null;
 }
 
+export function updateGoogleConsent(analytics: boolean, marketing: boolean): void {
+  if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+    (window as any).gtag('consent', 'update', {
+      analytics_storage: analytics ? 'granted' : 'denied',
+      ad_storage: marketing ? 'granted' : 'denied',
+      ad_user_data: marketing ? 'granted' : 'denied',
+      ad_personalization: marketing ? 'granted' : 'denied',
+    });
+  }
+}
+
 export function saveCookieConsent(prefs: Partial<CookiePreferences>): CookieConsentState {
   const finalPrefs: CookiePreferences = {
     necessary: true,
@@ -80,6 +91,7 @@ export function saveCookieConsent(prefs: Partial<CookiePreferences>): CookieCons
     const jsonStr = JSON.stringify(state);
     localStorage.setItem(CONSENT_STORAGE_KEY, jsonStr);
     setCookie(CONSENT_COOKIE_KEY, jsonStr, 365);
+    updateGoogleConsent(finalPrefs.analytics, finalPrefs.marketing);
     window.dispatchEvent(new CustomEvent('lunar_cookie_consent_change', { detail: state }));
   } catch (e) {
     console.error('Error saving cookie consent state:', e);
@@ -111,6 +123,7 @@ export function resetCookieConsent(): void {
   try {
     localStorage.removeItem(CONSENT_STORAGE_KEY);
     deleteCookie(CONSENT_COOKIE_KEY);
+    updateGoogleConsent(false, false);
     window.dispatchEvent(new CustomEvent('lunar_cookie_consent_change', { detail: null }));
   } catch (e) {
     console.error('Error resetting cookie consent:', e);

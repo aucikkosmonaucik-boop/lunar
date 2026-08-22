@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import HomePage from './pages/HomePage';
@@ -22,6 +22,22 @@ import OrderSuccessPage from './pages/OrderSuccessPage';
 import MobileAppPage from './pages/MobileAppPage';
 import CookieConsentBanner from './components/ui/CookieConsentBanner';
 
+const PageViewTracker: React.FC = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+      (window as any).gtag('event', 'page_view', {
+        page_path: location.pathname + location.search,
+        page_location: window.location.href,
+        page_title: document.title,
+      });
+    }
+  }, [location]);
+
+  return null;
+};
+
 const App: React.FC = () => {
   return (
     <AuthProvider>
@@ -30,6 +46,7 @@ const App: React.FC = () => {
           <CartProvider>
             <FavoritesProvider>
               <Router>
+                <PageViewTracker />
                 <div className="flex flex-col min-h-screen bg-white text-wonders-dark">
                   <Navbar />
                   <main className="flex-grow" style={{ paddingTop: '250px' }}>
