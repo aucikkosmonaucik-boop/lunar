@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import Stripe from 'stripe';
 import { prisma } from '../_lib/prisma.js';
+import { sendOrderConfirmationEmail } from '../_lib/email.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const sessionId = (req.query.session_id as string) || (req.body?.session_id as string);
@@ -60,6 +61,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           },
           include: { items: true },
         });
+
+        if (order) {
+          try {
+            await sendOrderConfirmationEmail(order);
+          } catch (emailErr) {
+            console.error('Failed to send demo order confirmation email:', emailErr);
+          }
+        }
       }
 
       return res.status(200).json({
@@ -185,6 +194,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           },
         });
         console.log(`✅ Order ${savedOrder.orderNumber} (Guest/User) created in PostgreSQL.`);
+      }
+
+      // Send confirmation email via Resend if payment is confirmed
+      if (savedOrder && isPaid) {
+        const wasAlreadyPaid = existingOrder && existingOrder.paymentStatus === 'paid';
+        if (!wasAlreadyPaid) {
+          try {
+            await sendOrderConfirmationEmail(savedOrder);
+          } catch (emailErr) {
+            console.error('Failed to send Stripe order confirmation email:', emailErr);
+          }
+        }
       }
     } catch (dbErr) {
       console.error('Error saving/updating order in PostgreSQL:', dbErr);

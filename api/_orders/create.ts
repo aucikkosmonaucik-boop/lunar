@@ -1,6 +1,7 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import { prisma } from '../_lib/prisma.js';
 import { extractToken } from '../_lib/auth-util.js';
+import { sendOrderConfirmationEmail } from '../_lib/email.js';
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-in-production';
@@ -136,6 +137,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       } catch (promoErr) {
         console.warn('Could not mark promo code as used:', promoErr);
       }
+    }
+
+    // Send Order Confirmation Email via Resend
+    try {
+      await sendOrderConfirmationEmail(order, { pointsEarned });
+    } catch (emailErr) {
+      console.error('Failed to send order confirmation email:', emailErr);
     }
 
     return res.status(201).json({

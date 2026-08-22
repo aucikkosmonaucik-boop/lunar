@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { parse, serialize } from 'cookie';
 import bcrypt from 'bcryptjs';
 import { prisma } from '../_lib/prisma.js';
+import { sendOrderConfirmationEmail } from '../_lib/email.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-in-production';
 const FREE_SHIPPING_THRESHOLD = 50;
@@ -216,7 +217,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // ALWAYS save Guest / User Order in Postgres Database!
     try {
-      await (prisma as any).order.create({
+      const demoOrder = await (prisma as any).order.create({
         data: {
           orderNumber,
           userId: userId || null, // null for Guest checkout
@@ -247,8 +248,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             })),
           },
         },
+        include: { items: true },
       });
       console.log(`✅ [Demo Guest/User Checkout] Order ${orderNumber} with shipping address saved to PostgreSQL.`);
+
+      try {
+        await sendOrderConfirmationEmail(demoOrder);
+      } catch (emailErr) {
+        console.error('Failed to send demo order confirmation email:', emailErr);
+      }
     } catch (dbErr) {
       console.error('Error saving demo order to Postgres:', dbErr);
     }
