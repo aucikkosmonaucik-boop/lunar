@@ -18,6 +18,7 @@ class ApiConstants {
   static const String authUpdate = '/api/auth/update';
   static const String authLogout = '/api/auth/logout';
   static const String authForgotPassword = '/api/auth/forgot-password';
+  static const String authResendVerification = '/api/auth/resend-verification';
 
   // Orders endpoints
   static const String ordersCreate = '/api/orders/create';

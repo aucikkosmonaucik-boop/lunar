@@ -25,13 +25,13 @@ const RegisterPage: React.FC = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Wystąpił błąd podczas rejestracji');
+        throw new Error(data.message || 'An error occurred during registration');
       }
 
       // Redirect to login page with registered notice
       navigate('/login?registered=true');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Wystąpił nieznany błąd');
+      setError(err instanceof Error ? err.message : 'An unknown error occurred');
     } finally {
       setLoading(false);
     }
@@ -120,6 +120,15 @@ const RegisterPage: React.FC = () => {
             >
               {loading ? 'Processing...' : 'Create Account'}
             </button>
+          </div>
+
+          <div className="pt-2 text-center border-t border-gray-100">
+            <Link
+              to="/login"
+              className="text-[11px] uppercase tracking-[0.2em] text-[#8C6D4F] hover:text-[#1a1a1a] transition-colors"
+            >
+              Didn't receive verification email? Resend link
+            </Link>
           </div>
         </form>
       </div>

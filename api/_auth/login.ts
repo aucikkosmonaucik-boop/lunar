@@ -35,7 +35,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Block login if email is not verified yet
     if (user.verificationToken !== null) {
       return res.status(403).json({
-        message: 'Twój adres e-mail nie został jeszcze potwierdzony. Sprawdź swoją skrzynkę pocztową i kliknij w link aktywacyjny.',
+        message: 'Your email address is not verified yet. Please check your inbox and click the verification link.',
         unverified: true,
         email: user.email,
       });

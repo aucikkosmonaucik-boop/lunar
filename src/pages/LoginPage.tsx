@@ -8,6 +8,8 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isUnverified, setIsUnverified] = useState(false);
+  const [showResendModal, setShowResendModal] = useState(false);
+  const [resendEmail, setResendEmail] = useState('');
   const [resendStatus, setResendStatus] = useState<'idle' | 'loading' | 'sent' | 'error'>('idle');
   const [resendMessage, setResendMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -39,20 +41,26 @@ const LoginPage: React.FC = () => {
         if (data.unverified) {
           setIsUnverified(true);
         }
-        throw new Error(data.message || 'Wystąpił błąd podczas logowania');
+        throw new Error(data.message || 'An error occurred during login');
       }
 
       login(data.user);
       navigate('/account');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Wystąpił nieoczekiwany błąd');
+      setError(err instanceof Error ? err.message : 'An unknown error occurred');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleResendVerification = async () => {
-    if (!email) return;
+  const handleResendVerification = async (targetEmail?: string) => {
+    const emailToSend = (targetEmail || resendEmail || email).trim();
+    if (!emailToSend) {
+      setResendStatus('error');
+      setResendMessage('Please enter your email address.');
+      return;
+    }
+
     setResendStatus('loading');
     setResendMessage('');
 
@@ -60,20 +68,20 @@ const LoginPage: React.FC = () => {
       const response = await fetch('/api/auth/resend-verification', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email: emailToSend }),
       });
 
       const data = await response.json();
       if (response.ok) {
         setResendStatus('sent');
-        setResendMessage(data.message || 'Nowy link weryfikacyjny został wysłany.');
+        setResendMessage(data.message || 'A new verification link has been sent to your email.');
       } else {
         setResendStatus('error');
-        setResendMessage(data.message || 'Nie udało się wysłać linku.');
+        setResendMessage(data.message || 'Failed to resend verification email.');
       }
     } catch {
       setResendStatus('error');
-      setResendMessage('Błąd połączenia z serwerem.');
+      setResendMessage('Network error. Please try again.');
     }
   };
 
@@ -97,8 +105,8 @@ const LoginPage: React.FC = () => {
           <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-4 rounded-xl flex items-start space-x-3 text-sm">
             <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
             <div>
-              <strong className="block font-medium">Konto zweryfikowane!</strong>
-              <span>Twój adres e-mail został pomyślnie potwierdzony. Możesz się teraz zalogować.</span>
+              <strong className="block font-medium">Account Verified!</strong>
+              <span>Your email address has been successfully confirmed. You can now sign in.</span>
             </div>
           </div>
         )}
@@ -108,8 +116,8 @@ const LoginPage: React.FC = () => {
           <div className="bg-amber-50 border border-amber-200 text-amber-900 p-4 rounded-xl flex items-start space-x-3 text-sm">
             <Mail className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
             <div>
-              <strong className="block font-medium">Sprawdź skrzynkę pocztową</strong>
-              <span>Wysłaliśmy link aktywacyjny. Potwierdź swój adres e-mail, aby móc się zalogować.</span>
+              <strong className="block font-medium">Please check your inbox</strong>
+              <span>We've sent an activation link to your email. Please verify your email before signing in.</span>
             </div>
           </div>
         )}
@@ -122,7 +130,7 @@ const LoginPage: React.FC = () => {
               <span>{error}</span>
             </div>
             
-            {/* Resend Verification Button */}
+            {/* Quick Resend button when unverified */}
             {isUnverified && (
               <div className="pt-2 border-t border-red-200/60 mt-2">
                 {resendStatus === 'sent' ? (
@@ -130,15 +138,15 @@ const LoginPage: React.FC = () => {
                     <CheckCircle2 className="w-4 h-4" /> {resendMessage}
                   </p>
                 ) : (
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <button
                       type="button"
-                      onClick={handleResendVerification}
+                      onClick={() => handleResendVerification(email)}
                       disabled={resendStatus === 'loading'}
                       className="text-xs text-[#8C6D4F] hover:text-[#1a1a1a] font-semibold underline flex items-center gap-1.5 transition-colors"
                     >
                       <RefreshCw className={`w-3.5 h-3.5 ${resendStatus === 'loading' ? 'animate-spin' : ''}`} />
-                      {resendStatus === 'loading' ? 'Wysyłanie...' : 'Wyślij link aktywacyjny ponownie'}
+                      {resendStatus === 'loading' ? 'Sending...' : 'Resend verification email'}
                     </button>
                     {resendStatus === 'error' && (
                       <span className="text-[11px] text-red-600">{resendMessage}</span>
@@ -165,7 +173,10 @@ const LoginPage: React.FC = () => {
                   className="w-full bg-transparent text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none"
                   placeholder="jane@example.com"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (!resendEmail) setResendEmail(e.target.value);
+                  }}
                 />
               </div>
             </div>
@@ -196,6 +207,57 @@ const LoginPage: React.FC = () => {
             >
               {loading ? 'Signing In...' : 'Sign In'}
             </button>
+          </div>
+
+          {/* Standalone Resend Verification Option */}
+          <div className="pt-2 text-center border-t border-gray-100">
+            <button
+              type="button"
+              onClick={() => {
+                setShowResendModal(!showResendModal);
+                setResendStatus('idle');
+                setResendMessage('');
+                if (email && !resendEmail) setResendEmail(email);
+              }}
+              className="text-[11px] uppercase tracking-[0.2em] text-[#8C6D4F] hover:text-[#1a1a1a] transition-colors"
+            >
+              {showResendModal ? 'Hide resend options' : "Didn't receive verification email? Resend"}
+            </button>
+
+            {showResendModal && (
+              <div className="mt-4 p-4 bg-[#FAF7F5] border border-[#EDE6DF] rounded-xl text-left space-y-3">
+                <span className="block text-[11px] text-[#1a1a1a] font-medium tracking-wide">
+                  Enter your email address to receive a new activation link:
+                </span>
+                <div className="flex gap-2">
+                  <input
+                    type="email"
+                    placeholder="your@email.com"
+                    value={resendEmail}
+                    onChange={(e) => setResendEmail(e.target.value)}
+                    className="flex-1 bg-white border border-gray-200 px-3 py-2 text-xs text-[#1a1a1a] rounded outline-none focus:border-[#1a1a1a]"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleResendVerification()}
+                    disabled={resendStatus === 'loading'}
+                    className="bg-[#1a1a1a] text-white text-[10px] uppercase tracking-widest px-3 py-2 rounded hover:bg-gray-800 transition-colors disabled:opacity-50"
+                  >
+                    {resendStatus === 'loading' ? 'Sending...' : 'Resend'}
+                  </button>
+                </div>
+                {resendStatus === 'sent' && (
+                  <p className="text-emerald-700 text-xs flex items-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5 shrink-0" /> {resendMessage}
+                  </p>
+                )}
+                {resendStatus === 'error' && (
+                  <p className="text-red-600 text-xs flex items-center gap-1">
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0" /> {resendMessage}
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         </form>
       </div>

@@ -12,7 +12,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const { email } = req.body;
 
     if (!email || typeof email !== 'string') {
-      return res.status(400).json({ message: 'Adres e-mail jest wymagany' });
+      return res.status(400).json({ message: 'Email address is required' });
     }
 
     const user = await prisma.user.findUnique({
@@ -20,12 +20,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
 
     if (!user) {
-      return res.status(404).json({ message: 'Nie znaleziono konta przypisanego do tego adresu e-mail.' });
+      return res.status(404).json({ message: 'No account found with this email address.' });
     }
 
     if (user.verificationToken === null) {
       return res.status(200).json({
-        message: 'Ten adres e-mail został już zweryfikowany. Możesz się zalogować.',
+        message: 'This email address is already verified. You can sign in.',
         alreadyVerified: true,
       });
     }
@@ -44,7 +44,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     await sendEmail({
       to: user.email,
-      subject: 'Potwierdź swoje konto — Lunar',
+      subject: 'Verify Your Account — Lunar',
       templateName: 'verify-account',
       data: {
         VERIFICATION_URL: verificationUrl,
@@ -53,11 +53,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     return res.status(200).json({
       success: true,
-      message: 'Nowy link weryfikacyjny został wysłany na Twój adres e-mail.',
+      message: 'A new verification link has been sent to your email address.',
     });
   } catch (error) {
     const err = error as Error;
     console.error('Resend verification error:', err);
-    return res.status(500).json({ message: 'Wystąpił błąd podczas wysyłania linku weryfikacyjnego.' });
+    return res.status(500).json({ message: 'Failed to resend verification email. Please try again later.' });
   }
 }

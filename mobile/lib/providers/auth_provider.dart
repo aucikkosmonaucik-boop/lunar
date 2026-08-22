@@ -190,6 +190,27 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> resendVerification(String email) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      await ApiService.post(
+        ApiConstants.authResendVerification,
+        body: {'email': email.trim()},
+      );
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _isLoading = false;
+      _errorMessage = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
+
   Future<void> logout() async {
     try {
       await ApiService.post(ApiConstants.authLogout);
