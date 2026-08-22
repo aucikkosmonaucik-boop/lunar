@@ -32,15 +32,10 @@ android {
 
     signingConfigs {
         create("release") {
-            val keystoreFile = file("lunar.jks")
-            if (keystoreFile.exists()) {
-                storeFile = keystoreFile
-                storePassword = "lunarstore123"
-                keyAlias = "lunar"
-                keyPassword = "lunarstore123"
-            } else {
-                signingConfig = signingConfigs.getByName("debug")
-            }
+            storeFile = file("lunar.jks")
+            storePassword = "lunarstore123"
+            keyAlias = "lunar"
+            keyPassword = "lunarstore123"
         }
     }
 
