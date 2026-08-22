@@ -309,12 +309,21 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Quantity Selector & Add to Bag
+                  // Quantity Selector row
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // Quantity selector
+                      Text(
+                        'Quantity',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: isDark ? AppColors.darkText : AppColors.lightText,
+                        ),
+                      ),
                       Container(
                         decoration: BoxDecoration(
+                          color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
                           border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -324,7 +333,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               icon: const Icon(Icons.remove, size: 16),
                               onPressed: _quantity > 1 ? () => setState(() => _quantity--) : null,
                             ),
-                            Text('$_quantity', style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              child: Text('$_quantity', style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
+                            ),
                             IconButton(
                               icon: const Icon(Icons.add, size: 16),
                               onPressed: () => setState(() => _quantity++),
@@ -332,34 +344,34 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           ],
                         ),
                       ),
-                      const SizedBox(width: 12),
-
-                      // Add to Cart Button
-                      Expanded(
-                        child: CustomButton(
-                          text: product.stock > 0
-                              ? 'Add to Bag • ${Formatters.formatPrice(product.price * _quantity)}'
-                              : 'Sold Out',
-                          icon: Icons.shopping_bag_outlined,
-                          onPressed: product.stock > 0
-                              ? () {
-                                  context.read<CartProvider>().addToCart(
-                                        product,
-                                        quantity: _quantity,
-                                        selectedOptions: _selectedOption,
-                                      );
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text('Added $_quantity item(s) to bag'),
-                                      duration: const Duration(seconds: 2),
-                                      behavior: SnackBarBehavior.floating,
-                                    ),
-                                  );
-                                }
-                              : null,
-                        ),
-                      ),
                     ],
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Full-width Add to Bag Button
+                  CustomButton(
+                    width: double.infinity,
+                    height: 52,
+                    text: product.stock > 0
+                        ? 'Add to Bag • ${Formatters.formatPrice(product.price * _quantity)}'
+                        : 'Sold Out',
+                    icon: Icons.shopping_bag_outlined,
+                    onPressed: product.stock > 0
+                        ? () {
+                            context.read<CartProvider>().addToCart(
+                                  product,
+                                  quantity: _quantity,
+                                  selectedOptions: _selectedOption,
+                                );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Added $_quantity item(s) to bag'),
+                                duration: const Duration(seconds: 2),
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            );
+                          }
+                        : null,
                   ),
                   const Divider(height: 32),
 
