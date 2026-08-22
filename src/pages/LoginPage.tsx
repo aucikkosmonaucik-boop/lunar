@@ -16,7 +16,9 @@ const LoginPage: React.FC = () => {
   
   const [searchParams] = useSearchParams();
   const isVerifiedSuccess = searchParams.get('verified') === 'true';
+  const isAlreadyVerified = searchParams.get('already_verified') === 'true';
   const isRegisteredSuccess = searchParams.get('registered') === 'true';
+  const urlError = searchParams.get('error');
 
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -111,8 +113,30 @@ const LoginPage: React.FC = () => {
           </div>
         )}
 
+        {/* Already Verified Notice */}
+        {isAlreadyVerified && !isVerifiedSuccess && (
+          <div className="bg-blue-50 border border-blue-200 text-blue-800 p-4 rounded-xl flex items-start space-x-3 text-sm">
+            <CheckCircle2 className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+            <div>
+              <strong className="block font-medium">Already Verified</strong>
+              <span>Your account has already been confirmed. Please sign in below.</span>
+            </div>
+          </div>
+        )}
+
+        {/* URL Error Alert */}
+        {urlError && !error && (
+          <div className="bg-amber-50 border border-amber-200 text-amber-900 p-4 rounded-xl flex items-start space-x-3 text-sm">
+            <AlertCircle className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
+            <div>
+              <strong className="block font-medium">Verification Notice</strong>
+              <span>The verification link was invalid or has expired. You can request a new link below.</span>
+            </div>
+          </div>
+        )}
+
         {/* Registered Success Alert */}
-        {isRegisteredSuccess && !isVerifiedSuccess && (
+        {isRegisteredSuccess && !isVerifiedSuccess && !isAlreadyVerified && (
           <div className="bg-amber-50 border border-amber-200 text-amber-900 p-4 rounded-xl flex items-start space-x-3 text-sm">
             <Mail className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
             <div>

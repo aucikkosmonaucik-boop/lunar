@@ -40,7 +40,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // Send verification email via Resend
     const baseUrl = process.env.APP_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://mylunar.shop';
-    const verificationUrl = `${baseUrl}/verify-email?token=${verificationToken}`;
+    const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${verificationToken}`;
 
     await sendEmail({
       to: user.email,

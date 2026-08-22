@@ -45,7 +45,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // Send verification email
     try {
-      const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://mylunar.shop'}/verify-email?token=${verificationToken}`;
+      const baseUrl = process.env.APP_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://mylunar.shop';
+      const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${verificationToken}`;
       await sendEmail({
         to: email,
         subject: 'Verify Your Account — Lunar',
@@ -59,7 +60,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     return res.status(201).json({
-      message: 'Konto zostało pomyślnie utworzone. Wysłaliśmy link aktywacyjny na Twój adres e-mail. Potwierdź swój e-mail, aby móc się zalogować.',
+      message: 'Account created successfully. We have sent a verification link to your email address. Please confirm your email before signing in.',
       requiresVerification: true,
       user: {
         id: user.id,

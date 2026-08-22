@@ -98,16 +98,16 @@ export async function sendOrderConfirmationEmail(order: any, options?: { pointsE
     }
     const itemTotal = formatPrice((Number(item.price) || 0) * (Number(item.quantity) || 1));
     const optionText = item.selectedOptions 
-      ? `<span style="font-family: 'Inter', sans-serif; font-size: 11px; color: #8C6D4F; display: block; margin-top: 2px;">Wariant: ${item.selectedOptions}</span>` 
+      ? `<span style="font-family: 'Inter', sans-serif; font-size: 11px; color: #8C6D4F; display: block; margin-top: 2px;">Option: ${item.selectedOptions}</span>` 
       : '';
 
     return `
       <tr>
         <td style="padding: 12px 0; border-bottom: 1px solid #EDE6DF; width: 60px; vertical-align: top;">
-          <img src="${img}" alt="${item.name || 'Produkt'}" width="50" height="50" style="border-radius: 4px; border: 1px solid #EDE6DF; object-fit: cover; display: block;" />
+          <img src="${img}" alt="${item.name || 'Product'}" width="50" height="50" style="border-radius: 4px; border: 1px solid #EDE6DF; object-fit: cover; display: block;" />
         </td>
         <td style="padding: 12px 14px; border-bottom: 1px solid #EDE6DF; vertical-align: top;">
-          <strong style="font-family: 'Inter', sans-serif; font-size: 13px; color: #1A1A1A; display: block; line-height: 18px;">${item.name || 'Produkt Lunar'}</strong>
+          <strong style="font-family: 'Inter', sans-serif; font-size: 13px; color: #1A1A1A; display: block; line-height: 18px;">${item.name || 'Lunar Creation'}</strong>
           ${optionText}
           <span style="font-family: 'Inter', sans-serif; font-size: 11px; color: #78716C; display: block; margin-top: 2px;">${item.quantity || 1} &times; ${formatPrice(item.price || 0)}</span>
         </td>
@@ -123,7 +123,7 @@ export async function sendOrderConfirmationEmail(order: any, options?: { pointsE
   const discountRowHtml = discountAmount > 0 ? `
     <tr>
       <td align="left" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #15803d; padding: 4px 0;">
-        Rabat ${order.discountCode ? `(${order.discountCode})` : ''}:
+        Discount ${order.discountCode ? `(${order.discountCode})` : ''}:
       </td>
       <td align="right" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #15803d; padding: 4px 0;">
         -${formatPrice(discountAmount)}
@@ -136,23 +136,23 @@ export async function sendOrderConfirmationEmail(order: any, options?: { pointsE
   const loyaltyBannerHtml = points > 0 ? `
     <div style="margin-top: 20px; background-color: #FAF6F3; border: 1px solid #EDE6DF; border-radius: 4px; padding: 14px 16px; text-align: center;">
       <span style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; color: #8C6D4F; letter-spacing: 0.05em;">
-        ✦ Zdobyłeś +${points} punktów w Programie Lojalnościowym Lunar VIP!
+        ✦ You earned +${points} points in the Lunar VIP Club!
       </span>
     </div>
   ` : '';
 
   // Payment label
-  let paymentLabel = 'Przyjęto do realizacji';
+  let paymentLabel = 'Processing';
   if (order.paymentStatus === 'paid' || order.status === 'Paid') {
-    paymentLabel = 'Opłacono (Stripe / Karta)';
+    paymentLabel = 'Paid (Stripe / Card)';
   } else if (order.paymentMethod === 'demo') {
-    paymentLabel = 'Opłacono (Symulacja)';
+    paymentLabel = 'Paid (Simulation)';
   } else if (order.paymentMethod === 'transfer') {
-    paymentLabel = 'Przelew bankowy';
+    paymentLabel = 'Bank Transfer';
   }
 
-  // Date formatting
-  const orderDate = new Date(order.createdAt || Date.now()).toLocaleDateString('pl-PL', {
+  // Date formatting in English
+  const orderDate = new Date(order.createdAt || Date.now()).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -163,29 +163,29 @@ export async function sendOrderConfirmationEmail(order: any, options?: { pointsE
     : `${appUrl}/account/orders`;
 
   const phoneRow = order.shippingPhone 
-    ? `Tel: ${order.shippingPhone}` 
+    ? `Phone: ${order.shippingPhone}` 
     : '';
 
   return await sendEmail({
     to: order.customerEmail,
-    subject: `Potwierdzenie zamówienia #${order.orderNumber} — Lunar`,
+    subject: `Order Confirmation #${order.orderNumber} — Lunar`,
     templateName: 'order-confirmation',
     data: {
-      CUSTOMER_NAME: order.customerName || 'Szanowny Kliencie',
+      CUSTOMER_NAME: order.customerName || 'Valued Client',
       ORDER_NUMBER: order.orderNumber || 'LUNAR-ORD',
       ORDER_DATE: orderDate,
       PAYMENT_STATUS_LABEL: paymentLabel,
-      ORDER_ITEMS_HTML: orderItemsHtml || '<tr><td colspan="3" style="padding: 10px 0; color: #78716C;">Brak pozycji</td></tr>',
+      ORDER_ITEMS_HTML: orderItemsHtml || '<tr><td colspan="3" style="padding: 10px 0; color: #78716C;">No items</td></tr>',
       SUBTOTAL: formatPrice(order.subtotal || order.total || 0),
       DISCOUNT_ROW_HTML: discountRowHtml,
-      SHIPPING_FEE: Number(order.shippingFee || 0) === 0 ? 'Darmowa' : formatPrice(order.shippingFee),
+      SHIPPING_FEE: Number(order.shippingFee || 0) === 0 ? 'Complimentary' : formatPrice(order.shippingFee),
       TOTAL: formatPrice(order.total || 0),
       LOYALTY_BANNER_HTML: loyaltyBannerHtml,
       SHIPPING_NAME: order.customerName || '',
       SHIPPING_STREET: order.shippingStreet || '',
       SHIPPING_POSTAL_CODE: order.shippingPostalCode || '',
       SHIPPING_CITY: order.shippingCity || '',
-      SHIPPING_COUNTRY: order.shippingCountry || 'Polska',
+      SHIPPING_COUNTRY: order.shippingCountry || 'Ireland',
       SHIPPING_PHONE_ROW: phoneRow,
       ORDER_URL: orderUrl,
     },

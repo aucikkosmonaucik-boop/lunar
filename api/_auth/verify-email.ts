@@ -7,11 +7,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
+  const baseUrl = process.env.APP_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://mylunar.shop';
+
   try {
     const { token } = req.query;
 
     if (!token || typeof token !== 'string') {
-      return res.status(400).json({ message: 'Missing token' });
+      return res.redirect(`${baseUrl}/login?error=missing_token`);
     }
 
     const user = await prisma.user.findFirst({
@@ -19,7 +21,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
 
     if (!user) {
-      return res.status(400).json({ message: 'Invalid token' });
+      // Token was either already used/verified or does not exist
+      return res.redirect(`${baseUrl}/login?already_verified=true`);
     }
 
     await prisma.user.update({
@@ -33,20 +36,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     try {
       await sendEmail({
         to: user.email,
-        subject: 'Welcome to Lunar',
+        subject: 'Welcome to Lunar — Your Account is Active',
         templateName: 'welcome',
         data: {
-          FIRST_NAME: user.name || 'Valued Guest',
+          FIRST_NAME: user.name || 'Valued Client',
         },
       });
     } catch (emailError) {
       console.error('Failed to send welcome email:', emailError);
     }
 
-    // Redirect to a success page or login
-    return res.redirect(`${process.env.NEXT_PUBLIC_APP_URL || 'https://mylunar.shop'}/login?verified=true`);
+    // Redirect to login with verified status
+    return res.redirect(`${baseUrl}/login?verified=true`);
   } catch (error) {
     console.error('Email verification error:', error);
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.redirect(`${baseUrl}/login?error=verification_failed`);
   }
 }
