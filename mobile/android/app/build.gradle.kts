@@ -30,11 +30,23 @@ android {
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        create("release") {
+            val keystoreFile = file("lunar.jks")
+            if (keystoreFile.exists()) {
+                storeFile = keystoreFile
+                storePassword = "lunarstore123"
+                keyAlias = "lunar"
+                keyPassword = "lunarstore123"
+            } else {
+                signingConfig = signingConfigs.getByName("debug")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 }
