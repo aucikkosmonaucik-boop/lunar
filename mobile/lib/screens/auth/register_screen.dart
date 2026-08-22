@@ -44,7 +44,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (success && mounted) {
       Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Account created successfully! Welcome to Lunar.')),
+        const SnackBar(
+          content: Text('Account created! Please check your email to activate your account before logging in.'),
+          backgroundColor: AppColors.primaryDark,
+          duration: Duration(seconds: 5),
+        ),
       );
     }
   }

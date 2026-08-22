@@ -25,13 +25,13 @@ const RegisterPage: React.FC = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'An error occurred during registration');
+        throw new Error(data.message || 'Wystąpił błąd podczas rejestracji');
       }
 
-      // Automatically redirect to login after success
-      navigate('/login');
+      // Redirect to login page with registered notice
+      navigate('/login?registered=true');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unknown error occurred');
+      setError(err instanceof Error ? err.message : 'Wystąpił nieznany błąd');
     } finally {
       setLoading(false);
     }
@@ -53,8 +53,8 @@ const RegisterPage: React.FC = () => {
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {error && (
-            <div className="bg-red-50 text-red-600 p-4 rounded-lg flex items-center space-x-2 text-sm">
-              <AlertCircle className="w-5 h-5" />
+            <div className="bg-red-50 border border-red-200 text-red-600 p-4 rounded-xl flex items-start space-x-2 text-sm">
+              <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
           )}

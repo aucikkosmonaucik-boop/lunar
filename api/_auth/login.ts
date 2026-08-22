@@ -32,6 +32,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
+    // Block login if email is not verified yet
+    if (user.verificationToken !== null) {
+      return res.status(403).json({
+        message: 'Twój adres e-mail nie został jeszcze potwierdzony. Sprawdź swoją skrzynkę pocztową i kliknij w link aktywacyjny.',
+        unverified: true,
+        email: user.email,
+      });
+    }
+
     const token = jwt.sign(
       { userId: user.id, email: user.email },
       JWT_SECRET,

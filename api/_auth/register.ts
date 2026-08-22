@@ -58,17 +58,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       console.error('Failed to send verification email:', emailError);
     }
 
-    const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-in-production';
-    const token = jwt.sign(
-      { userId: user.id, email: user.email },
-      JWT_SECRET,
-      { expiresIn: '7d' }
-    );
-
     return res.status(201).json({
-      message: 'User created successfully. Please check your email to verify your account.',
-      token,
-      user,
+      message: 'Konto zostało pomyślnie utworzone. Wysłaliśmy link aktywacyjny na Twój adres e-mail. Potwierdź swój e-mail, aby móc się zalogować.',
+      requiresVerification: true,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      },
     });
   } catch (error) {
     const err = error as Error;

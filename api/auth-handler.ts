@@ -25,6 +25,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       case 'forgot-password': subHandler = (await import('./_auth/forgot-password.js')).default; break;
       case 'reset-password': subHandler = (await import('./_auth/reset-password.js')).default; break;
       case 'verify-email': subHandler = (await import('./_auth/verify-email.js')).default; break;
+      case 'resend-verification': subHandler = (await import('./_auth/resend-verification.js')).default; break;
       case 'delete-account': subHandler = (await import('./_auth/delete-account.js')).default; break;
       case 'status': return res.status(200).json({ status: 'ok', message: 'Auth Handler is active' });
       default:

@@ -1,19 +1,29 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { Mail, Lock, AlertCircle } from 'lucide-react';
+import { Mail, Lock, AlertCircle, CheckCircle2, RefreshCw } from 'lucide-react';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isUnverified, setIsUnverified] = useState(false);
+  const [resendStatus, setResendStatus] = useState<'idle' | 'loading' | 'sent' | 'error'>('idle');
+  const [resendMessage, setResendMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  
+  const [searchParams] = useSearchParams();
+  const isVerifiedSuccess = searchParams.get('verified') === 'true';
+  const isRegisteredSuccess = searchParams.get('registered') === 'true';
+
   const navigate = useNavigate();
   const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setIsUnverified(false);
+    setResendStatus('idle');
     setLoading(true);
 
     try {
@@ -26,15 +36,44 @@ const LoginPage: React.FC = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'An error occurred during login');
+        if (data.unverified) {
+          setIsUnverified(true);
+        }
+        throw new Error(data.message || 'Wystąpił błąd podczas logowania');
       }
 
       login(data.user);
       navigate('/account');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unknown error occurred');
+      setError(err instanceof Error ? err.message : 'Wystąpił nieoczekiwany błąd');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResendVerification = async () => {
+    if (!email) return;
+    setResendStatus('loading');
+    setResendMessage('');
+
+    try {
+      const response = await fetch('/api/auth/resend-verification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setResendStatus('sent');
+        setResendMessage(data.message || 'Nowy link weryfikacyjny został wysłany.');
+      } else {
+        setResendStatus('error');
+        setResendMessage(data.message || 'Nie udało się wysłać linku.');
+      }
+    } catch {
+      setResendStatus('error');
+      setResendMessage('Błąd połączenia z serwerem.');
     }
   };
 
@@ -52,13 +91,66 @@ const LoginPage: React.FC = () => {
             </Link>
           </div>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="bg-red-50 text-red-600 p-4 rounded-lg flex items-center space-x-2 text-sm">
-              <AlertCircle className="w-5 h-5" />
+
+        {/* Verified Success Alert */}
+        {isVerifiedSuccess && (
+          <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-4 rounded-xl flex items-start space-x-3 text-sm">
+            <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+            <div>
+              <strong className="block font-medium">Konto zweryfikowane!</strong>
+              <span>Twój adres e-mail został pomyślnie potwierdzony. Możesz się teraz zalogować.</span>
+            </div>
+          </div>
+        )}
+
+        {/* Registered Success Alert */}
+        {isRegisteredSuccess && !isVerifiedSuccess && (
+          <div className="bg-amber-50 border border-amber-200 text-amber-900 p-4 rounded-xl flex items-start space-x-3 text-sm">
+            <Mail className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
+            <div>
+              <strong className="block font-medium">Sprawdź skrzynkę pocztową</strong>
+              <span>Wysłaliśmy link aktywacyjny. Potwierdź swój adres e-mail, aby móc się zalogować.</span>
+            </div>
+          </div>
+        )}
+
+        {/* Error Alert */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl space-y-2 text-sm">
+            <div className="flex items-start space-x-2">
+              <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
-          )}
+            
+            {/* Resend Verification Button */}
+            {isUnverified && (
+              <div className="pt-2 border-t border-red-200/60 mt-2">
+                {resendStatus === 'sent' ? (
+                  <p className="text-emerald-700 font-medium text-xs flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4" /> {resendMessage}
+                  </p>
+                ) : (
+                  <div className="flex items-center justify-between">
+                    <button
+                      type="button"
+                      onClick={handleResendVerification}
+                      disabled={resendStatus === 'loading'}
+                      className="text-xs text-[#8C6D4F] hover:text-[#1a1a1a] font-semibold underline flex items-center gap-1.5 transition-colors"
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 ${resendStatus === 'loading' ? 'animate-spin' : ''}`} />
+                      {resendStatus === 'loading' ? 'Wysyłanie...' : 'Wyślij link aktywacyjny ponownie'}
+                    </button>
+                    {resendStatus === 'error' && (
+                      <span className="text-[11px] text-red-600">{resendMessage}</span>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md space-y-4">
             <div>
               <label htmlFor="email-address" className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">Email Address</label>
