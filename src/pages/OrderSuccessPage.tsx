@@ -282,26 +282,27 @@ const OrderSuccessPage: React.FC = () => {
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
-              to="/shop"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-[#1A1A1A] text-white text-[12px] uppercase tracking-[0.25em] py-4 px-8 hover:bg-[#333333] transition-colors font-medium group"
+              to={`/track-order?orderNumber=${encodeURIComponent(sessionData?.id || sessionId || '')}&email=${encodeURIComponent(sessionData?.customerEmail || '')}`}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#1A1A1A] text-white text-[12px] uppercase tracking-[0.25em] py-4 px-8 hover:bg-[#D4AF37] hover:text-black transition-all font-semibold shadow"
             >
-              <span>Back to Shop</span>
+              <Truck className="w-4 h-4" />
+              <span>Track Shipment</span>
+            </Link>
+
+            <Link
+              to="/shop"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-3 border border-[#1A1A1A] text-[#1A1A1A] text-[12px] uppercase tracking-[0.25em] py-4 px-8 hover:bg-[#FAF6F0] transition-colors font-medium group"
+            >
+              <span>Continue Shopping</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
 
-            {user ? (
+            {user && (
               <Link
                 to="/account"
-                className="w-full sm:w-auto inline-flex items-center justify-center text-[12px] uppercase tracking-[0.25em] py-4 px-8 border border-[#1A1A1A] text-[#1A1A1A] hover:bg-[#FAF6F0] transition-colors font-medium"
+                className="w-full sm:w-auto inline-flex items-center justify-center text-[12px] uppercase tracking-[0.25em] py-4 px-8 border border-gray-300 text-gray-700 hover:border-black hover:text-black transition-colors font-medium"
               >
-                My Orders & Account
-              </Link>
-            ) : (
-              <Link
-                to="/login"
-                className="w-full sm:w-auto inline-flex items-center justify-center text-[12px] uppercase tracking-[0.25em] py-4 px-8 border border-[#1A1A1A] text-[#1A1A1A] hover:bg-[#FAF6F0] transition-colors font-medium"
-              >
-                Sign In
+                My Account
               </Link>
             )}
           </div>

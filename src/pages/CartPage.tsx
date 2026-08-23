@@ -26,11 +26,12 @@ import {
   EyeOff,
   UserCheck,
   Sparkles,
-  Coins
+  Coins,
 } from 'lucide-react';
 import { useCart } from '../hooks/useCart';
 import { useAuth } from '../hooks/useAuth';
 import { useLoyalty } from '../hooks/useLoyalty';
+import { CARRIERS, getCarrierById, DEFAULT_CARRIER_ID } from '../data/carriers';
 
 const FREE_SHIPPING_THRESHOLD = 50;
 
@@ -88,7 +89,10 @@ const CartPage: React.FC = () => {
   const [shippingStreet, setShippingStreet] = useState('');
   const [shippingPostalCode, setShippingPostalCode] = useState('');
   const [shippingCity, setShippingCity] = useState('');
-  const [shippingCountry, setShippingCountry] = useState('PL');
+  const [shippingCountry, setShippingCountry] = useState('IE');
+
+  // Delivery Carrier Selection: "AN_POST" | "DPD_IE" | "GLS_IE" | "UPS" | "FEDEX"
+  const [selectedCarrierId, setSelectedCarrierId] = useState<string>(DEFAULT_CARRIER_ID);
 
   // Account options for unauthenticated users: 'guest' | 'create_account'
   const [checkoutMode, setCheckoutMode] = useState<'guest' | 'create_account'>('guest');
@@ -122,6 +126,9 @@ const CartPage: React.FC = () => {
     }
   }, [searchParams, setSearchParams]);
 
+  // Selected carrier metadata & dynamic fee calculation
+  const selectedCarrier = getCarrierById(selectedCarrierId);
+
   // Calculations with Loyalty discount support
   const discountAmount = appliedPromo
     ? appliedPromo.discountAmount !== undefined && appliedPromo.discountAmount !== null && appliedPromo.discountAmount > 0
@@ -130,11 +137,15 @@ const CartPage: React.FC = () => {
     : 0;
 
   const priceAfterDiscount = Math.max(0, totalPrice - discountAmount);
-  const isFreeShipping = priceAfterDiscount >= FREE_SHIPPING_THRESHOLD;
-  const shippingFee = isFreeShipping ? 0 : 10;
+  const isFreeShipping = selectedCarrier.freeShippingAvailable && priceAfterDiscount >= selectedCarrier.freeThreshold;
+  const shippingFee = isFreeShipping ? 0 : selectedCarrier.basePrice;
   const grandTotal = priceAfterDiscount + shippingFee;
-  const remainingForFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD - priceAfterDiscount);
-  const progressPct = Math.min((priceAfterDiscount / FREE_SHIPPING_THRESHOLD) * 100, 100);
+  const remainingForFreeShipping = selectedCarrier.freeShippingAvailable 
+    ? Math.max(0, selectedCarrier.freeThreshold - priceAfterDiscount)
+    : 0;
+  const progressPct = selectedCarrier.freeShippingAvailable
+    ? Math.min((priceAfterDiscount / selectedCarrier.freeThreshold) * 100, 100)
+    : 100;
   const pointsToEarn = calculatePointsToEarn(grandTotal);
 
   const handleApplyPromo = async (e: React.FormEvent) => {
@@ -311,6 +322,10 @@ const CartPage: React.FC = () => {
             postalCode: shippingPostalCode.trim(),
             country: shippingCountry.trim(),
           },
+          carrier: selectedCarrier.id,
+          carrierName: selectedCarrier.name,
+          shippingFee: shippingFee,
+          estimatedDelivery: selectedCarrier.estimatedDelivery,
           accountOption: {
             createAccount: !user && checkoutMode === 'create_account',
             password: accountPassword,
@@ -968,6 +983,101 @@ const CartPage: React.FC = () => {
               </div>
             </div>
 
+            {/* ── Step 3: Select Delivery Carrier ── */}
+            <div className="bg-white border border-[#EAE3D9] shadow-xs">
+              {/* Header */}
+              <div className="px-6 py-5 border-b border-[#F0EBE3] flex items-center justify-between bg-[#FCFAF7]">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-5 h-5 rounded-full bg-[#1A1A1A] text-white text-[10px] font-semibold flex items-center justify-center">
+                    3
+                  </span>
+                  <div>
+                    <h2 className="text-[13px] uppercase tracking-[0.25em] font-semibold text-[#1A1A1A] flex items-center gap-2">
+                      <Truck className="w-4 h-4 text-[#C1A98F]" />
+                      <span>Select Delivery Carrier</span>
+                    </h2>
+                    <span className="text-[10px] text-gray-500 font-light uppercase tracking-wider block mt-0.5">
+                      All shipments include comprehensive insurance &amp; live parcel tracking
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6 sm:p-8 space-y-3">
+                {CARRIERS.map((c) => {
+                  const isSelected = selectedCarrierId === c.id;
+                  const carrierFree = c.freeShippingAvailable && priceAfterDiscount >= c.freeThreshold;
+                  const cost = carrierFree ? 0 : c.basePrice;
+
+                  return (
+                    <label
+                      key={c.id}
+                      onClick={() => setSelectedCarrierId(c.id)}
+                      className={`relative border p-4 sm:p-5 cursor-pointer transition-all duration-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xs ${
+                        isSelected
+                          ? 'border-[#1A1A1A] bg-[#FAF8F5] shadow-xs ring-1 ring-[#1A1A1A]'
+                          : 'border-[#EAE3D9] hover:border-gray-400 bg-white'
+                      }`}
+                    >
+                      <div className="flex items-start sm:items-center gap-3.5">
+                        {/* Custom Radio Button */}
+                        <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 mt-0.5 sm:mt-0 ${
+                          isSelected ? 'border-[#1A1A1A] bg-[#1A1A1A]' : 'border-gray-300 bg-white'
+                        }`}>
+                          {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                        </div>
+
+                        <div>
+                          <div className="flex flex-wrap items-center gap-2 mb-1">
+                            <span className="font-serif text-base text-[#1A1A1A] font-semibold tracking-wide">
+                              {c.name}
+                            </span>
+                            <span className={`text-[9px] uppercase tracking-wider font-bold px-2 py-0.5 rounded border ${c.badgeColor}`}>
+                              {c.tagline}
+                            </span>
+                          </div>
+                          <p className="text-xs text-gray-500 font-light leading-relaxed max-w-lg">
+                            {c.description}
+                          </p>
+                          <div className="flex items-center gap-3 mt-1.5 text-[11px] text-[#8C6D4F]">
+                            <span className="flex items-center gap-1 font-medium">
+                              ✦ Est. Delivery: {c.estimatedDelivery}
+                            </span>
+                            <span className="text-gray-300">•</span>
+                            <span className="text-gray-500">Live Tracking Included</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="sm:text-right shrink-0 pl-7 sm:pl-0">
+                        <div className="text-sm font-semibold">
+                          {carrierFree ? (
+                            <div className="flex flex-col items-start sm:items-end">
+                              <span className="text-emerald-700 font-bold text-xs uppercase tracking-wider">
+                                Complimentary
+                              </span>
+                              <span className="text-[10px] text-gray-400 line-through">
+                                €{c.basePrice.toFixed(2)}
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="text-[#1A1A1A]">
+                              €{cost.toFixed(2)}
+                            </span>
+                          )}
+                        </div>
+                        {c.freeShippingAvailable && !carrierFree && (
+                          <span className="text-[9px] text-gray-400 block mt-0.5">
+                            Free over €{c.freeThreshold}
+                          </span>
+                        )}
+                      </div>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+
             {/* Gift Message & Packaging Guarantee Banner */}
             <div className="bg-[#FAF6F0] border border-[#E8DFD3] p-4 sm:p-5 flex items-start gap-4">
               <Gift className="w-5 h-5 text-[#C1A98F] shrink-0 mt-0.5" />
@@ -1036,10 +1146,15 @@ const CartPage: React.FC = () => {
                 </div>
 
                 {/* Delivery */}
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-start">
                   <div className="flex flex-col">
-                    <span className="font-light">Insured Delivery</span>
-                    <span className="text-[10px] text-gray-400 font-light">2–4 business days</span>
+                    <span className="font-light flex items-center gap-1.5">
+                      <Truck className="w-3.5 h-3.5 text-[#C1A98F]" />
+                      <span>{selectedCarrier.shortName}</span>
+                    </span>
+                    <span className="text-[10px] text-gray-400 font-light">
+                      {selectedCarrier.estimatedDelivery} • Tracked
+                    </span>
                   </div>
                   <span className={`font-medium ${isFreeShipping ? 'text-emerald-700 font-semibold' : 'text-[#1A1A1A]'}`}>
                     {isFreeShipping ? 'FREE' : `€${shippingFee.toFixed(2)}`}

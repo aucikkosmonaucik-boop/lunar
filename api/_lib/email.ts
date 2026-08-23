@@ -14,7 +14,7 @@ export async function sendEmail({
 }: {
   to: string;
   subject: string;
-  templateName: 'welcome' | 'verify-account' | 'reset-password' | 'order-confirmation';
+  templateName: 'welcome' | 'verify-account' | 'reset-password' | 'order-confirmation' | 'shipment-dispatched';
   data: EmailTemplateData;
 }) {
   const apiKey = process.env.RESEND_API_KEY;
@@ -191,3 +191,45 @@ export async function sendOrderConfirmationEmail(order: any, options?: { pointsE
     },
   });
 }
+
+export async function sendShipmentNotificationEmail(order: any) {
+  if (!order || !order.customerEmail) {
+    console.warn('[Email] Cannot send shipment notification without valid customer email.');
+    return;
+  }
+
+  const appUrl = process.env.APP_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://mylunar.shop';
+
+  const dispatchDate = new Date(order.shippedAt || Date.now()).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
+  const carrierShortName = order.carrierName ? order.carrierName.replace(/\s*\(.*?\)/g, '') : 'Courier';
+  const shopTrackUrl = `${appUrl}/track-order?orderNumber=${encodeURIComponent(order.orderNumber)}&email=${encodeURIComponent(order.customerEmail)}`;
+
+  return await sendEmail({
+    to: order.customerEmail,
+    subject: `Your Lunar Order #${order.orderNumber} Has Been Dispatched (${carrierShortName})`,
+    templateName: 'shipment-dispatched',
+    data: {
+      CUSTOMER_NAME: order.customerName || 'Valued Client',
+      ORDER_NUMBER: order.orderNumber || 'LUNAR-ORD',
+      CARRIER_NAME: order.carrierName || 'Courier Partner',
+      CARRIER_SHORT_NAME: carrierShortName,
+      TRACKING_NUMBER: order.trackingNumber || 'Tracking Pending',
+      ESTIMATED_DELIVERY: order.estimatedDelivery || '1–3 Business Days',
+      TRACKING_URL: order.trackingUrl || shopTrackUrl,
+      SHOP_TRACK_URL: shopTrackUrl,
+      DISPATCH_DATE: dispatchDate,
+      SHIPPING_NAME: order.customerName || '',
+      SHIPPING_STREET: order.shippingStreet || '',
+      SHIPPING_POSTAL_CODE: order.shippingPostalCode || '',
+      SHIPPING_CITY: order.shippingCity || '',
+      SHIPPING_COUNTRY: order.shippingCountry || 'Ireland',
+      CURRENT_YEAR: String(new Date().getFullYear()),
+    },
+  });
+}
+

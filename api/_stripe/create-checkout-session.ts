@@ -45,12 +45,26 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 
-  const { items, customerEmail, discountCode, shippingAddress, accountOption } = req.body as {
+  const {
+    items,
+    customerEmail,
+    discountCode,
+    shippingAddress,
+    accountOption,
+    carrier,
+    carrierName,
+    shippingFee: clientShippingFee,
+    estimatedDelivery,
+  } = req.body as {
     items: CartItem[];
     customerEmail?: string;
     discountCode?: string;
     shippingAddress?: ShippingAddress;
     accountOption?: AccountOption;
+    carrier?: string;
+    carrierName?: string;
+    shippingFee?: number;
+    estimatedDelivery?: string;
   };
 
   if (!items || !Array.isArray(items) || items.length === 0) {
@@ -203,9 +217,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const priceAfterDiscount = Math.max(0, itemsTotal - discountAmount);
-  const isFreeShipping = priceAfterDiscount >= FREE_SHIPPING_THRESHOLD;
-  const shippingFee = isFreeShipping ? 0 : 10;
+  const isFreeShipping = clientShippingFee !== undefined ? clientShippingFee === 0 : priceAfterDiscount >= FREE_SHIPPING_THRESHOLD;
+  const shippingFee = clientShippingFee !== undefined ? Number(clientShippingFee) : (isFreeShipping ? 0 : 10);
   const finalTotal = priceAfterDiscount + shippingFee;
+
+  const chosenCarrierCode = carrier || 'AN_POST';
+  const chosenCarrierName = carrierName || 'An Post';
+  const chosenEstDelivery = estimatedDelivery || '1 – 3 Business Days';
 
   const origin = req.headers.origin || req.headers.referer?.replace(/\/$/, '') || process.env.APP_URL || 'https://mylunar.shop';
   const orderNumber = `LUNAR-${Date.now().toString().slice(-6)}-${Math.floor(100 + Math.random() * 900)}`;
@@ -228,6 +246,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           shippingCity: shippingAddress.city.trim(),
           shippingPostalCode: shippingAddress.postalCode.trim(),
           shippingCountry: shippingAddress.country.trim(),
+          carrier: chosenCarrierCode,
+          carrierName: chosenCarrierName,
+          estimatedDelivery: chosenEstDelivery,
           subtotal: itemsTotal,
           discountCode: discountCode || null,
           discountAmount,
@@ -342,6 +363,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         discountAmount: String(discountAmount),
         shippingFee: String(shippingFee),
         total: String(finalTotal),
+        carrier: chosenCarrierCode,
+        carrierName: chosenCarrierName,
+        estimatedDelivery: chosenEstDelivery,
         itemsSummary: JSON.stringify(
           items.map((i: CartItem) => ({
             id: i.product.id,
@@ -375,6 +399,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           shippingCity: shippingAddress.city.trim(),
           shippingPostalCode: shippingAddress.postalCode.trim(),
           shippingCountry: shippingAddress.country.trim(),
+          carrier: chosenCarrierCode,
+          carrierName: chosenCarrierName,
+          estimatedDelivery: chosenEstDelivery,
           subtotal: itemsTotal,
           discountCode: discountCode || null,
           discountAmount,
@@ -396,7 +423,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           },
         },
       });
-      console.log(`✅ [Stripe Guest/User Checkout] Order ${orderNumber} created in PostgreSQL with full shipping address.`);
+      console.log(`✅ [Stripe Guest/User Checkout] Order ${orderNumber} created in PostgreSQL with full shipping address and carrier ${chosenCarrierName}.`);
     } catch (dbErr) {
       console.error('Error pre-creating order in PostgreSQL:', dbErr);
     }

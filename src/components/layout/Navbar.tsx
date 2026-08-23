@@ -313,6 +313,15 @@ const Navbar: React.FC = () => {
               <div className={`h-[1px] bg-black mt-1 transition-all duration-300 ${location.pathname === '/contact' ? 'w-full' : 'w-0 group-hover:w-full'}`} />
             </Link>
 
+            {/* 6. Track Order */}
+            <Link
+              to="/track-order"
+              className="text-[14px] lg:text-[15px] tracking-widest text-[#8C6D4F] font-medium uppercase hover:text-[#1a1a1a] transition-colors flex flex-col items-center group"
+            >
+              <span>Track Order</span>
+              <div className={`h-[1px] bg-[#8C6D4F] mt-1 transition-all duration-300 ${location.pathname === '/track-order' ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+            </Link>
+
           </nav>
         </div>
 
@@ -503,6 +512,15 @@ const Navbar: React.FC = () => {
             onClick={() => setMenuOpen(false)}
           >
             Contact
+          </Link>
+
+          {/* Track Order */}
+          <Link
+            to="/track-order"
+            className="text-base tracking-widest uppercase font-medium py-2.5 text-[#8C6D4F]"
+            onClick={() => setMenuOpen(false)}
+          >
+            Track Order
           </Link>
 
           {/* Mobile Account / Wishlist actions */}

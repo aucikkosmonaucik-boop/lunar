@@ -25,6 +25,9 @@ import {
   AlertCircle,
   KeyRound,
   Star,
+  Truck,
+  Save,
+  X,
 } from 'lucide-react';
 import { useProducts } from '../hooks/useProducts';
 import { useLoyalty } from '../hooks/useLoyalty';
@@ -34,6 +37,7 @@ import { ProductEditorModal } from '../components/admin/ProductEditorModal';
 import { PromoCodesManager } from '../components/admin/PromoCodesManager';
 import { LoyaltyAdminManager } from '../components/admin/LoyaltyAdminManager';
 import { ReviewsAdminManager } from '../components/admin/ReviewsAdminManager';
+import { CARRIERS, getCarrierById, generateTrackingUrl } from '../data/carriers';
 
 interface AdminOrder {
   id: string;
@@ -41,11 +45,22 @@ interface AdminOrder {
   customerName: string;
   customerEmail: string;
   shippingCity: string;
+  shippingCountry?: string;
+  shippingStreet?: string;
+  shippingPostalCode?: string;
+  shippingPhone?: string;
   total: number;
   discountCode?: string;
   discountAmount?: number;
   status: string;
+  paymentStatus?: string;
   paymentMethod: string;
+  carrier?: string;
+  carrierName?: string;
+  trackingNumber?: string;
+  trackingUrl?: string;
+  shippedAt?: string;
+  estimatedDelivery?: string;
   createdAt: string;
   itemsCount: number;
 }
@@ -231,7 +246,7 @@ export const AdminPage: React.FC = () => {
     }
   };
 
-  // Orders State (Mock / Demo list)
+  // Orders State
   const [orders, setOrders] = useState<AdminOrder[]>([
     {
       id: 'ord-101',
@@ -244,6 +259,9 @@ export const AdminPage: React.FC = () => {
       discountAmount: 24.30,
       status: 'Paid',
       paymentMethod: 'stripe',
+      carrier: 'AN_POST',
+      carrierName: 'An Post',
+      trackingNumber: '1198547382IE',
       createdAt: new Date(Date.now() - 3600000 * 2).toISOString(),
       itemsCount: 2,
     },
@@ -258,6 +276,8 @@ export const AdminPage: React.FC = () => {
       discountAmount: 39.90,
       status: 'Processing',
       paymentMethod: 'card',
+      carrier: 'DPD_IE',
+      carrierName: 'DPD Ireland',
       createdAt: new Date(Date.now() - 3600000 * 8).toISOString(),
       itemsCount: 1,
     },
@@ -270,10 +290,109 @@ export const AdminPage: React.FC = () => {
       total: 149.50,
       status: 'Shipped',
       paymentMethod: 'apple_pay',
+      carrier: 'UPS',
+      carrierName: 'UPS Express',
+      trackingNumber: '1Z9999999999999999',
       createdAt: new Date(Date.now() - 3600000 * 24).toISOString(),
       itemsCount: 3,
     },
   ]);
+
+  // Tracking / Fulfillment Modal State
+  const [trackingModalOrder, setTrackingModalOrder] = useState<AdminOrder | null>(null);
+  const [editCarrier, setEditCarrier] = useState('AN_POST');
+  const [editTrackingNumber, setEditTrackingNumber] = useState('');
+  const [editStatus, setEditStatus] = useState('Processing');
+  const [editNotifyCustomer, setEditNotifyCustomer] = useState(true);
+  const [isSavingOrder, setIsSavingOrder] = useState(false);
+
+  const fetchAdminOrders = async () => {
+    try {
+      const res = await fetch('/api/orders/list?all=true');
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data.orders) && data.orders.length > 0) {
+          setOrders(
+            data.orders.map((o: any) => ({
+              id: o.id,
+              orderNumber: o.orderNumber,
+              customerName: o.customerName,
+              customerEmail: o.customerEmail,
+              shippingCity: o.shippingCity || '',
+              shippingCountry: o.shippingCountry || '',
+              shippingStreet: o.shippingStreet || '',
+              shippingPostalCode: o.shippingPostalCode || '',
+              shippingPhone: o.shippingPhone || '',
+              total: o.total,
+              discountCode: o.discountCode,
+              discountAmount: o.discountAmount,
+              status: o.status,
+              paymentStatus: o.paymentStatus,
+              paymentMethod: o.paymentMethod,
+              carrier: o.carrier || 'AN_POST',
+              carrierName: o.carrierName || 'An Post',
+              trackingNumber: o.trackingNumber || '',
+              trackingUrl: o.trackingUrl || '',
+              shippedAt: o.shippedAt,
+              estimatedDelivery: o.estimatedDelivery,
+              createdAt: o.createdAt,
+              itemsCount: Array.isArray(o.items) ? o.items.length : 0,
+            }))
+          );
+        }
+      }
+    } catch (err) {
+      console.warn('Could not fetch PostgreSQL orders, staying on current state:', err);
+    }
+  };
+
+  React.useEffect(() => {
+    if (isAdminAuthenticated) {
+      fetchAdminOrders();
+    }
+  }, [isAdminAuthenticated, activeTab]);
+
+  const openTrackingModal = (order: AdminOrder) => {
+    setTrackingModalOrder(order);
+    setEditCarrier(order.carrier || 'AN_POST');
+    setEditTrackingNumber(order.trackingNumber || '');
+    setEditStatus(order.status || 'Processing');
+    setEditNotifyCustomer(true);
+  };
+
+  const handleSaveTracking = async () => {
+    if (!trackingModalOrder) return;
+    setIsSavingOrder(true);
+    try {
+      const res = await fetch('/api/orders/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderId: trackingModalOrder.id,
+          orderNumber: trackingModalOrder.orderNumber,
+          status: editStatus,
+          carrier: editCarrier,
+          trackingNumber: editTrackingNumber,
+          notifyCustomer: editNotifyCustomer,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Failed to update order fulfillment');
+
+      showToast(
+        `Order #${trackingModalOrder.orderNumber} updated!` +
+          (data.emailSent ? ' (Shipment email dispatched to customer)' : ''),
+        'success'
+      );
+      setTrackingModalOrder(null);
+      await fetchAdminOrders();
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Error updating order', 'info');
+    } finally {
+      setIsSavingOrder(false);
+    }
+  };
 
   // Categories list extracted from products
   const categoriesList = useMemo(() => {
@@ -985,65 +1104,260 @@ export const AdminPage: React.FC = () => {
                   <thead>
                     <tr className="border-b border-gray-200 bg-[#FAF8F5] text-[11px] uppercase tracking-wider font-bold text-gray-600">
                       <th className="py-3.5 px-6">Order Number</th>
-                      <th className="py-3.5 px-6">Customer & Shipping</th>
+                      <th className="py-3.5 px-6">Customer & Destination</th>
                       <th className="py-3.5 px-6">Total Amount</th>
-                      <th className="py-3.5 px-6">Applied Coupon</th>
+                      <th className="py-3.5 px-6">Carrier & Tracking</th>
                       <th className="py-3.5 px-6">Payment</th>
-                      <th className="py-3.5 px-6">Fulfillment Status</th>
+                      <th className="py-3.5 px-6">Status</th>
+                      <th className="py-3.5 px-6 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100 text-sm">
-                    {orders.map((ord) => (
-                      <tr key={ord.id} className="hover:bg-gray-50/80 transition-colors">
-                        <td className="py-4 px-6 font-mono font-bold text-[#1A1A1A]">
-                          {ord.orderNumber}
-                        </td>
-                        <td className="py-4 px-6">
-                          <p className="font-bold text-[#1A1A1A] text-sm">{ord.customerName}</p>
-                          <p className="text-xs text-gray-500">{ord.customerEmail} • {ord.shippingCity}</p>
-                        </td>
-                        <td className="py-4 px-6 font-bold text-[#1A1A1A] text-base">
-                          €{ord.total.toFixed(2)}
-                        </td>
-                        <td className="py-4 px-6">
-                          {ord.discountCode ? (
-                            <span className="inline-flex items-center gap-1 text-xs font-mono font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded">
-                              <Tag className="w-3 h-3" /> {ord.discountCode} (-€{ord.discountAmount?.toFixed(2)})
-                            </span>
-                          ) : (
-                            <span className="text-xs text-gray-400">None</span>
-                          )}
-                        </td>
-                        <td className="py-4 px-6 text-xs uppercase tracking-wider font-semibold text-gray-600">
-                          {ord.paymentMethod}
-                        </td>
-                        <td className="py-4 px-6">
-                          <select
-                            value={ord.status}
-                            onChange={(e) => handleOrderStatusChange(ord.id, e.target.value)}
-                            className={`text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded border focus:outline-none cursor-pointer ${
-                              ord.status === 'Paid'
-                                ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
-                                : ord.status === 'Processing'
-                                ? 'bg-amber-50 text-amber-800 border-amber-300'
-                                : ord.status === 'Shipped'
-                                ? 'bg-blue-50 text-blue-800 border-blue-300'
-                                : 'bg-gray-100 text-gray-800 border-gray-300'
-                            }`}
-                          >
-                            <option value="Processing">Processing</option>
-                            <option value="Paid">Paid</option>
-                            <option value="Shipped">Shipped</option>
-                            <option value="Delivered">Delivered</option>
-                            <option value="Cancelled">Cancelled</option>
-                          </select>
-                        </td>
-                      </tr>
-                    ))}
+                    {orders.map((ord) => {
+                      const carrierObj = getCarrierById(ord.carrier);
+                      const trackUrl = ord.trackingUrl || (ord.trackingNumber ? carrierObj.getTrackingUrl(ord.trackingNumber) : '');
+
+                      return (
+                        <tr key={ord.id} className="hover:bg-gray-50/80 transition-colors">
+                          <td className="py-4 px-6 font-mono font-bold text-[#1A1A1A]">
+                            {ord.orderNumber}
+                          </td>
+                          <td className="py-4 px-6">
+                            <p className="font-bold text-[#1A1A1A] text-sm">{ord.customerName}</p>
+                            <p className="text-xs text-gray-500">{ord.customerEmail} • {ord.shippingCity || 'Ireland'}</p>
+                          </td>
+                          <td className="py-4 px-6 font-bold text-[#1A1A1A] text-base">
+                            €{ord.total.toFixed(2)}
+                            {ord.discountCode && (
+                              <span className="block text-[10px] text-emerald-700 font-normal">
+                                Coupon: {ord.discountCode} (-€{ord.discountAmount?.toFixed(2)})
+                              </span>
+                            )}
+                          </td>
+                          <td className="py-4 px-6">
+                            <div className="space-y-1">
+                              <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded border ${carrierObj.badgeColor}`}>
+                                <Truck className="w-3 h-3" />
+                                {ord.carrierName || carrierObj.name}
+                              </span>
+                              {ord.trackingNumber ? (
+                                <div className="flex items-center gap-1.5 font-mono text-xs text-gray-700">
+                                  <span>{ord.trackingNumber}</span>
+                                  {trackUrl && (
+                                    <a
+                                      href={trackUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-[#8C6D4F] hover:text-black"
+                                      title="Open tracking page"
+                                    >
+                                      <ExternalLink className="w-3 h-3" />
+                                    </a>
+                                  )}
+                                </div>
+                              ) : (
+                                <span className="text-[10px] text-amber-700 block italic">No tracking # yet</span>
+                              )}
+                            </div>
+                          </td>
+                          <td className="py-4 px-6 text-xs uppercase tracking-wider font-semibold text-gray-600">
+                            {ord.paymentMethod}
+                          </td>
+                          <td className="py-4 px-6">
+                            <select
+                              value={ord.status}
+                              onChange={(e) => handleOrderStatusChange(ord.id, e.target.value)}
+                              className={`text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded border focus:outline-none cursor-pointer ${
+                                ord.status === 'Paid'
+                                  ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                                  : ord.status === 'Processing'
+                                  ? 'bg-amber-50 text-amber-800 border-amber-300'
+                                  : ord.status === 'Shipped'
+                                  ? 'bg-blue-50 text-blue-800 border-blue-300'
+                                  : ord.status === 'Delivered'
+                                  ? 'bg-green-50 text-green-800 border-green-300'
+                                  : 'bg-gray-100 text-gray-800 border-gray-300'
+                              }`}
+                            >
+                              <option value="Processing">Processing</option>
+                              <option value="Paid">Paid</option>
+                              <option value="Shipped">Shipped</option>
+                              <option value="Delivered">Delivered</option>
+                              <option value="Cancelled">Cancelled</option>
+                            </select>
+                          </td>
+                          <td className="py-4 px-6 text-right">
+                            <button
+                              onClick={() => openTrackingModal(ord)}
+                              className="px-3 py-1.5 bg-[#1A1A1A] text-white hover:bg-[#D4AF37] hover:text-black text-xs font-medium rounded transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+                            >
+                              <Truck className="w-3.5 h-3.5" />
+                              <span>Fulfillment</span>
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
             </div>
+
+            {/* FULFILLMENT & CARRIER TRACKING MODAL */}
+            {trackingModalOrder && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+                <div className="bg-white border border-[#EAE3D9] w-full max-w-xl rounded-sm shadow-2xl p-6 sm:p-8 space-y-6">
+                  
+                  {/* Modal Header */}
+                  <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+                    <div>
+                      <span className="text-[10px] uppercase tracking-[0.25em] text-[#C1A98F] font-bold block mb-0.5">
+                        Logistics Management
+                      </span>
+                      <h3 className="font-serif text-2xl text-[#1A1A1A] font-bold">
+                        Order #{trackingModalOrder.orderNumber}
+                      </h3>
+                    </div>
+                    <button
+                      onClick={() => setTrackingModalOrder(null)}
+                      className="p-1.5 text-gray-400 hover:text-black rounded transition-colors"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  {/* Customer Brief */}
+                  <div className="bg-[#FAF8F5] border border-[#EAE3D9] p-4 rounded-xs text-xs space-y-1">
+                    <p className="font-semibold text-[#1A1A1A]">
+                      Recipient: {trackingModalOrder.customerName} ({trackingModalOrder.customerEmail})
+                    </p>
+                    <p className="text-gray-600">
+                      Destination: {[trackingModalOrder.shippingStreet, trackingModalOrder.shippingCity, trackingModalOrder.shippingPostalCode, trackingModalOrder.shippingCountry].filter(Boolean).join(', ') || 'Standard Shipping'}
+                    </p>
+                  </div>
+
+                  {/* Carrier Selector */}
+                  <div>
+                    <label className="block text-xs uppercase tracking-wider font-bold text-gray-700 mb-2">
+                      Delivery Carrier Partner
+                    </label>
+                    <select
+                      value={editCarrier}
+                      onChange={(e) => setEditCarrier(e.target.value)}
+                      className="w-full px-3.5 py-2.5 text-sm bg-white border border-[#D5CCC1] rounded focus:border-black focus:outline-none"
+                    >
+                      {CARRIERS.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.name} — {c.tagline} ({c.estimatedDelivery})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Tracking Number Input */}
+                  <div>
+                    <label className="block text-xs uppercase tracking-wider font-bold text-gray-700 mb-1.5">
+                      Carrier Waybill / Tracking Number
+                    </label>
+                    <input
+                      type="text"
+                      value={editTrackingNumber}
+                      onChange={(e) => setEditTrackingNumber(e.target.value)}
+                      placeholder={getCarrierById(editCarrier).trackingPlaceholder}
+                      className="w-full px-3.5 py-2.5 text-sm font-mono bg-white border border-[#D5CCC1] rounded focus:border-black focus:outline-none"
+                    />
+                    <span className="text-[11px] text-gray-400 block mt-1">
+                      Format: {getCarrierById(editCarrier).trackingRegexHint}
+                    </span>
+                  </div>
+
+                  {/* Status Selection */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs uppercase tracking-wider font-bold text-gray-700 mb-1.5">
+                        Order Status
+                      </label>
+                      <select
+                        value={editStatus}
+                        onChange={(e) => setEditStatus(e.target.value)}
+                        className="w-full px-3.5 py-2.5 text-sm bg-white border border-[#D5CCC1] rounded focus:border-black focus:outline-none"
+                      >
+                        <option value="Processing">Processing</option>
+                        <option value="Paid">Paid</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="Delivered">Delivered</option>
+                        <option value="Cancelled">Cancelled</option>
+                      </select>
+                    </div>
+
+                    {/* Preview Tracking URL */}
+                    <div>
+                      <label className="block text-xs uppercase tracking-wider font-bold text-gray-700 mb-1.5">
+                        Tracking Link Preview
+                      </label>
+                      {editTrackingNumber.trim() ? (
+                        <a
+                          href={generateTrackingUrl(editCarrier, editTrackingNumber)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full px-3 py-2.5 bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold rounded inline-flex items-center justify-center gap-1.5 hover:bg-emerald-100 transition-colors"
+                        >
+                          <span>Test Courier Link</span>
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                      ) : (
+                        <div className="w-full px-3 py-2.5 bg-gray-50 text-gray-400 border border-gray-200 text-xs rounded text-center">
+                          Enter number to test
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Notify Customer Checkbox */}
+                  <label className="flex items-start gap-3 p-3.5 bg-[#FAF6F0] border border-[#E8DFD3] rounded cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={editNotifyCustomer}
+                      onChange={(e) => setEditNotifyCustomer(e.target.checked)}
+                      className="mt-0.5 rounded text-[#1A1A1A] focus:ring-0 cursor-pointer"
+                    />
+                    <div className="text-xs text-gray-700">
+                      <span className="font-semibold block text-black">
+                        Send Shipment Dispatch Email with Tracking Button
+                      </span>
+                      Automatically sends an email notification via Resend with carrier logo and active tracking link to {trackingModalOrder.customerEmail}.
+                    </div>
+                  </label>
+
+                  {/* Modal Actions */}
+                  <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
+                    <button
+                      type="button"
+                      onClick={() => setTrackingModalOrder(null)}
+                      className="px-5 py-2.5 border border-gray-300 text-gray-700 text-xs uppercase tracking-wider font-semibold rounded hover:bg-gray-50 transition-colors cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      disabled={isSavingOrder}
+                      onClick={handleSaveTracking}
+                      className="px-6 py-2.5 bg-[#1A1A1A] text-white hover:bg-[#D4AF37] hover:text-black text-xs uppercase tracking-wider font-semibold rounded transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-60"
+                    >
+                      {isSavingOrder ? (
+                        <span>Saving...</span>
+                      ) : (
+                        <>
+                          <Save className="w-4 h-4" />
+                          <span>Save &amp; Update Fulfillment</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+            )}
           </div>
         )}
 

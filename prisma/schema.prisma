@@ -102,6 +102,14 @@ model Order {
   stripeSessionId    String?     @unique
   stripePaymentIntentId String?
 
+  // Carrier & Tracking details
+  carrier            String?     @default("AN_POST") // "AN_POST" | "DPD_IE" | "GLS_IE" | "UPS" | "FEDEX"
+  carrierName        String?     @default("An Post")
+  trackingNumber     String?
+  trackingUrl        String?
+  shippedAt          DateTime?
+  estimatedDelivery  String?
+
   items              OrderItem[]
   createdAt          DateTime    @default(now())
   updatedAt          DateTime    @updatedAt

@@ -3,9 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useFavorites } from '../hooks/useFavorites';
 import { useCart } from '../hooks/useCart';
-import { Package, MapPin, Heart, Settings, LogOut, Clock, ArrowRight, Trash2, Phone, Award, Coins, Sparkles, Copy } from 'lucide-react';
+import { Package, MapPin, Heart, Settings, LogOut, Clock, ArrowRight, Trash2, Phone, Award, Coins, Sparkles, Copy, Truck, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLoyalty } from '../hooks/useLoyalty';
+import { getCarrierById } from '../data/carriers';
 interface OrderItem {
   id: string;
   productId: string;
@@ -17,8 +18,15 @@ interface OrderItem {
 
 interface Order {
   id: string;
+  orderNumber?: string;
   total: number;
   status: string;
+  carrier?: string;
+  carrierName?: string;
+  trackingNumber?: string;
+  trackingUrl?: string;
+  estimatedDelivery?: string;
+  shippedAt?: string;
   createdAt: string;
   items: OrderItem[];
 }
@@ -317,66 +325,124 @@ const AccountPage: React.FC = () => {
                   </Link>
                 </div>
               ) : (
-                orders.map((order) => (
-                  <div key={order.id} className="bg-white border border-gray-100 rounded-sm shadow-sm overflow-hidden text-left">
-                    <div className="bg-gray-50 px-6 py-4 border-b border-gray-100 flex flex-wrap justify-between items-center gap-4">
-                      <div className="flex gap-8">
-                        <div>
-                          <p className="text-[10px] uppercase tracking-widest text-gray-400 font-medium mb-1">Order Placed</p>
-                          <p className="text-xs text-[#1a1a1a] font-medium">
-                            {new Date(order.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-                          </p>
+                orders.map((order) => {
+                  const carrier = getCarrierById(order.carrier);
+                  const trackUrl = order.trackingUrl || (order.trackingNumber ? carrier.getTrackingUrl(order.trackingNumber) : '');
+
+                  return (
+                    <div key={order.id} className="bg-white border border-gray-100 rounded-sm shadow-sm overflow-hidden text-left">
+                      <div className="bg-gray-50 px-6 py-4 border-b border-gray-100 flex flex-wrap justify-between items-center gap-4">
+                        <div className="flex flex-wrap gap-6 sm:gap-8">
+                          <div>
+                            <p className="text-[10px] uppercase tracking-widest text-gray-400 font-medium mb-1">Order Placed</p>
+                            <p className="text-xs text-[#1a1a1a] font-medium">
+                              {new Date(order.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-[10px] uppercase tracking-widest text-gray-400 font-medium mb-1">Order Ref</p>
+                            <p className="text-xs text-[#1a1a1a] font-medium font-mono">
+                              {order.orderNumber || order.id.slice(-8).toUpperCase()}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-[10px] uppercase tracking-widest text-gray-400 font-medium mb-1">Total</p>
+                            <p className="text-xs text-[#1a1a1a] font-medium">
+                              {order.total.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-[10px] uppercase tracking-widest text-gray-400 font-medium mb-1">Carrier</p>
+                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-[9px] uppercase tracking-wider font-bold rounded border ${carrier.badgeColor}`}>
+                              <Truck className="w-2.5 h-2.5" />
+                              {order.carrierName || carrier.shortName}
+                            </span>
+                          </div>
                         </div>
                         <div>
-                          <p className="text-[10px] uppercase tracking-widest text-gray-400 font-medium mb-1">Order ID</p>
-                          <p className="text-xs text-[#1a1a1a] font-medium">{order.id.slice(-8).toUpperCase()}</p>
-                        </div>
-                        <div>
-                          <p className="text-[10px] uppercase tracking-widest text-gray-400 font-medium mb-1">Total</p>
-                          <p className="text-xs text-[#1a1a1a] font-medium">
-                            {order.total.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}
-                          </p>
+                          <span className={`px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-bold ${
+                            order.status === 'Delivered'
+                              ? 'bg-green-50 text-green-700 border border-green-200'
+                              : order.status === 'Shipped'
+                              ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                              : 'bg-amber-50 text-amber-700 border border-amber-200'
+                          }`}>
+                            {order.status}
+                          </span>
                         </div>
                       </div>
-                      <div>
-                        <span className={`px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-bold ${order.status === 'Delivered' ? 'bg-green-50 text-green-700' : 'bg-blue-50 text-blue-700'}`}>
-                          {order.status}
+                      
+                      {/* Tracking Waybill Banner (if tracking exists) */}
+                      {order.trackingNumber && (
+                        <div className="bg-[#FCFAF7] px-6 py-3 border-b border-[#F0EBE3] flex flex-wrap items-center justify-between gap-3 text-xs">
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] uppercase tracking-[0.2em] text-[#8C6D4F] font-semibold">
+                              Tracking No:
+                            </span>
+                            <span className="font-mono font-bold text-[#1a1a1a] bg-white px-2 py-0.5 border border-dashed border-[#C1A98F]">
+                              {order.trackingNumber}
+                            </span>
+                            <span className="text-[11px] text-gray-500 hidden sm:inline">
+                              ({order.carrierName || carrier.name})
+                            </span>
+                          </div>
+
+                          {trackUrl && (
+                            <a
+                              href={trackUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a] hover:text-[#D4AF37] transition-colors"
+                            >
+                              <span>Track with {carrier.shortName}</span>
+                              <ExternalLink className="w-3 h-3" />
+                            </a>
+                          )}
+                        </div>
+                      )}
+
+                      <div className="p-6">
+                        {order.items.map((item: OrderItem) => (
+                          <div key={item.id} className="flex flex-col sm:flex-row items-center sm:items-start gap-6 border-b border-gray-50 last:border-0 pb-6 last:pb-0 mb-6 last:mb-0">
+                            <div className="w-24 h-24 bg-gray-50 flex-shrink-0 rounded-sm overflow-hidden border border-gray-100">
+                              <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                            </div>
+                            <div className="flex-grow text-center sm:text-left">
+                              <h3 className="text-sm font-medium text-[#1a1a1a] uppercase tracking-widest mb-2">{item.name}</h3>
+                              <p className="text-gray-400 text-[10px] uppercase tracking-widest mb-4">Qty: {item.quantity} • {item.price.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}</p>
+                              <div className="flex items-center justify-center sm:justify-start gap-2 text-[10px] text-wonders-gold uppercase tracking-widest font-bold">
+                                <Clock className="w-3.5 h-3.5" />
+                                Est. delivery: {order.estimatedDelivery || carrier.estimatedDelivery}
+                              </div>
+                            </div>
+                            <div className="flex-shrink-0">
+                              <Link 
+                                to={`/product/${item.productId}`}
+                                className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a] border border-[#1a1a1a] px-6 py-2.5 hover:bg-[#1a1a1a] hover:text-white transition-all duration-300"
+                              >
+                                View Product
+                              </Link>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="px-6 py-3 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between">
+                        <Link
+                          to={`/track-order?orderNumber=${encodeURIComponent(order.orderNumber || order.id)}`}
+                          className="text-[10px] uppercase tracking-widest font-semibold text-[#8C6D4F] hover:text-black inline-flex items-center gap-1 transition-colors"
+                        >
+                          <span>Live Progress Timeline</span>
+                          <ArrowRight className="w-3 h-3" />
+                        </Link>
+
+                        <span className="text-[10px] text-gray-400">
+                          {order.items.length} {order.items.length === 1 ? 'item' : 'items'}
                         </span>
                       </div>
                     </div>
-                    
-                    <div className="p-6">
-                      {order.items.map((item: OrderItem) => (
-                        <div key={item.id} className="flex flex-col sm:flex-row items-center sm:items-start gap-6 border-b border-gray-50 last:border-0 pb-6 last:pb-0 mb-6 last:mb-0">
-                          <div className="w-24 h-24 bg-gray-50 flex-shrink-0 rounded-sm overflow-hidden border border-gray-100">
-                            <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
-                          </div>
-                          <div className="flex-grow text-center sm:text-left">
-                            <h3 className="text-sm font-medium text-[#1a1a1a] uppercase tracking-widest mb-2">{item.name}</h3>
-                            <p className="text-gray-400 text-[10px] uppercase tracking-widest mb-4">Qty: {item.quantity} • {item.price.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}</p>
-                            <div className="flex items-center justify-center sm:justify-start gap-2 text-[10px] text-wonders-gold uppercase tracking-widest font-bold">
-                              <Clock className="w-3.5 h-3.5" />
-                              Estimated delivery: 3-5 business days
-                            </div>
-                          </div>
-                          <div className="flex-shrink-0">
-                            <Link 
-                              to={`/product/${item.productId}`}
-                              className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a] border border-[#1a1a1a] px-6 py-2.5 hover:bg-[#1a1a1a] hover:text-white transition-all duration-300"
-                            >
-                              View Product
-                            </Link>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="px-6 py-3 bg-gray-50/50 border-t border-gray-100 text-right">
-                      <button className="text-[10px] uppercase tracking-widest font-medium text-gray-400 hover:text-[#1a1a1a] inline-flex items-center gap-1 transition-colors">
-                        View Order Details <ArrowRight className="w-3 h-3" />
-                      </button>
-                    </div>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
             

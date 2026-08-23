@@ -39,6 +39,9 @@ const Footer: React.FC = () => {
         </div>
 
         <div className="flex flex-wrap justify-center items-center gap-8 md:gap-14">
+          <Link to="/track-order" className="text-[14px] uppercase tracking-widest text-[#8C6D4F] hover:text-black transition-colors font-medium">
+            Track Order
+          </Link>
           <Link to="/app" className="text-[14px] uppercase tracking-widest text-[#5e5e5e] hover:text-black transition-colors font-medium">
             Mobile App
           </Link>

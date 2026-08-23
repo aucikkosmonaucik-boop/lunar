@@ -34,6 +34,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       paymentMethod,
       orderNotes,
       shippingAddress,
+      carrier,
+      carrierName,
+      estimatedDelivery,
     } = req.body;
 
     interface CartItem {
@@ -77,6 +80,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         status: 'Processing',
         paymentStatus: 'pending',
         paymentMethod: paymentMethod || 'card',
+        carrier: carrier || 'AN_POST',
+        carrierName: carrierName || 'An Post',
+        estimatedDelivery: estimatedDelivery || '1 – 3 Business Days',
         items: {
           create: items.map((item: CartItem) => ({
             productId: item.product?.id || null,

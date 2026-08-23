@@ -22,6 +22,7 @@ import TermsPage from './pages/TermsPage';
 import CookiesPage from './pages/CookiesPage';
 import OrderSuccessPage from './pages/OrderSuccessPage';
 import MobileAppPage from './pages/MobileAppPage';
+import TrackOrderPage from './pages/TrackOrderPage';
 import CookieConsentBanner from './components/ui/CookieConsentBanner';
 
 const PageViewTracker: React.FC = () => {
@@ -58,6 +59,8 @@ const App: React.FC = () => {
                       <Route path="/product/:id" element={<ProductDetailPage />} />
                       <Route path="/cart" element={<CartPage />} />
                       <Route path="/order-success" element={<OrderSuccessPage />} />
+                      <Route path="/track-order" element={<TrackOrderPage />} />
+                      <Route path="/track" element={<TrackOrderPage />} />
                       <Route path="/contact" element={<ContactPage />} />
                       <Route path="/login" element={<LoginPage />} />
                       <Route path="/register" element={<RegisterPage />} />

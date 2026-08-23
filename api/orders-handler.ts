@@ -16,7 +16,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     let subHandler;
     switch (action) {
       case 'create': subHandler = (await import('./_orders/create.js')).default; break;
-      case 'list': subHandler = (await import('./_orders/list.js')).default; break;
+      case 'list': 
+      case 'track': subHandler = (await import('./_orders/list.js')).default; break;
+      case 'update': subHandler = (await import('./_orders/update.js')).default; break;
       case 'status': return res.status(200).json({ status: 'ok', message: 'Orders Handler is active' });
       default:
         return res.status(404).json({ message: `Action '${action}' not found in Orders Handler` });

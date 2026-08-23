@@ -29,21 +29,47 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
   }
 
-  // Admin access or order query by orderNumber and email for guest tracking
-  const { orderNumber, email, all } = req.query as { orderNumber?: string; email?: string; all?: string };
+  // Admin access or order query by orderNumber/trackingNumber and email for tracking
+  const { orderNumber, email, trackingNumber, all } = req.query as {
+    orderNumber?: string;
+    email?: string;
+    trackingNumber?: string;
+    all?: string;
+  };
 
   try {
-    if (orderNumber && email) {
+    // 1. Search by Tracking Number
+    if (trackingNumber && trackingNumber.trim()) {
       const order = await (prisma as any).order.findFirst({
         where: {
-          orderNumber: orderNumber.trim(),
-          customerEmail: { equals: email.trim(), mode: 'insensitive' },
+          trackingNumber: { equals: trackingNumber.trim(), mode: 'insensitive' },
         },
         include: { items: true },
       });
 
       if (!order) {
-        return res.status(404).json({ message: 'Order not found' });
+        return res.status(404).json({ message: 'No shipment found with this tracking number.' });
+      }
+
+      return res.status(200).json({ order });
+    }
+
+    // 2. Search by Order Number (+ optional email)
+    if (orderNumber && orderNumber.trim()) {
+      const whereClause: any = {
+        orderNumber: { equals: orderNumber.trim(), mode: 'insensitive' },
+      };
+      if (email && email.trim()) {
+        whereClause.customerEmail = { equals: email.trim(), mode: 'insensitive' };
+      }
+
+      const order = await (prisma as any).order.findFirst({
+        where: whereClause,
+        include: { items: true },
+      });
+
+      if (!order) {
+        return res.status(404).json({ message: 'Order not found with provided reference.' });
       }
 
       return res.status(200).json({ order });
