@@ -1061,7 +1061,7 @@ const CartPage: React.FC = () => {
                               </span>
                             </div>
                           ) : (
-                            <span className="text-[#1A1A1A]">
+                            <span className="text-[#8C6D4F] font-bold">
                               €{cost.toFixed(2)}
                             </span>
                           )}
@@ -1156,7 +1156,7 @@ const CartPage: React.FC = () => {
                       {selectedCarrier.estimatedDelivery} • Tracked
                     </span>
                   </div>
-                  <span className={`font-medium ${isFreeShipping ? 'text-emerald-700 font-semibold' : 'text-[#1A1A1A]'}`}>
+                  <span className={`font-medium ${isFreeShipping ? 'text-emerald-700 font-semibold' : 'text-[#8C6D4F] font-bold'}`}>
                     {isFreeShipping ? 'FREE' : `€${shippingFee.toFixed(2)}`}
                   </span>
                 </div>

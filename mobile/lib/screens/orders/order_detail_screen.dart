@@ -300,7 +300,11 @@ class OrderDetailScreen extends StatelessWidget {
                   _buildRow('Discount (${order.discountCode ?? ""})', '-${Formatters.formatPrice(order.discountAmount)}', color: AppColors.success),
                 ],
                 const SizedBox(height: 6),
-                _buildRow('Shipping', order.shippingFee == 0 ? 'Free' : Formatters.formatPrice(order.shippingFee)),
+                _buildRow(
+                  'Shipping',
+                  order.shippingFee == 0 ? 'Free' : Formatters.formatPrice(order.shippingFee),
+                  color: order.shippingFee == 0 ? AppColors.success : (isDark ? AppColors.primary : AppColors.primaryDark),
+                ),
                 const SizedBox(height: 6),
                 _buildRow('Payment Method', order.paymentMethod.toUpperCase()),
                 const SizedBox(height: 6),

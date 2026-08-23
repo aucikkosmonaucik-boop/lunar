@@ -287,7 +287,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     _buildRow(
                       'Delivery (${selectedCarrier.shortName})',
                       isFree ? 'Free' : Formatters.formatPrice(shippingFee),
-                      color: isFree ? AppColors.success : null,
+                      color: isFree ? AppColors.success : (isDark ? AppColors.primary : AppColors.primaryDark),
                     ),
                     const Divider(height: 20),
                     Row(
@@ -536,7 +536,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               style: TextStyle(
                 fontWeight: FontWeight.w700,
                 fontSize: 13,
-                color: isFree ? AppColors.success : (isDark ? AppColors.primary : AppColors.lightText),
+                color: isFree ? AppColors.success : (isDark ? AppColors.primary : AppColors.primaryDark),
               ),
             ),
           ],
