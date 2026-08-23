@@ -536,7 +536,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               style: TextStyle(
                 fontWeight: FontWeight.w700,
                 fontSize: 13,
-                color: isFree ? AppColors.success : (isDark ? AppColors.lightText : AppColors.darkSurface),
+                color: isFree ? AppColors.success : (isDark ? AppColors.primary : AppColors.lightText),
               ),
             ),
           ],
