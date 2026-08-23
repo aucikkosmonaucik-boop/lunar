@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/utils/formatters.dart';
+import '../../models/carrier_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/order_provider.dart';
@@ -30,6 +31,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   final _notesController = TextEditingController();
 
   String _selectedPaymentMethod = 'card';
+  String _selectedCarrierId = 'AN_POST';
 
   @override
   void initState() {
@@ -66,10 +68,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
     final cartProvider = context.read<CartProvider>();
     final orderProvider = context.read<OrderProvider>();
+    final carrier = getCarrierById(_selectedCarrierId);
+
+    final discountedSubtotal = (cartProvider.subtotal - cartProvider.promoDiscountAmount).clamp(0.0, double.infinity);
+    final isFreeShipping = carrier.freeShippingAvailable && discountedSubtotal >= carrier.freeThreshold;
+    final effectiveShippingFee = isFreeShipping ? 0.0 : carrier.basePrice;
+    final finalTotal = discountedSubtotal + effectiveShippingFee;
 
     final newOrder = await orderProvider.createOrder(
       items: cartProvider.items,
-      total: cartProvider.total,
+      total: finalTotal,
       subtotal: cartProvider.subtotal,
       paymentMethod: _selectedPaymentMethod,
       name: _nameController.text.trim(),
@@ -82,7 +90,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       orderNotes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
       discountCode: cartProvider.appliedPromo?.code,
       discountAmount: cartProvider.promoDiscountAmount,
-      shippingFee: cartProvider.shippingFee,
+      shippingFee: effectiveShippingFee,
+      carrier: carrier.id,
+      carrierName: carrier.name,
+      estimatedDelivery: carrier.estimatedDelivery,
     );
 
     if (newOrder != null && mounted) {
@@ -194,7 +205,27 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
             const SizedBox(height: 16),
 
-            // Section 2: Payment Method
+            // Section 2: Delivery Carrier Partner
+            _buildSectionCard(
+              isDark: isDark,
+              title: 'Delivery Carrier Partner',
+              icon: Icons.local_shipping_outlined,
+              children: [
+                ...kCarriers.map((carrier) {
+                  final discountedSubtotal = (cartProvider.subtotal - cartProvider.promoDiscountAmount).clamp(0.0, double.infinity);
+                  return _buildCarrierOption(
+                    carrier: carrier,
+                    isSelected: _selectedCarrierId == carrier.id,
+                    discountedSubtotal: discountedSubtotal,
+                    isDark: isDark,
+                  );
+                }),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+
+            // Section 3: Payment Method
             _buildSectionCard(
               isDark: isDark,
               title: 'Payment Method',
@@ -233,45 +264,69 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
             const SizedBox(height: 16),
 
-            // Section 3: Summary
-            _buildSectionCard(
-              isDark: isDark,
-              title: 'Payment Summary',
-              icon: Icons.receipt_long_outlined,
-              children: [
-                _buildRow('Subtotal', Formatters.formatPrice(cartProvider.subtotal)),
-                if (cartProvider.promoDiscountAmount > 0) ...[
-                  const SizedBox(height: 6),
-                  _buildRow('Discount', '-${Formatters.formatPrice(cartProvider.promoDiscountAmount)}', color: AppColors.success),
-                ],
-                const SizedBox(height: 6),
-                _buildRow('Shipping', cartProvider.shippingFee == 0 ? 'Free' : Formatters.formatPrice(cartProvider.shippingFee)),
-                const Divider(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            // Section 4: Summary with dynamic carrier fee calculation
+            Builder(
+              builder: (context) {
+                final selectedCarrier = getCarrierById(_selectedCarrierId);
+                final discountedSubtotal = (cartProvider.subtotal - cartProvider.promoDiscountAmount).clamp(0.0, double.infinity);
+                final isFree = selectedCarrier.freeShippingAvailable && discountedSubtotal >= selectedCarrier.freeThreshold;
+                final shippingFee = isFree ? 0.0 : selectedCarrier.basePrice;
+                final grandTotal = discountedSubtotal + shippingFee;
+
+                return _buildSectionCard(
+                  isDark: isDark,
+                  title: 'Payment Summary',
+                  icon: Icons.receipt_long_outlined,
                   children: [
-                    const Text('Total to Pay', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
-                    Text(
-                      Formatters.formatPrice(cartProvider.total),
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                        color: isDark ? AppColors.primary : AppColors.lightText,
-                      ),
+                    _buildRow('Subtotal', Formatters.formatPrice(cartProvider.subtotal)),
+                    if (cartProvider.promoDiscountAmount > 0) ...[
+                      const SizedBox(height: 6),
+                      _buildRow('Discount', '-${Formatters.formatPrice(cartProvider.promoDiscountAmount)}', color: AppColors.success),
+                    ],
+                    const SizedBox(height: 6),
+                    _buildRow(
+                      'Delivery (${selectedCarrier.shortName})',
+                      isFree ? 'Free' : Formatters.formatPrice(shippingFee),
+                      color: isFree ? AppColors.success : null,
+                    ),
+                    const Divider(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Total to Pay', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                        Text(
+                          Formatters.formatPrice(grandTotal),
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            color: isDark ? AppColors.primary : AppColors.lightText,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
-                ),
-              ],
+                );
+              },
             ),
 
             const SizedBox(height: 24),
 
             // Submit Button
-            CustomButton(
-              text: 'Place Order • ${Formatters.formatPrice(cartProvider.total)}',
-              icon: Icons.lock_rounded,
-              isLoading: orderProvider.isLoading,
-              onPressed: _submitOrder,
+            Builder(
+              builder: (context) {
+                final selectedCarrier = getCarrierById(_selectedCarrierId);
+                final discountedSubtotal = (cartProvider.subtotal - cartProvider.promoDiscountAmount).clamp(0.0, double.infinity);
+                final isFree = selectedCarrier.freeShippingAvailable && discountedSubtotal >= selectedCarrier.freeThreshold;
+                final shippingFee = isFree ? 0.0 : selectedCarrier.basePrice;
+                final grandTotal = discountedSubtotal + shippingFee;
+
+                return CustomButton(
+                  text: 'Place Order • ${Formatters.formatPrice(grandTotal)}',
+                  icon: Icons.lock_rounded,
+                  isLoading: orderProvider.isLoading,
+                  onPressed: _submitOrder,
+                );
+              },
             ),
             const SizedBox(height: 32),
           ],
@@ -388,6 +443,105 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         Text(label, style: const TextStyle(fontSize: 13, color: Colors.grey)),
         Text(value, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: color)),
       ],
+    );
+  }
+
+  Widget _buildCarrierOption({
+    required CarrierModel carrier,
+    required bool isSelected,
+    required double discountedSubtotal,
+    required bool isDark,
+  }) {
+    final isFree = carrier.freeShippingAvailable && discountedSubtotal >= carrier.freeThreshold;
+    final priceText = isFree ? 'Free' : Formatters.formatPrice(carrier.basePrice);
+
+    return GestureDetector(
+      onTap: () => setState(() => _selectedCarrierId = carrier.id),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected ? AppColors.primary : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+            width: isSelected ? 1.5 : 1.0,
+          ),
+          color: isSelected
+              ? (isDark ? AppColors.primary.withValues(alpha: 0.1) : AppColors.primaryLight.withValues(alpha: 0.2))
+              : Colors.transparent,
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? AppColors.primary.withValues(alpha: 0.15)
+                    : (isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.04)),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                Icons.local_shipping_rounded,
+                color: isSelected ? AppColors.primary : (isDark ? Colors.white70 : Colors.black87),
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          carrier.name,
+                          style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
+                        decoration: BoxDecoration(
+                          color: isDark ? Colors.white10 : const Color(0xFFFAF6F0),
+                          border: Border.all(color: const Color(0xFFC1A98F).withValues(alpha: 0.5)),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          carrier.estimatedDelivery,
+                          style: const TextStyle(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF8C6D4F),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    carrier.tagline,
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: isDark ? Colors.white60 : Colors.black54,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              priceText,
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 13,
+                color: isFree ? AppColors.success : (isDark ? AppColors.lightText : AppColors.darkSurface),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/utils/formatters.dart';
+import '../../models/carrier_model.dart';
 import '../../models/order_model.dart';
 
 class OrderDetailScreen extends StatelessWidget {
@@ -13,6 +16,11 @@ class OrderDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final carrier = getCarrierById(order.carrier);
+    final trackingUrl = order.trackingUrl ??
+        (order.trackingNumber != null && order.trackingNumber!.isNotEmpty
+            ? carrier.getTrackingUrl(order.trackingNumber!)
+            : null);
 
     return Scaffold(
       appBar: AppBar(
@@ -41,6 +49,136 @@ class OrderDetailScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 _buildTimeline(order.status),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          // Carrier & Tracking Info Card
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: isDark ? AppColors.darkSurface : const Color(0xFFFAF8F5),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: isDark ? AppColors.darkBorder : const Color(0xFFEAE3D9),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.local_shipping_outlined, color: AppColors.primary, size: 20),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Carrier & Delivery',
+                          style: GoogleFonts.cormorantGaramond(fontSize: 18, fontWeight: FontWeight.w700),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: isDark ? Colors.white10 : Colors.white,
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(color: const Color(0xFFC1A98F).withValues(alpha: 0.5)),
+                      ),
+                      child: Text(
+                        order.carrierName ?? carrier.name,
+                        style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: Color(0xFF8C6D4F)),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    const Icon(Icons.access_time_rounded, size: 14, color: Colors.grey),
+                    const SizedBox(width: 6),
+                    Text(
+                      'Est. Delivery: ${order.estimatedDelivery ?? carrier.estimatedDelivery}',
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                  ],
+                ),
+                if (order.trackingNumber != null && order.trackingNumber!.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: isDark ? Colors.black26 : Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: isDark ? Colors.white12 : const Color(0xFFEAE3D9)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'WAYBILL TRACKING NUMBER',
+                              style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700, letterSpacing: 1.0, color: Colors.grey),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                Clipboard.setData(ClipboardData(text: order.trackingNumber!));
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Tracking number copied to clipboard!'),
+                                    duration: Duration(seconds: 2),
+                                  ),
+                                );
+                              },
+                              child: const Row(
+                                children: [
+                                  Icon(Icons.copy_rounded, size: 13, color: AppColors.primary),
+                                  SizedBox(width: 4),
+                                  Text(
+                                    'Copy',
+                                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.primary),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          order.trackingNumber!,
+                          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, fontFamily: 'monospace'),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (trackingUrl != null) ...[
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: () async {
+                          final uri = Uri.parse(trackingUrl);
+                          if (await canLaunchUrl(uri)) {
+                            await launchUrl(uri, mode: LaunchMode.externalApplication);
+                          }
+                        },
+                        icon: const Icon(Icons.open_in_new_rounded, size: 16),
+                        label: Text('Track with ${carrier.shortName}'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: isDark ? AppColors.primary : const Color(0xFF1A1A1A),
+                          foregroundColor: isDark ? Colors.black : Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ],
             ),
           ),

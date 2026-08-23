@@ -49,6 +49,9 @@ class OrderProvider extends ChangeNotifier {
     String? discountCode,
     double discountAmount = 0.0,
     double shippingFee = 0.0,
+    String? carrier,
+    String? carrierName,
+    String? estimatedDelivery,
   }) async {
     _isLoading = true;
     _errorMessage = null;
@@ -63,6 +66,9 @@ class OrderProvider extends ChangeNotifier {
         'discountCode': discountCode,
         'discountAmount': discountAmount,
         'shippingFee': shippingFee,
+        'carrier': carrier ?? 'AN_POST',
+        'carrierName': carrierName ?? 'An Post',
+        'estimatedDelivery': estimatedDelivery ?? '1 – 3 Business Days',
         'orderNotes': orderNotes,
         'shippingAddress': {
           'name': name.trim(),

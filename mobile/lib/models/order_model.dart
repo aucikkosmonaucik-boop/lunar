@@ -49,6 +49,12 @@ class OrderModel {
   final String status;
   final String paymentStatus;
   final String paymentMethod;
+  final String? carrier;
+  final String? carrierName;
+  final String? trackingNumber;
+  final String? trackingUrl;
+  final String? estimatedDelivery;
+  final DateTime? shippedAt;
   final List<OrderItemModel> items;
   final DateTime? createdAt;
 
@@ -71,6 +77,12 @@ class OrderModel {
     this.status = 'Processing',
     this.paymentStatus = 'pending',
     this.paymentMethod = 'card',
+    this.carrier = 'AN_POST',
+    this.carrierName = 'An Post',
+    this.trackingNumber,
+    this.trackingUrl,
+    this.estimatedDelivery,
+    this.shippedAt,
     this.items = const [],
     this.createdAt,
   });
@@ -102,6 +114,12 @@ class OrderModel {
       status: json['status']?.toString() ?? 'Processing',
       paymentStatus: json['paymentStatus']?.toString() ?? 'pending',
       paymentMethod: json['paymentMethod']?.toString() ?? 'card',
+      carrier: json['carrier']?.toString() ?? 'AN_POST',
+      carrierName: json['carrierName']?.toString() ?? 'An Post',
+      trackingNumber: json['trackingNumber']?.toString(),
+      trackingUrl: json['trackingUrl']?.toString(),
+      estimatedDelivery: json['estimatedDelivery']?.toString(),
+      shippedAt: json['shippedAt'] != null ? DateTime.tryParse(json['shippedAt'].toString()) : null,
       items: parsedItems,
       createdAt: json['createdAt'] != null ? DateTime.tryParse(json['createdAt'].toString()) : null,
     );

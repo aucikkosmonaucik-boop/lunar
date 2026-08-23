@@ -211,14 +211,45 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with SingleTick
               ],
             ),
             const SizedBox(height: 8),
-            Text(
-              'Date: ${Formatters.formatDate(order.createdAt)}',
-              style: TextStyle(
-                fontSize: 12,
-                color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Date: ${Formatters.formatDate(order.createdAt)}',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                  ),
+                ),
+                if (order.carrierName != null || order.carrier != null)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: isDark ? Colors.white10 : const Color(0xFFFAF6F0),
+                      border: Border.all(color: const Color(0xFFC1A98F).withValues(alpha: 0.4)),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      order.carrierName ?? order.carrier!,
+                      style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Color(0xFF8C6D4F)),
+                    ),
+                  ),
+              ],
             ),
-            const Divider(height: 20),
+            if (order.trackingNumber != null && order.trackingNumber!.isNotEmpty) ...[
+              const SizedBox(height: 6),
+              Row(
+                children: [
+                  const Icon(Icons.qr_code_rounded, size: 13, color: AppColors.primary),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Tracking: ${order.trackingNumber}',
+                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, fontFamily: 'monospace'),
+                  ),
+                ],
+              ),
+            ],
+            const Divider(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
