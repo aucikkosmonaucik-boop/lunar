@@ -45,15 +45,18 @@ jobs:
       - name: Prepare APK Asset
         run: |
           mkdir -p build-output
-          echo "=== SEARCHING FOR APK ==="
-          find . -name "*.apk"
-          APKS=( $(find . -name "*.apk" -type f) )
+          echo "=== SEARCHING FOR APK IN mobile/build ==="
+          find mobile/build -name "*.apk"
+          APKS=( $(find mobile/build -name "*release*.apk" -type f) )
+          if [ ${#APKS[@]} -eq 0 ]; then
+            APKS=( $(find mobile/build -name "*.apk" -type f) )
+          fi
           echo "Found APK count: ${#APKS[@]}"
           for apk in "${APKS[@]}"; do
             echo "Candidate APK: $apk"
           done
           if [ ${#APKS[@]} -eq 0 ]; then
-            echo "ERROR: No APK found anywhere in workspace!"
+            echo "ERROR: No APK found in mobile/build!"
             exit 1
           fi
           APK_FILE="${APKS[0]}"
