@@ -6,16 +6,20 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [items, setItems] = useState<CartItem[]>([]); // Using any temporarily or should import types
 
   const addToCart = useCallback((product: Product, quantity = 1) => {
+    const isSoldOut = (product.stock !== undefined && product.stock <= 0) || product.badge === 'SOLD OUT' || product.isAvailable === false;
+    if (isSoldOut || quantity <= 0) return;
+
     setItems(prev => {
+      const maxStock = product.stock > 0 ? product.stock : 999;
       const existing = prev.find(i => i.product.id === product.id);
       if (existing) {
         return prev.map(i =>
           i.product.id === product.id
-            ? { ...i, quantity: Math.min(i.quantity + quantity, product.stock) }
+            ? { ...i, quantity: Math.min(i.quantity + quantity, maxStock) }
             : i
         );
       }
-      return [...prev, { product, quantity }];
+      return [...prev, { product, quantity: Math.min(quantity, maxStock) }];
     });
   }, []);
 
@@ -29,9 +33,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return;
     }
     setItems(prev =>
-      prev.map(i =>
-        i.product.id === productId ? { ...i, quantity } : i
-      )
+      prev.map(i => {
+        if (i.product.id !== productId) return i;
+        const maxStock = i.product.stock > 0 ? i.product.stock : 999;
+        return { ...i, quantity: Math.min(quantity, maxStock) };
+      })
     );
   }, [removeFromCart]);
 

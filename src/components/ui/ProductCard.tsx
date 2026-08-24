@@ -12,7 +12,7 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addToCart } = useCart();
   const { toggleFavorite, isFavorite } = useFavorites();
-  const isSoldOut = product.stock === 0;
+  const isSoldOut = (product.stock !== undefined && product.stock <= 0) || product.badge === 'SOLD OUT' || product.isAvailable === false;
   const favorited = isFavorite(product.id);
 
   return (

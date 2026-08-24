@@ -54,34 +54,43 @@ class ProductCard extends StatelessWidget {
                     child: SizedBox(
                       width: double.infinity,
                       height: double.infinity,
-                      child: product.image.isNotEmpty
-                          ? CachedNetworkImage(
-                              imageUrl: product.image,
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) => Container(
-                                color: isDark ? Colors.white10 : Colors.black12,
-                                child: const Center(
-                                  child: SizedBox(
-                                    width: 24,
-                                    height: 24,
-                                    child: CircularProgressIndicator(strokeWidth: 1.5),
+                      child: Opacity(
+                        opacity: product.isSoldOut ? 0.6 : 1.0,
+                        child: product.image.isNotEmpty
+                            ? CachedNetworkImage(
+                                imageUrl: product.image,
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) => Container(
+                                  color: isDark ? Colors.white10 : Colors.black12,
+                                  child: const Center(
+                                    child: SizedBox(
+                                      width: 24,
+                                      height: 24,
+                                      child: CircularProgressIndicator(strokeWidth: 1.5),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              errorWidget: (context, url, error) => Container(
+                                errorWidget: (context, url, error) => Container(
+                                  color: isDark ? Colors.white10 : Colors.black12,
+                                  child: const Icon(Icons.broken_image_outlined, color: Colors.grey),
+                                ),
+                              )
+                            : Container(
                                 color: isDark ? Colors.white10 : Colors.black12,
-                                child: const Icon(Icons.broken_image_outlined, color: Colors.grey),
+                                child: const Icon(Icons.image_not_supported_outlined, color: Colors.grey),
                               ),
-                            )
-                          : Container(
-                              color: isDark ? Colors.white10 : Colors.black12,
-                              child: const Icon(Icons.image_not_supported_outlined, color: Colors.grey),
-                            ),
+                      ),
                     ),
                   ),
 
                   // Badge on top left
-                  if (product.badge != null && product.badge!.isNotEmpty)
+                  if (product.isSoldOut)
+                    const Positioned(
+                      top: 8,
+                      left: 8,
+                      child: BadgePill(text: 'SOLD OUT'),
+                    )
+                  else if (product.badge != null && product.badge!.isNotEmpty)
                     Positioned(
                       top: 8,
                       left: 8,
@@ -193,31 +202,52 @@ class ProductCard extends StatelessWidget {
                             ),
                         ],
                       ),
-                      InkWell(
-                        onTap: () {
-                          context.read<CartProvider>().addToCart(product);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Added ${product.name} to bag'),
-                              duration: const Duration(seconds: 2),
-                              behavior: SnackBarBehavior.floating,
-                            ),
-                          );
-                        },
-                        borderRadius: BorderRadius.circular(8),
-                        child: Container(
-                          padding: const EdgeInsets.all(6),
+                      if (product.isSoldOut)
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                           decoration: BoxDecoration(
-                            color: isDark ? AppColors.primary : AppColors.lightText,
-                            borderRadius: BorderRadius.circular(8),
+                            color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.05),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(
+                              color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                            ),
                           ),
-                          child: Icon(
-                            Icons.add_shopping_cart_rounded,
-                            size: 16,
-                            color: isDark ? AppColors.darkBg : Colors.white,
+                          child: Text(
+                            'SOLD OUT',
+                            style: TextStyle(
+                              fontSize: 9,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.5,
+                              color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                            ),
+                          ),
+                        )
+                      else
+                        InkWell(
+                          onTap: () {
+                            context.read<CartProvider>().addToCart(product);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Added ${product.name} to bag'),
+                                duration: const Duration(seconds: 2),
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            );
+                          },
+                          borderRadius: BorderRadius.circular(8),
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: isDark ? AppColors.primary : AppColors.lightText,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(
+                              Icons.add_shopping_cart_rounded,
+                              size: 16,
+                              color: isDark ? AppColors.darkBg : Colors.white,
+                            ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                 ],

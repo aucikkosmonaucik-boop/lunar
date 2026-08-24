@@ -222,7 +222,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           color: isDark ? AppColors.primary : AppColors.primaryDark,
                         ),
                       ),
-                      if (product.badge != null && product.badge!.isNotEmpty)
+                      if (product.isSoldOut)
+                        const BadgePill(text: 'SOLD OUT')
+                      else if (product.badge != null && product.badge!.isNotEmpty)
                         BadgePill(text: product.badge!),
                     ],
                   ),
@@ -239,32 +241,30 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   ),
                   const SizedBox(height: 10),
 
-                  // Rating & Reviews count
+                  // Rating snippet
                   Row(
                     children: [
-                      RatingStars(rating: product.rating, size: 16),
+                      RatingStars(rating: product.rating, reviewCount: product.reviewCount, size: 14),
                       const SizedBox(width: 8),
                       Text(
                         '${product.rating.toStringAsFixed(1)} (${product.reviewCount} reviews)',
                         style: TextStyle(
-                          fontSize: 13,
+                          fontSize: 12,
                           color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 14),
 
-                  // Price block
+                  // Price
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
-                    textBaseline: TextBaseline.alphabetic,
                     children: [
                       Text(
                         Formatters.formatPrice(product.price),
                         style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w800,
                           color: isDark ? AppColors.primary : AppColors.lightText,
                         ),
                       ),
@@ -273,7 +273,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         Text(
                           Formatters.formatPrice(product.originalPrice),
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 15,
                             decoration: TextDecoration.lineThrough,
                             color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
                           ),
@@ -286,23 +286,23 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       ],
                     ],
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 16),
 
                   // Stock Status
                   Row(
                     children: [
                       Icon(
-                        product.stock > 0 ? Icons.check_circle_outline : Icons.highlight_off,
+                        !product.isSoldOut ? Icons.check_circle_outline : Icons.highlight_off,
                         size: 16,
-                        color: product.stock > 0 ? AppColors.success : AppColors.error,
+                        color: !product.isSoldOut ? AppColors.success : AppColors.error,
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        product.stock > 0 ? 'In stock (${product.stock} available)' : 'Sold Out',
+                        !product.isSoldOut ? 'In stock (${product.stock} available)' : 'Sold Out',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
-                          color: product.stock > 0 ? AppColors.success : AppColors.error,
+                          color: !product.isSoldOut ? AppColors.success : AppColors.error,
                         ),
                       ),
                     ],
@@ -331,7 +331,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           children: [
                             IconButton(
                               icon: const Icon(Icons.remove, size: 16),
-                              onPressed: _quantity > 1 ? () => setState(() => _quantity--) : null,
+                              onPressed: (!product.isSoldOut && _quantity > 1) ? () => setState(() => _quantity--) : null,
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -339,7 +339,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             ),
                             IconButton(
                               icon: const Icon(Icons.add, size: 16),
-                              onPressed: () => setState(() => _quantity++),
+                              onPressed: (!product.isSoldOut && (product.stock <= 0 || _quantity < product.stock))
+                                  ? () => setState(() => _quantity++)
+                                  : null,
                             ),
                           ],
                         ),
@@ -352,11 +354,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   CustomButton(
                     width: double.infinity,
                     height: 52,
-                    text: product.stock > 0
+                    text: !product.isSoldOut
                         ? 'Add to Bag • ${Formatters.formatPrice(product.price * _quantity)}'
                         : 'Sold Out',
                     icon: Icons.shopping_bag_outlined,
-                    onPressed: product.stock > 0
+                    onPressed: !product.isSoldOut
                         ? () {
                             context.read<CartProvider>().addToCart(
                                   product,

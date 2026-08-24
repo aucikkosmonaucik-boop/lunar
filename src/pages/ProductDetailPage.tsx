@@ -50,10 +50,11 @@ const ProductDetailPage: React.FC = () => {
   const activeImage = galleryImages[activeImageIndex] || product.image;
   const related = products.filter(p => p.id !== product.id && p.category === product.category).slice(0, 4);
 
-  const isSoldOut = product.stock === 0;
+  const isSoldOut = (product.stock !== undefined && product.stock <= 0) || product.badge === 'SOLD OUT' || product.isAvailable === false;
   const pointsToEarn = calculatePointsToEarn(product.price * qty);
 
   const handleAddToCart = () => {
+    if (isSoldOut) return;
     addToCart(product, qty);
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
@@ -227,14 +228,15 @@ const ProductDetailPage: React.FC = () => {
               <div className="flex items-center gap-6 border border-wonders-border rounded-full px-6 py-3">
                 <button 
                   onClick={() => setQty(q => Math.max(1, q - 1))} 
-                  className="text-wonders-muted hover:text-wonders-dark transition-colors"
+                  disabled={isSoldOut || qty <= 1}
+                  className="text-wonders-muted hover:text-wonders-dark transition-colors disabled:opacity-30"
                 >
                   <Minus className="w-4 h-4" />
                 </button>
                 <span className="w-6 text-center text-sm font-bold text-wonders-dark">{qty}</span>
                 <button
                   onClick={() => setQty(q => Math.min(product.stock || 100, q + 1))}
-                  disabled={product.stock > 0 && qty >= product.stock}
+                  disabled={isSoldOut || (product.stock > 0 && qty >= product.stock)}
                   className="text-wonders-muted hover:text-wonders-dark transition-colors disabled:opacity-30"
                 >
                   <Plus className="w-4 h-4" />

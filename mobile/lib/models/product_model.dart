@@ -52,6 +52,9 @@ class Product {
     return (((originalPrice! - price) / originalPrice!) * 100).roundToDouble();
   }
 
+  bool get isSoldOut => stock <= 0 || badge?.toUpperCase() == 'SOLD OUT' || !isAvailable;
+  bool get inStock => !isSoldOut;
+
   factory Product.fromJson(Map<String, dynamic> json) {
     List<String> parseList(dynamic val) {
       if (val is List) {

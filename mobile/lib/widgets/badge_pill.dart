@@ -31,6 +31,9 @@ class BadgePill extends StatelessWidget {
     } else if (upper == 'BRIDAL') {
       bg = const Color(0xFF7D6B8E);
       fg = Colors.white;
+    } else if (upper == 'SOLD OUT') {
+      bg = const Color(0xFF757575);
+      fg = Colors.white;
     }
 
     return Container(

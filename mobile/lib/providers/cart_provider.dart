@@ -39,16 +39,20 @@ class CartProvider extends ChangeNotifier {
   }
 
   void addToCart(Product product, {int quantity = 1, String? selectedOptions}) {
+    if (product.isSoldOut || quantity <= 0) return;
+
+    final maxStock = product.stock > 0 ? product.stock : 999;
     final existingIndex = _items.indexWhere(
       (item) => item.product.id == product.id && item.selectedOptions == selectedOptions,
     );
 
     if (existingIndex != -1) {
-      _items[existingIndex].quantity += quantity;
+      final currentQty = _items[existingIndex].quantity;
+      _items[existingIndex].quantity = (currentQty + quantity).clamp(1, maxStock);
     } else {
       _items.add(CartItem(
         product: product,
-        quantity: quantity,
+        quantity: quantity.clamp(1, maxStock),
         selectedOptions: selectedOptions,
       ));
     }
@@ -59,7 +63,8 @@ class CartProvider extends ChangeNotifier {
     if (newQuantity <= 0) {
       removeFromCart(item);
     } else {
-      item.quantity = newQuantity;
+      final maxStock = item.product.stock > 0 ? item.product.stock : 999;
+      item.quantity = newQuantity.clamp(1, maxStock);
       notifyListeners();
     }
   }

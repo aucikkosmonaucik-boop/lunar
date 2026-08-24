@@ -488,14 +488,14 @@ const AccountPage: React.FC = () => {
                           <button 
                             type="button"
                             onClick={() => addToCart(product, 1)}
-                            disabled={product.stock === 0}
+                            disabled={(product.stock !== undefined && product.stock <= 0) || product.badge === 'SOLD OUT' || product.isAvailable === false}
                             className={`text-[10px] uppercase tracking-[0.25em] font-bold px-6 py-3 transition-all duration-300 ${
-                              product.stock === 0 
+                              ((product.stock !== undefined && product.stock <= 0) || product.badge === 'SOLD OUT' || product.isAvailable === false)
                                 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
                                 : 'bg-[#1a1a1a] text-white hover:bg-[#D4AF37]'
                             }`}
                           >
-                            {product.stock === 0 ? 'Sold Out' : 'Add to Bag'}
+                            {((product.stock !== undefined && product.stock <= 0) || product.badge === 'SOLD OUT' || product.isAvailable === false) ? 'Sold Out' : 'Add to Bag'}
                           </button>
                           <button 
                             type="button"

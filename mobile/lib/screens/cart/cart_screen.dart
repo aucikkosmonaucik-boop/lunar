@@ -226,10 +226,18 @@ class _CartScreenState extends State<CartScreen> {
                               style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
                             ),
                             InkWell(
-                              onTap: () => cartProvider.updateQuantity(item, item.quantity + 1),
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                child: Icon(Icons.add, size: 14),
+                              onTap: (item.product.stock > 0 && item.quantity >= item.product.stock)
+                                  ? null
+                                  : () => cartProvider.updateQuantity(item, item.quantity + 1),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                child: Icon(
+                                  Icons.add,
+                                  size: 14,
+                                  color: (item.product.stock > 0 && item.quantity >= item.product.stock)
+                                      ? (isDark ? Colors.white24 : Colors.black26)
+                                      : null,
+                                ),
                               ),
                             ),
                           ],

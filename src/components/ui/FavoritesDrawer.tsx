@@ -126,11 +126,11 @@ const FavoritesDrawer: React.FC<FavoritesDrawerProps> = ({ isOpen, onClose }) =>
                     <div className="flex items-center gap-3 mt-2">
                       <button
                         onClick={() => { addToCart(product, 1); }}
-                        disabled={product.stock === 0}
+                        disabled={(product.stock !== undefined && product.stock <= 0) || product.badge === 'SOLD OUT' || product.isAvailable === false}
                         className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-medium bg-[#1a1a1a] text-white px-4 py-2 hover:bg-gray-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                       >
                         <ShoppingBag className="w-3 h-3" />
-                        {product.stock === 0 ? 'Sold Out' : 'Add to Bag'}
+                        {((product.stock !== undefined && product.stock <= 0) || product.badge === 'SOLD OUT' || product.isAvailable === false) ? 'Sold Out' : 'Add to Bag'}
                       </button>
                       <button
                         onClick={() => removeFromFavorites(product.id)}
