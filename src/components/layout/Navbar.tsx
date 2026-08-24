@@ -138,7 +138,12 @@ const Navbar: React.FC = () => {
         {/* Center: Logo and Desktop Nav */}
         <div className="flex flex-col items-center justify-center w-full md:absolute md:left-1/2 md:-translate-x-1/2 md:top-4">
           <Link to="/" className="flex flex-col items-center group mb-4">
-            <div className="flex flex-col items-center select-none">
+            <div className="flex flex-col items-center select-none relative">
+              <div className="text-[#C1A98F] -mb-1 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-12">
+                <svg className="w-4 h-4 md:w-5 md:h-5 fill-none stroke-current stroke-[1.75]" viewBox="0 0 24 24">
+                  <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
               <span 
                 className="text-4xl md:text-[56px] text-[#1a1a1a] transition-transform duration-500 group-hover:scale-105"
                 style={{ fontFamily: "'Alex Brush', cursive" }}
@@ -146,7 +151,7 @@ const Navbar: React.FC = () => {
                 My
               </span>
               <span 
-                className="font-serif text-xl md:text-[28px] tracking-[0.4em] text-[#1a1a1a] uppercase -mt-4 md:-mt-6 transition-transform duration-500 group-hover:scale-105"
+                className="font-serif text-xl md:text-[28px] tracking-[0.4em] text-[#1a1a1a] uppercase -mt-4 md:-mt-6 transition-transform duration-500 group-hover:scale-105 pl-[0.4em]"
               >
                 Lunar
               </span>

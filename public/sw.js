@@ -1,13 +1,18 @@
-const CACHE_NAME = 'lunar-pwa-v1';
+const CACHE_NAME = 'lunar-pwa-v2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
   '/moon.svg',
+  '/favicon.ico',
+  '/icons/icon-48.png',
+  '/icons/icon-96.png',
+  '/icons/icon-144.png',
   '/icons/apple-touch-icon.png',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
-  '/icons/icon-maskable-512.png'
+  '/icons/icon-maskable-512.png',
+  '/og-image.png'
 ];
 
 // Install Event: Cache Core Assets

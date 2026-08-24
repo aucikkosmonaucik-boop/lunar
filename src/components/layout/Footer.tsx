@@ -8,6 +8,11 @@ const Footer: React.FC = () => {
       {/* Centered Content: Logo, Socials, and Links — full viewport width */}
       <div className="w-full flex flex-col items-center justify-center text-center mb-24 px-4">
         <Link to="/" className="flex flex-col items-center group mb-10 select-none">
+          <div className="mb-2 text-[#C1A98F] transition-transform duration-500 group-hover:scale-110 group-hover:rotate-12">
+            <svg className="w-5 h-5 fill-none stroke-current stroke-[1.75]" viewBox="0 0 24 24">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
           <span className="font-serif font-light text-2xl md:text-3xl tracking-[0.35em] text-[#1a1a1a] uppercase leading-none pl-[0.35em] transition-opacity duration-300 group-hover:opacity-75">
             Lunar
           </span>
