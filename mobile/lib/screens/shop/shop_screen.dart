@@ -23,6 +23,7 @@ class ShopScreen extends StatefulWidget {
 class _ShopScreenState extends State<ShopScreen> {
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  bool _isSingleColumn = false;
 
   @override
   void initState() {
@@ -113,6 +114,73 @@ class _ShopScreenState extends State<ShopScreen> {
     );
   }
 
+  void _showCategoryBottomSheet(BuildContext context) {
+    final provider = context.read<ProductProvider>();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Select Category',
+                        style: GoogleFonts.cormorantGaramond(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close_rounded, size: 20),
+                        onPressed: () => Navigator.pop(ctx),
+                      ),
+                    ],
+                  ),
+                ),
+                const Divider(),
+                ListTile(
+                  title: const Text('All Categories'),
+                  trailing: (provider.selectedCategory == null || provider.selectedCategory == 'all')
+                      ? const Icon(Icons.check_rounded, color: AppColors.primary)
+                      : null,
+                  onTap: () {
+                    provider.setCategory('all');
+                    Navigator.pop(ctx);
+                  },
+                ),
+                ...provider.categories.map((cat) {
+                  final isSelected = provider.selectedCategory == cat.slug;
+                  return ListTile(
+                    title: Text(cat.name),
+                    trailing: isSelected ? const Icon(Icons.check_rounded, color: AppColors.primary) : null,
+                    onTap: () {
+                      provider.setCategory(cat.slug);
+                      Navigator.pop(ctx);
+                    },
+                  );
+                }),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -128,6 +196,26 @@ class _ShopScreenState extends State<ShopScreen> {
           ),
         ),
         actions: [
+          // View Mode Switcher: 1-Column vs 2-Column
+          IconButton(
+            icon: Icon(
+              _isSingleColumn ? Icons.grid_view_rounded : Icons.crop_square_rounded,
+              color: isDark ? AppColors.primary : AppColors.lightText,
+            ),
+            tooltip: _isSingleColumn ? 'Switch to 2-Column Grid' : 'Switch to Full Width (1 Column)',
+            onPressed: () {
+              setState(() {
+                _isSingleColumn = !_isSingleColumn;
+              });
+            },
+          ),
+          // Category Menu Button
+          IconButton(
+            icon: const Icon(Icons.category_outlined),
+            tooltip: 'Categories',
+            onPressed: () => _showCategoryBottomSheet(context),
+          ),
+          // Sort Button
           IconButton(
             icon: const Icon(Icons.sort_rounded),
             tooltip: 'Sort',
@@ -201,14 +289,14 @@ class _ShopScreenState extends State<ShopScreen> {
           ),
           const SizedBox(height: 8),
 
-          // Active filter indicator & Total count
+          // Active filter indicator & Total count + View Mode label
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Found: ${provider.totalCount} items',
+                  'Found: ${provider.totalCount} items ${_isSingleColumn ? '• Full Width' : ''}',
                   style: TextStyle(
                     fontSize: 12,
                     color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
@@ -255,9 +343,9 @@ class _ShopScreenState extends State<ShopScreen> {
                         child: GridView.builder(
                           controller: _scrollController,
                           padding: const EdgeInsets.all(16),
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            childAspectRatio: 0.62,
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: _isSingleColumn ? 1 : 2,
+                            childAspectRatio: _isSingleColumn ? 0.95 : 0.62,
                             crossAxisSpacing: 12,
                             mainAxisSpacing: 12,
                           ),
