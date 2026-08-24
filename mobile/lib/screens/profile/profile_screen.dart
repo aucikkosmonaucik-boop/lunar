@@ -381,7 +381,7 @@ class ProfileScreen extends StatelessWidget {
           const SizedBox(height: 24),
           Center(
             child: Text(
-              'Lunar Mobile App v1.0.7',
+              'Lunar Mobile App v1.0.8',
               style: TextStyle(
                 fontSize: 11,
                 color: isDark ? Colors.white30 : Colors.black26,
