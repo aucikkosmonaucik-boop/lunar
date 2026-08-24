@@ -510,10 +510,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         ),
                         child: Text(
                           carrier.estimatedDelivery,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 9,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF8C6D4F),
+                            color: isDark ? AppColors.primary : const Color(0xFF8C6D4F),
                           ),
                         ),
                       ),
