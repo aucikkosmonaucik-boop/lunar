@@ -197,9 +197,9 @@ const ShopPage: React.FC = () => {
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
           
           {/* ======================================================== */}
-          {/* LEFT SIDEBAR (Sticky on Desktop)                          */}
+          {/* LEFT SIDEBAR (Scrolls with page)                          */}
           {/* ======================================================== */}
-          <aside className={`w-full lg:w-64 xl:w-72 shrink-0 space-y-7 ${isMobileFilterOpen ? 'block' : 'hidden lg:block'} lg:sticky lg:top-24`}>
+          <aside className={`w-full lg:w-64 xl:w-72 shrink-0 space-y-7 ${isMobileFilterOpen ? 'block' : 'hidden lg:block'}`}>
             
             {/* 1. Search Box */}
             <div className="bg-white p-4 rounded-xl border border-[#EDE6DF] shadow-xs">
