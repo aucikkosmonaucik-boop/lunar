@@ -227,12 +227,12 @@ const ShopPage: React.FC = () => {
             </div>
 
             {/* 2. Vertical Categories Menu */}
-            <div className="bg-white p-5 rounded-xl border border-[#EDE6DF] shadow-xs">
-              <div className="flex items-center justify-between pb-3 mb-3 border-b border-gray-100">
+            <div className="bg-white p-5 rounded-2xl border border-[#EDE6DF] shadow-xs">
+              <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#EDE6DF]">
                 <span className="text-[11px] uppercase tracking-[0.25em] font-bold text-[#1a1a1a]">
                   Categories
                 </span>
-                <span className="text-[10px] text-gray-400 font-medium">
+                <span className="text-[10px] text-[#8c6d4f] font-semibold bg-[#FAF7F5] px-2 py-0.5 rounded-full border border-[#EDE6DF]">
                   {categories.length}
                 </span>
               </div>
@@ -246,21 +246,33 @@ const ShopPage: React.FC = () => {
                     <button
                       key={cat}
                       onClick={() => handleCategoryChange(cat)}
-                      className={`w-full flex items-center justify-between px-3 py-2 text-left rounded-lg text-xs tracking-wider uppercase transition-all duration-200 group ${
+                      className={`w-full flex items-center justify-between px-3.5 py-2.5 text-left rounded-xl text-xs tracking-wider uppercase transition-all duration-300 group relative overflow-hidden ${
                         isSelected
-                          ? 'bg-[#1a1a1a] text-white font-bold shadow-xs'
-                          : 'text-gray-600 hover:bg-[#FAF7F5] hover:text-[#1a1a1a]'
+                          ? 'bg-[#1a1a1a] text-white font-bold shadow-sm pl-4'
+                          : 'text-gray-600 hover:text-[#1a1a1a] hover:bg-[#FAF6F3] hover:pl-4 border border-transparent hover:border-[#EDE6DF]'
                       }`}
                     >
-                      <span className="flex items-center gap-2 truncate">
-                        {isSelected && <Check className="w-3 h-3 text-[#c1a98f] shrink-0" />}
+                      {/* Left luxury gold accent bar indicator on hover and active */}
+                      <span 
+                        className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 rounded-r-full transition-all duration-300 ${
+                          isSelected ? 'h-3/5 bg-[#C1A98F]' : 'h-0 group-hover:h-3/5 bg-[#C1A98F]'
+                        }`} 
+                      />
+
+                      <span className="flex items-center gap-2.5 truncate z-10 transition-transform duration-300">
+                        {isSelected ? (
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#C1A98F] shrink-0" />
+                        ) : (
+                          <span className="w-1.5 h-1.5 rounded-full bg-transparent group-hover:bg-[#C1A98F]/50 shrink-0 transition-colors" />
+                        )}
                         <span className="truncate">{cat}</span>
                       </span>
+                      
                       <span
-                        className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
+                        className={`text-[10px] px-2 py-0.5 rounded-full font-medium transition-all duration-300 z-10 ${
                           isSelected
-                            ? 'bg-[#c1a98f]/30 text-[#c1a98f]'
-                            : 'text-gray-400 group-hover:text-gray-600'
+                            ? 'bg-[#C1A98F]/20 text-[#C1A98F] font-bold'
+                            : 'text-gray-400 group-hover:text-[#8c6d4f] group-hover:bg-[#C1A98F]/15 group-hover:font-semibold'
                         }`}
                       >
                         {count}
@@ -272,8 +284,8 @@ const ShopPage: React.FC = () => {
             </div>
 
             {/* 3. Curated Collections / Badges */}
-            <div className="bg-white p-5 rounded-xl border border-[#EDE6DF] shadow-xs">
-              <div className="flex items-center justify-between pb-3 mb-3 border-b border-gray-100">
+            <div className="bg-white p-5 rounded-2xl border border-[#EDE6DF] shadow-xs">
+              <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#EDE6DF]">
                 <span className="text-[11px] uppercase tracking-[0.25em] font-bold text-[#1a1a1a]">
                   Curated Filters
                 </span>
@@ -287,19 +299,31 @@ const ShopPage: React.FC = () => {
                     <button
                       key={col.tag}
                       onClick={() => handleTagChange(col.tag)}
-                      className={`w-full flex items-center justify-between px-3 py-2 text-left rounded-lg text-xs tracking-wider uppercase transition-all duration-200 ${
+                      className={`w-full flex items-center justify-between px-3.5 py-2.5 text-left rounded-xl text-xs tracking-wider uppercase transition-all duration-300 group relative overflow-hidden ${
                         isSelected
-                          ? 'bg-[#c1a98f] text-black font-bold shadow-xs'
-                          : 'text-gray-600 hover:bg-[#FAF7F5] hover:text-[#1a1a1a]'
+                          ? 'bg-[#C1A98F] text-black font-bold shadow-sm'
+                          : 'text-gray-600 hover:text-[#1a1a1a] hover:bg-[#FAF6F3] hover:pl-4 border border-transparent hover:border-[#EDE6DF]'
                       }`}
                     >
-                      <span className="flex items-center gap-2">
-                        {isSelected && <Check className="w-3 h-3 text-black shrink-0" />}
+                      <span 
+                        className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 rounded-r-full transition-all duration-300 ${
+                          isSelected ? 'h-3/5 bg-black' : 'h-0 group-hover:h-3/5 bg-[#C1A98F]'
+                        }`} 
+                      />
+
+                      <span className="flex items-center gap-2.5">
+                        {isSelected ? (
+                          <Check className="w-3.5 h-3.5 text-black shrink-0" />
+                        ) : (
+                          <span className="w-1.5 h-1.5 rounded-full bg-transparent group-hover:bg-[#C1A98F] shrink-0 transition-colors" />
+                        )}
                         <span>{col.label}</span>
                       </span>
                       {col.badge && (
-                        <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${
-                          isSelected ? 'bg-black text-white' : 'bg-gray-100 text-gray-500'
+                        <span className={`text-[9px] font-bold px-2 py-0.5 rounded-md transition-colors ${
+                          isSelected 
+                            ? 'bg-black text-white' 
+                            : 'bg-[#FAF7F5] border border-[#EDE6DF] text-gray-500 group-hover:border-[#C1A98F]/40 group-hover:text-[#8c6d4f]'
                         }`}>
                           {col.badge}
                         </span>
