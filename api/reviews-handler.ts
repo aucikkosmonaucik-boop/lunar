@@ -112,9 +112,28 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(400).json({ message: 'Rating must be a number between 1 and 5' });
       }
 
+      // Find product by id or slug to ensure valid foreign key
+      let targetProductId = productId;
+      let matchedProduct = null;
+      try {
+        matchedProduct = await (prisma as any).product.findFirst({
+          where: {
+            OR: [
+              { id: productId },
+              { slug: productId },
+            ],
+          },
+        });
+        if (matchedProduct) {
+          targetProductId = matchedProduct.id;
+        }
+      } catch (findErr) {
+        console.warn('Product lookup warning in reviews:', findErr);
+      }
+
       const created = await (prisma as any).review.create({
         data: {
-          productId,
+          productId: targetProductId,
           authorName: authorName.trim(),
           rating: Math.round(numRating),
           title: title ? title.trim() : null,
@@ -125,23 +144,37 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         },
       });
 
-      // Recalculate product rating and count
-      const allProductReviews = await (prisma as any).review.findMany({
-        where: { productId },
-        select: { rating: true },
-      });
+      // Recalculate product rating and count if product exists in DB
+      let newRating = Math.round(numRating);
+      let totalReviews = 1;
 
-      const totalReviews = allProductReviews.length;
-      const sum = allProductReviews.reduce((acc: number, r: { rating: number }) => acc + r.rating, 0);
-      const newRating = Number((sum / totalReviews).toFixed(1));
+      try {
+        const allProductReviews = await (prisma as any).review.findMany({
+          where: {
+            OR: [
+              { productId: targetProductId },
+              { productId: productId },
+            ],
+          },
+          select: { rating: true },
+        });
 
-      await (prisma as any).product.update({
-        where: { id: productId },
-        data: {
-          rating: newRating,
-          reviewCount: totalReviews,
-        },
-      });
+        totalReviews = allProductReviews.length;
+        const sum = allProductReviews.reduce((acc: number, r: { rating: number }) => acc + r.rating, 0);
+        newRating = Number((sum / totalReviews).toFixed(1));
+
+        if (matchedProduct) {
+          await (prisma as any).product.update({
+            where: { id: targetProductId },
+            data: {
+              rating: newRating,
+              reviewCount: totalReviews,
+            },
+          });
+        }
+      } catch (updateErr) {
+        console.warn('Could not update product stats in DB:', updateErr);
+      }
 
       return res.status(201).json({
         success: true,
@@ -175,9 +208,32 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).json({ reviews, total: reviews.length });
     }
 
-    // Fetch reviews for specific product
+    // Fetch reviews for specific product (by id or slug)
+    let targetProductId = productId;
+    try {
+      const matchedProduct = await (prisma as any).product.findFirst({
+        where: {
+          OR: [
+            { id: productId },
+            { slug: productId },
+          ],
+        },
+        select: { id: true },
+      });
+      if (matchedProduct) {
+        targetProductId = matchedProduct.id;
+      }
+    } catch (prodLookupErr) {
+      console.warn('Lookup product failed:', prodLookupErr);
+    }
+
     const reviews = await (prisma as any).review.findMany({
-      where: { productId },
+      where: {
+        OR: [
+          { productId: targetProductId },
+          { productId: productId },
+        ],
+      },
       orderBy: { createdAt: 'desc' },
     });
 

@@ -6,6 +6,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/utils/formatters.dart';
 import '../../models/product_model.dart';
 import '../../models/review_model.dart';
+import '../../providers/auth_provider.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/product_provider.dart';
 import '../../providers/wishlist_provider.dart';
@@ -28,6 +29,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   final String? _selectedOption = null;
   List<Review> _reviews = [];
   bool _isLoadingReviews = true;
+  bool _showAllReviews = false;
 
   @override
   void initState() {
@@ -46,9 +48,21 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   void _showAddReviewModal() {
-    final nameController = TextEditingController();
+    final authUser = context.read<AuthProvider>().user;
+    final nameController = TextEditingController(text: authUser?.name ?? '');
+    final titleController = TextEditingController();
     final commentController = TextEditingController();
     int rating = 5;
+    bool isSubmitting = false;
+    String? formError;
+
+    final ratingDescriptions = {
+      5: '5 Stars — Exceptional quality & craftsmanship',
+      4: '4 Stars — Very Good, exceeded expectations',
+      3: '3 Stars — Average, satisfactory piece',
+      2: '2 Stars — Below expectations',
+      1: '1 Star — Unsatisfactory',
+    };
 
     showModalBottomSheet(
       context: context,
@@ -71,10 +85,34 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Write a Review',
-                    style: GoogleFonts.cormorantGaramond(fontSize: 22, fontWeight: FontWeight.w700),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Write a Review',
+                        style: GoogleFonts.cormorantGaramond(fontSize: 22, fontWeight: FontWeight.w700),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close, size: 20),
+                        onPressed: () => Navigator.pop(ctx),
+                      ),
+                    ],
                   ),
+                  if (formError != null) ...[
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.red.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
+                      ),
+                      child: Text(
+                        formError!,
+                        style: const TextStyle(color: Colors.red, fontSize: 12),
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 12),
                   Row(
                     children: List.generate(5, (index) {
@@ -84,44 +122,95 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           color: AppColors.accent,
                           size: 32,
                         ),
-                        onPressed: () => setModalState(() => rating = index + 1),
+                        onPressed: isSubmitting ? null : () => setModalState(() => rating = index + 1),
                       );
                     }),
+                  ),
+                  Text(
+                    ratingDescriptions[rating] ?? '',
+                    style: const TextStyle(fontSize: 11, color: AppColors.accent, fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(height: 12),
                   TextField(
                     controller: nameController,
-                    decoration: const InputDecoration(labelText: 'Your Name'),
+                    enabled: !isSubmitting,
+                    decoration: const InputDecoration(
+                      labelText: 'Your Name *',
+                      hintText: 'e.g. Charlotte Vance',
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: titleController,
+                    enabled: !isSubmitting,
+                    decoration: const InputDecoration(
+                      labelText: 'Review Headline (Optional)',
+                      hintText: 'e.g. Exquisite quality',
+                    ),
                   ),
                   const SizedBox(height: 12),
                   TextField(
                     controller: commentController,
+                    enabled: !isSubmitting,
                     maxLines: 3,
-                    decoration: const InputDecoration(labelText: 'Review Comments'),
+                    decoration: const InputDecoration(
+                      labelText: 'Your Review Comments *',
+                      hintText: 'Describe quality, scent, shine, or unboxing...',
+                    ),
                   ),
                   const SizedBox(height: 20),
                   CustomButton(
-                    text: 'Submit Review',
-                    onPressed: () async {
-                      if (nameController.text.trim().isEmpty || commentController.text.trim().isEmpty) return;
-                      final prodProvider = context.read<ProductProvider>();
-                      final messenger = ScaffoldMessenger.of(context);
-                      Navigator.pop(ctx);
-                      final success = await prodProvider.addReview(
-                        productId: widget.product.id,
-                        authorName: nameController.text.trim(),
-                        rating: rating,
-                        comment: commentController.text.trim(),
-                      );
-                      if (success) {
-                        _loadReviews();
-                        if (mounted) {
-                          messenger.showSnackBar(
-                            const SnackBar(content: Text('Thank you for your review!')),
-                          );
-                        }
-                      }
-                    },
+                    text: isSubmitting ? 'Submitting...' : 'Submit Review',
+                    isLoading: isSubmitting,
+                    onPressed: isSubmitting
+                        ? null
+                        : () async {
+                            final name = nameController.text.trim();
+                            final comment = commentController.text.trim();
+                            final title = titleController.text.trim();
+
+                            if (name.isEmpty) {
+                              setModalState(() => formError = 'Please enter your name.');
+                              return;
+                            }
+                            if (comment.isEmpty) {
+                              setModalState(() => formError = 'Please enter your review comments.');
+                              return;
+                            }
+
+                            setModalState(() {
+                              isSubmitting = true;
+                              formError = null;
+                            });
+
+                            final prodProvider = context.read<ProductProvider>();
+                            final messenger = ScaffoldMessenger.of(context);
+
+                            final success = await prodProvider.addReview(
+                              productId: widget.product.id,
+                              authorName: name,
+                              rating: rating,
+                              comment: comment,
+                              title: title.isNotEmpty ? title : null,
+                            );
+
+                            if (ctx.mounted) {
+                              Navigator.pop(ctx);
+                            }
+
+                            if (success) {
+                              await _loadReviews();
+                              if (mounted) {
+                                messenger.showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Thank you! Your review has been published under this piece.'),
+                                    backgroundColor: Colors.black87,
+                                    behavior: SnackBarBehavior.floating,
+                                  ),
+                                );
+                              }
+                            }
+                          },
                   ),
                 ],
               ),
@@ -433,55 +522,172 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         'Customer Reviews (${_reviews.length})',
                         style: GoogleFonts.cormorantGaramond(fontSize: 18, fontWeight: FontWeight.w700),
                       ),
-                      TextButton(
+                      TextButton.icon(
                         onPressed: _showAddReviewModal,
-                        child: const Text('+ Write a Review', style: TextStyle(color: AppColors.primary)),
+                        icon: const Icon(Icons.rate_review_outlined, size: 16, color: AppColors.primary),
+                        label: const Text('+ Write a Review', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600)),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                   if (_isLoadingReviews)
-                    const Center(child: CircularProgressIndicator(color: AppColors.primary))
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 24),
+                      child: Center(child: CircularProgressIndicator(color: AppColors.primary)),
+                    )
                   else if (_reviews.isEmpty)
-                    Text(
-                      'No reviews yet. Be the first to share your thoughts on this piece!',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                      ),
+                      child: Column(
+                        children: [
+                          const Icon(Icons.star_outline_rounded, size: 36, color: AppColors.accent),
+                          const SizedBox(height: 8),
+                          Text(
+                            'No reviews yet',
+                            style: GoogleFonts.cormorantGaramond(fontSize: 16, fontWeight: FontWeight.w700),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Be the first to share your thoughts on this exquisite piece!',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          OutlinedButton(
+                            onPressed: _showAddReviewModal,
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: AppColors.primary),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                            ),
+                            child: const Text('Write First Review', style: TextStyle(color: AppColors.primary, fontSize: 12)),
+                          ),
+                        ],
                       ),
                     )
-                  else
-                    ..._reviews.take(3).map(
-                      (r) => Container(
+                  else ...[
+                    ...(_showAllReviews ? _reviews : _reviews.take(3)).map((r) {
+                      final initials = r.authorName.trim().isNotEmpty
+                          ? r.authorName.trim().split(' ').map((e) => e.isNotEmpty ? e[0] : '').take(2).join().toUpperCase()
+                          : 'U';
+                      final dateStr = r.createdAt != null
+                          ? '${r.createdAt!.day.toString().padLeft(2, '0')}.${r.createdAt!.month.toString().padLeft(2, '0')}.${r.createdAt!.year}'
+                          : '';
+
+                      return Container(
                         margin: const EdgeInsets.only(bottom: 12),
-                        padding: const EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(14),
                         decoration: BoxDecoration(
                           color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(12),
                           border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text(r.authorName, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+                                CircleAvatar(
+                                  radius: 16,
+                                  backgroundColor: AppColors.primary.withValues(alpha: 0.15),
+                                  child: Text(
+                                    initials,
+                                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.primary),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Flexible(
+                                            child: Text(
+                                              r.authorName,
+                                              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          if (r.verified) ...[
+                                            const SizedBox(width: 6),
+                                            Container(
+                                              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
+                                              decoration: BoxDecoration(
+                                                color: Colors.green.withValues(alpha: 0.1),
+                                                borderRadius: BorderRadius.circular(4),
+                                                border: Border.all(color: Colors.green.withValues(alpha: 0.3)),
+                                              ),
+                                              child: const Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Icon(Icons.verified, size: 10, color: Colors.green),
+                                                  SizedBox(width: 3),
+                                                  Text('Verified', style: TextStyle(fontSize: 9, color: Colors.green, fontWeight: FontWeight.w600)),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ],
+                                      ),
+                                      if (dateStr.isNotEmpty)
+                                        Text(
+                                          dateStr,
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
                                 RatingStars(rating: r.rating.toDouble(), size: 12),
                               ],
                             ),
-                            const SizedBox(height: 4),
+                            if (r.title != null && r.title!.trim().isNotEmpty) ...[
+                              const SizedBox(height: 8),
+                              Text(
+                                r.title!,
+                                style: GoogleFonts.cormorantGaramond(fontSize: 15, fontWeight: FontWeight.w700),
+                              ),
+                            ],
+                            const SizedBox(height: 6),
                             Text(
                               r.comment,
                               style: TextStyle(
                                 fontSize: 13,
-                                color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                                height: 1.4,
+                                color: isDark ? AppColors.darkText : AppColors.lightText,
                               ),
                             ),
                           ],
                         ),
+                      );
+                    }),
+                    if (_reviews.length > 3) ...[
+                      const SizedBox(height: 4),
+                      Center(
+                        child: TextButton(
+                          onPressed: () => setState(() => _showAllReviews = !_showAllReviews),
+                          child: Text(
+                            _showAllReviews
+                                ? 'Show Fewer Reviews'
+                                : 'Show All ${_reviews.length} Reviews',
+                            style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600),
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
+                  ],
 
                   const SizedBox(height: 30),
                 ],

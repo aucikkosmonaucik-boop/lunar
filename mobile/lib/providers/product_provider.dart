@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import '../core/constants/api_constants.dart';
 import '../core/services/api_service.dart';
+import '../core/services/storage_service.dart';
 import '../models/product_model.dart';
 import '../models/category_model.dart';
 import '../models/review_model.dart';
@@ -225,21 +226,180 @@ class ProductProvider extends ChangeNotifier {
     return null;
   }
 
+  // --- Customer Reviews with local storage and backend sync ---
+
+  static final List<Review> _seedReviews = [
+    Review(
+      id: 'rev-101',
+      productId: '1',
+      authorName: 'Charlotte Vance',
+      rating: 5,
+      title: 'Pure springtime elegance',
+      comment: 'The scent opens with subtle fresh peony and settles into a dreamy, velvety floral aroma. I receive compliments every single day at the gallery. Lasts over 8 hours on my pulse points!',
+      verified: true,
+      helpfulCount: 24,
+      createdAt: DateTime.tryParse('2025-10-18T14:32:00.000Z'),
+    ),
+    Review(
+      id: 'rev-102',
+      productId: '1',
+      authorName: 'Elena Rostova',
+      rating: 5,
+      title: 'Compact luxury at its finest',
+      comment: 'The 33ml size is ideal for travel and evening clutches. The glass bottle feels weightless yet substantial. A warm, feminine and delightfully romantic aroma.',
+      verified: true,
+      helpfulCount: 15,
+      createdAt: DateTime.tryParse('2025-11-04T09:15:00.000Z'),
+    ),
+    Review(
+      id: 'rev-201',
+      productId: '2',
+      authorName: 'Genevieve Monet',
+      rating: 5,
+      title: 'Crisp white lilies and ethereal jasmine',
+      comment: 'So fresh and uplifting. It gives an immediate aura of clean sophistication. Packaging and atomiser spray dispersion are top-tier.',
+      verified: true,
+      helpfulCount: 31,
+      createdAt: DateTime.tryParse('2025-09-29T11:20:00.000Z'),
+    ),
+    Review(
+      id: 'rev-301',
+      productId: '3',
+      authorName: 'Amara Sinclair',
+      rating: 5,
+      title: 'Sweet cherry blossom with vanilla',
+      comment: 'Warm, inviting, and truly captivating. It strikes the perfect balance between fruity floral freshness and sweet warmth.',
+      verified: true,
+      helpfulCount: 14,
+      createdAt: DateTime.tryParse('2025-12-05T18:10:00.000Z'),
+    ),
+    Review(
+      id: 'rev-401',
+      productId: '4',
+      authorName: 'Natalia Duprès',
+      rating: 5,
+      title: 'Intense, mysterious, and captivating',
+      comment: 'A magnificent blend of dark Turkish rose and warm amber resin. It exudes quiet confidence and elegance. A true head-turner.',
+      verified: true,
+      helpfulCount: 42,
+      createdAt: DateTime.tryParse('2025-08-14T20:11:00.000Z'),
+    ),
+    Review(
+      id: 'rev-501',
+      productId: '5',
+      authorName: 'Madeleine Thorne',
+      rating: 5,
+      title: 'Architectural minimalism done to perfection',
+      comment: 'The polished 925 sterling silver has a mirror-like sheen. They catch the light effortlessly without pulling down on my earlobes. Featherlight and exceptionally well crafted.',
+      verified: true,
+      helpfulCount: 38,
+      createdAt: DateTime.tryParse('2025-10-02T15:20:00.000Z'),
+    ),
+    Review(
+      id: 'rev-601',
+      productId: '6',
+      authorName: 'Julianne Ward',
+      rating: 5,
+      title: 'Warm radiance and breathtaking details',
+      comment: 'The sun pendant has intricate tactile rays that radiate luxury. The 18k gold tone is rich and warm, not brassy. The adjustable chain makes it versatile for different necklines.',
+      verified: true,
+      helpfulCount: 29,
+      createdAt: DateTime.tryParse('2025-09-17T14:45:00.000Z'),
+    ),
+    Review(
+      id: 'rev-701',
+      productId: '7',
+      authorName: 'Seraphina Leighton',
+      rating: 5,
+      title: 'Mesmerizing brilliance and timeless design',
+      comment: 'The emerald-cut zirconia has astonishing clarity and fire. The prong setting feels sturdy and snag-free against knitwear. Truly a staple in my fine jewelry collection.',
+      verified: true,
+      helpfulCount: 52,
+      createdAt: DateTime.tryParse('2025-08-30T10:14:00.000Z'),
+    ),
+    Review(
+      id: 'rev-1001',
+      productId: '10',
+      authorName: 'Gwendolyn Frost',
+      rating: 5,
+      title: 'Natural baroque luster is extraordinary',
+      comment: 'Each pearl has its own organic contour and stunning orient. The gold huggie clasp snaps securely with a satisfying click. Ideal for special celebrations.',
+      verified: true,
+      helpfulCount: 47,
+      createdAt: DateTime.tryParse('2025-07-22T09:40:00.000Z'),
+    ),
+    Review(
+      id: 'rev-1401',
+      productId: '14',
+      authorName: 'Vivienne St. Claire',
+      rating: 5,
+      title: 'Pure fairytale perfection for bridal wear',
+      comment: 'I wore this suite on my wedding day in Lake Como. The crystal cascades caught the sunset light magnificently in photos. The craftsmanship is haute couture standard.',
+      verified: true,
+      helpfulCount: 78,
+      createdAt: DateTime.tryParse('2025-06-18T16:20:00.000Z'),
+    ),
+  ];
+
   Future<List<Review>> getProductReviews(String productId) async {
+    // 1. Load cached reviews from local SharedPreferences
+    List<Map<String, dynamic>> stored = StorageService.getStoredReviews();
+    if (stored.isEmpty) {
+      // Seed default reviews if empty
+      stored = _seedReviews.map((r) => r.toJson()).toList();
+      await StorageService.saveStoredReviews(stored);
+    }
+
+    final localList = stored
+        .map((j) => Review.fromJson(j))
+        .where((r) => r.productId == productId || r.productId == productId.toString())
+        .toList();
+
+    // 2. Try fetching latest reviews from API in background/network
     try {
       final res = await ApiService.get(
         ApiConstants.reviews,
         queryParams: {'productId': productId},
       );
       if (res is Map && res['reviews'] is List) {
-        return (res['reviews'] as List)
+        final apiReviews = (res['reviews'] as List)
             .map((r) => Review.fromJson(r as Map<String, dynamic>))
             .toList();
+
+        if (apiReviews.isNotEmpty) {
+          // Merge API reviews into local cache avoiding duplicates
+          final allCached = StorageService.getStoredReviews().map((j) => Review.fromJson(j)).toList();
+          final existingIds = allCached.map((r) => r.id).toSet();
+
+          for (final ar in apiReviews) {
+            if (!existingIds.contains(ar.id)) {
+              allCached.insert(0, ar);
+              existingIds.add(ar.id);
+            }
+          }
+          await StorageService.saveStoredReviews(allCached.map((r) => r.toJson()).toList());
+
+          // Sort descending by date
+          apiReviews.sort((a, b) {
+            final da = a.createdAt ?? DateTime(2025);
+            final db = b.createdAt ?? DateTime(2025);
+            return db.compareTo(da);
+          });
+          return apiReviews;
+        }
       }
     } catch (e) {
-      debugPrint('Error fetching reviews: $e');
+      debugPrint('Online fetch reviews warning: $e');
     }
-    return [];
+
+    // Sort local reviews by date descending
+    localList.sort((a, b) {
+      final da = a.createdAt ?? DateTime(2025);
+      final db = b.createdAt ?? DateTime(2025);
+      return db.compareTo(da);
+    });
+
+    return localList;
   }
 
   Future<bool> addReview({
@@ -249,6 +409,27 @@ class ProductProvider extends ChangeNotifier {
     required String comment,
     String? title,
   }) async {
+    // 1. Create review object immediately (optimistic update)
+    final newReview = Review(
+      id: 'rev-${DateTime.now().millisecondsSinceEpoch}',
+      productId: productId,
+      authorName: authorName,
+      rating: rating,
+      comment: comment,
+      title: title,
+      verified: true,
+      helpfulCount: 0,
+      createdAt: DateTime.now(),
+    );
+
+    // 2. Save directly to local persistent storage
+    await StorageService.addStoredReview(newReview.toJson());
+
+    // 3. Update in-memory product statistics (rating & review count)
+    _updateProductStatsInMemory(productId, rating);
+    notifyListeners();
+
+    // 4. Send to backend REST API
     try {
       await ApiService.post(
         ApiConstants.reviews,
@@ -260,10 +441,59 @@ class ProductProvider extends ChangeNotifier {
           'title': title,
         },
       );
-      return true;
     } catch (e) {
-      debugPrint('Error adding review: $e');
-      return false;
+      debugPrint('Backend review submission warning: $e');
+      // Even if network fails, the review is safely persisted locally!
     }
+
+    return true;
+  }
+
+  void _updateProductStatsInMemory(String productId, int newRating) {
+    void updateList(List<Product> list) {
+      final index = list.indexWhere((p) => p.id == productId || p.slug == productId);
+      if (index != -1) {
+        final p = list[index];
+        final newCount = p.reviewCount + 1;
+        final newAvg = NumberFormatUtils.calculateNewAverage(p.rating, p.reviewCount, newRating.toDouble());
+        list[index] = Product(
+          id: p.id,
+          name: p.name,
+          slug: p.slug,
+          description: p.description,
+          price: p.price,
+          originalPrice: p.originalPrice,
+          image: p.image,
+          images: p.images,
+          categorySlug: p.categorySlug,
+          categoryId: p.categoryId,
+          categoryName: p.categoryName,
+          subcategory: p.subcategory,
+          badge: p.badge,
+          rating: newAvg,
+          reviewCount: newCount,
+          stock: p.stock,
+          tags: p.tags,
+          features: p.features,
+          isAvailable: p.isAvailable,
+          isFeatured: p.isFeatured,
+          createdAt: p.createdAt,
+        );
+      }
+    }
+
+    updateList(_products);
+    updateList(_featuredProducts);
+    updateList(_bestsellers);
+    updateList(_newArrivals);
+  }
+}
+
+class NumberFormatUtils {
+  static double calculateNewAverage(double currentRating, int currentCount, double newRating) {
+    if (currentCount <= 0) return newRating;
+    final sum = (currentRating * currentCount) + newRating;
+    final total = currentCount + 1;
+    return double.parse((sum / total).toStringAsFixed(1));
   }
 }

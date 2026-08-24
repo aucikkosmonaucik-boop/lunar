@@ -37,4 +37,19 @@ class Review {
       createdAt: json['createdAt'] != null ? DateTime.tryParse(json['createdAt'].toString()) : null,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'productId': productId,
+      'userId': userId,
+      'authorName': authorName,
+      'rating': rating,
+      'title': title,
+      'comment': comment,
+      'verified': verified,
+      'helpfulCount': helpfulCount,
+      'createdAt': createdAt?.toIso8601String(),
+    };
+  }
 }

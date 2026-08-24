@@ -7,11 +7,40 @@ class StorageService {
   static const String _keyThemeMode = 'theme_mode';
   static const String _keyWishlist = 'wishlist_ids';
   static const String _keyBaseUrl = 'custom_base_url';
+  static const String _keyReviews = 'lunar_cached_reviews_v1';
 
   static SharedPreferences? _prefs;
 
   static Future<void> init() async {
     _prefs ??= await SharedPreferences.getInstance();
+  }
+
+  // Reviews Cache
+  static Future<void> saveStoredReviews(List<Map<String, dynamic>> reviews) async {
+    try {
+      final jsonStr = jsonEncode(reviews);
+      await _prefs?.setString(_keyReviews, jsonStr);
+    } catch (e) {
+      // ignore
+    }
+  }
+
+  static List<Map<String, dynamic>> getStoredReviews() {
+    final str = _prefs?.getString(_keyReviews);
+    if (str == null || str.isEmpty) return [];
+    try {
+      final decoded = jsonDecode(str);
+      if (decoded is List) {
+        return decoded.map((e) => e as Map<String, dynamic>).toList();
+      }
+    } catch (_) {}
+    return [];
+  }
+
+  static Future<void> addStoredReview(Map<String, dynamic> review) async {
+    final current = getStoredReviews();
+    current.insert(0, review);
+    await saveStoredReviews(current);
   }
 
   // Token
