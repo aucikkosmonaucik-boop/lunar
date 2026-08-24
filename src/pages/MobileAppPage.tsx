@@ -90,8 +90,8 @@ const MobileAppPage: React.FC = () => {
             >
               <Download className="w-5 h-5 text-[#8c6d4f] group-hover:scale-110 transition-transform" />
               <div className="flex flex-col text-left">
-                <span className="text-[10px] text-gray-500 uppercase tracking-widest leading-tight">Direct Android Download</span>
-                <span className="font-bold text-base leading-tight text-[#1a1a1a]">Download .APK (Latest)</span>
+                <span className="text-[10px] text-gray-500 uppercase tracking-widest leading-tight">Direct Android Download • v1.1.0</span>
+                <span className="font-bold text-base leading-tight text-[#1a1a1a]">Download .APK (v1.1.0 Latest)</span>
               </div>
             </a>
 
