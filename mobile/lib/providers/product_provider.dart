@@ -341,7 +341,7 @@ class ProductProvider extends ChangeNotifier {
     ),
   ];
 
-  Future<List<Review>> getProductReviews(String productId) async {
+  Future<List<Review>> getProductReviews(String productId, {String? productSlug}) async {
     // 1. Load cached reviews from local SharedPreferences
     List<Map<String, dynamic>> stored = StorageService.getStoredReviews();
     if (stored.isEmpty) {
@@ -349,11 +349,6 @@ class ProductProvider extends ChangeNotifier {
       stored = _seedReviews.map((r) => r.toJson()).toList();
       await StorageService.saveStoredReviews(stored);
     }
-
-    final localList = stored
-        .map((j) => Review.fromJson(j))
-        .where((r) => r.productId == productId || r.productId == productId.toString())
-        .toList();
 
     // 2. Try fetching latest reviews from API in background/network
     try {
@@ -373,36 +368,36 @@ class ProductProvider extends ChangeNotifier {
 
           for (final ar in apiReviews) {
             if (!existingIds.contains(ar.id)) {
-              allCached.insert(0, ar);
+              allCached.add(ar);
               existingIds.add(ar.id);
             }
           }
           await StorageService.saveStoredReviews(allCached.map((r) => r.toJson()).toList());
-
-          // Sort descending by date
-          apiReviews.sort((a, b) {
-            final da = a.createdAt ?? DateTime(2025);
-            final db = b.createdAt ?? DateTime(2025);
-            return db.compareTo(da);
-          });
-          return apiReviews;
         }
       }
     } catch (e) {
       debugPrint('Online fetch reviews warning: $e');
     }
 
+    // 3. Always return all stored reviews for this product (combining local user reviews & API reviews)
+    final updatedStored = StorageService.getStoredReviews().map((j) => Review.fromJson(j)).toList();
+    final productReviews = updatedStored.where((r) {
+      final matchId = r.productId == productId || r.productId == productId.toString();
+      final matchSlug = productSlug != null && productSlug.isNotEmpty && r.productId == productSlug;
+      return matchId || matchSlug;
+    }).toList();
+
     // Sort local reviews by date descending
-    localList.sort((a, b) {
+    productReviews.sort((a, b) {
       final da = a.createdAt ?? DateTime(2025);
       final db = b.createdAt ?? DateTime(2025);
       return db.compareTo(da);
     });
 
-    return localList;
+    return productReviews;
   }
 
-  Future<bool> addReview({
+  Future<Review> addReview({
     required String productId,
     required String authorName,
     required int rating,
@@ -429,24 +424,21 @@ class ProductProvider extends ChangeNotifier {
     _updateProductStatsInMemory(productId, rating);
     notifyListeners();
 
-    // 4. Send to backend REST API
-    try {
-      await ApiService.post(
-        ApiConstants.reviews,
-        body: {
-          'productId': productId,
-          'authorName': authorName,
-          'rating': rating,
-          'comment': comment,
-          'title': title,
-        },
-      );
-    } catch (e) {
+    // 4. Send to backend REST API in background
+    ApiService.post(
+      ApiConstants.reviews,
+      body: {
+        'productId': productId,
+        'authorName': authorName,
+        'rating': rating,
+        'comment': comment,
+        'title': title,
+      },
+    ).catchError((e) {
       debugPrint('Backend review submission warning: $e');
-      // Even if network fails, the review is safely persisted locally!
-    }
+    });
 
-    return true;
+    return newReview;
   }
 
   void _updateProductStatsInMemory(String productId, int newRating) {

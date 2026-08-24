@@ -38,7 +38,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   Future<void> _loadReviews() async {
-    final reviews = await context.read<ProductProvider>().getProductReviews(widget.product.id);
+    final reviews = await context.read<ProductProvider>().getProductReviews(
+      widget.product.id,
+      productSlug: widget.product.slug,
+    );
     if (mounted) {
       setState(() {
         _reviews = reviews;
@@ -186,7 +189,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             final prodProvider = context.read<ProductProvider>();
                             final messenger = ScaffoldMessenger.of(context);
 
-                            final success = await prodProvider.addReview(
+                            final newReview = await prodProvider.addReview(
                               productId: widget.product.id,
                               authorName: name,
                               rating: rating,
@@ -198,17 +201,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               Navigator.pop(ctx);
                             }
 
-                            if (success) {
-                              await _loadReviews();
-                              if (mounted) {
-                                messenger.showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Thank you! Your review has been published under this piece.'),
-                                    backgroundColor: Colors.black87,
-                                    behavior: SnackBarBehavior.floating,
-                                  ),
-                                );
-                              }
+                            if (mounted) {
+                              setState(() {
+                                _reviews.removeWhere((r) => r.id == newReview.id);
+                                _reviews.insert(0, newReview);
+                              });
+                              messenger.showSnackBar(
+                                const SnackBar(
+                                  content: Text('Thank you! Your review has been published under this piece.'),
+                                  backgroundColor: Colors.black87,
+                                  behavior: SnackBarBehavior.floating,
+                                ),
+                              );
                             }
                           },
                   ),
