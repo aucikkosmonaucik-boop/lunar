@@ -34,9 +34,9 @@ const HomePage: React.FC = () => {
         
         <div className="relative z-10 text-center text-white px-4">
           <h1 className="text-5xl md:text-7xl lg:text-[80px] font-serif italic mb-6 shadow-sm leading-[0.9]">Discover True Elegance</h1>
-          <p className="text-base md:text-xl uppercase tracking-widest mb-10 shadow-sm">The new collection by Agatha G.</p>
+          <p className="text-base md:text-xl uppercase tracking-widest mb-10 shadow-sm">The new Lunar Collection</p>
           <Link 
-            to="/shop?category=jewelry" 
+            to="/shop" 
             className="inline-block bg-white text-black px-12 py-5 text-sm uppercase tracking-widest font-bold hover:bg-black hover:text-white transition-colors duration-300"
           >
             Shop the Collection
@@ -73,10 +73,10 @@ const HomePage: React.FC = () => {
             Crafted for the modern aesthetic, our pieces are designed to be worn every day and cherished forever. Explore delicate chains, bold statements, and everything in between.
           </p>
           <Link 
-            to="/shop?category=jewelry" 
+            to="/shop" 
             className="text-sm md:text-base font-medium uppercase tracking-widest pb-1 border-b-2 border-black hover:text-gray-500 hover:border-gray-500 transition-colors"
           >
-            Explore Jewelry
+            Explore All Collection
           </Link>
         </div>
       </section>
