@@ -16,6 +16,12 @@ class ShopScreen extends StatefulWidget {
     this.initialBadge,
   });
 
+  static void showCategoriesBottomSheet(BuildContext context) =>
+      _ShopScreenState.showCategoriesBottomSheet(context);
+
+  static IconData getCategoryIcon(String slug) =>
+      _ShopScreenState.getCategoryIcon(slug);
+
   @override
   State<ShopScreen> createState() => _ShopScreenState();
 }
@@ -114,34 +120,94 @@ class _ShopScreenState extends State<ShopScreen> {
     );
   }
 
-  void _showCategoryBottomSheet(BuildContext context) {
-    final provider = context.read<ProductProvider>();
+  static IconData getCategoryIcon(String slug) {
+    final s = slug.toLowerCase();
+    if (s.contains('ring')) return Icons.diamond_outlined;
+    if (s.contains('earring')) return Icons.auto_awesome_outlined;
+    if (s.contains('necklace')) return Icons.link_rounded;
+    if (s.contains('bracelet')) return Icons.trip_origin_rounded;
+    if (s.contains('bridal')) return Icons.favorite_outline_rounded;
+    if (s.contains('perfume')) return Icons.local_florist_outlined;
+    if (s.contains('gift')) return Icons.card_giftcard_rounded;
+    return Icons.spa_outlined;
+  }
+
+  static void showCategoriesBottomSheet(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (ctx) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20),
+        return Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(ctx).size.height * 0.82,
+          ),
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 20,
+                spreadRadius: 2,
+              )
+            ],
+          ),
+          child: SafeArea(
+            top: false,
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const SizedBox(height: 12),
+                // Drag handle
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: isDark ? Colors.white24 : Colors.black12,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Header
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Select Category',
-                        style: GoogleFonts.cormorantGaramond(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: isDark ? Colors.white10 : const Color(0xFFFAF6F0),
+                          shape: BoxShape.circle,
+                          border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+                        ),
+                        child: const Icon(Icons.menu_rounded, size: 20, color: AppColors.primary),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'All Categories',
+                              style: GoogleFonts.cormorantGaramond(
+                                fontSize: 22,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            Text(
+                              'Explore & filter Lunar collections',
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       IconButton(
@@ -151,28 +217,131 @@ class _ShopScreenState extends State<ShopScreen> {
                     ],
                   ),
                 ),
-                const Divider(),
-                ListTile(
-                  title: const Text('All Categories'),
-                  trailing: (provider.selectedCategory == null || provider.selectedCategory == 'all')
-                      ? const Icon(Icons.check_rounded, color: AppColors.primary)
-                      : null,
-                  onTap: () {
-                    provider.setCategory('all');
-                    Navigator.pop(ctx);
-                  },
+
+                const Divider(height: 20),
+
+                // Categories List
+                Flexible(
+                  child: ListView(
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    children: [
+                      // 1. ALL CATEGORIES (Special highlighted card)
+                      Consumer<ProductProvider>(
+                        builder: (context, prod, _) {
+                          final isAllSelected = prod.selectedCategory == null || prod.selectedCategory == 'all';
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 10),
+                            decoration: BoxDecoration(
+                              color: isAllSelected
+                                  ? (isDark ? AppColors.primary.withValues(alpha: 0.15) : const Color(0xFFFAF6F0))
+                                  : (isDark ? AppColors.darkSurfaceElevated : Colors.grey.withValues(alpha: 0.05)),
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(
+                                color: isAllSelected ? AppColors.primary : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                                width: isAllSelected ? 1.5 : 1.0,
+                              ),
+                            ),
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                              leading: Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: isAllSelected ? AppColors.primary : (isDark ? Colors.white10 : Colors.white),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.auto_awesome_rounded,
+                                  size: 18,
+                                  color: isAllSelected ? Colors.black : AppColors.primary,
+                                ),
+                              ),
+                              title: const Text(
+                                'All Categories / All Products',
+                                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+                              ),
+                              subtitle: const Text(
+                                'Show entire catalog without category filters',
+                                style: TextStyle(fontSize: 11, color: Colors.grey),
+                              ),
+                              trailing: isAllSelected
+                                  ? const Icon(Icons.check_circle_rounded, color: AppColors.primary)
+                                  : const Icon(Icons.chevron_right_rounded, color: Colors.grey),
+                              onTap: () {
+                                prod.setCategory('all');
+                                Navigator.pop(ctx);
+                              },
+                            ),
+                          );
+                        },
+                      ),
+
+                      // List of individual categories
+                      Consumer<ProductProvider>(
+                        builder: (context, prod, _) {
+                          return Column(
+                            children: prod.categories.map((cat) {
+                              final isSelected = prod.selectedCategory == cat.slug;
+                              final icon = getCategoryIcon(cat.slug);
+
+                              return Container(
+                                margin: const EdgeInsets.only(bottom: 8),
+                                decoration: BoxDecoration(
+                                  color: isSelected
+                                      ? (isDark ? AppColors.primary.withValues(alpha: 0.12) : const Color(0xFFFAF6F0))
+                                      : (isDark ? AppColors.darkSurface : AppColors.lightSurface),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: isSelected ? AppColors.primary : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                                    width: isSelected ? 1.5 : 1.0,
+                                  ),
+                                ),
+                                child: ListTile(
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+                                  leading: Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.04),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      icon,
+                                      size: 18,
+                                      color: isSelected ? AppColors.primary : (isDark ? Colors.white70 : Colors.black87),
+                                    ),
+                                  ),
+                                  title: Text(
+                                    cat.name,
+                                    style: TextStyle(
+                                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                                      fontSize: 13.5,
+                                    ),
+                                  ),
+                                  subtitle: cat.description != null && cat.description!.isNotEmpty
+                                      ? Text(
+                                          cat.description!,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(fontSize: 11, color: Colors.grey),
+                                        )
+                                      : null,
+                                  trailing: isSelected
+                                      ? const Icon(Icons.check_rounded, color: AppColors.primary)
+                                      : const Icon(Icons.chevron_right_rounded, size: 18, color: Colors.grey),
+                                  onTap: () {
+                                    prod.setCategory(cat.slug);
+                                    Navigator.pop(ctx);
+                                  },
+                                ),
+                              );
+                            }).toList(),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                  ),
                 ),
-                ...provider.categories.map((cat) {
-                  final isSelected = provider.selectedCategory == cat.slug;
-                  return ListTile(
-                    title: Text(cat.name),
-                    trailing: isSelected ? const Icon(Icons.check_rounded, color: AppColors.primary) : null,
-                    onTap: () {
-                      provider.setCategory(cat.slug);
-                      Navigator.pop(ctx);
-                    },
-                  );
-                }),
               ],
             ),
           ),
@@ -209,11 +378,11 @@ class _ShopScreenState extends State<ShopScreen> {
               });
             },
           ),
-          // Category Menu Button
+          // Category Menu Button (3 horizontal lines)
           IconButton(
-            icon: const Icon(Icons.category_outlined),
-            tooltip: 'Categories',
-            onPressed: () => _showCategoryBottomSheet(context),
+            icon: const Icon(Icons.menu_rounded),
+            tooltip: 'All Categories',
+            onPressed: () => showCategoriesBottomSheet(context),
           ),
           // Sort Button
           IconButton(
@@ -256,14 +425,19 @@ class _ShopScreenState extends State<ShopScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               children: [
                 _buildCategoryChip(
-                  label: 'All',
+                  label: 'All Categories',
+                  icon: Icons.menu_rounded,
                   isSelected: provider.selectedCategory == null || provider.selectedCategory == 'all',
-                  onTap: () => provider.setCategory('all'),
+                  onTap: () {
+                    provider.setCategory('all');
+                    showCategoriesBottomSheet(context);
+                  },
                 ),
                 ...provider.categories.map((cat) {
                   final isSelected = provider.selectedCategory == cat.slug;
                   return _buildCategoryChip(
                     label: cat.name,
+                    icon: getCategoryIcon(cat.slug),
                     isSelected: isSelected,
                     onTap: () => provider.setCategory(cat.slug),
                   );
@@ -373,11 +547,21 @@ class _ShopScreenState extends State<ShopScreen> {
     required String label,
     required bool isSelected,
     required VoidCallback onTap,
+    IconData? icon,
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.only(right: 8),
       child: ChoiceChip(
+        avatar: icon != null
+            ? Icon(
+                icon,
+                size: 14,
+                color: isSelected
+                    ? (isDark ? AppColors.darkBg : Colors.white)
+                    : (isDark ? AppColors.primary : AppColors.lightText),
+              )
+            : null,
         label: Text(label),
         selected: isSelected,
         onSelected: (_) => onTap(),

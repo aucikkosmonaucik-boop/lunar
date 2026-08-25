@@ -39,6 +39,15 @@ class _MainNavScreenState extends State<MainNavScreen> {
     setState(() {
       _currentIndex = index;
     });
+
+    // If tapping Categories (index 1), expand the All Categories bottom sheet
+    if (index == 1) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          ShopScreen.showCategoriesBottomSheet(context);
+        }
+      });
+    }
   }
 
   @override
@@ -71,8 +80,8 @@ class _MainNavScreenState extends State<MainNavScreen> {
               label: 'Home',
             ),
             const BottomNavigationBarItem(
-              icon: Icon(Icons.grid_view_outlined),
-              activeIcon: Icon(Icons.grid_view_rounded),
+              icon: Icon(Icons.menu_rounded),
+              activeIcon: Icon(Icons.menu_rounded),
               label: 'Categories',
             ),
             BottomNavigationBarItem(
