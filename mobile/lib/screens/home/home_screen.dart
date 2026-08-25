@@ -170,151 +170,60 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 18),
 
-            // 3. All Categories Section (z trzema kreskami poziomo)
+            // 3. Categories Bar (Tylko hamburger menu i obok napis "CATEGORIES" bez kółka i zbędnych ikonek)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () => ShopScreen.showCategoriesBottomSheet(context),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            color: isDark ? Colors.white10 : const Color(0xFFFAF6F0),
-                            shape: BoxShape.circle,
-                            border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
-                          ),
-                          child: const Icon(Icons.menu_rounded, size: 18, color: AppColors.primary),
-                        ),
-                        const SizedBox(width: 10),
-                        Text(
-                          'All Categories',
-                          style: GoogleFonts.cormorantGaramond(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w700,
-                            color: isDark ? AppColors.darkText : AppColors.lightText,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  TextButton.icon(
-                    onPressed: () => ShopScreen.showCategoriesBottomSheet(context),
-                    icon: const Icon(Icons.menu_rounded, size: 16, color: AppColors.primary),
-                    label: Text(
-                      'Browse all',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: isDark ? AppColors.primary : AppColors.primaryDark,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 8),
-
-            // Categories horizontal list (Zaczyna się od kafelka "All" z 3 kreskami)
-            SizedBox(
-              height: 92,
-              child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                scrollDirection: Axis.horizontal,
-                children: [
-                  // First Item: All Categories with 3 horizontal bars
-                  GestureDetector(
-                    onTap: () => ShopScreen.showCategoriesBottomSheet(context),
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 12),
-                      child: Column(
+              child: InkWell(
+                onTap: () => ShopScreen.showCategoriesBottomSheet(context),
+                borderRadius: BorderRadius.circular(10),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
                         children: [
-                          Container(
-                            width: 60,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: isDark ? AppColors.primary.withValues(alpha: 0.18) : const Color(0xFFFAF6F0),
-                              border: Border.all(
-                                color: AppColors.primary,
-                                width: 1.5,
-                              ),
-                            ),
-                            child: const Center(
-                              child: Icon(
-                                Icons.menu_rounded,
-                                color: AppColors.primary,
-                                size: 26,
-                              ),
-                            ),
+                          Icon(
+                            Icons.menu_rounded,
+                            size: 22,
+                            color: isDark ? AppColors.primary : AppColors.lightText,
                           ),
-                          const SizedBox(height: 6),
+                          const SizedBox(width: 10),
                           Text(
-                            'All',
-                            style: TextStyle(
-                              fontSize: 11,
+                            'CATEGORIES',
+                            style: GoogleFonts.cormorantGaramond(
+                              fontSize: 21,
                               fontWeight: FontWeight.w700,
-                              color: isDark ? AppColors.primary : AppColors.lightText,
+                              letterSpacing: 2.0,
+                              color: isDark ? AppColors.darkText : AppColors.lightText,
                             ),
                           ),
                         ],
                       ),
-                    ),
-                  ),
-
-                  // Individual Categories
-                  ...productProvider.categories.map((cat) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => ShopScreen(initialCategory: cat.slug),
+                      Row(
+                        children: [
+                          Text(
+                            'All',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: isDark ? AppColors.primary : AppColors.primaryDark,
+                            ),
                           ),
-                        );
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 12),
-                        child: Column(
-                          children: [
-                            Container(
-                              width: 60,
-                              height: 60,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: isDark ? AppColors.darkSurface : AppColors.primaryLight.withValues(alpha: 0.3),
-                                border: Border.all(
-                                  color: isDark ? AppColors.darkBorder : AppColors.primary.withValues(alpha: 0.3),
-                                ),
-                              ),
-                              child: Center(
-                                child: Icon(
-                                  _getCategoryIcon(cat.slug),
-                                  color: isDark ? AppColors.primary : AppColors.primaryDark,
-                                  size: 26,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              cat.name,
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w500,
-                                color: isDark ? AppColors.darkText : AppColors.lightText,
-                              ),
-                            ),
-                          ],
-                        ),
+                          const SizedBox(width: 4),
+                          Icon(
+                            Icons.chevron_right_rounded,
+                            size: 18,
+                            color: isDark ? AppColors.primary : AppColors.primaryDark,
+                          ),
+                        ],
                       ),
-                    );
-                  }),
-                ],
+                    ],
+                  ),
+                ),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
 
             // Featured Products Section
             if (productProvider.featuredProducts.isNotEmpty) ...[
@@ -470,23 +379,5 @@ class HomeScreen extends StatelessWidget {
         },
       ),
     );
-  }
-
-  IconData _getCategoryIcon(String slug) {
-    final lower = slug.toLowerCase();
-    if (lower.contains('earring')) {
-      return Icons.flare_rounded;
-    } else if (lower.contains('ring')) {
-      return Icons.trip_origin_rounded;
-    } else if (lower.contains('necklace')) {
-      return Icons.all_inclusive_rounded;
-    } else if (lower.contains('bracelet')) {
-      return Icons.donut_large_rounded;
-    } else if (lower.contains('bridal')) {
-      return Icons.diamond_rounded;
-    } else if (lower.contains('perfume')) {
-      return Icons.water_drop_outlined;
-    }
-    return Icons.auto_awesome_rounded;
   }
 }
