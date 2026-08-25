@@ -394,12 +394,15 @@ class _ShopScreenState extends State<ShopScreen> {
       ),
       body: Column(
         children: [
-          // Search Box
+          // Search Box (Tylko Search)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
             child: TextField(
               controller: _searchController,
               onSubmitted: (val) => provider.setSearchQuery(val),
+              onChanged: (val) {
+                if (val.isEmpty) provider.setSearchQuery('');
+              },
               decoration: InputDecoration(
                 hintText: 'Search jewelry, earrings, rings, perfumes...',
                 prefixIcon: const Icon(Icons.search_rounded),
@@ -417,73 +420,32 @@ class _ShopScreenState extends State<ShopScreen> {
             ),
           ),
 
-          // Categories horizontal chips
-          SizedBox(
-            height: 44,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              children: [
-                _buildCategoryChip(
-                  label: 'All Categories',
-                  icon: Icons.menu_rounded,
-                  isSelected: provider.selectedCategory == null || provider.selectedCategory == 'all',
-                  onTap: () {
-                    provider.setCategory('all');
-                    showCategoriesBottomSheet(context);
-                  },
-                ),
-                ...provider.categories.map((cat) {
-                  final isSelected = provider.selectedCategory == cat.slug;
-                  return _buildCategoryChip(
-                    label: cat.name,
-                    icon: getCategoryIcon(cat.slug),
-                    isSelected: isSelected,
-                    onTap: () => provider.setCategory(cat.slug),
-                  );
-                }),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
-
-          // Badge Quick Filters (New, Sale, Bestseller, Bridal)
-          SizedBox(
-            height: 36,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              children: [
-                _buildBadgeFilterChip('NEW', 'New Arrivals', provider),
-                _buildBadgeFilterChip('BESTSELLER', 'Bestsellers', provider),
-                _buildBadgeFilterChip('SALE', 'Sale', provider),
-                _buildBadgeFilterChip('BRIDAL', 'Bridal', provider),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
-
-          // Active filter indicator & Total count + View Mode label
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Found: ${provider.totalCount} items ${_isSingleColumn ? '• Full Width' : ''}',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+          // Active filter indicator if any
+          if ((provider.selectedCategory != null && provider.selectedCategory != 'all') ||
+              provider.selectedBadge != null ||
+              provider.searchQuery.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Filtered: ${provider.selectedCategory ?? provider.selectedBadge ?? provider.searchQuery} (${provider.totalCount} items)',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                ),
-                if (provider.selectedCategory != null || provider.selectedBadge != null || provider.searchQuery.isNotEmpty)
                   GestureDetector(
                     onTap: () {
                       _searchController.clear();
                       provider.clearFilters();
                     },
                     child: Text(
-                      'Clear filters',
+                      'Show all',
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
@@ -491,12 +453,13 @@ class _ShopScreenState extends State<ShopScreen> {
                       ),
                     ),
                   ),
-              ],
+                ],
+              ),
             ),
-          ),
+
           const Divider(height: 1),
 
-          // Product Grid
+          // Product Grid (Bezpośrednio pod Search zdjęcia produktów)
           Expanded(
             child: provider.isLoading && provider.products.isEmpty
                 ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
@@ -504,8 +467,8 @@ class _ShopScreenState extends State<ShopScreen> {
                     ? EmptyStateView(
                         icon: Icons.search_off_rounded,
                         title: 'No products found',
-                        message: 'We could not find any products matching your selected criteria.',
-                        buttonText: 'Clear filters',
+                        message: 'We could not find any products matching your search.',
+                        buttonText: 'Clear search',
                         onButtonPressed: () {
                           _searchController.clear();
                           provider.clearFilters();
@@ -539,56 +502,6 @@ class _ShopScreenState extends State<ShopScreen> {
                       ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildCategoryChip({
-    required String label,
-    required bool isSelected,
-    required VoidCallback onTap,
-    IconData? icon,
-  }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Padding(
-      padding: const EdgeInsets.only(right: 8),
-      child: ChoiceChip(
-        avatar: icon != null
-            ? Icon(
-                icon,
-                size: 14,
-                color: isSelected
-                    ? (isDark ? AppColors.darkBg : Colors.white)
-                    : (isDark ? AppColors.primary : AppColors.lightText),
-              )
-            : null,
-        label: Text(label),
-        selected: isSelected,
-        onSelected: (_) => onTap(),
-        selectedColor: isDark ? AppColors.primary : AppColors.lightText,
-        labelStyle: TextStyle(
-          color: isSelected ? (isDark ? AppColors.darkBg : Colors.white) : null,
-          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-          fontSize: 12,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBadgeFilterChip(String badge, String label, ProductProvider provider) {
-    final isSelected = provider.selectedBadge == badge;
-    return Padding(
-      padding: const EdgeInsets.only(right: 6),
-      child: FilterChip(
-        label: Text(label),
-        selected: isSelected,
-        onSelected: (selected) {
-          provider.setBadge(selected ? badge : null);
-        },
-        labelStyle: TextStyle(
-          fontSize: 11,
-          fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-        ),
       ),
     );
   }

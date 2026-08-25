@@ -117,53 +117,156 @@ class HomeScreen extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.symmetric(vertical: 12),
           children: [
-            // Banners Carousel
+            // 1. Banners Carousel (Slajd zdjęć)
             BannerCarousel(banners: sampleBanners),
-            const SizedBox(height: 24),
+            const SizedBox(height: 14),
 
-            // Categories horizontal list
-            if (productProvider.categories.isNotEmpty) ...[
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Categories',
-                      style: GoogleFonts.cormorantGaramond(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                        color: isDark ? AppColors.darkText : AppColors.lightText,
-                      ),
+            // 2. Search Bar (Idealnie pomiędzy slajdem zdjęć a nowym All Categories)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const ShopScreen()),
+                  );
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
                     ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (_) => const ShopScreen()),
-                        );
-                      },
-                      child: Text(
-                        'See all',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: isDark ? AppColors.primary : AppColors.primaryDark,
-                          fontWeight: FontWeight.w600,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.04),
+                        blurRadius: 10,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.search_rounded,
+                        size: 20,
+                        color: isDark ? AppColors.primary : const Color(0xFF8C6D4F),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          'Search jewelry, earrings, rings, perfumes...',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: isDark ? AppColors.darkTextSecondary : const Color(0xFF8E8E93),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-              const SizedBox(height: 8),
-              SizedBox(
-                height: 90,
-                child: ListView.separated(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  scrollDirection: Axis.horizontal,
-                  itemCount: productProvider.categories.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 12),
-                  itemBuilder: (context, index) {
-                    final cat = productProvider.categories[index];
+            ),
+            const SizedBox(height: 18),
+
+            // 3. All Categories Section (z trzema kreskami poziomo)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () => ShopScreen.showCategoriesBottomSheet(context),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: isDark ? Colors.white10 : const Color(0xFFFAF6F0),
+                            shape: BoxShape.circle,
+                            border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+                          ),
+                          child: const Icon(Icons.menu_rounded, size: 18, color: AppColors.primary),
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          'All Categories',
+                          style: GoogleFonts.cormorantGaramond(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w700,
+                            color: isDark ? AppColors.darkText : AppColors.lightText,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  TextButton.icon(
+                    onPressed: () => ShopScreen.showCategoriesBottomSheet(context),
+                    icon: const Icon(Icons.menu_rounded, size: 16, color: AppColors.primary),
+                    label: Text(
+                      'Browse all',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isDark ? AppColors.primary : AppColors.primaryDark,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+
+            // Categories horizontal list (Zaczyna się od kafelka "All" z 3 kreskami)
+            SizedBox(
+              height: 92,
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                scrollDirection: Axis.horizontal,
+                children: [
+                  // First Item: All Categories with 3 horizontal bars
+                  GestureDetector(
+                    onTap: () => ShopScreen.showCategoriesBottomSheet(context),
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 12),
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: isDark ? AppColors.primary.withValues(alpha: 0.18) : const Color(0xFFFAF6F0),
+                              border: Border.all(
+                                color: AppColors.primary,
+                                width: 1.5,
+                              ),
+                            ),
+                            child: const Center(
+                              child: Icon(
+                                Icons.menu_rounded,
+                                color: AppColors.primary,
+                                size: 26,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            'All',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              color: isDark ? AppColors.primary : AppColors.lightText,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // Individual Categories
+                  ...productProvider.categories.map((cat) {
                     return GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(
@@ -172,43 +275,46 @@ class HomeScreen extends StatelessWidget {
                           ),
                         );
                       },
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 60,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: isDark ? AppColors.darkSurface : AppColors.primaryLight.withValues(alpha: 0.3),
-                              border: Border.all(
-                                color: isDark ? AppColors.darkBorder : AppColors.primary.withValues(alpha: 0.3),
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 12),
+                        child: Column(
+                          children: [
+                            Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: isDark ? AppColors.darkSurface : AppColors.primaryLight.withValues(alpha: 0.3),
+                                border: Border.all(
+                                  color: isDark ? AppColors.darkBorder : AppColors.primary.withValues(alpha: 0.3),
+                                ),
+                              ),
+                              child: Center(
+                                child: Icon(
+                                  _getCategoryIcon(cat.slug),
+                                  color: isDark ? AppColors.primary : AppColors.primaryDark,
+                                  size: 26,
+                                ),
                               ),
                             ),
-                            child: Center(
-                              child: Icon(
-                                _getCategoryIcon(cat.slug),
-                                color: isDark ? AppColors.primary : AppColors.primaryDark,
-                                size: 26,
+                            const SizedBox(height: 6),
+                            Text(
+                              cat.name,
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w500,
+                                color: isDark ? AppColors.darkText : AppColors.lightText,
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            cat.name,
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w500,
-                              color: isDark ? AppColors.darkText : AppColors.lightText,
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
-                  },
-                ),
+                  }),
+                ],
               ),
-              const SizedBox(height: 24),
-            ],
+            ),
+            const SizedBox(height: 24),
 
             // Featured Products Section
             if (productProvider.featuredProducts.isNotEmpty) ...[
