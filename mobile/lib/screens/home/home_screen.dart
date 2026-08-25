@@ -115,115 +115,11 @@ class HomeScreen extends StatelessWidget {
         color: AppColors.primary,
         onRefresh: () => productProvider.loadInitialData(),
         child: ListView(
-          padding: const EdgeInsets.symmetric(vertical: 12),
+          padding: const EdgeInsets.symmetric(vertical: 8),
           children: [
-            // 1. Banners Carousel (Slajd zdjęć)
+            // Banners Carousel (Powiększone i dopasowane do ekranu smartfona)
             BannerCarousel(banners: sampleBanners),
-            const SizedBox(height: 14),
-
-            // 2. Search Bar (Idealnie pomiędzy slajdem zdjęć a nowym All Categories)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const ShopScreen()),
-                  );
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.04),
-                        blurRadius: 10,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.search_rounded,
-                        size: 20,
-                        color: isDark ? AppColors.primary : const Color(0xFF8C6D4F),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          'Search jewelry, earrings, rings, perfumes...',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: isDark ? AppColors.darkTextSecondary : const Color(0xFF8E8E93),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 18),
-
-            // 3. Categories Bar (Tylko hamburger menu i obok napis "CATEGORIES" bez kółka i zbędnych ikonek)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: InkWell(
-                onTap: () => ShopScreen.showCategoriesBottomSheet(context),
-                borderRadius: BorderRadius.circular(10),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.menu_rounded,
-                            size: 22,
-                            color: isDark ? AppColors.primary : AppColors.lightText,
-                          ),
-                          const SizedBox(width: 10),
-                          Text(
-                            'CATEGORIES',
-                            style: GoogleFonts.cormorantGaramond(
-                              fontSize: 21,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 2.0,
-                              color: isDark ? AppColors.darkText : AppColors.lightText,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            'All',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: isDark ? AppColors.primary : AppColors.primaryDark,
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                          Icon(
-                            Icons.chevron_right_rounded,
-                            size: 18,
-                            color: isDark ? AppColors.primary : AppColors.primaryDark,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
 
             // Featured Products Section
             if (productProvider.featuredProducts.isNotEmpty) ...[

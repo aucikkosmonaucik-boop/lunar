@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../core/constants/app_colors.dart';
 
 class BannerItem {
@@ -64,10 +65,14 @@ class _BannerCarouselState extends State<BannerCarousel> {
   Widget build(BuildContext context) {
     if (widget.banners.isEmpty) return const SizedBox.shrink();
 
+    final screenWidth = MediaQuery.of(context).size.width;
+    // Calculate responsive banner height adapted to smartphone screens
+    final bannerHeight = (screenWidth * 0.72).clamp(240.0, 320.0);
+
     return Column(
       children: [
         SizedBox(
-          height: 180,
+          height: bannerHeight,
           child: PageView.builder(
             controller: _pageController,
             onPageChanged: (index) {
@@ -79,80 +84,84 @@ class _BannerCarouselState extends State<BannerCarousel> {
               return GestureDetector(
                 onTap: banner.onTap,
                 child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  margin: const EdgeInsets.symmetric(horizontal: 14),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
+                        color: Colors.black.withValues(alpha: 0.18),
+                        blurRadius: 16,
+                        offset: const Offset(0, 6),
                       ),
                     ],
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(20),
                     child: Stack(
+                      fit: StackFit.expand,
                       children: [
-                        // Background image
-                        SizedBox(
-                          width: double.infinity,
-                          height: double.infinity,
-                          child: CachedNetworkImage(
-                            imageUrl: banner.imageUrl,
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) => Container(color: Colors.grey[800]),
-                            errorWidget: (context, url, error) => Container(color: Colors.grey[800]),
+                        // Background image stretched & fitted
+                        CachedNetworkImage(
+                          imageUrl: banner.imageUrl,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => Container(
+                            color: const Color(0xFF1E1E1E),
+                            child: const Center(
+                              child: CircularProgressIndicator(color: AppColors.primary, strokeWidth: 2),
+                            ),
                           ),
+                          errorWidget: (context, url, error) => Container(color: const Color(0xFF1E1E1E)),
                         ),
 
-                        // Gradient overlay
+                        // Rich multi-stop gradient overlay for optimal readability
                         Container(
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
                               colors: [
-                                Colors.black.withValues(alpha: 0.2),
-                                Colors.black.withValues(alpha: 0.75),
+                                Colors.transparent,
+                                Colors.black.withValues(alpha: 0.15),
+                                Colors.black.withValues(alpha: 0.8),
                               ],
+                              stops: const [0.35, 0.65, 1.0],
                             ),
                           ),
                         ),
 
-                        // Content
+                        // Content (Badges & Titles)
                         Padding(
-                          padding: const EdgeInsets.all(18),
+                          padding: const EdgeInsets.all(20),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               if (banner.badge != null) ...[
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                   decoration: BoxDecoration(
                                     color: AppColors.primary,
-                                    borderRadius: BorderRadius.circular(4),
+                                    borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Text(
                                     banner.badge!.toUpperCase(),
                                     style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w700,
-                                      letterSpacing: 0.8,
+                                      color: Colors.black,
+                                      fontSize: 10.5,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: 1.2,
                                     ),
                                   ),
                                 ),
-                                const SizedBox(height: 6),
+                                const SizedBox(height: 8),
                               ],
                               Text(
                                 banner.title,
-                                style: const TextStyle(
+                                style: GoogleFonts.cormorantGaramond(
                                   color: Colors.white,
-                                  fontSize: 18,
+                                  fontSize: 24,
                                   fontWeight: FontWeight.w700,
-                                  height: 1.2,
+                                  height: 1.15,
                                 ),
                               ),
                               const SizedBox(height: 4),
@@ -160,7 +169,8 @@ class _BannerCarouselState extends State<BannerCarousel> {
                                 banner.subtitle,
                                 style: const TextStyle(
                                   color: Colors.white70,
-                                  fontSize: 12,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w400,
                                 ),
                               ),
                             ],
@@ -177,20 +187,21 @@ class _BannerCarouselState extends State<BannerCarousel> {
 
         // Dots indicator
         if (widget.banners.length > 1) ...[
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
               widget.banners.length,
-              (index) => Container(
-                width: _currentPage == index ? 20 : 6,
+              (index) => AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                width: _currentPage == index ? 24 : 6,
                 height: 6,
                 margin: const EdgeInsets.symmetric(horizontal: 3),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(3),
                   color: _currentPage == index
                       ? AppColors.primary
-                      : AppColors.primary.withValues(alpha: 0.3),
+                      : AppColors.primary.withValues(alpha: 0.25),
                 ),
               ),
             ),
