@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/api_constants.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/storage_service.dart';
@@ -341,20 +342,45 @@ class ProfileScreen extends StatelessWidget {
               _buildMenuItem(
                 icon: Icons.security_outlined,
                 title: 'Privacy Policy & Terms',
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Available online at https://mylunar.shop')),
-                  );
+                onTap: () async {
+                  final uri = Uri.parse('https://mylunar.shop');
+                  try {
+                    if (await canLaunchUrl(uri)) {
+                      await launchUrl(uri, mode: LaunchMode.externalApplication);
+                    }
+                  } catch (_) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Available online at https://mylunar.shop')),
+                      );
+                    }
+                  }
                 },
               ),
               _buildMenuItem(
                 icon: Icons.support_agent_outlined,
                 title: 'Help & Contact',
                 subtitle: 'contact@mylunar.shop',
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Contact support: contact@mylunar.shop')),
+                onTap: () async {
+                  final Uri emailUri = Uri(
+                    scheme: 'mailto',
+                    path: 'contact@mylunar.shop',
+                    query: 'subject=Lunar Support Request',
                   );
+                  try {
+                    final launched = await launchUrl(emailUri);
+                    if (!launched && context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Contact support: contact@mylunar.shop')),
+                      );
+                    }
+                  } catch (e) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Contact support: contact@mylunar.shop')),
+                      );
+                    }
+                  }
                 },
               ),
               if (auth.isAuthenticated)
