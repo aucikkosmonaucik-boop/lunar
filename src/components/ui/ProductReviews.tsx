@@ -22,6 +22,7 @@ import {
 
 interface ProductReviewsProps {
   productId: string;
+  productSlug?: string;
   productName: string;
   onReviewAdded?: (newRating: number, newCount: number) => void;
 }
@@ -30,6 +31,7 @@ type SortType = 'recent' | 'highest' | 'lowest' | 'helpful';
 
 export const ProductReviews: React.FC<ProductReviewsProps> = ({
   productId,
+  productSlug,
   productName,
   onReviewAdded,
 }) => {
@@ -70,7 +72,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
   const loadReviews = async () => {
     setLoading(true);
     try {
-      const data = await fetchProductReviews(productId);
+      const data = await fetchProductReviews(productId, productSlug);
       setReviews(data.reviews);
       setStats(data.stats);
     } catch (err) {
@@ -83,7 +85,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
   useEffect(() => {
     loadReviews();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [productId]);
+  }, [productId, productSlug]);
 
   // Handle Review Submission
   const handleSubmitReview = async (e: React.FormEvent) => {
@@ -108,6 +110,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
     try {
       const res = await submitProductReview({
         productId,
+        productSlug,
         authorName: authorName.trim(),
         rating,
         title: title.trim() || undefined,

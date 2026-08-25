@@ -296,6 +296,7 @@ const ProductDetailPage: React.FC = () => {
         {/* Customer Reviews & Ratings Section */}
         <ProductReviews
           productId={product.id}
+          productSlug={product.slug}
           productName={product.name}
           onReviewAdded={(newR, newC) => {
             setCurrentRating(newR);

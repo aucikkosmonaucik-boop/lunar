@@ -191,6 +191,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
                             final newReview = await prodProvider.addReview(
                               productId: widget.product.id,
+                              productSlug: widget.product.slug,
+                              userId: authUser?.id,
                               authorName: name,
                               rating: rating,
                               comment: comment,
@@ -255,8 +257,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           const SizedBox(width: 8),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
+      body: RefreshIndicator(
+        onRefresh: _loadReviews,
+        color: AppColors.primary,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Gallery
@@ -700,8 +706,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   int get quantity => _quantity;
 }

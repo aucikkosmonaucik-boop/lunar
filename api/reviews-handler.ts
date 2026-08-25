@@ -87,6 +87,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // Default POST: Create review
       const {
         productId,
+        productSlug,
+        slug,
         authorName,
         rating,
         title,
@@ -95,8 +97,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         verified,
       } = body;
 
-      if (!productId) {
-        return res.status(400).json({ message: 'Product ID is required' });
+      const rawId = productId || productSlug || slug;
+      if (!rawId) {
+        return res.status(400).json({ message: 'Product ID or slug is required' });
       }
 
       if (!authorName || !authorName.trim()) {
@@ -113,15 +116,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
 
       // Find product by id or slug to ensure valid foreign key
-      let targetProductId = productId;
+      const identifiers = [productId, productSlug, slug].filter(Boolean) as string[];
+      let targetProductId = rawId;
       let matchedProduct = null;
       try {
         matchedProduct = await (prisma as any).product.findFirst({
           where: {
-            OR: [
-              { id: productId },
-              { slug: productId },
-            ],
+            OR: identifiers.flatMap(k => [{ id: k }, { slug: k }]),
           },
         });
         if (matchedProduct) {
@@ -149,12 +150,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       let totalReviews = 1;
 
       try {
+        const queryOr = [{ productId: targetProductId }, ...identifiers.map(k => ({ productId: k }))];
         const allProductReviews = await (prisma as any).review.findMany({
           where: {
-            OR: [
-              { productId: targetProductId },
-              { productId: productId },
-            ],
+            OR: queryOr,
           },
           select: { rating: true },
         });
@@ -191,10 +190,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   // GET: Fetch reviews
   try {
-    const { productId, all, limit } = req.query as { productId?: string; all?: string; limit?: string };
+    const { productId, productSlug, slug, all, limit } = req.query as {
+      productId?: string;
+      productSlug?: string;
+      slug?: string;
+      all?: string;
+      limit?: string;
+    };
 
     // Fetch all reviews (e.g. for Admin portal)
-    if (all === 'true' || !productId) {
+    if (all === 'true' || (!productId && !productSlug && !slug)) {
       const reviews = await (prisma as any).review.findMany({
         orderBy: { createdAt: 'desc' },
         take: limit ? parseInt(limit, 10) : 100,
@@ -209,29 +214,29 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // Fetch reviews for specific product (by id or slug)
-    let targetProductId = productId;
+    const identifiers = [productId, productSlug, slug].filter(Boolean) as string[];
+    let targetProductId = productId || productSlug || slug;
     try {
       const matchedProduct = await (prisma as any).product.findFirst({
         where: {
-          OR: [
-            { id: productId },
-            { slug: productId },
-          ],
+          OR: identifiers.flatMap(k => [{ id: k }, { slug: k }]),
         },
-        select: { id: true },
+        select: { id: true, slug: true },
       });
       if (matchedProduct) {
         targetProductId = matchedProduct.id;
+        identifiers.push(matchedProduct.id, matchedProduct.slug);
       }
     } catch (prodLookupErr) {
       console.warn('Lookup product failed:', prodLookupErr);
     }
 
+    const uniqueIdentifiers = Array.from(new Set(identifiers));
     const reviews = await (prisma as any).review.findMany({
       where: {
         OR: [
           { productId: targetProductId },
-          { productId: productId },
+          ...uniqueIdentifiers.map(k => ({ productId: k })),
         ],
       },
       orderBy: { createdAt: 'desc' },

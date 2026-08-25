@@ -67,9 +67,16 @@ export async function fetchCategories(): Promise<any[]> {
 import type { Review, ReviewStats } from '../types';
 import { getStoredReviews, saveStoredReviews, calculateReviewStats } from '../data/reviews';
 
-export async function fetchProductReviews(productId: string): Promise<{ reviews: Review[]; stats: ReviewStats }> {
+export async function fetchProductReviews(
+  productId: string,
+  productSlug?: string
+): Promise<{ reviews: Review[]; stats: ReviewStats }> {
   try {
-    const res = await fetch(`/api/reviews?productId=${encodeURIComponent(productId)}`);
+    const params = new URLSearchParams();
+    if (productId) params.set('productId', productId);
+    if (productSlug) params.set('productSlug', productSlug);
+
+    const res = await fetch(`/api/reviews?${params.toString()}`);
     if (res.ok) {
       const data = await res.json();
       if (data.reviews && Array.isArray(data.reviews)) {
@@ -85,7 +92,11 @@ export async function fetchProductReviews(productId: string): Promise<{ reviews:
 
   // Fallback to local storage
   const all = getStoredReviews();
-  const filtered = all.filter(r => r.productId === productId || r.productId === String(productId));
+  const filtered = all.filter(r => 
+    r.productId === productId || 
+    r.productId === String(productId) ||
+    (productSlug && r.productId === productSlug)
+  );
   return {
     reviews: filtered,
     stats: calculateReviewStats(filtered),
@@ -111,6 +122,7 @@ export async function fetchAllReviews(): Promise<{ reviews: (Review & { product?
 
 export async function submitProductReview(data: {
   productId: string;
+  productSlug?: string;
   authorName: string;
   rating: number;
   title?: string;

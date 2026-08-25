@@ -352,9 +352,16 @@ class ProductProvider extends ChangeNotifier {
 
     // 2. Try fetching latest reviews from API in background/network
     try {
+      final queryParams = <String, dynamic>{
+        'productId': productId,
+      };
+      if (productSlug != null && productSlug.isNotEmpty) {
+        queryParams['productSlug'] = productSlug;
+      }
+
       final res = await ApiService.get(
         ApiConstants.reviews,
-        queryParams: {'productId': productId},
+        queryParams: queryParams,
       );
       if (res is Map && res['reviews'] is List) {
         final apiReviews = (res['reviews'] as List)
@@ -403,11 +410,14 @@ class ProductProvider extends ChangeNotifier {
     required int rating,
     required String comment,
     String? title,
+    String? productSlug,
+    String? userId,
   }) async {
     // 1. Create review object immediately (optimistic update)
-    final newReview = Review(
+    Review currentReview = Review(
       id: 'rev-${DateTime.now().millisecondsSinceEpoch}',
       productId: productId,
+      userId: userId,
       authorName: authorName,
       rating: rating,
       comment: comment,
@@ -418,27 +428,56 @@ class ProductProvider extends ChangeNotifier {
     );
 
     // 2. Save directly to local persistent storage
-    await StorageService.addStoredReview(newReview.toJson());
+    await StorageService.addStoredReview(currentReview.toJson());
 
     // 3. Update in-memory product statistics (rating & review count)
     _updateProductStatsInMemory(productId, rating);
     notifyListeners();
 
-    // 4. Send to backend REST API in background
-    ApiService.post(
-      ApiConstants.reviews,
-      body: {
-        'productId': productId,
-        'authorName': authorName,
-        'rating': rating,
-        'comment': comment,
-        'title': title,
-      },
-    ).catchError((e) {
-      debugPrint('Backend review submission warning: $e');
-    });
+    // 4. Send to backend REST API
+    try {
+      final res = await ApiService.post(
+        ApiConstants.reviews,
+        body: {
+          'productId': productId,
+          if (productSlug != null && productSlug.isNotEmpty) 'productSlug': productSlug,
+          'authorName': authorName,
+          'rating': rating,
+          'comment': comment,
+          if (title != null && title.isNotEmpty) 'title': title,
+          if (userId != null && userId.isNotEmpty) 'userId': userId,
+        },
+      );
 
-    return newReview;
+      if (res is Map && res['review'] is Map && res['review']['id'] != null) {
+        final serverId = res['review']['id'].toString();
+        final updatedReview = Review(
+          id: serverId,
+          productId: productId,
+          userId: userId,
+          authorName: authorName,
+          rating: rating,
+          comment: comment,
+          title: title,
+          verified: res['review']['verified'] == true,
+          helpfulCount: 0,
+          createdAt: currentReview.createdAt,
+        );
+
+        // Update stored review with server ID
+        final allCached = StorageService.getStoredReviews();
+        final idx = allCached.indexWhere((r) => r['id'] == currentReview.id);
+        if (idx != -1) {
+          allCached[idx] = updatedReview.toJson();
+          await StorageService.saveStoredReviews(allCached);
+        }
+        currentReview = updatedReview;
+      }
+    } catch (e) {
+      debugPrint('Backend review submission warning: $e');
+    }
+
+    return currentReview;
   }
 
   void _updateProductStatsInMemory(String productId, int newRating) {
