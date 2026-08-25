@@ -10,6 +10,7 @@ import '../../providers/theme_provider.dart';
 import '../../widgets/custom_button.dart';
 import '../auth/login_screen.dart';
 import '../auth/register_screen.dart';
+import '../notifications/notifications_screen.dart';
 import '../orders/order_history_screen.dart';
 import 'edit_profile_screen.dart';
 
@@ -282,6 +283,16 @@ class ProfileScreen extends StatelessWidget {
           _buildMenuSection(
             isDark: isDark,
             items: [
+              _buildMenuItem(
+                icon: Icons.notifications_outlined,
+                title: 'Notifications & Order Updates',
+                subtitle: 'Delivery status, live tracking, rewards',
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const NotificationsScreen()),
+                  );
+                },
+              ),
               _buildMenuItem(
                 icon: Icons.receipt_long_outlined,
                 title: 'Order History',

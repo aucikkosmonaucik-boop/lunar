@@ -2,6 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import Stripe from 'stripe';
 import { prisma } from '../_lib/prisma.js';
 import { sendOrderConfirmationEmail } from '../_lib/email.js';
+import { notifyPaymentConfirmed, notifyOrderPlaced } from '../_lib/notifications.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const sessionId = (req.query.session_id as string) || (req.body?.session_id as string);
@@ -207,6 +208,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             await sendOrderConfirmationEmail(savedOrder);
           } catch (emailErr) {
             console.error('Failed to send Stripe order confirmation email:', emailErr);
+          }
+
+          // Trigger in-app notifications
+          if (savedOrder.userId) {
+            try {
+              await notifyOrderPlaced(savedOrder);
+              await notifyPaymentConfirmed(savedOrder);
+            } catch (notifErr) {
+              console.warn('Could not send in-app order/payment notification:', notifErr);
+            }
           }
         }
       }

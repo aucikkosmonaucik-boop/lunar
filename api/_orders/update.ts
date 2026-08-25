@@ -3,6 +3,7 @@ import { prisma } from '../_lib/prisma.js';
 import { extractToken } from '../_lib/auth-util.js';
 import { sendShipmentNotificationEmail } from '../_lib/email.js';
 import { getBackendCarrier, buildTrackingUrl } from '../_lib/carriers.js';
+import { notifyOrderStatusChanged } from '../_lib/notifications.js';
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-in-production';
@@ -126,6 +127,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         console.log(`✅ Shipment email sent for order ${updatedOrder.orderNumber} via ${updatedOrder.carrierName}`);
       } catch (emailErr) {
         console.error('Failed to send shipment dispatch email:', emailErr);
+      }
+    }
+
+    // Trigger In-App Notification if status or tracking changed
+    if (updatedOrder.userId && (status !== undefined || trackingNumber !== undefined || paymentStatus !== undefined)) {
+      try {
+        await notifyOrderStatusChanged(updatedOrder, existingOrder.status, updatedOrder.status);
+      } catch (notifErr) {
+        console.warn('Could not send in-app status update notification:', notifErr);
       }
     }
 

@@ -7,6 +7,7 @@ import SearchOverlay from './SearchOverlay';
 import { useAuth } from '../../hooks/useAuth';
 import FavoritesDrawer from '../ui/FavoritesDrawer';
 import SmartAppBanner from '../ui/SmartAppBanner';
+import { NotificationBell } from './NotificationBell';
 
 interface DropdownItem {
   label: string;
@@ -120,7 +121,8 @@ const Navbar: React.FC = () => {
           >
             {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-4">
+            <NotificationBell isMobile />
             <button onClick={() => setSearchOpen(true)} className="text-[#1a1a1a]" aria-label="Search">
               <Search className="w-6 h-6 stroke-[1.2]" />
             </button>
@@ -338,6 +340,8 @@ const Navbar: React.FC = () => {
             <Sparkles className="w-3.5 h-3.5" />
             <span>Admin</span>
           </Link>
+
+          <NotificationBell />
 
           {user ? (
             <Link

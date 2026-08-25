@@ -64,6 +64,14 @@
       "destination": "/api/orders-handler?action=:action"
     },
     {
+      "source": "/api/notifications",
+      "destination": "/api/notifications-handler"
+    },
+    {
+      "source": "/api/notifications/:action",
+      "destination": "/api/notifications-handler?action=:action"
+    },
+    {
       "source": "/api/stripe/:action",
       "destination": "/api/stripe-handler?action=:action"
     },

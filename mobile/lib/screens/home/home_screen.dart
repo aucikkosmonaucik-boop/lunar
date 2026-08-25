@@ -3,10 +3,12 @@ import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/constants/app_colors.dart';
 import '../../models/product_model.dart';
+import '../../providers/notification_provider.dart';
 import '../../providers/product_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../widgets/banner_carousel.dart';
 import '../../widgets/product_card.dart';
+import '../notifications/notifications_screen.dart';
 import '../shop/shop_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -85,7 +87,28 @@ class HomeScreen extends StatelessWidget {
               );
             },
           ),
-          const SizedBox(width: 6),
+          Consumer<NotificationProvider>(
+            builder: (context, notifProvider, _) {
+              final unread = notifProvider.unreadCount;
+              return IconButton(
+                icon: Badge(
+                  isLabelVisible: unread > 0,
+                  label: Text(unread > 9 ? '9+' : '$unread'),
+                  backgroundColor: AppColors.accent,
+                  textColor: Colors.black,
+                  textStyle: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700),
+                  child: const Icon(Icons.notifications_outlined),
+                ),
+                tooltip: 'Notifications',
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const NotificationsScreen()),
+                  );
+                },
+              );
+            },
+          ),
+          const SizedBox(width: 4),
         ],
       ),
       body: RefreshIndicator(

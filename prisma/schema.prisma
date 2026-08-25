@@ -25,6 +25,7 @@ model User {
   pointsHistory     LoyaltyHistory[]
   userCoupons       UserCoupon[]
   reviews           Review[]
+  notifications     Notification[]
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
 }
@@ -219,5 +220,22 @@ model Review {
 
   @@index([productId])
   @@index([userId])
+}
+
+model Notification {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  message     String
+  type        String   @default("ORDER") // "ORDER" | "SHIPPING" | "PAYMENT" | "LOYALTY" | "PROMO"
+  orderId     String?
+  orderNumber String?
+  linkUrl     String?
+  isRead      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([isRead])
 }
 

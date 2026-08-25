@@ -27,4 +27,9 @@ class ApiConstants {
   
   // Stripe endpoint
   static const String stripeIntent = '/api/stripe/payment-intent';
+
+  // Notifications endpoints
+  static const String notifications = '/api/notifications';
+  static const String notificationsMarkRead = '/api/notifications/mark-read';
+  static const String notificationsMarkAllRead = '/api/notifications/mark-all-read';
 }

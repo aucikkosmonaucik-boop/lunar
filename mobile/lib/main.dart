@@ -6,6 +6,7 @@ import 'core/services/storage_service.dart';
 import 'providers/auth_provider.dart';
 import 'providers/cart_provider.dart';
 import 'providers/order_provider.dart';
+import 'providers/notification_provider.dart';
 import 'providers/product_provider.dart';
 import 'providers/theme_provider.dart';
 import 'providers/wishlist_provider.dart';
@@ -25,6 +26,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => WishlistProvider()),
         ChangeNotifierProvider(create: (_) => OrderProvider()),
+        ChangeNotifierProvider(create: (_) => NotificationProvider()),
       ],
       child: const LunarApp(),
     ),

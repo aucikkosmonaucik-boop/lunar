@@ -2,6 +2,7 @@ import { VercelRequest, VercelResponse } from '@vercel/node';
 import { prisma } from '../_lib/prisma.js';
 import { extractToken } from '../_lib/auth-util.js';
 import { sendOrderConfirmationEmail } from '../_lib/email.js';
+import { notifyOrderPlaced, notifyLoyaltyPointsEarned } from '../_lib/notifications.js';
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-in-production';
@@ -120,8 +121,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             orderId: order.id,
           },
         });
+
+        // Trigger in-app loyalty points notification
+        await notifyLoyaltyPointsEarned(userId, pointsEarned, orderNumber);
       } catch (ptsErr) {
         console.warn('Could not record loyalty points:', ptsErr);
+      }
+    }
+
+    // Trigger in-app order confirmation notification for authenticated user
+    if (userId) {
+      try {
+        await notifyOrderPlaced(order);
+      } catch (notifErr) {
+        console.warn('Could not send in-app order notification:', notifErr);
       }
     }
 
