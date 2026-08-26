@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useProducts } from '../hooks/useProducts';
 import ProductCard from '../components/ui/ProductCard';
 import AppDownloadSection from '../components/ui/AppDownloadSection';
+import HeroSlider from '../components/ui/HeroSlider';
 
 const HomePage: React.FC = () => {
   const { products } = useProducts();
@@ -23,26 +24,8 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="bg-white min-h-screen">
-      {/* Hero Section */}
-      <section className="relative h-[80vh] flex items-center justify-center overflow-hidden">
-        <img 
-          src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&q=80&w=2000" 
-          alt="Elegant Woman with Jewelry" 
-          className="absolute inset-0 w-full h-full object-cover object-top"
-        />
-        <div className="absolute inset-0 bg-black/20" /> {/* Subtle overlay */}
-        
-        <div className="relative z-10 text-center text-white px-4">
-          <h1 className="text-5xl md:text-7xl lg:text-[80px] font-serif italic mb-6 shadow-sm leading-[0.9]">Discover True Elegance</h1>
-          <p className="text-base md:text-xl uppercase tracking-widest mb-10 shadow-sm">The new Lunar Collection</p>
-          <Link 
-            to="/shop" 
-            className="inline-block bg-white text-black px-12 py-5 text-sm uppercase tracking-widest font-bold hover:bg-black hover:text-white transition-colors duration-300"
-          >
-            Shop the Collection
-          </Link>
-        </div>
-      </section>
+      {/* Dynamic Left-Sliding Hero Banner */}
+      <HeroSlider />
 
       {/* Featured Chains Section */}
       <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
