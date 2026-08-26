@@ -9,6 +9,7 @@ import '../../providers/theme_provider.dart';
 import '../../widgets/banner_carousel.dart';
 import '../../widgets/product_card.dart';
 import '../notifications/notifications_screen.dart';
+import '../product/product_detail_screen.dart';
 import '../shop/shop_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -60,6 +61,52 @@ class HomeScreen extends StatelessWidget {
         },
       ),
     ];
+
+    // Collect all available products for the leftward sliding showcase
+    final List<Product> allProducts = () {
+      if (productProvider.products.isNotEmpty) {
+        return productProvider.products;
+      }
+      final combined = <Product>[
+        ...productProvider.featuredProducts,
+        ...productProvider.bestsellers,
+        ...productProvider.newArrivals,
+      ];
+      final seen = <String>{};
+      return combined.where((p) => seen.add(p.id)).toList();
+    }();
+
+    final List<BannerItem> allProductBanners = allProducts.isNotEmpty
+        ? allProducts.map((product) {
+            final categoryDisplay = product.categoryName?.isNotEmpty == true
+                ? product.categoryName!
+                : (product.categorySlug.isNotEmpty
+                    ? product.categorySlug.replaceAll('-', ' ')
+                    : 'Luxury Piece');
+
+            final subtitleText = product.price > 0
+                ? '$categoryDisplay • \$${product.price.toStringAsFixed(2)}'
+                : (product.description.isNotEmpty
+                    ? (product.description.length > 50
+                        ? '${product.description.substring(0, 47)}...'
+                        : product.description)
+                    : categoryDisplay);
+
+            return BannerItem(
+              title: product.name,
+              subtitle: subtitleText,
+              imageUrl: product.image,
+              badge: product.badge?.isNotEmpty == true ? product.badge : 'LUNAR',
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => ProductDetailScreen(product: product),
+                  ),
+                );
+              },
+            );
+          }).toList()
+        : sampleBanners;
 
     return Scaffold(
       appBar: AppBar(
@@ -117,9 +164,25 @@ class HomeScreen extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.symmetric(vertical: 8),
           children: [
-            // Banners Carousel (Powiększone i dopasowane do ekranu smartfona)
-            BannerCarousel(banners: sampleBanners),
+            // Banners Carousel (Powiększone, automatycznie przesuwające się w lewo ze wszystkimi produktami)
+            BannerCarousel(banners: allProductBanners),
             const SizedBox(height: 24),
+
+            // All Products Horizontal Reel (Slide to left)
+            if (allProducts.isNotEmpty) ...[
+              _buildSectionHeader(
+                context,
+                title: 'All Products Collection',
+                onViewAll: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const ShopScreen()),
+                  );
+                },
+              ),
+              const SizedBox(height: 12),
+              _buildProductHorizontalList(context, allProducts),
+              const SizedBox(height: 28),
+            ],
 
             // Featured Products Section
             if (productProvider.featuredProducts.isNotEmpty) ...[

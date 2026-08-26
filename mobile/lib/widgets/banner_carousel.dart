@@ -40,17 +40,30 @@ class _BannerCarouselState extends State<BannerCarousel> {
   @override
   void initState() {
     super.initState();
+    _startTimer();
+  }
+
+  void _startTimer() {
+    _timer?.cancel();
     if (widget.banners.length > 1) {
       _timer = Timer.periodic(const Duration(seconds: 4), (timer) {
         if (_pageController.hasClients) {
           int nextPage = (_currentPage + 1) % widget.banners.length;
           _pageController.animateToPage(
             nextPage,
-            duration: const Duration(milliseconds: 600),
-            curve: Curves.easeInOut,
+            duration: const Duration(milliseconds: 650),
+            curve: Curves.easeInOutCubic,
           );
         }
       });
+    }
+  }
+
+  @override
+  void didUpdateWidget(BannerCarousel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.banners.length != widget.banners.length) {
+      _startTimer();
     }
   }
 
@@ -185,27 +198,51 @@ class _BannerCarouselState extends State<BannerCarousel> {
           ),
         ),
 
-        // Dots indicator
+        // Adaptive Indicator (dots for few items, luxury counter for all products)
         if (widget.banners.length > 1) ...[
           const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(
-              widget.banners.length,
-              (index) => AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                width: _currentPage == index ? 24 : 6,
-                height: 6,
-                margin: const EdgeInsets.symmetric(horizontal: 3),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(3),
-                  color: _currentPage == index
-                      ? AppColors.primary
-                      : AppColors.primary.withValues(alpha: 0.25),
+          if (widget.banners.length <= 7)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                widget.banners.length,
+                (index) => AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  width: _currentPage == index ? 24 : 6,
+                  height: 6,
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(3),
+                    color: _currentPage == index
+                        ? AppColors.primary
+                        : AppColors.primary.withValues(alpha: 0.25),
+                  ),
                 ),
               ),
+            )
+          else
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.35),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '${(_currentPage + 1).toString().padLeft(2, '0')} / ${widget.banners.length.toString().padLeft(2, '0')}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 1.2,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
         ],
       ],
     );
