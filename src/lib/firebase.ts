@@ -2,7 +2,7 @@ import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, FacebookAuthProvider, OAuthProvider } from 'firebase/auth';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD5NjYCK_A4A0X3HjG2mrZ_J7UfHSANScM",
+  apiKey: "AIzaSyC19fLh5mCtZxEaLxEilokK2BJ46aQ31tM",
   authDomain: "lunar-store-ecef4.firebaseapp.com",
   projectId: "lunar-store-ecef4",
   storageBucket: "lunar-store-ecef4.firebasestorage.app",
