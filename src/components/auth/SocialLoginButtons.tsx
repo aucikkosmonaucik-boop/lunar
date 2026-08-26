@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { Loader2, AlertCircle } from 'lucide-react';
+import { Loader2, AlertCircle, Phone } from 'lucide-react';
 import { signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider, facebookProvider } from '../../lib/firebase';
+import { PhoneAuthModal } from './PhoneAuthModal';
 
 interface SocialLoginButtonsProps {
   onSuccess?: () => void;
@@ -17,6 +18,7 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
 }) => {
   const { login } = useAuth();
   const [loadingProvider, setLoadingProvider] = useState<'google' | 'facebook' | null>(null);
+  const [showPhoneModal, setShowPhoneModal] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSocialAuth = async (provider: 'google' | 'facebook') => {
@@ -184,6 +186,24 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
           )}
         </button>
       </div>
+
+      {/* Phone Auth Button */}
+      <button
+        type="button"
+        onClick={() => setShowPhoneModal(true)}
+        className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-gray-200 hover:border-gray-900 bg-white hover:bg-gray-50/80 rounded-xl transition-all duration-200 text-[#1a1a1a] shadow-xs group cursor-pointer"
+        title="Sign in with Phone Number"
+      >
+        <Phone className="w-4 h-4 text-[#1a1a1a] shrink-0" />
+        <span className="text-[12px] font-medium tracking-wide">Continue with Phone Number</span>
+      </button>
+
+      {/* Phone Auth Modal */}
+      <PhoneAuthModal
+        isOpen={showPhoneModal}
+        onClose={() => setShowPhoneModal(false)}
+        onSuccess={onSuccess}
+      />
     </div>
   );
 };
