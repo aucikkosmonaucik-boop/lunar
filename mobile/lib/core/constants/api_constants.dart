@@ -20,6 +20,7 @@ class ApiConstants {
   static const String authForgotPassword = '/api/auth/forgot-password';
   static const String authResetPassword = '/api/auth/reset-password';
   static const String authResendVerification = '/api/auth/resend-verification';
+  static const String authSocialLogin = '/api/auth/social-login';
 
   // Orders endpoints
   static const String ordersCreate = '/api/orders/create';

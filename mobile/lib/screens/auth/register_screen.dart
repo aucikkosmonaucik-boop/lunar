@@ -5,6 +5,7 @@ import '../../core/constants/app_colors.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_text_field.dart';
+import '../../widgets/social_auth_buttons.dart';
 import 'login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -169,6 +170,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   text: 'Sign Up',
                   isLoading: auth.isLoading,
                   onPressed: _submitRegister,
+                ),
+                const SizedBox(height: 24),
+
+                SocialAuthButtons(
+                  dividerText: 'Or register with',
+                  onSuccess: () {
+                    if (mounted) {
+                      Navigator.of(context).pop();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Account created and logged in! Welcome to Lunar.')),
+                      );
+                    }
+                  },
                 ),
                 const SizedBox(height: 24),
 

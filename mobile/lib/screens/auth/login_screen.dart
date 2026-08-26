@@ -5,6 +5,7 @@ import '../../core/constants/app_colors.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_text_field.dart';
+import '../../widgets/social_auth_buttons.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -245,6 +246,19 @@ class _LoginScreenState extends State<LoginScreen> {
                   text: 'Sign In',
                   isLoading: auth.isLoading,
                   onPressed: _submitLogin,
+                ),
+                const SizedBox(height: 24),
+
+                SocialAuthButtons(
+                  dividerText: 'Or continue with',
+                  onSuccess: () {
+                    if (mounted) {
+                      Navigator.of(context).pop();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Logged in successfully! Welcome to Lunar.')),
+                      );
+                    }
+                  },
                 ),
                 const SizedBox(height: 24),
 
