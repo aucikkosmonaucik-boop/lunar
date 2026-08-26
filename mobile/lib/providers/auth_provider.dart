@@ -243,6 +243,7 @@ class AuthProvider extends ChangeNotifier {
 
   final GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: ['email', 'profile'],
+    serverClientId: '651131285123-r9oumbu13b95p2slhaim48k9dallkvjk.apps.googleusercontent.com',
   );
 
   Future<bool> loginWithGoogle() async {

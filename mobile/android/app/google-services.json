@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "651131285123",
+    "project_id": "lunar-store-ecef4",
+    "storage_bucket": "lunar-store-ecef4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:651131285123:android:1e0b9feaf1649f4e6df5b6",
+        "android_client_info": {
+          "package_name": "com.lunar.store.lunar_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "651131285123-sur6jf41fveq10r3drmfdd9oqaclknv9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lunar.store.lunar_mobile",
+            "certificate_hash": "d045986eb37181d409827e8ff3ed078fb9868513"
+          }
+        },
+        {
+          "client_id": "651131285123-r9oumbu13b95p2slhaim48k9dallkvjk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC19fLh5mCtZxEaLxEilokK2BJ46aQ31tM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "651131285123-r9oumbu13b95p2slhaim48k9dallkvjk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { Loader2, AlertCircle } from 'lucide-react';
+import { signInWithPopup } from 'firebase/auth';
+import { auth, googleProvider, facebookProvider, appleProvider } from '../../lib/firebase';
 
 interface SocialLoginButtonsProps {
   onSuccess?: () => void;
@@ -29,150 +31,67 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
       } else if (provider === 'apple') {
         await initiateAppleLogin();
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : `Failed to sign in with ${provider}`);
+    } catch (err: any) {
+      if (
+        err?.code === 'auth/popup-closed-by-user' ||
+        err?.code === 'auth/cancelled-popup-request'
+      ) {
+        setLoadingProvider(null);
+        return;
+      }
+      console.error(`${provider} sign in error:`, err);
+      setError(err?.message || `Failed to sign in with ${provider}`);
       setLoadingProvider(null);
     }
   };
 
   const initiateGoogleLogin = async () => {
-    // Check if Google Client ID is configured in window/env
-    const googleClientId = (import.meta as any).env?.VITE_GOOGLE_CLIENT_ID;
+    const result = await signInWithPopup(auth, googleProvider);
+    const user = result.user;
+    const idToken = await user.getIdToken();
 
-    if (googleClientId && (window as any).google?.accounts?.id) {
-      // Use Google Identity Services SDK
-      const google = (window as any).google;
-      google.accounts.id.initialize({
-        client_id: googleClientId,
-        callback: async (response: any) => {
-          try {
-            const credential = response.credential;
-            // Decode JWT payload for email & name if needed
-            const base64Url = credential.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const payload = JSON.parse(window.atob(base64));
-
-            await submitToBackend({
-              provider: 'google',
-              email: payload.email,
-              name: payload.name,
-              token: credential,
-              providerId: payload.sub,
-            });
-          } catch (e) {
-            setError(e instanceof Error ? e.message : 'Google authentication failed');
-            setLoadingProvider(null);
-          }
-        },
-      });
-      google.accounts.id.prompt();
-      return;
+    if (!user.email) {
+      throw new Error('No email returned from Google Account');
     }
 
-    // Default flow: Google OAuth Popup / Direct Authentication
-    const popup = window.open(
-      'about:blank',
-      'google_auth',
-      'width=500,height=600,menubar=no,toolbar=no'
-    );
-
-    if (popup) {
-      popup.document.write(`
-        <html>
-          <head><title>Google Sign-In - Lunar</title></head>
-          <body style="font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 90vh; text-align: center; padding: 20px;">
-            <h3 style="margin-bottom: 8px;">Google Sign-In</h3>
-            <p style="color: #666; font-size: 14px;">Connecting to Lunar Store with your Google Account...</p>
-          </body>
-        </html>
-      `);
-      
-      // Simulate OAuth token verification or prompt for Google email
-      setTimeout(async () => {
-        popup.close();
-        const demoEmail = prompt('Enter your Google Account email for one-click login:', 'client@gmail.com');
-        if (!demoEmail) {
-          setLoadingProvider(null);
-          return;
-        }
-        await submitToBackend({
-          provider: 'google',
-          email: demoEmail,
-          name: demoEmail.split('@')[0],
-          providerId: 'google_' + Date.now(),
-        });
-      }, 500);
-    } else {
-      const demoEmail = prompt('Enter your Google Account email for one-click login:', 'client@gmail.com');
-      if (!demoEmail) {
-        setLoadingProvider(null);
-        return;
-      }
-      await submitToBackend({
-        provider: 'google',
-        email: demoEmail,
-        name: demoEmail.split('@')[0],
-        providerId: 'google_' + Date.now(),
-      });
-    }
+    await submitToBackend({
+      provider: 'google',
+      email: user.email,
+      name: user.displayName || undefined,
+      token: idToken,
+      providerId: user.uid,
+    });
   };
 
   const initiateFacebookLogin = async () => {
-    const fbAppId = (import.meta as any).env?.VITE_FACEBOOK_APP_ID;
+    const result = await signInWithPopup(auth, facebookProvider);
+    const user = result.user;
+    const idToken = await user.getIdToken();
 
-    if (fbAppId && (window as any).FB) {
-      const FB = (window as any).FB;
-      FB.login(
-        (response: any) => {
-          if (response.authResponse) {
-            FB.api('/me', { fields: 'name,email' }, async (userData: any) => {
-              if (userData.email) {
-                await submitToBackend({
-                  provider: 'facebook',
-                  email: userData.email,
-                  name: userData.name,
-                  token: response.authResponse.accessToken,
-                  providerId: userData.id,
-                });
-              } else {
-                setError('Could not retrieve email from Facebook.');
-                setLoadingProvider(null);
-              }
-            });
-          } else {
-            setLoadingProvider(null);
-          }
-        },
-        { scope: 'public_profile,email' }
-      );
-      return;
+    if (!user.email) {
+      throw new Error('No email returned from Facebook Account');
     }
 
-    // Default flow: Facebook OAuth Popup / Prompt
-    const demoEmail = prompt('Enter your Facebook Account email for one-click login:', 'user@facebook.com');
-    if (!demoEmail) {
-      setLoadingProvider(null);
-      return;
-    }
     await submitToBackend({
       provider: 'facebook',
-      email: demoEmail,
-      name: demoEmail.split('@')[0],
-      providerId: 'fb_' + Date.now(),
+      email: user.email,
+      name: user.displayName || undefined,
+      token: idToken,
+      providerId: user.uid,
     });
   };
 
   const initiateAppleLogin = async () => {
-    const demoEmail = prompt('Enter your Apple ID email for one-click login:', 'user@icloud.com');
-    if (!demoEmail) {
-      setLoadingProvider(null);
-      return;
-    }
+    const result = await signInWithPopup(auth, appleProvider);
+    const user = result.user;
+    const idToken = await user.getIdToken();
+
     await submitToBackend({
       provider: 'apple',
-      email: demoEmail,
-      name: 'Apple User',
-      providerId: 'apple_' + Date.now(),
+      email: user.email || `${user.uid}@privaterelay.appleid.com`,
+      name: user.displayName || 'Apple User',
+      token: idToken,
+      providerId: user.uid,
     });
   };
 
@@ -231,7 +150,7 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
           type="button"
           disabled={loadingProvider !== null}
           onClick={() => handleSocialAuth('google')}
-          className="flex items-center justify-center gap-2 py-3 px-2 border border-gray-200 hover:border-gray-900 bg-white hover:bg-gray-50/80 rounded-xl transition-all duration-200 text-[#1a1a1a] shadow-xs group disabled:opacity-50"
+          className="flex items-center justify-center gap-2 py-3 px-2 border border-gray-200 hover:border-gray-900 bg-white hover:bg-gray-50/80 rounded-xl transition-all duration-200 text-[#1a1a1a] shadow-xs group disabled:opacity-50 cursor-pointer"
           title="Sign in with Google"
         >
           {loadingProvider === 'google' ? (
@@ -266,7 +185,7 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
           type="button"
           disabled={loadingProvider !== null}
           onClick={() => handleSocialAuth('facebook')}
-          className="flex items-center justify-center gap-2 py-3 px-2 border border-gray-200 hover:border-[#1877F2] bg-white hover:bg-[#1877F2]/5 rounded-xl transition-all duration-200 text-[#1a1a1a] shadow-xs group disabled:opacity-50"
+          className="flex items-center justify-center gap-2 py-3 px-2 border border-gray-200 hover:border-[#1877F2] bg-white hover:bg-[#1877F2]/5 rounded-xl transition-all duration-200 text-[#1a1a1a] shadow-xs group disabled:opacity-50 cursor-pointer"
           title="Sign in with Facebook"
         >
           {loadingProvider === 'facebook' ? (
@@ -286,7 +205,7 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
           type="button"
           disabled={loadingProvider !== null}
           onClick={() => handleSocialAuth('apple')}
-          className="flex items-center justify-center gap-2 py-3 px-2 border border-gray-200 hover:border-black bg-white hover:bg-black/5 rounded-xl transition-all duration-200 text-[#1a1a1a] shadow-xs group disabled:opacity-50"
+          className="flex items-center justify-center gap-2 py-3 px-2 border border-gray-200 hover:border-black bg-white hover:bg-black/5 rounded-xl transition-all duration-200 text-[#1a1a1a] shadow-xs group disabled:opacity-50 cursor-pointer"
           title="Sign in with Apple"
         >
           {loadingProvider === 'apple' ? (
