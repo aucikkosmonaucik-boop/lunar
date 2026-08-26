@@ -93,7 +93,13 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
   };
 
   const getOrCreateRecaptcha = () => {
-    const container = document.getElementById('recaptcha-container') || document.body;
+    let container = document.getElementById('recaptcha-container');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'recaptcha-container';
+      document.body.appendChild(container);
+    }
+
     if (recaptchaVerifierRef.current) {
       try {
         recaptchaVerifierRef.current.clear();
@@ -104,9 +110,10 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
     const verifier = new RecaptchaVerifier(auth, container, {
       size: 'invisible',
       callback: () => {
-        // reCAPTCHA solved
+        console.log('[PhoneAuth] reCAPTCHA verified');
       },
       'expired-callback': () => {
+        console.warn('[PhoneAuth] reCAPTCHA expired');
         setError('reCAPTCHA session expired. Please try sending code again.');
       },
     });
@@ -126,16 +133,19 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
     }
 
     const fullPhoneNumber = formatPhoneNumber(cleanInput, selectedCountry.code);
+    console.log('[PhoneAuth] Initiating SMS dispatch to:', fullPhoneNumber);
     setLoading(true);
 
     try {
       const verifier = getOrCreateRecaptcha();
+      console.log('[PhoneAuth] RecaptchaVerifier ready');
       const confirmation = await signInWithPhoneNumber(auth, fullPhoneNumber, verifier);
+      console.log('[PhoneAuth] SMS code sent successfully, confirmation result obtained');
       confirmationResultRef.current = confirmation;
       setStep('otp');
       setCountdown(60);
     } catch (err: any) {
-      console.error('Firebase Phone Auth Error:', err);
+      console.error('[PhoneAuth] Firebase Error during SMS dispatch:', err);
       if (recaptchaVerifierRef.current) {
         try {
           recaptchaVerifierRef.current.clear();
@@ -145,15 +155,15 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
 
       let errorMsg = err?.message || 'Failed to send SMS code.';
       if (err?.code === 'auth/unauthorized-domain') {
-        errorMsg = 'This domain (mylunar.shop) is not authorized in Firebase Console -> Authentication -> Settings -> Authorized Domains.';
+        errorMsg = 'Domena mylunar.shop nie jest dodana w Firebase Console (Authentication -> Settings -> Authorized Domains).';
       } else if (err?.code === 'auth/invalid-phone-number') {
-        errorMsg = 'Invalid phone number format. Please check your number.';
+        errorMsg = 'Niepoprawny format numeru telefonu. Sprawdź wpisany numer.';
       } else if (err?.code === 'auth/quota-exceeded' || err?.code === 'auth/too-many-requests') {
-        errorMsg = 'Too many attempts or daily SMS quota reached. Please wait a few minutes.';
+        errorMsg = 'Zbyt wiele prób lub osiągnięto dzienny limit SMS. Spróbuj ponownie później.';
       } else if (err?.code === 'auth/billing-not-enabled' || err?.code === 'auth/operation-not-allowed') {
-        errorMsg = 'Phone authentication or SMS region blocked in Firebase/Google Cloud settings.';
+        errorMsg = 'Wysyłka SMS zablokowana w Firebase lub Google Cloud (sprawdź SMS Region Policy).';
       } else if (err?.code === 'auth/captcha-check-failed') {
-        errorMsg = 'reCAPTCHA verification failed. Disable ad-blockers and try again.';
+        errorMsg = 'Weryfikacja reCAPTCHA nie powiodła się. Wyłącz adblockera i spróbuj ponownie.';
       }
 
       setError(errorMsg);
