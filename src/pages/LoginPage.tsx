@@ -228,15 +228,16 @@ const LoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="mt-6 w-full flex justify-center items-center gap-3 bg-[#1a1a1a] text-white text-[12px] uppercase tracking-[0.45em] py-5 px-14 hover:bg-gray-800 transition-colors duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              className="mt-6 w-full flex justify-center items-center gap-3 bg-[#1a1a1a] text-white text-[12px] uppercase tracking-[0.45em] py-5 px-14 hover:bg-gray-800 transition-colors duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {loading ? 'Signing In...' : 'Sign In'}
             </button>
           </div>
+        </form>
 
-          <div className="pt-2">
-            <SocialLoginButtons onSuccess={() => navigate('/account')} />
-          </div>
+        <div className="pt-2">
+          <SocialLoginButtons onSuccess={() => navigate('/account')} />
+        </div>
 
           {/* Standalone Resend Verification Option */}
           <div className="pt-2 text-center border-t border-gray-100">
@@ -288,7 +289,6 @@ const LoginPage: React.FC = () => {
               </div>
             )}
           </div>
-        </form>
       </div>
     </div>
   );

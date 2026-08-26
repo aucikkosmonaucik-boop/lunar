@@ -168,7 +168,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           )}
 
           {tab === 'login' ? (
-            <form onSubmit={handleLoginSubmit} className="flex flex-col gap-4">
+            <div className="space-y-4">
+              <form onSubmit={handleLoginSubmit} className="flex flex-col gap-4">
               <div className="flex flex-col gap-1">
                 <label className="text-[11px] uppercase tracking-[0.2em] text-gray-500 font-medium">
                   Email
@@ -222,30 +223,32 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               <button
                 type="submit"
                 disabled={loading}
-                className="mt-2 w-full flex items-center justify-center gap-2 bg-[#1a1a1a] text-white text-[12px] uppercase tracking-[0.3em] py-4 hover:bg-gray-800 transition-colors duration-200 font-medium disabled:opacity-50"
+                className="mt-2 w-full flex items-center justify-center gap-2 bg-[#1a1a1a] text-white text-[12px] uppercase tracking-[0.3em] py-4 hover:bg-gray-800 transition-colors duration-200 font-medium disabled:opacity-50 cursor-pointer"
               >
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Sign In'}
               </button>
-
-              <div className="pt-2">
-                <SocialLoginButtons onSuccess={onClose} dividerText="Or continue with" />
-              </div>
-
-              <p className="text-center text-[12px] text-gray-400 mt-2">
-                Don't have an account?{' '}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setTab('register');
-                    setError(null);
-                  }}
-                  className="text-[#1a1a1a] underline underline-offset-2 hover:text-gray-600 transition-colors"
-                >
-                  Register
-                </button>
-              </p>
             </form>
-          ) : (
+
+            <div className="pt-2">
+              <SocialLoginButtons onSuccess={onClose} dividerText="Or continue with" />
+            </div>
+
+            <p className="text-center text-[12px] text-gray-400 mt-2">
+              Don't have an account?{' '}
+              <button
+                type="button"
+                onClick={() => {
+                  setTab('register');
+                  setError(null);
+                }}
+                className="text-[#1a1a1a] underline underline-offset-2 hover:text-gray-600 transition-colors cursor-pointer"
+              >
+                Register
+              </button>
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4">
             <form onSubmit={handleRegisterSubmit} className="flex flex-col gap-4">
               <div className="flex flex-col gap-1">
                 <label className="text-[11px] uppercase tracking-[0.2em] text-gray-500 font-medium">
@@ -325,30 +328,31 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               <button
                 type="submit"
                 disabled={loading}
-                className="mt-2 w-full flex items-center justify-center gap-2 bg-[#1a1a1a] text-white text-[12px] uppercase tracking-[0.3em] py-4 hover:bg-gray-800 transition-colors duration-200 font-medium disabled:opacity-50"
+                className="mt-2 w-full flex items-center justify-center gap-2 bg-[#1a1a1a] text-white text-[12px] uppercase tracking-[0.3em] py-4 hover:bg-gray-800 transition-colors duration-200 font-medium disabled:opacity-50 cursor-pointer"
               >
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Account'}
               </button>
-
-              <div className="pt-2">
-                <SocialLoginButtons onSuccess={onClose} dividerText="Or register with" />
-              </div>
-
-              <p className="text-center text-[12px] text-gray-400 mt-2">
-                Already have an account?{' '}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setTab('login');
-                    setError(null);
-                  }}
-                  className="text-[#1a1a1a] underline underline-offset-2 hover:text-gray-600 transition-colors"
-                >
-                  Sign In
-                </button>
-              </p>
             </form>
-          )}
+
+            <div className="pt-2">
+              <SocialLoginButtons onSuccess={onClose} dividerText="Or register with" />
+            </div>
+
+            <p className="text-center text-[12px] text-gray-400 mt-2">
+              Already have an account?{' '}
+              <button
+                type="button"
+                onClick={() => {
+                  setTab('login');
+                  setError(null);
+                }}
+                className="text-[#1a1a1a] underline underline-offset-2 hover:text-gray-600 transition-colors cursor-pointer"
+              >
+                Sign In
+              </button>
+            </p>
+          </div>
+        )}
         </div>
 
         {/* Footer note */}

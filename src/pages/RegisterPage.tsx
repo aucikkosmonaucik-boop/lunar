@@ -117,25 +117,25 @@ const RegisterPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="mt-6 w-full flex justify-center items-center gap-3 bg-[#1a1a1a] text-white text-[12px] uppercase tracking-[0.45em] py-5 px-14 hover:bg-gray-800 transition-colors duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              className="mt-6 w-full flex justify-center items-center gap-3 bg-[#1a1a1a] text-white text-[12px] uppercase tracking-[0.45em] py-5 px-14 hover:bg-gray-800 transition-colors duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {loading ? 'Processing...' : 'Create Account'}
             </button>
           </div>
-
-          <div className="pt-2">
-            <SocialLoginButtons dividerText="Or register with" onSuccess={() => navigate('/account')} />
-          </div>
-
-          <div className="pt-2 text-center border-t border-gray-100">
-            <Link
-              to="/login"
-              className="text-[11px] uppercase tracking-[0.2em] text-[#8C6D4F] hover:text-[#1a1a1a] transition-colors"
-            >
-              Didn't receive verification email? Resend link
-            </Link>
-          </div>
         </form>
+
+        <div className="pt-2">
+          <SocialLoginButtons dividerText="Or register with" onSuccess={() => navigate('/account')} />
+        </div>
+
+        <div className="pt-2 text-center border-t border-gray-100">
+          <Link
+            to="/login"
+            className="text-[11px] uppercase tracking-[0.2em] text-[#8C6D4F] hover:text-[#1a1a1a] transition-colors"
+          >
+            Didn't receive verification email? Resend link
+          </Link>
+        </div>
       </div>
     </div>
   );

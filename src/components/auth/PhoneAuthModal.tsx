@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Phone, Loader2, AlertCircle, ArrowLeft } from 'lucide-react';
 import { RecaptchaVerifier, signInWithPhoneNumber, type ConfirmationResult } from 'firebase/auth';
 import { auth } from '../../lib/firebase';
@@ -231,10 +232,10 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
 
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+  return createPortal(
+    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-[3px] transition-opacity" onClick={onClose} />
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-[3px] transition-opacity" onClick={onClose} />
 
       {/* Modal Container */}
       <div className="relative bg-[#f5eeeb] w-full max-w-md rounded-2xl shadow-2xl p-6 sm:p-8 z-10 border border-gray-200">
@@ -391,7 +392,8 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
           </form>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 export default PhoneAuthModal;
