@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock, User, AlertCircle } from 'lucide-react';
+import { SocialLoginButtons } from '../components/auth/SocialLoginButtons';
 
 const RegisterPage: React.FC = () => {
   const [name, setName] = useState('');
@@ -120,6 +121,10 @@ const RegisterPage: React.FC = () => {
             >
               {loading ? 'Processing...' : 'Create Account'}
             </button>
+          </div>
+
+          <div className="pt-2">
+            <SocialLoginButtons dividerText="Or register with" onSuccess={() => navigate('/account')} />
           </div>
 
           <div className="pt-2 text-center border-t border-gray-100">

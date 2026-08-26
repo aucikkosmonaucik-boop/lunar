@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { Mail, Lock, AlertCircle, CheckCircle2, RefreshCw } from 'lucide-react';
+import { SocialLoginButtons } from '../components/auth/SocialLoginButtons';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -231,6 +232,10 @@ const LoginPage: React.FC = () => {
             >
               {loading ? 'Signing In...' : 'Sign In'}
             </button>
+          </div>
+
+          <div className="pt-2">
+            <SocialLoginButtons onSuccess={() => navigate('/account')} />
           </div>
 
           {/* Standalone Resend Verification Option */}
