@@ -166,39 +166,7 @@ class HomeScreen extends StatelessWidget {
           children: [
             // Banners Carousel (Powiększone, automatycznie przesuwające się w lewo ze wszystkimi produktami)
             BannerCarousel(banners: allProductBanners),
-            const SizedBox(height: 24),
-
-            // All Products Horizontal Reel (Slide to left)
-            if (allProducts.isNotEmpty) ...[
-              _buildSectionHeader(
-                context,
-                title: 'All Products Collection',
-                onViewAll: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const ShopScreen()),
-                  );
-                },
-              ),
-              const SizedBox(height: 12),
-              _buildProductHorizontalList(context, allProducts),
-              const SizedBox(height: 28),
-            ],
-
-            // Featured Products Section
-            if (productProvider.featuredProducts.isNotEmpty) ...[
-              _buildSectionHeader(
-                context,
-                title: 'Featured Pieces',
-                onViewAll: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const ShopScreen()),
-                  );
-                },
-              ),
-              const SizedBox(height: 12),
-              _buildProductHorizontalList(context, productProvider.featuredProducts),
-              const SizedBox(height: 28),
-            ],
+            const SizedBox(height: 20),
 
             // Loyalty Promotion Banner
             Container(
@@ -252,38 +220,37 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 28),
+            const SizedBox(height: 24),
 
-            // New Arrivals Section
-            if (productProvider.newArrivals.isNotEmpty) ...[
-              _buildSectionHeader(
-                context,
-                title: 'New Arrivals',
-                onViewAll: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const ShopScreen(initialBadge: 'NEW')),
-                  );
-                },
+            // All Products Collection (Siatka 2-kolumnowa, scroll w dół bez duplikatów)
+            if (allProducts.isNotEmpty) ...[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'All Products Collection',
+                      style: GoogleFonts.cormorantGaramond(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                        color: isDark ? AppColors.darkText : AppColors.lightText,
+                      ),
+                    ),
+                    Text(
+                      '${allProducts.length} items',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 12),
-              _buildProductHorizontalList(context, productProvider.newArrivals),
-              const SizedBox(height: 28),
-            ],
-
-            // Bestsellers Section
-            if (productProvider.bestsellers.isNotEmpty) ...[
-              _buildSectionHeader(
-                context,
-                title: 'Bestsellers',
-                onViewAll: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const ShopScreen(initialBadge: 'BESTSELLER')),
-                  );
-                },
-              ),
-              const SizedBox(height: 12),
-              _buildProductHorizontalList(context, productProvider.bestsellers),
-              const SizedBox(height: 16),
+              const SizedBox(height: 14),
+              _buildProductGrid(context, allProducts),
+              const SizedBox(height: 24),
             ],
           ],
         ),
@@ -291,50 +258,21 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionHeader(BuildContext context, {required String title, required VoidCallback onViewAll}) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+  Widget _buildProductGrid(BuildContext context, List<Product> products) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: GoogleFonts.cormorantGaramond(
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
-              color: isDark ? AppColors.darkText : AppColors.lightText,
-            ),
-          ),
-          TextButton(
-            onPressed: onViewAll,
-            child: Text(
-              'View all >',
-              style: TextStyle(
-                fontSize: 12,
-                color: isDark ? AppColors.primary : AppColors.primaryDark,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildProductHorizontalList(BuildContext context, List<Product> products) {
-    return SizedBox(
-      height: 275,
-      child: ListView.separated(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        scrollDirection: Axis.horizontal,
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
         itemCount: products.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          mainAxisSpacing: 14,
+          crossAxisSpacing: 14,
+          childAspectRatio: 0.58,
+        ),
         itemBuilder: (context, index) {
-          return SizedBox(
-            width: 170,
-            child: ProductCard(product: products[index]),
-          );
+          return ProductCard(product: products[index]);
         },
       ),
     );
