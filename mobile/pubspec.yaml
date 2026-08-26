@@ -19,7 +19,6 @@ dependencies:
   app_links: ^7.2.1
   url_launcher: ^6.3.0
   google_sign_in: ^6.2.2
-  sign_in_with_apple: ^6.1.4
   flutter_facebook_auth: ^7.1.1
 
 dev_dependencies:

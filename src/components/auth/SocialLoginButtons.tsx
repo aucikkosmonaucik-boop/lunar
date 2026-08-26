@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { Loader2, AlertCircle } from 'lucide-react';
 import { signInWithPopup } from 'firebase/auth';
-import { auth, googleProvider, facebookProvider, appleProvider } from '../../lib/firebase';
+import { auth, googleProvider, facebookProvider } from '../../lib/firebase';
 
 interface SocialLoginButtonsProps {
   onSuccess?: () => void;
@@ -16,10 +16,10 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
   className = '',
 }) => {
   const { login } = useAuth();
-  const [loadingProvider, setLoadingProvider] = useState<'google' | 'facebook' | 'apple' | null>(null);
+  const [loadingProvider, setLoadingProvider] = useState<'google' | 'facebook' | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSocialAuth = async (provider: 'google' | 'facebook' | 'apple') => {
+  const handleSocialAuth = async (provider: 'google' | 'facebook') => {
     setError(null);
     setLoadingProvider(provider);
 
@@ -28,8 +28,6 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
         await initiateGoogleLogin();
       } else if (provider === 'facebook') {
         await initiateFacebookLogin();
-      } else if (provider === 'apple') {
-        await initiateAppleLogin();
       }
     } catch (err: any) {
       if (
@@ -76,20 +74,6 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
       provider: 'facebook',
       email: user.email,
       name: user.displayName || undefined,
-      token: idToken,
-      providerId: user.uid,
-    });
-  };
-
-  const initiateAppleLogin = async () => {
-    const result = await signInWithPopup(auth, appleProvider);
-    const user = result.user;
-    const idToken = await user.getIdToken();
-
-    await submitToBackend({
-      provider: 'apple',
-      email: user.email || `${user.uid}@privaterelay.appleid.com`,
-      name: user.displayName || 'Apple User',
       token: idToken,
       providerId: user.uid,
     });
@@ -144,13 +128,13 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
       )}
 
       {/* Buttons */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 gap-3">
         {/* Google */}
         <button
           type="button"
           disabled={loadingProvider !== null}
           onClick={() => handleSocialAuth('google')}
-          className="flex items-center justify-center gap-2 py-3 px-2 border border-gray-200 hover:border-gray-900 bg-white hover:bg-gray-50/80 rounded-xl transition-all duration-200 text-[#1a1a1a] shadow-xs group disabled:opacity-50 cursor-pointer"
+          className="flex items-center justify-center gap-2 py-3 px-3 border border-gray-200 hover:border-gray-900 bg-white hover:bg-gray-50/80 rounded-xl transition-all duration-200 text-[#1a1a1a] shadow-xs group disabled:opacity-50 cursor-pointer"
           title="Sign in with Google"
         >
           {loadingProvider === 'google' ? (
@@ -185,7 +169,7 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
           type="button"
           disabled={loadingProvider !== null}
           onClick={() => handleSocialAuth('facebook')}
-          className="flex items-center justify-center gap-2 py-3 px-2 border border-gray-200 hover:border-[#1877F2] bg-white hover:bg-[#1877F2]/5 rounded-xl transition-all duration-200 text-[#1a1a1a] shadow-xs group disabled:opacity-50 cursor-pointer"
+          className="flex items-center justify-center gap-2 py-3 px-3 border border-gray-200 hover:border-[#1877F2] bg-white hover:bg-[#1877F2]/5 rounded-xl transition-all duration-200 text-[#1a1a1a] shadow-xs group disabled:opacity-50 cursor-pointer"
           title="Sign in with Facebook"
         >
           {loadingProvider === 'facebook' ? (
@@ -196,26 +180,6 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
               </svg>
               <span className="text-[12px] font-medium tracking-wide">Facebook</span>
-            </>
-          )}
-        </button>
-
-        {/* Apple */}
-        <button
-          type="button"
-          disabled={loadingProvider !== null}
-          onClick={() => handleSocialAuth('apple')}
-          className="flex items-center justify-center gap-2 py-3 px-2 border border-gray-200 hover:border-black bg-white hover:bg-black/5 rounded-xl transition-all duration-200 text-[#1a1a1a] shadow-xs group disabled:opacity-50 cursor-pointer"
-          title="Sign in with Apple"
-        >
-          {loadingProvider === 'apple' ? (
-            <Loader2 className="w-4 h-4 animate-spin text-black" />
-          ) : (
-            <>
-              <svg className="w-4 h-4 shrink-0 fill-current" viewBox="0 0 24 24">
-                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.62-.75 1.04-1.8 0.92-2.85-.9.04-1.99.6-2.61 1.34-.55.63-.99 1.65-.86 2.66 1 .08 1.93-.44 2.55-1.15z" />
-              </svg>
-              <span className="text-[12px] font-medium tracking-wide">Apple</span>
             </>
           )}
         </button>

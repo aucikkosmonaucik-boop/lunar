@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import '../core/constants/api_constants.dart';
 import '../core/services/api_service.dart';
@@ -272,57 +271,6 @@ class AuthProvider extends ChangeNotifier {
     } catch (e) {
       _isLoading = false;
       _errorMessage = 'Google Sign-In failed: ${e.toString()}';
-      notifyListeners();
-      return false;
-    }
-  }
-
-  Future<bool> loginWithApple() async {
-    _isLoading = true;
-    _errorMessage = null;
-    notifyListeners();
-
-    try {
-      final credential = await SignInWithApple.getAppleIDCredential(
-        scopes: [
-          AppleIDAuthorizationScopes.email,
-          AppleIDAuthorizationScopes.fullName,
-        ],
-      );
-
-      final email = credential.email ??
-          (credential.userIdentifier != null
-              ? '${credential.userIdentifier}@privaterelay.appleid.com'
-              : null);
-
-      if (email == null) {
-        throw Exception('No email received from Apple.');
-      }
-
-      final fullNameParts = <String>[];
-      if (credential.givenName != null && credential.givenName!.isNotEmpty) {
-        fullNameParts.add(credential.givenName!);
-      }
-      if (credential.familyName != null && credential.familyName!.isNotEmpty) {
-        fullNameParts.add(credential.familyName!);
-      }
-      final fullName = fullNameParts.isNotEmpty ? fullNameParts.join(' ') : 'Apple User';
-
-      return await _submitSocialLogin(
-        provider: 'apple',
-        email: email,
-        name: fullName,
-        providerId: credential.userIdentifier,
-        token: credential.identityToken,
-      );
-    } catch (e) {
-      _isLoading = false;
-      final str = e.toString();
-      if (str.toLowerCase().contains('cancel')) {
-        notifyListeners();
-        return false;
-      }
-      _errorMessage = 'Apple Sign-In failed: $str';
       notifyListeners();
       return false;
     }

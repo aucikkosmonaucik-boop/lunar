@@ -32,17 +32,6 @@ class _SocialAuthButtonsState extends State<SocialAuthButtons> {
     }
   }
 
-  Future<void> _handleAppleSignIn() async {
-    setState(() => _activeProvider = 'apple');
-    final auth = context.read<AuthProvider>();
-    final success = await auth.loginWithApple();
-    setState(() => _activeProvider = null);
-
-    if (success && mounted) {
-      widget.onSuccess?.call();
-    }
-  }
-
   Future<void> _handleFacebookSignIn() async {
     setState(() => _activeProvider = 'facebook');
     final auth = context.read<AuthProvider>();
@@ -105,23 +94,6 @@ class _SocialAuthButtonsState extends State<SocialAuthButtons> {
                 iconWidget: _buildGoogleIcon(),
                 label: 'Google',
                 onTap: isBusy ? null : _handleGoogleSignIn,
-              ),
-            ),
-            const SizedBox(width: 12),
-
-            // Apple Button
-            Expanded(
-              child: _buildSocialCard(
-                isDark: isDark,
-                provider: 'apple',
-                isLoading: _activeProvider == 'apple' && isBusy,
-                iconWidget: Icon(
-                  Icons.apple,
-                  size: 22,
-                  color: isDark ? Colors.white : Colors.black,
-                ),
-                label: 'Apple',
-                onTap: isBusy ? null : _handleAppleSignIn,
               ),
             ),
             const SizedBox(width: 12),
@@ -189,11 +161,11 @@ class _SocialAuthButtonsState extends State<SocialAuthButtons> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       iconWidget,
-                      const SizedBox(width: 6),
+                      const SizedBox(width: 8),
                       Text(
                         label,
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 13,
                           fontWeight: FontWeight.w600,
                           color: isDark ? AppColors.darkText : AppColors.lightText,
                         ),
