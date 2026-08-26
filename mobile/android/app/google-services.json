@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "651131285123-a8h61uh8si6o3c6juaaalp3busqm6r0a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lunar.store.lunar_mobile",
+            "certificate_hash": "720dd772a51ccc93a1ed2fe568125b7eb13a1c8f"
+          }
+        },
+        {
           "client_id": "651131285123-sur6jf41fveq10r3drmfdd9oqaclknv9.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

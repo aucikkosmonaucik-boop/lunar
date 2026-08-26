@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../core/constants/app_colors.dart';
 import '../providers/auth_provider.dart';
+import '../screens/auth/phone_auth_screen.dart';
 
 class SocialAuthButtons extends StatefulWidget {
   final VoidCallback? onSuccess;
@@ -114,6 +115,31 @@ class _SocialAuthButtonsState extends State<SocialAuthButtons> {
               ),
             ),
           ],
+        ),
+        const SizedBox(height: 12),
+
+        // Phone Auth Button
+        _buildSocialCard(
+          isDark: isDark,
+          provider: 'phone',
+          isLoading: false,
+          iconWidget: Icon(
+            Icons.phone_iphone_rounded,
+            size: 20,
+            color: isDark ? AppColors.primary : AppColors.primaryDark,
+          ),
+          label: 'Continue with Phone Number',
+          onTap: isBusy
+              ? null
+              : () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => PhoneAuthScreen(
+                        onSuccess: widget.onSuccess,
+                      ),
+                    ),
+                  );
+                },
         ),
       ],
     );

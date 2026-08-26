@@ -13,31 +13,49 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const { provider, email, name, providerId, token } = req.body;
+    const { provider, email, phone, name, providerId, token } = req.body;
 
     if (!provider) {
       return res.status(400).json({ message: 'Provider is required' });
     }
 
-    if (!email) {
-      return res.status(400).json({ message: 'Email address is required for authentication' });
+    const cleanPhone = phone ? phone.trim() : null;
+    const cleanEmail = email
+      ? email.trim().toLowerCase()
+      : cleanPhone
+        ? `${cleanPhone.replace(/[^0-9]/g, '')}@phone.lunar.com`
+        : null;
+
+    if (!cleanEmail) {
+      return res.status(400).json({ message: 'Email or phone number is required for authentication' });
     }
 
-    const cleanEmail = email.trim().toLowerCase();
-    let user = await prisma.user.findUnique({
-      where: { email: cleanEmail },
+    let user = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { email: cleanEmail },
+          ...(cleanPhone ? [{ phone: cleanPhone }] : []),
+        ],
+      },
     });
 
     if (user) {
-      // If user exists and email was not verified before, verify it now since social providers guarantee ownership
+      // If user exists and email was not verified before, verify it now since providers guarantee ownership
+      const updateData: any = {};
       if (user.verificationToken !== null) {
+        updateData.verificationToken = null;
+      }
+      if (cleanPhone && !user.phone) {
+        updateData.phone = cleanPhone;
+      }
+      if (Object.keys(updateData).length > 0) {
         user = await prisma.user.update({
           where: { id: user.id },
-          data: { verificationToken: null },
+          data: updateData,
         });
       }
     } else {
-      // Create a new user account for first-time social login
+      // Create a new user account for first-time social/phone login
       const randomPassword = crypto.randomBytes(32).toString('hex');
       const hashedPassword = await bcrypt.hash(randomPassword, 10);
 
@@ -45,8 +63,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         data: {
           email: cleanEmail,
           password: hashedPassword,
-          name: name ? name.trim() : `${provider.charAt(0).toUpperCase() + provider.slice(1)} User`,
-          verificationToken: null, // Pre-verified via OAuth
+          phone: cleanPhone,
+          name: name ? name.trim() : (provider === 'phone' ? `User ${cleanPhone || ''}` : `${provider.charAt(0).toUpperCase() + provider.slice(1)} User`),
+          verificationToken: null, // Pre-verified via SMS/OAuth
         },
       });
     }

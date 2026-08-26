@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb;
 import '../core/constants/api_constants.dart';
 import '../core/services/api_service.dart';
 import '../core/services/storage_service.dart';
@@ -318,23 +319,57 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> loginWithPhoneAuth({
+    required fb.User firebaseUser,
+    String? name,
+  }) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final token = await firebaseUser.getIdToken();
+      final phone = firebaseUser.phoneNumber;
+      final email = firebaseUser.email;
+      final displayName = name ?? firebaseUser.displayName;
+
+      return await _submitSocialLogin(
+        provider: 'phone',
+        email: email ?? (phone != null ? '${phone.replaceAll(RegExp(r'[^0-9]'), '')}@phone.lunar.com' : ''),
+        phone: phone,
+        name: displayName,
+        providerId: firebaseUser.uid,
+        token: token,
+      );
+    } catch (e) {
+      _isLoading = false;
+      _errorMessage = 'Phone sign-in failed: ${e.toString()}';
+      notifyListeners();
+      return false;
+    }
+  }
+
   Future<bool> _submitSocialLogin({
     required String provider,
     required String email,
+    String? phone,
     String? name,
     String? providerId,
     String? token,
   }) async {
     try {
+      final body = <String, dynamic>{
+        'provider': provider,
+        'email': email.trim(),
+        if (phone != null && phone.isNotEmpty) 'phone': phone.trim(),
+        if (name != null && name.isNotEmpty) 'name': name.trim(),
+        if (providerId != null) 'providerId': providerId,
+        if (token != null) 'token': token,
+      };
+
       final res = await ApiService.post(
         ApiConstants.authSocialLogin,
-        body: {
-          'provider': provider,
-          'email': email.trim(),
-          'name': name?.trim(),
-          'providerId': providerId,
-          'token': token,
-        },
+        body: body,
       );
 
       if (res is Map) {
@@ -369,6 +404,9 @@ class AuthProvider extends ChangeNotifier {
     } catch (_) {}
     try {
       await FacebookAuth.instance.logOut();
+    } catch (_) {}
+    try {
+      await fb.FirebaseAuth.instance.signOut();
     } catch (_) {}
 
     _user = null;
