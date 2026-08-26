@@ -58,7 +58,7 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
     return () => clearInterval(timer);
   }, [countdown]);
 
-  // Clean up on close / reset
+  // Clean up on modal close
   useEffect(() => {
     if (!isOpen) {
       setPhone('');
@@ -69,6 +69,12 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
       setLoading(false);
       setCountdown(0);
       confirmationResultRef.current = null;
+      if (recaptchaVerifierRef.current) {
+        try {
+          recaptchaVerifierRef.current.clear();
+        } catch (_) {}
+        recaptchaVerifierRef.current = null;
+      }
     }
   }, [isOpen]);
 
@@ -86,16 +92,25 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
     return `${countryCode}${cleaned}`;
   };
 
-  const createRecaptchaVerifier = () => {
+  const getOrCreateRecaptcha = () => {
+    const container = document.getElementById('recaptcha-container') || document.body;
     if (recaptchaVerifierRef.current) {
       try {
         recaptchaVerifierRef.current.clear();
       } catch (_) {}
       recaptchaVerifierRef.current = null;
     }
-    const verifier = new RecaptchaVerifier(auth, 'web-phone-recaptcha', {
+
+    const verifier = new RecaptchaVerifier(auth, container, {
       size: 'invisible',
+      callback: () => {
+        // reCAPTCHA solved
+      },
+      'expired-callback': () => {
+        setError('reCAPTCHA session expired. Please try sending code again.');
+      },
     });
+
     recaptchaVerifierRef.current = verifier;
     return verifier;
   };
@@ -114,7 +129,7 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
     setLoading(true);
 
     try {
-      const verifier = createRecaptchaVerifier();
+      const verifier = getOrCreateRecaptcha();
       const confirmation = await signInWithPhoneNumber(auth, fullPhoneNumber, verifier);
       confirmationResultRef.current = confirmation;
       setStep('otp');
@@ -127,7 +142,21 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
         } catch (_) {}
         recaptchaVerifierRef.current = null;
       }
-      setError(err?.message || 'Failed to send SMS code. Check your phone number format.');
+
+      let errorMsg = err?.message || 'Failed to send SMS code.';
+      if (err?.code === 'auth/unauthorized-domain') {
+        errorMsg = 'This domain (mylunar.shop) is not authorized in Firebase Console -> Authentication -> Settings -> Authorized Domains.';
+      } else if (err?.code === 'auth/invalid-phone-number') {
+        errorMsg = 'Invalid phone number format. Please check your number.';
+      } else if (err?.code === 'auth/quota-exceeded' || err?.code === 'auth/too-many-requests') {
+        errorMsg = 'Too many attempts or daily SMS quota reached. Please wait a few minutes.';
+      } else if (err?.code === 'auth/billing-not-enabled' || err?.code === 'auth/operation-not-allowed') {
+        errorMsg = 'Phone authentication or SMS region blocked in Firebase/Google Cloud settings.';
+      } else if (err?.code === 'auth/captcha-check-failed') {
+        errorMsg = 'reCAPTCHA verification failed. Disable ad-blockers and try again.';
+      }
+
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -180,7 +209,11 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
       onClose();
     } catch (err: any) {
       console.error('OTP Verification Error:', err);
-      setError(err?.code === 'auth/invalid-verification-code' ? 'Invalid SMS code. Please try again.' : (err?.message || 'Verification failed'));
+      setError(
+        err?.code === 'auth/invalid-verification-code'
+          ? 'Invalid SMS code. Please try again.'
+          : (err?.message || 'Verification failed')
+      );
     } finally {
       setLoading(false);
     }
@@ -195,9 +228,6 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
 
       {/* Modal Container */}
       <div className="relative bg-[#f5eeeb] w-full max-w-md rounded-2xl shadow-2xl p-6 sm:p-8 z-10 border border-gray-200">
-        {/* Recaptcha Anchor */}
-        <div id="web-phone-recaptcha"></div>
-
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -227,9 +257,9 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
 
         {/* Error Alert */}
         {error && (
-          <div className="mb-4 bg-red-50 border border-red-200 text-red-600 p-3 rounded-xl flex items-center space-x-2 text-xs">
-            <AlertCircle className="w-4 h-4 shrink-0" />
-            <span>{error}</span>
+          <div className="mb-4 bg-red-50 border border-red-200 text-red-600 p-3 rounded-xl flex items-start space-x-2 text-xs">
+            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+            <span className="leading-relaxed">{error}</span>
           </div>
         )}
 
@@ -331,7 +361,7 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
                   setOtp('');
                   setError(null);
                 }}
-                className="text-gray-500 hover:text-gray-900 flex items-center gap-1 transition-colors"
+                className="text-gray-500 hover:text-gray-900 flex items-center gap-1 transition-colors cursor-pointer"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
                 Change number
