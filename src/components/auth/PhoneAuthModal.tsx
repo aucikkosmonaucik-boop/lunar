@@ -73,23 +73,31 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
   }, [isOpen]);
 
   const formatPhoneNumber = (rawNumber: string, countryCode: string) => {
-    const cleaned = rawNumber.replace(/\s+/g, '').replace(/^0+/, '');
-    if (cleaned.startsWith(countryCode)) {
-      return cleaned;
-    }
+    let cleaned = rawNumber.replace(/[^\d+]/g, '');
     if (cleaned.startsWith('+')) {
       return cleaned;
+    }
+    // Remove leading zeros
+    cleaned = cleaned.replace(/^0+/, '');
+    const bareCode = countryCode.replace('+', '');
+    if (cleaned.startsWith(bareCode)) {
+      return `+${cleaned}`;
     }
     return `${countryCode}${cleaned}`;
   };
 
-  const getOrCreateRecaptcha = () => {
-    if (!recaptchaVerifierRef.current) {
-      recaptchaVerifierRef.current = new RecaptchaVerifier(auth, 'web-phone-recaptcha', {
-        size: 'invisible',
-      });
+  const createRecaptchaVerifier = () => {
+    if (recaptchaVerifierRef.current) {
+      try {
+        recaptchaVerifierRef.current.clear();
+      } catch (_) {}
+      recaptchaVerifierRef.current = null;
     }
-    return recaptchaVerifierRef.current;
+    const verifier = new RecaptchaVerifier(auth, 'web-phone-recaptcha', {
+      size: 'invisible',
+    });
+    recaptchaVerifierRef.current = verifier;
+    return verifier;
   };
 
   const handleSendOtp = async (e: React.FormEvent) => {
@@ -106,7 +114,7 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
     setLoading(true);
 
     try {
-      const verifier = getOrCreateRecaptcha();
+      const verifier = createRecaptchaVerifier();
       const confirmation = await signInWithPhoneNumber(auth, fullPhoneNumber, verifier);
       confirmationResultRef.current = confirmation;
       setStep('otp');
@@ -116,8 +124,8 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
       if (recaptchaVerifierRef.current) {
         try {
           recaptchaVerifierRef.current.clear();
-          recaptchaVerifierRef.current = null;
         } catch (_) {}
+        recaptchaVerifierRef.current = null;
       }
       setError(err?.message || 'Failed to send SMS code. Check your phone number format.');
     } finally {
