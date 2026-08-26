@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Lunar</string>
+    <string name="facebook_app_id">3518834284951352</string>
+    <string name="fb_login_protocol_scheme">fb3518834284951352</string>
+    <string name="facebook_client_token">e630ed918172829a7e5dd5e4b5dd30be</string>
+</resources>

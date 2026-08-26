@@ -43,11 +43,19 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>FacebookAppID</key>
+	<string>3518834284951352</string>
+	<key>FacebookClientToken</key>
+	<string>e630ed918172829a7e5dd5e4b5dd30be</string>
+	<key>FacebookDisplayName</key>
+	<string>Lunar</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>mailto</string>
 		<string>https</string>
 		<string>http</string>
+		<string>fbapi</string>
+		<string>fb-messenger-share-api</string>
 	</array>
 </dict>
 </plist>
