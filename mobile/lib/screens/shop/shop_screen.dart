@@ -9,11 +9,13 @@ import '../../widgets/product_card.dart';
 class ShopScreen extends StatefulWidget {
   final String? initialCategory;
   final String? initialBadge;
+  final String? initialSearch;
 
   const ShopScreen({
     super.key,
     this.initialCategory,
     this.initialBadge,
+    this.initialSearch,
   });
 
   static void showCategoriesBottomSheet(BuildContext context, {bool navigateToShop = false}) =>
@@ -34,6 +36,9 @@ class _ShopScreenState extends State<ShopScreen> {
   @override
   void initState() {
     super.initState();
+    if (widget.initialSearch != null && widget.initialSearch!.isNotEmpty) {
+      _searchController.text = widget.initialSearch!;
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final provider = context.read<ProductProvider>();
       if (widget.initialCategory != null) {
@@ -41,6 +46,9 @@ class _ShopScreenState extends State<ShopScreen> {
       }
       if (widget.initialBadge != null) {
         provider.setBadge(widget.initialBadge);
+      }
+      if (widget.initialSearch != null && widget.initialSearch!.isNotEmpty) {
+        provider.setSearchQuery(widget.initialSearch!);
       }
     });
 

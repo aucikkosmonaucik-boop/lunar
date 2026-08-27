@@ -4,6 +4,7 @@ import '../core/constants/app_colors.dart';
 import '../providers/cart_provider.dart';
 import '../providers/wishlist_provider.dart';
 import 'home/home_screen.dart';
+import 'shop/shop_screen.dart';
 import 'favorites/favorites_screen.dart';
 import 'cart/cart_screen.dart';
 import 'profile/profile_screen.dart';
@@ -22,6 +23,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
 
   final List<Widget> _screens = const [
     HomeScreen(),
+    ShopScreen(),
     FavoritesScreen(),
     CartScreen(),
     ProfileScreen(),
@@ -67,6 +69,11 @@ class _MainNavScreenState extends State<MainNavScreen> {
               icon: Icon(Icons.home_outlined),
               activeIcon: Icon(Icons.home_rounded),
               label: 'Home',
+            ),
+            const BottomNavigationBarItem(
+              icon: Icon(Icons.grid_view_outlined),
+              activeIcon: Icon(Icons.grid_view_rounded),
+              label: 'Catalog',
             ),
             BottomNavigationBarItem(
               icon: Badge(

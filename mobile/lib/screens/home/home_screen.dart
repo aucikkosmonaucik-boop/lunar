@@ -12,8 +12,37 @@ import '../notifications/notifications_screen.dart';
 import '../product/product_detail_screen.dart';
 import '../shop/shop_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _handleSearch(BuildContext context, String query) {
+    final trimmed = query.trim();
+    if (trimmed.isEmpty) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const ShopScreen()),
+      );
+    } else {
+      context.read<ProductProvider>().setSearchQuery(trimmed);
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => ShopScreen(initialSearch: trimmed),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -222,55 +251,74 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 18),
 
-            // Hamburger CATEGORIES Button (Centered under Lunar Club)
-            Center(
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () => ShopScreen.showCategoriesBottomSheet(context, navigateToShop: true),
+            // Search Bar (w miejsce usuniętego CATEGORIES)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: isDark ? AppColors.darkSurfaceElevated : AppColors.lightSurface,
                   borderRadius: BorderRadius.circular(28),
-                  child: Ink(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    decoration: BoxDecoration(
-                      color: isDark ? AppColors.darkSurfaceElevated : AppColors.lightSurface,
-                      borderRadius: BorderRadius.circular(28),
-                      border: Border.all(
-                        color: isDark
-                            ? AppColors.primary.withValues(alpha: 0.5)
-                            : AppColors.primary.withValues(alpha: 0.7),
-                        width: 1.5,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: isDark
-                              ? Colors.black.withValues(alpha: 0.35)
-                              : AppColors.primary.withValues(alpha: 0.15),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
+                  border: Border.all(
+                    color: isDark
+                        ? AppColors.darkBorder
+                        : AppColors.primary.withValues(alpha: 0.35),
+                    width: 1.2,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: isDark
+                          ? Colors.black.withValues(alpha: 0.35)
+                          : AppColors.primary.withValues(alpha: 0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.menu_rounded,
-                          size: 20,
-                          color: isDark ? AppColors.primary : AppColors.primaryDark,
-                        ),
-                        const SizedBox(width: 10),
-                        Text(
-                          'CATEGORIES',
-                          style: GoogleFonts.cormorantGaramond(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 2.5,
-                            color: isDark ? AppColors.primary : AppColors.lightText,
+                  ],
+                ),
+                child: TextField(
+                  controller: _searchController,
+                  textInputAction: TextInputAction.search,
+                  onSubmitted: (query) => _handleSearch(context, query),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: isDark ? AppColors.darkText : AppColors.lightText,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: 'Search jewelry, rings, necklaces, perfumes...',
+                    hintStyle: TextStyle(
+                      fontSize: 13.5,
+                      color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                    ),
+                    prefixIcon: const Icon(
+                      Icons.search_rounded,
+                      color: AppColors.primary,
+                      size: 22,
+                    ),
+                    suffixIcon: ValueListenableBuilder<TextEditingValue>(
+                      valueListenable: _searchController,
+                      builder: (context, value, _) {
+                        if (value.text.isNotEmpty) {
+                          return IconButton(
+                            icon: const Icon(Icons.clear_rounded, size: 20),
+                            onPressed: () {
+                              _searchController.clear();
+                            },
+                          );
+                        }
+                        return IconButton(
+                          icon: const Icon(
+                            Icons.arrow_forward_rounded,
+                            color: AppColors.primary,
+                            size: 20,
                           ),
-                        ),
-                      ],
+                          tooltip: 'Search',
+                          onPressed: () => _handleSearch(context, _searchController.text),
+                        );
+                      },
                     ),
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   ),
                 ),
               ),
