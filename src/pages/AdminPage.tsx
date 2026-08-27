@@ -726,7 +726,7 @@ export const AdminPage: React.FC = () => {
               }`}
             >
               <Bell className="w-4 h-4 text-[#D4AF37]" />
-              <span>Notifications / Wyślij</span>
+              <span>Customer Notifications</span>
             </button>
 
             <button

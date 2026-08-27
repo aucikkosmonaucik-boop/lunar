@@ -54,45 +54,45 @@ interface TemplatePreset {
 
 const TEMPLATES: TemplatePreset[] = [
   {
-    name: '📦 Paczka nadana (Dispatched)',
+    name: '📦 Order Dispatched',
     type: 'SHIPPING',
-    title: '📦 Twoja przesyłka została nadana',
-    message: 'Twoje zamówienie zostało starannie spakowane i przekazane kurierowi. Numer listu przewozowego oraz link do śledzenia trasy znajdziesz w szczegółach zamówienia.',
+    title: '📦 Your order has been dispatched',
+    message: 'Your Lunar order has been carefully packaged and handed over to our courier. You can find your tracking number and live shipment status in your order details.',
     linkUrl: '/track-order',
   },
   {
-    name: '🚚 Paczka w doręczeniu (Out for delivery)',
+    name: '🚚 Out for Delivery',
     type: 'SHIPPING',
-    title: '🚚 Przesyłka w doręczeniu dzisiaj',
-    message: 'Kurier odebrał Twoją paczkę i doręczy ją pod wskazany adres dzisiaj w godzinach 9:00 - 17:00. Upewnij się, że ktoś będzie na miejscu, aby odebrać przesyłkę.',
+    title: '🚚 Your order is out for delivery today',
+    message: 'Our courier is on the way and scheduled to deliver your parcel today. Please ensure someone is available at your delivery address to receive your order.',
     linkUrl: '/track-order',
   },
   {
-    name: '📍 Gotowa do odbioru (Ready for pickup)',
+    name: '📍 Ready for Pickup',
     type: 'SHIPPING',
-    title: '📍 Paczka gotowa do odbioru',
-    message: 'Twoja paczka dotarła do punktu odbioru / paczkomatu. Możesz ją odebrać za pomocą kodu z wiadomości SMS lub aplikacji przewoźnika.',
+    title: '📍 Your parcel is ready for pickup',
+    message: 'Your parcel has arrived at your selected pickup point / locker. You can retrieve it using the pickup code from your carrier message or app.',
     linkUrl: '/track-order',
   },
   {
-    name: '✨ Potwierdzenie zamówienia (Order verified)',
+    name: '✨ Order Verified',
     type: 'ORDER',
-    title: '✨ Twoje zamówienie jest realizowane',
-    message: 'Dziękujemy za zakupy w Lunar Boutique. Twoje zamówienie zostało zweryfikowane i nasi rzemieślnicy przygotowują Twoje kreacje do bezpiecznej wysyłki.',
+    title: '✨ Your order is being handcrafted & prepared',
+    message: 'Thank you for choosing Lunar Boutique. Your order has been verified and our master jewelers are preparing your pieces for secure dispatch.',
     linkUrl: '/account',
   },
   {
-    name: '🌙 Specjalny rabat VIP (Exclusive Promo)',
+    name: '🌙 Exclusive VIP Offer',
     type: 'PROMO',
-    title: '🌙 Ekskluzywna oferta specjalna dla Ciebie',
-    message: 'Jako nasz ceniony klient otrzymujesz wyjątkowy rabat -15% na najnowszą kolekcję biżuterii. Użyj kodu rabatowego VIP15 podczas finalizacji zamówienia!',
+    title: '🌙 An exclusive privilege for you',
+    message: 'As a valued Lunar collector, enjoy an exclusive 15% privilege on our newest haute joaillerie arrivals. Apply code VIP15 at checkout!',
     linkUrl: '/shop',
   },
   {
-    name: '✦ Bonusowe punkty Lunar Club (Loyalty)',
+    name: '✦ Lunar Club Bonus Points',
     type: 'LOYALTY',
-    title: '✦ Przyznano bonusowe punkty Lunar Club',
-    message: 'Na Twoje konto trafiły dodatkowe punkty lojalnościowe Lunar VIP! Wymieniaj zebrane punkty na vouchery i zniżki na kolejne zakupy.',
+    title: '✦ Bonus Lunar Club Points Awarded',
+    message: 'Complimentary loyalty reward points have been credited to your Lunar Club account! Redeem your points for exclusive vouchers and bespoke rewards.',
     linkUrl: '/account',
   },
 ];
@@ -179,17 +179,17 @@ export const NotificationsAdminManager: React.FC<{
     setFeedback(null);
 
     if (!title.trim()) {
-      setFeedback({ message: 'Tytuł powiadomienia jest wymagany.', isError: true });
+      setFeedback({ message: 'Notification title is required.', isError: true });
       return;
     }
 
     if (!message.trim()) {
-      setFeedback({ message: 'Treść wiadomości jest wymagana.', isError: true });
+      setFeedback({ message: 'Notification message content is required.', isError: true });
       return;
     }
 
     if (targetType === 'single' && !selectedCustomerId && !customEmail.trim()) {
-      setFeedback({ message: 'Wybierz klienta z listy lub wpisz jego adres e-mail.', isError: true });
+      setFeedback({ message: 'Please select a registered customer or enter an email address.', isError: true });
       return;
     }
 
@@ -213,20 +213,20 @@ export const NotificationsAdminManager: React.FC<{
 
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.message || 'Błąd podczas wysyłania powiadomienia');
+        throw new Error(data.message || 'Failed to dispatch notification');
       }
 
       setFeedback({
         message:
           data.message ||
           (targetType === 'all'
-            ? `Wysłano powiadomienie do ${data.count || 0} klientów!`
-            : 'Powiadomienie zostało pomyślnie wysłane!'),
+            ? `Notification successfully broadcasted to ${data.count || 0} customers!`
+            : 'Notification sent successfully!'),
         isError: false,
       });
 
       if (showToast) {
-        showToast(data.message || 'Powiadomienie wysłane!', 'success');
+        showToast(data.message || 'Notification sent successfully!', 'success');
       }
 
       // Reset form fields
@@ -238,7 +238,7 @@ export const NotificationsAdminManager: React.FC<{
       // Refresh log
       await fetchHistory();
     } catch (err: unknown) {
-      const errorMsg = err instanceof Error ? err.message : 'Wystąpił nieoczekiwany błąd';
+      const errorMsg = err instanceof Error ? err.message : 'An unexpected error occurred';
       setFeedback({ message: errorMsg, isError: true });
       if (showToast) showToast(errorMsg, 'info');
     } finally {
@@ -247,7 +247,7 @@ export const NotificationsAdminManager: React.FC<{
   };
 
   const handleDeleteNotification = async (id: string) => {
-    if (!window.confirm('Czy na pewno chcesz usunąć ten wpis z rejestru powiadomień?')) return;
+    if (!window.confirm('Are you sure you want to permanently delete this notification record from history?')) return;
 
     try {
       const res = await fetch(`/api/notifications/delete-admin?id=${id}`, {
@@ -255,7 +255,7 @@ export const NotificationsAdminManager: React.FC<{
       });
       if (res.ok) {
         setHistory((prev) => prev.filter((item) => item.id !== id));
-        if (showToast) showToast('Usunięto wpis z rejestru powiadomień', 'info');
+        if (showToast) showToast('Notification record deleted from history', 'info');
       }
     } catch (err) {
       console.warn('Failed to delete notification item:', err);
@@ -302,11 +302,11 @@ export const NotificationsAdminManager: React.FC<{
               style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
               className="text-2xl text-[#1A1A1A] font-bold tracking-wide"
             >
-              Centrum Powiadomień Klientów (APK &amp; WWW)
+              Customer Notifications Dispatcher
             </h2>
             <p className="text-xs text-gray-500 mt-1 max-w-2xl leading-relaxed">
-              Wysyłaj wiadomości i aktualizacje statusów w czasie rzeczywistym. Powiadomienia pojawią się
-              w aplikacji mobilnej (APK) oraz na stronie WWW (pod dzwonkiem), a opcjonalnie także na skrzynce e-mail klienta.
+              Send real-time updates and announcements to customers. Notifications will appear instantly in the Mobile App (APK),
+              on the Web Portal (bell icon), and optionally deliver a branded email copy directly to the customer's inbox.
             </p>
           </div>
         </div>
@@ -321,7 +321,7 @@ export const NotificationsAdminManager: React.FC<{
           className="inline-flex items-center gap-2 px-4 py-2 text-xs uppercase tracking-wider font-semibold border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition-colors self-start md:self-auto cursor-pointer"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${loadingHistory ? 'animate-spin' : ''}`} />
-          <span>Odśwież dane</span>
+          <span>Refresh Data</span>
         </button>
       </div>
 
@@ -329,17 +329,17 @@ export const NotificationsAdminManager: React.FC<{
       <div className="bg-white border border-[#EAE3D9] rounded-sm p-6 sm:p-8 shadow-xs space-y-6">
         <div className="border-b border-gray-100 pb-4">
           <span className="text-[10px] uppercase tracking-[0.25em] text-[#C1A98F] font-bold block mb-1">
-            Nowa Wiadomość
+            New Dispatch
           </span>
           <h3 className="text-xl font-bold text-[#1A1A1A] font-serif">
-            Formularz nadawczy powiadomienia
+            Notification Composer
           </h3>
         </div>
 
         {/* Quick Presets */}
         <div>
           <label className="block text-xs uppercase tracking-wider font-bold text-gray-600 mb-2">
-            Szybkie szablony wiadomości
+            Quick Message Presets
           </label>
           <div className="flex flex-wrap gap-2">
             {TEMPLATES.map((tpl, i) => (
@@ -359,7 +359,7 @@ export const NotificationsAdminManager: React.FC<{
           {/* Target Audience */}
           <div>
             <label className="block text-xs uppercase tracking-wider font-bold text-gray-700 mb-2">
-              Adresat powiadomienia
+              Target Audience
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <label
@@ -380,10 +380,10 @@ export const NotificationsAdminManager: React.FC<{
                 <div>
                   <div className="text-sm font-bold text-[#1A1A1A] flex items-center gap-1.5">
                     <User className="w-4 h-4 text-gray-600" />
-                    <span>Pojedynczy klient</span>
+                    <span>Single Customer</span>
                   </div>
                   <p className="text-xs text-gray-500 mt-0.5">
-                    Wybierz z listy zarejestrowanych użytkowników lub wpisz adres e-mail
+                    Select a registered user from the directory or enter an email address
                   </p>
                 </div>
               </label>
@@ -406,10 +406,10 @@ export const NotificationsAdminManager: React.FC<{
                 <div>
                   <div className="text-sm font-bold text-[#1A1A1A] flex items-center gap-1.5">
                     <Users className="w-4 h-4 text-[#D4AF37]" />
-                    <span>Wszyscy klienci ({customers.length} zarejestrowanych)</span>
+                    <span>All Customers ({customers.length} registered)</span>
                   </div>
                   <p className="text-xs text-gray-500 mt-0.5">
-                    Ogłoszenie masowe (Broadcast) – widoczne dla każdego użytkownika
+                    Broadcast announcement — delivered to every customer account
                   </p>
                 </div>
               </label>
@@ -420,7 +420,7 @@ export const NotificationsAdminManager: React.FC<{
           {targetType === 'single' && (
             <div className="p-4 bg-[#FAF8F5] border border-[#EAE3D9] rounded space-y-3">
               <label className="block text-xs uppercase tracking-wider font-bold text-gray-700">
-                Wskaż klienta docelowego
+                Select Target Customer
               </label>
 
               <div className="relative">
@@ -431,12 +431,12 @@ export const NotificationsAdminManager: React.FC<{
                   <div className="truncate">
                     {selectedCustomerObj ? (
                       <span className="font-semibold text-black">
-                        {selectedCustomerObj.name || 'Klient'} ({selectedCustomerObj.email || 'Brak email'})
+                        {selectedCustomerObj.name || 'Customer'} ({selectedCustomerObj.email || 'No email'})
                       </span>
                     ) : customEmail ? (
-                      <span>Wpisano ręcznie: <strong>{customEmail}</strong></span>
+                      <span>Manual recipient: <strong>{customEmail}</strong></span>
                     ) : (
-                      <span className="text-gray-400">Wybierz klienta z listy rozwijanej...</span>
+                      <span className="text-gray-400">Select a customer from the dropdown list...</span>
                     )}
                   </div>
                   <ChevronDown className="w-4 h-4 text-gray-500 shrink-0 ml-2" />
@@ -446,7 +446,7 @@ export const NotificationsAdminManager: React.FC<{
                   <div className="absolute top-full left-0 right-0 z-30 mt-1 bg-white border border-[#D5CCC1] rounded shadow-xl max-h-64 overflow-y-auto p-2 space-y-1">
                     <input
                       type="text"
-                      placeholder="Szukaj po nazwisku, e-mailu lub telefonie..."
+                      placeholder="Search by name, email or phone number..."
                       value={customerSearch}
                       onChange={(e) => setCustomerSearch(e.target.value)}
                       className="w-full px-3 py-1.5 text-xs bg-gray-50 border border-gray-200 rounded mb-2 focus:outline-none focus:border-black"
@@ -462,8 +462,8 @@ export const NotificationsAdminManager: React.FC<{
                           }`}
                         >
                           <div>
-                            <span className="block">{cust.name || 'Klient bez nazwy'}</span>
-                            <span className="text-[11px] text-gray-500">{cust.email || cust.phone || 'Brak kontaktu'}</span>
+                            <span className="block">{cust.name || 'Unnamed Customer'}</span>
+                            <span className="text-[11px] text-gray-500">{cust.email || cust.phone || 'No contact details'}</span>
                           </div>
                           <span className="text-[10px] uppercase tracking-wider text-gray-400 bg-gray-100 px-2 py-0.5 rounded">
                             {cust.role}
@@ -471,7 +471,7 @@ export const NotificationsAdminManager: React.FC<{
                         </div>
                       ))
                     ) : (
-                      <p className="text-xs text-gray-400 p-2 text-center">Brak wyników</p>
+                      <p className="text-xs text-gray-400 p-2 text-center">No matching customers found</p>
                     )}
                   </div>
                 )}
@@ -480,11 +480,11 @@ export const NotificationsAdminManager: React.FC<{
               {/* Or manual email */}
               <div className="pt-2">
                 <span className="text-[11px] text-gray-500 block mb-1">
-                  Lub wpisz adres e-mail klienta ręcznie:
+                  Or enter the customer's email address manually:
                 </span>
                 <input
                   type="email"
-                  placeholder="np. klient@gmail.com"
+                  placeholder="e.g. customer@example.com"
                   value={customEmail}
                   onChange={(e) => {
                     setCustomEmail(e.target.value);
@@ -500,28 +500,28 @@ export const NotificationsAdminManager: React.FC<{
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs uppercase tracking-wider font-bold text-gray-700 mb-1.5">
-                Kategoria powiadomienia
+                Notification Category
               </label>
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value as any)}
                 className="w-full px-3.5 py-2.5 text-sm bg-white border border-[#D5CCC1] rounded focus:border-black focus:outline-none"
               >
-                <option value="SHIPPING">📦 SHIPPING (Paczka / Dostawa)</option>
-                <option value="ORDER">🛍️ ORDER (Zamówienie / Przyjęcie)</option>
-                <option value="PAYMENT">💳 PAYMENT (Płatność / Zwrot)</option>
-                <option value="PROMO">🏷️ PROMO (Promocja / Kod rabatowy)</option>
-                <option value="LOYALTY">✨ LOYALTY (Klub Lunar / Punkty VIP)</option>
+                <option value="SHIPPING">📦 SHIPPING (Fulfillment &amp; Courier)</option>
+                <option value="ORDER">🛍️ ORDER (Confirmation &amp; Verification)</option>
+                <option value="PAYMENT">💳 PAYMENT (Invoice &amp; Transaction)</option>
+                <option value="PROMO">🏷️ PROMO (Exclusive Discount / Code)</option>
+                <option value="LOYALTY">✨ LOYALTY (Lunar Club &amp; Rewards)</option>
               </select>
             </div>
 
             <div>
               <label className="block text-xs uppercase tracking-wider font-bold text-gray-700 mb-1.5">
-                Numer zamówienia (opcjonalnie)
+                Order Reference (Optional)
               </label>
               <input
                 type="text"
-                placeholder="np. LUNAR-2026-0801"
+                placeholder="e.g. LUNAR-2026-0801"
                 value={orderNumber}
                 onChange={(e) => setOrderNumber(e.target.value)}
                 className="w-full px-3.5 py-2.5 text-sm font-mono bg-white border border-[#D5CCC1] rounded focus:border-black focus:outline-none uppercase"
@@ -532,12 +532,12 @@ export const NotificationsAdminManager: React.FC<{
           {/* Title */}
           <div>
             <label className="block text-xs uppercase tracking-wider font-bold text-gray-700 mb-1.5 flex justify-between">
-              <span>Tytuł powiadomienia *</span>
+              <span>Notification Title *</span>
               <span className="text-gray-400 font-normal">{title.length}/80</span>
             </label>
             <input
               type="text"
-              placeholder="np. 📦 Twoja paczka została nadana kurierem DPD"
+              placeholder="e.g. 📦 Your order has been dispatched via DPD Express"
               value={title}
               maxLength={80}
               onChange={(e) => setTitle(e.target.value)}
@@ -549,12 +549,12 @@ export const NotificationsAdminManager: React.FC<{
           {/* Message */}
           <div>
             <label className="block text-xs uppercase tracking-wider font-bold text-gray-700 mb-1.5 flex justify-between">
-              <span>Treść wiadomości *</span>
+              <span>Message Content *</span>
               <span className="text-gray-400 font-normal">{message.length}/500</span>
             </label>
             <textarea
               rows={4}
-              placeholder="Wpisz treść, którą klient przeczyta w powiadomieniu (np. numer listu przewozowego, instrukcję odbioru paczki lub kod rabatowy)..."
+              placeholder="Type the message content for the customer (e.g. tracking instructions, pickup code, or exclusive discount details)..."
               value={message}
               maxLength={500}
               onChange={(e) => setMessage(e.target.value)}
@@ -566,17 +566,17 @@ export const NotificationsAdminManager: React.FC<{
           {/* Action Link */}
           <div>
             <label className="block text-xs uppercase tracking-wider font-bold text-gray-700 mb-1.5">
-              Odnośnik po kliknięciu (opcjonalnie)
+              Action URL Link (Optional)
             </label>
             <input
               type="text"
-              placeholder="np. /track-order lub /account lub pełny link kurierski"
+              placeholder="e.g. /track-order or /account or full carrier tracking URL"
               value={linkUrl}
               onChange={(e) => setLinkUrl(e.target.value)}
               className="w-full px-4 py-2 text-sm bg-white border border-[#D5CCC1] rounded focus:border-black focus:outline-none font-mono text-xs"
             />
             <span className="text-[11px] text-gray-400 block mt-1">
-              Gdy klient stuknie w powiadomienie, zostanie automatycznie przeniesiony pod ten adres.
+              When the customer taps or clicks the notification, they will be redirected to this link.
             </span>
           </div>
 
@@ -591,17 +591,17 @@ export const NotificationsAdminManager: React.FC<{
             <div className="text-xs text-gray-700">
               <span className="font-semibold text-black block flex items-center gap-1.5">
                 <Mail className="w-3.5 h-3.5 text-[#D4AF37]" />
-                <span>Wyślij także elegancką wiadomość E-mail na skrzynkę klienta</span>
+                <span>Also dispatch an elegant email copy to the customer's inbox</span>
               </span>
-              Wiadomość z logo Lunar Boutique zostanie natychmiast wysłana na adres e-mail odbiorcy za pośrednictwem serwera Resend.
+              A bespoke notification styled with Lunar Boutique branding will be sent directly to the customer's verified email.
             </div>
           </label>
 
           {/* Live Preview Box */}
           <div className="p-4 bg-[#1A1A1A] text-white rounded-sm space-y-2 border border-[#333]">
             <div className="flex items-center justify-between text-[11px] text-[#D4AF37] uppercase tracking-wider font-bold">
-              <span>Podgląd na żywo (jak zobaczy to klient):</span>
-              <span className="text-gray-400 font-normal">Aplikacja APK / Pasek WWW</span>
+              <span>Live Preview (as seen by the customer):</span>
+              <span className="text-gray-400 font-normal">Mobile App &amp; Web Notification Center</span>
             </div>
 
             <div className="bg-[#242424] border border-[#3A3A3A] p-4 rounded-md flex items-start gap-3">
@@ -611,16 +611,16 @@ export const NotificationsAdminManager: React.FC<{
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2">
                   <h4 className="text-sm font-semibold text-white truncate">
-                    {title || 'Tytuł Twojego powiadomienia'}
+                    {title || 'Your Notification Title'}
                   </h4>
-                  <span className="text-[10px] text-gray-400 shrink-0">Przed chwilą</span>
+                  <span className="text-[10px] text-gray-400 shrink-0">Just now</span>
                 </div>
                 <p className="text-xs text-gray-300 mt-1 line-clamp-3 leading-relaxed">
-                  {message || 'Tutaj wyświetli się wpisana przez Ciebie treść powiadomienia...'}
+                  {message || 'Your custom message content will be displayed here...'}
                 </p>
                 {orderNumber && (
                   <span className="inline-block mt-2 text-[10px] font-mono font-semibold bg-[#333] text-[#D4AF37] px-2 py-0.5 rounded">
-                    Zamówienie #{orderNumber}
+                    Order #{orderNumber}
                   </span>
                 )}
               </div>
@@ -653,11 +653,11 @@ export const NotificationsAdminManager: React.FC<{
               className="px-8 py-3 bg-[#1A1A1A] text-white hover:bg-[#D4AF37] hover:text-black font-semibold text-xs uppercase tracking-widest rounded transition-all flex items-center gap-2.5 shadow-md cursor-pointer disabled:opacity-60"
             >
               {isSubmitting ? (
-                <span>Wysyłanie...</span>
+                <span>Dispatching...</span>
               ) : (
                 <>
                   <Send className="w-4 h-4" />
-                  <span>Wyślij powiadomienie teraz</span>
+                  <span>Dispatch Notification Now</span>
                 </>
               )}
             </button>
@@ -670,38 +670,38 @@ export const NotificationsAdminManager: React.FC<{
         <div className="flex items-center justify-between border-b border-gray-100 pb-4">
           <div>
             <span className="text-[10px] uppercase tracking-[0.25em] text-[#C1A98F] font-bold block mb-1">
-              Rejestr Działań
+              Activity Audit
             </span>
             <h3 className="text-xl font-bold text-[#1A1A1A] font-serif">
-              Ostatnio wysłane powiadomienia ({history.length})
+              Recent Notification History ({history.length})
             </h3>
           </div>
           <span className="text-xs text-gray-500">
-            Zapisane w bazie danych
+            Stored in cloud database
           </span>
         </div>
 
         {loadingHistory ? (
           <div className="py-12 text-center text-xs text-gray-400 flex items-center justify-center gap-2">
             <RefreshCw className="w-4 h-4 animate-spin" />
-            <span>Wczytywanie historii powiadomień...</span>
+            <span>Loading notification history...</span>
           </div>
         ) : history.length === 0 ? (
           <div className="py-12 text-center text-xs text-gray-400">
-            Brak wysłanych powiadomień w historii. Użyj powyższego formularza, aby wysłać pierwsze powiadomienie!
+            No notifications dispatched yet. Use the composer above to send your first message!
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-gray-100 text-[11px] uppercase tracking-wider text-gray-500 font-bold bg-[#FAF8F5]">
-                  <th className="py-3 px-4">Typ</th>
-                  <th className="py-3 px-4">Odbiorca</th>
-                  <th className="py-3 px-4">Tytuł i Wiadomość</th>
-                  <th className="py-3 px-4">Zamówienie</th>
-                  <th className="py-3 px-4">Data</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4 text-right">Akcja</th>
+                  <th className="py-3 px-4">Type</th>
+                  <th className="py-3 px-4">Recipient</th>
+                  <th className="py-3 px-4">Title &amp; Message</th>
+                  <th className="py-3 px-4">Order Ref</th>
+                  <th className="py-3 px-4">Dispatched At</th>
+                  <th className="py-3 px-4">Read Status</th>
+                  <th className="py-3 px-4 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 text-xs">
@@ -715,7 +715,7 @@ export const NotificationsAdminManager: React.FC<{
                     </td>
                     <td className="py-3 px-4 whitespace-nowrap">
                       <span className="font-semibold text-black block">
-                        {item.user?.name || 'Klient'}
+                        {item.user?.name || 'Customer'}
                       </span>
                       <span className="text-[11px] text-gray-500">
                         {item.user?.email || '—'}
@@ -735,17 +735,17 @@ export const NotificationsAdminManager: React.FC<{
                     <td className="py-3 px-4 whitespace-nowrap text-gray-500 text-[11px]">
                       <div className="flex items-center gap-1">
                         <Clock className="w-3 h-3 text-gray-400" />
-                        <span>{new Date(item.createdAt).toLocaleString('pl-PL', { dateStyle: 'short', timeStyle: 'short' })}</span>
+                        <span>{new Date(item.createdAt).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}</span>
                       </div>
                     </td>
                     <td className="py-3 px-4 whitespace-nowrap">
                       {item.isRead ? (
                         <span className="text-[10px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded font-medium">
-                          Odczytano
+                          Read
                         </span>
                       ) : (
                         <span className="text-[10px] text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded font-medium">
-                          Nieodczytane
+                          Unread
                         </span>
                       )}
                     </td>
@@ -754,7 +754,7 @@ export const NotificationsAdminManager: React.FC<{
                         type="button"
                         onClick={() => handleDeleteNotification(item.id)}
                         className="p-1.5 text-gray-400 hover:text-rose-600 rounded transition-colors cursor-pointer"
-                        title="Usuń z rejestru"
+                        title="Delete from history"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
