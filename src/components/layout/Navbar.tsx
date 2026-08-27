@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { ShoppingBag, User, Search, Menu, X, Heart, ChevronDown, ChevronRight, Sparkles, Smartphone } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
 import { useFavorites } from '../../hooks/useFavorites';
-import SearchOverlay from './SearchOverlay';
+import SearchMenuBox from './SearchMenuBox';
 import { useAuth } from '../../hooks/useAuth';
 import FavoritesDrawer from '../ui/FavoritesDrawer';
 import SmartAppBanner from '../ui/SmartAppBanner';
@@ -123,7 +123,12 @@ const Navbar: React.FC = () => {
           </button>
           <div className="flex items-center gap-4">
             <NotificationBell isMobile />
-            <button onClick={() => setSearchOpen(true)} className="text-[#1a1a1a]" aria-label="Search">
+            <button 
+              onClick={() => setSearchOpen(!searchOpen)} 
+              className={`transition-colors ${searchOpen ? 'text-[#8C6D4F]' : 'text-[#1a1a1a]'}`} 
+              aria-label="Search and Categories"
+              aria-expanded={searchOpen}
+            >
               <Search className="w-6 h-6 stroke-[1.2]" />
             </button>
             <Link to="/cart" className="relative" aria-label="Shopping Cart">
@@ -325,13 +330,27 @@ const Navbar: React.FC = () => {
 
         {/* Right: Icons (Desktop) */}
         <div className="hidden md:flex items-center justify-end gap-6 ml-auto w-full md:w-auto mt-4 md:mt-0 md:absolute md:right-12 md:top-12">
-          <button 
-            onClick={() => setSearchOpen(true)}
-            className="flex items-center gap-2 mr-2 cursor-pointer hover:text-gray-600 transition-colors text-[#1a1a1a]"
-          >
-            <span className="text-base font-light font-serif uppercase tracking-widest mr-1">Search</span>
-            <Search className="w-[22px] h-[22px] stroke-[1.2]" />
-          </button>
+          {/* Search Trigger & Popover Box */}
+          <div className="relative">
+            <button 
+              onClick={() => setSearchOpen(!searchOpen)}
+              className={`flex items-center gap-2 mr-2 cursor-pointer transition-colors ${
+                searchOpen ? 'text-[#8C6D4F]' : 'hover:text-gray-600 text-[#1a1a1a]'
+              }`}
+              aria-label="Search and Categories Menu"
+              aria-expanded={searchOpen}
+            >
+              <span className="text-base font-light font-serif uppercase tracking-widest mr-1">Search</span>
+              <Search className="w-[22px] h-[22px] stroke-[1.2]" />
+            </button>
+
+            {/* Lunar-style Categories & Search Dropdown Popover (Desktop) */}
+            <SearchMenuBox
+              isOpen={searchOpen}
+              onClose={() => setSearchOpen(false)}
+              variant="desktop"
+            />
+          </div>
           <Link
             to="/admin"
             className="hidden lg:flex items-center gap-1.5 px-3 py-1 bg-black text-white hover:bg-[#d4af37] hover:text-black transition-all rounded text-[11px] font-bold uppercase tracking-wider shadow-sm"
@@ -559,8 +578,10 @@ const Navbar: React.FC = () => {
         </div>
       )}
 
-      {/* Full Screen Search Overlay */}
-      <SearchOverlay isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+      {/* Mobile Search & Categories Dropdown Popover */}
+      <div className="md:hidden">
+        <SearchMenuBox isOpen={searchOpen} onClose={() => setSearchOpen(false)} variant="mobile" />
+      </div>
 
       {/* Favorites Drawer */}
       <FavoritesDrawer isOpen={favOpen} onClose={() => setFavOpen(false)} />
