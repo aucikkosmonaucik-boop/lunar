@@ -7,7 +7,7 @@ interface SearchOverlayProps {
 }
 
 const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose }) => {
-  return <SearchMenuBox isOpen={isOpen} onClose={onClose} variant="desktop" />;
+  return <SearchMenuBox isOpen={isOpen} onClose={onClose} />;
 };
 
 export default SearchOverlay;

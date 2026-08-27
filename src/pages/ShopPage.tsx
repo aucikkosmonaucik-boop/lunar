@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { 
   Search, 
@@ -37,9 +37,15 @@ const curatedCollections: { tag: string; label: string; badge?: string }[] = [
 const ShopPage: React.FC = () => {
   const { products } = useProducts();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [search, setSearch] = useState('');
+  const searchUrlParam = searchParams.get('search') || searchParams.get('q') || '';
+  const [search, setSearch] = useState(searchUrlParam);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'1-col' | '2-col'>('2-col');
+
+  // Synchronize search input if URL search parameter changes
+  useEffect(() => {
+    setSearch(searchUrlParam);
+  }, [searchUrlParam]);
 
   // Derive filter state directly from URL params
   const catParam = searchParams.get('category');
@@ -51,7 +57,7 @@ const ShopPage: React.FC = () => {
     if (!catParam) return 'All';
     const matched = categories.find(c => c.toLowerCase().replace(/[\s-]/g, '') === catParam.toLowerCase().replace(/[\s-]/g, ''));
     if (matched) return matched;
-    if (catParam.toLowerCase() === 'perfumes') return 'Perfumes Women';
+    if (catParam.toLowerCase() === 'perfumes') return 'Perfumes';
     if (catParam.toLowerCase() === 'jewelry') return 'Jewelry';
     return 'All';
   }, [catParam]);
@@ -135,6 +141,8 @@ const ShopPage: React.FC = () => {
       const normalizedCat = category.toLowerCase().replace(/\s+/g, '-');
       if (category === 'Jewelry') {
         list = list.filter(p => p.category === 'jewelry' || p.category === 'earrings' || p.category === 'rings' || p.category === 'necklaces' || p.category === 'bracelets' || p.category === 'bridal' || p.tags.includes('jewelry'));
+      } else if (category === 'Perfumes' || catParam?.toLowerCase() === 'perfumes') {
+        list = list.filter(p => p.category.startsWith('perfumes') || p.tags.includes('perfumes'));
       } else {
         list = list.filter(p => p.category.toLowerCase().includes(normalizedCat) || p.tags.some(t => t === normalizedCat));
       }
