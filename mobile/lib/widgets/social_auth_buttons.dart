@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../core/constants/app_colors.dart';
 import '../providers/auth_provider.dart';
 import '../screens/auth/phone_auth_screen.dart';
@@ -205,22 +204,11 @@ class _SocialAuthButtonsState extends State<SocialAuthButtons> {
   }
 
   Widget _buildGoogleIcon() {
-    return Container(
+    return Image.asset(
+      'assets/images/google_logo.png',
       width: 20,
       height: 20,
-      decoration: const BoxDecoration(
-        shape: BoxShape.circle,
-      ),
-      child: Center(
-        child: Text(
-          'G',
-          style: GoogleFonts.poppins(
-            fontSize: 16,
-            fontWeight: FontWeight.w800,
-            color: const Color(0xFFEA4335), // Google Red Accent
-          ),
-        ),
-      ),
+      fit: BoxFit.contain,
     );
   }
 }
