@@ -9,6 +9,7 @@ import '../../providers/theme_provider.dart';
 import '../../widgets/banner_carousel.dart';
 import '../../widgets/product_card.dart';
 import '../notifications/notifications_screen.dart';
+import '../orders/order_history_screen.dart';
 import '../product/product_detail_screen.dart';
 import '../shop/shop_screen.dart';
 
@@ -131,6 +132,15 @@ class HomeScreen extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const ShopScreen()),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.local_shipping_outlined),
+            tooltip: 'Track Package',
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const OrderHistoryScreen()),
               );
             },
           ),
