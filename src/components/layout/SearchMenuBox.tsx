@@ -63,16 +63,6 @@ const siteCategories: CategoryItem[] = [
   },
 ];
 
-const quickSearchTags = [
-  'Gold Plated',
-  '925 Silver',
-  'Diamond',
-  'Perfumes',
-  'New Arrivals',
-  'Bestsellers',
-  'Chains',
-];
-
 interface SearchMenuBoxProps {
   isOpen: boolean;
   onClose: () => void;
@@ -348,25 +338,6 @@ export const SearchMenuBox: React.FC<SearchMenuBoxProps> = ({
                     <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-[#C1A98F] group-hover:translate-x-1.5 transition-all shrink-0" />
                   </div>
                 ))}
-              </div>
-
-              {/* Popular Search Tags with Prominent Hover */}
-              <div className="pt-4 border-t border-gray-200">
-                <span className="text-[11px] font-sans font-bold uppercase tracking-[0.25em] text-gray-500 block mb-2.5">
-                  Popular Searches
-                </span>
-                <div className="flex flex-wrap gap-2">
-                  {quickSearchTags.map((tag) => (
-                    <button
-                      key={tag}
-                      type="button"
-                      onClick={() => setQuery(tag)}
-                      className="px-3.5 py-1.5 text-xs font-sans font-semibold uppercase tracking-wider text-gray-800 bg-gray-100 hover:bg-[#111111] hover:text-white border border-gray-200 hover:border-[#111111] hover:scale-105 hover:shadow-sm transition-all duration-200 cursor-pointer"
-                    >
-                      {tag}
-                    </button>
-                  ))}
-                </div>
               </div>
 
               {/* Site Quick Links in Lunar Style */}
