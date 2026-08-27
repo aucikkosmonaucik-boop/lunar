@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ShoppingBag, ArrowLeft, Check, Minus, Plus, Truck, RotateCcw, Shield, Heart, Coins, Image as ImageIcon, Star } from 'lucide-react';
+import { ShoppingBag, ArrowLeft, Check, Minus, Plus, Truck, RotateCcw, Shield, Heart, Coins, Image as ImageIcon, Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useProducts } from '../hooks/useProducts';
 import { useCart } from '../hooks/useCart';
 import { useFavorites } from '../hooks/useFavorites';
@@ -19,6 +19,9 @@ const ProductDetailPage: React.FC = () => {
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+
+  const touchStartXRef = useRef<number | null>(null);
+  const touchStartYRef = useRef<number | null>(null);
 
   const product = id ? (getProductById(id) || getProductBySlug(id)) : undefined;
 
@@ -58,6 +61,30 @@ const ProductDetailPage: React.FC = () => {
     addToCart(product, qty);
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.touches[0].clientX;
+    touchStartYRef.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartXRef.current === null || touchStartYRef.current === null) return;
+    const diffX = e.changedTouches[0].clientX - touchStartXRef.current;
+    const diffY = e.changedTouches[0].clientY - touchStartYRef.current;
+
+    // Only trigger if horizontal intent is clear and past threshold
+    if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY)) {
+      if (diffX < 0) {
+        // Swiped left -> next image
+        setActiveImageIndex((prev) => (prev + 1) % galleryImages.length);
+      } else {
+        // Swiped right -> prev image
+        setActiveImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
+      }
+    }
+    touchStartXRef.current = null;
+    touchStartYRef.current = null;
   };
 
   return (
@@ -100,8 +127,13 @@ const ProductDetailPage: React.FC = () => {
               </div>
             )}
 
-            {/* Main Active Image Container */}
-            <div className="relative flex-1 aspect-[4/5] bg-gray-50 overflow-hidden border border-wonders-border rounded-sm group">
+            {/* Main Active Image Container with Mobile Swipe */}
+            <div
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+              style={{ touchAction: 'pan-y', overscrollBehaviorX: 'none' }}
+              className="relative flex-1 aspect-[4/5] bg-gray-50 overflow-hidden border border-wonders-border rounded-sm group select-none touch-pan-y overscroll-x-none"
+            >
               <img
                 src={activeImage}
                 alt={product.name}
@@ -116,10 +148,36 @@ const ProductDetailPage: React.FC = () => {
               )}
 
               {galleryImages.length > 1 && (
-                <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1.5">
-                  <ImageIcon className="w-3 h-3" />
-                  <span>{activeImageIndex + 1} / {galleryImages.length}</span>
-                </div>
+                <>
+                  {/* Arrows for fast image navigation */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActiveImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
+                    }}
+                    aria-label="Previous image"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/40 hover:bg-black/70 text-white backdrop-blur-sm flex items-center justify-center transition-all opacity-80 hover:opacity-100 shadow cursor-pointer"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActiveImageIndex((prev) => (prev + 1) % galleryImages.length);
+                    }}
+                    aria-label="Next image"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/40 hover:bg-black/70 text-white backdrop-blur-sm flex items-center justify-center transition-all opacity-80 hover:opacity-100 shadow cursor-pointer"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+
+                  <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1.5 pointer-events-none">
+                    <ImageIcon className="w-3 h-3" />
+                    <span>{activeImageIndex + 1} / {galleryImages.length}</span>
+                  </div>
+                </>
               )}
             </div>
           </div>

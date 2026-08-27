@@ -94,6 +94,12 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
   const isAnimatingRef = useRef<boolean>(false);
   const animationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Keep a ref to currentIndex to avoid stale closure issues in callbacks & timeouts
+  const currentIndexRef = useRef(currentIndex);
+  useEffect(() => {
+    currentIndexRef.current = currentIndex;
+  }, [currentIndex]);
+
   const isPointerDownRef = useRef<boolean>(false);
   const pointerStartXRef = useRef<number | null>(null);
   const pointerStartYRef = useRef<number | null>(null);
@@ -136,13 +142,21 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
     isAnimatingRef.current = true;
     setIsTransitioning(true);
     setAnimationSafeguard();
-    setCurrentIndex((prev) => {
-      // If we are at or beyond the last clone, wrap safely to slide index 2
-      if (prev >= extendedSlides.length - 1) {
-        return 2;
+
+    const curr = currentIndexRef.current;
+    if (curr >= extendedSlides.length - 1) {
+      // If we are sitting at the cloned first slide, instantly snap to real first slide (index 1)
+      // before animating forward to index 2, so the transition is ALWAYS leftwards and never snaps backwards.
+      if (trackRef.current) {
+        trackRef.current.style.transition = 'none';
+        trackRef.current.style.transform = 'translate3d(-100%, 0, 0)';
+        void trackRef.current.offsetHeight; // Force reflow
+        trackRef.current.style.transition = 'transform 600ms cubic-bezier(0.22, 1, 0.36, 1)';
       }
-      return prev + 1;
-    });
+      setCurrentIndex(2);
+    } else {
+      setCurrentIndex((prev) => prev + 1);
+    }
   }, [slides.length, extendedSlides.length, setAnimationSafeguard]);
 
   // Smooth slide to right (previous slide) with safe bounds wrapping
@@ -151,13 +165,20 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
     isAnimatingRef.current = true;
     setIsTransitioning(true);
     setAnimationSafeguard();
-    setCurrentIndex((prev) => {
-      // If we are at or before the first clone, wrap safely to second-to-last slide
-      if (prev <= 0) {
-        return slides.length - 1;
+
+    const curr = currentIndexRef.current;
+    if (curr <= 0) {
+      // If sitting at the cloned last slide, instantly snap to real last slide without backward animation
+      if (trackRef.current) {
+        trackRef.current.style.transition = 'none';
+        trackRef.current.style.transform = `translate3d(-${slides.length * 100}%, 0, 0)`;
+        void trackRef.current.offsetHeight; // Force reflow
+        trackRef.current.style.transition = 'transform 600ms cubic-bezier(0.22, 1, 0.36, 1)';
       }
-      return prev - 1;
-    });
+      setCurrentIndex(slides.length - 1);
+    } else {
+      setCurrentIndex((prev) => prev - 1);
+    }
   }, [slides.length, setAnimationSafeguard]);
 
   // Go directly to a specific slide
@@ -178,11 +199,12 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
 
     if (slides.length <= 1) return;
 
-    if (currentIndex >= extendedSlides.length - 1) {
+    const curr = currentIndexRef.current;
+    if (curr >= extendedSlides.length - 1) {
       // Arrived at cloned first slide -> instantly snap to real first slide (index 1) without transition
       setIsTransitioning(false);
       setCurrentIndex(1);
-    } else if (currentIndex <= 0) {
+    } else if (curr <= 0) {
       // Arrived at cloned last slide -> instantly snap to real last slide (index slides.length) without transition
       setIsTransitioning(false);
       setCurrentIndex(slides.length);
@@ -192,13 +214,10 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
   // Re-enable smooth transition once the instant position reset has been painted
   useEffect(() => {
     if (!isTransitioning) {
-      const raf1 = requestAnimationFrame(() => {
-        const raf2 = requestAnimationFrame(() => {
-          setIsTransitioning(true);
-        });
-        return () => cancelAnimationFrame(raf2);
+      const raf = requestAnimationFrame(() => {
+        setIsTransitioning(true);
       });
-      return () => cancelAnimationFrame(raf1);
+      return () => cancelAnimationFrame(raf);
     }
   }, [isTransitioning]);
 
@@ -228,10 +247,14 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
     hasDraggedRef.current = false;
     setIsPaused(true);
 
-    try {
-      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-    } catch {
-      // ignore if pointer capture unsupported
+    // Only capture pointer for mouse; on mobile devices (touch), capturing pointer interferes
+    // with browser native vertical scrolling and Android back gestures, causing pointercancel.
+    if (e.pointerType === 'mouse') {
+      try {
+        (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+      } catch {
+        // ignore if pointer capture unsupported
+      }
     }
   };
 
@@ -245,11 +268,13 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
     if (isHorizontalSwipeRef.current === null) {
       const absX = Math.abs(diffX);
       const absY = Math.abs(diffY);
-      if (absX > 6 || absY > 6) {
+      // Wait for a slight threshold before locking axis
+      if (absX > 8 || absY > 8) {
         isHorizontalSwipeRef.current = absX > absY;
       }
     }
 
+    // Only engage slider drag if horizontal swipe intent is confirmed
     if (isHorizontalSwipeRef.current === true) {
       if (Math.abs(diffX) > 10) {
         hasDraggedRef.current = true;
@@ -265,21 +290,36 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
     if (!isPointerDownRef.current) return;
     isPointerDownRef.current = false;
 
-    try {
-      if ((e.currentTarget as HTMLElement).hasPointerCapture(e.pointerId)) {
-        (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+    if (e.pointerType === 'mouse') {
+      try {
+        if ((e.currentTarget as HTMLElement).hasPointerCapture(e.pointerId)) {
+          (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+        }
+      } catch {
+        // ignore
       }
-    } catch {
-      // ignore
     }
 
     const threshold = 40; // Responsive threshold for slide triggering
+    const wasHorizontal = isHorizontalSwipeRef.current === true;
+    const currentOffset = dragOffset;
 
-    if (isHorizontalSwipeRef.current === true) {
-      if (dragOffset < -threshold) {
+    // Clean up drag states
+    setDragOffset(0);
+    setIsDragging(false);
+    setIsPaused(false);
+    pointerStartXRef.current = null;
+    pointerStartYRef.current = null;
+    isHorizontalSwipeRef.current = null;
+
+    if (wasHorizontal) {
+      if (trackRef.current) {
+        trackRef.current.style.transition = 'transform 600ms cubic-bezier(0.22, 1, 0.36, 1)';
+      }
+      if (currentOffset < -threshold) {
         // Dragged/swiped to left -> slide to left (next slide)
         nextSlide();
-      } else if (dragOffset > threshold) {
+      } else if (currentOffset > threshold) {
         // Dragged/swiped to right -> slide to right (previous slide)
         prevSlide();
       } else {
@@ -288,13 +328,6 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
     } else {
       setIsTransitioning(true);
     }
-
-    setDragOffset(0);
-    setIsDragging(false);
-    setIsPaused(false);
-    pointerStartXRef.current = null;
-    pointerStartYRef.current = null;
-    isHorizontalSwipeRef.current = null;
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLElement>) => {
@@ -302,7 +335,31 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
   };
 
   const handlePointerCancel = (e: React.PointerEvent<HTMLElement>) => {
-    finishPointerDrag(e);
+    // If Android cancels gesture (e.g. system navigation gesture), cleanly abort without slide skip
+    if (!isPointerDownRef.current) return;
+    isPointerDownRef.current = false;
+
+    if (e.pointerType === 'mouse') {
+      try {
+        if ((e.currentTarget as HTMLElement).hasPointerCapture(e.pointerId)) {
+          (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    if (trackRef.current) {
+      trackRef.current.style.transition = 'transform 600ms cubic-bezier(0.22, 1, 0.36, 1)';
+    }
+
+    setDragOffset(0);
+    setIsDragging(false);
+    setIsPaused(false);
+    pointerStartXRef.current = null;
+    pointerStartYRef.current = null;
+    isHorizontalSwipeRef.current = null;
+    setIsTransitioning(true);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -336,8 +393,8 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
         }
       }}
       onDragStart={(e) => e.preventDefault()}
-      style={{ touchAction: 'pan-y' }}
-      className="relative h-[75svh] sm:h-[80vh] min-h-[480px] sm:min-h-[560px] max-h-[920px] w-full overflow-hidden bg-black select-none group focus:outline-none cursor-grab active:cursor-grabbing"
+      style={{ touchAction: 'pan-y', overscrollBehaviorX: 'none' }}
+      className="relative h-[75svh] sm:h-[80vh] min-h-[480px] sm:min-h-[560px] max-h-[920px] w-full overflow-hidden bg-black select-none group focus:outline-none cursor-grab active:cursor-grabbing touch-pan-y overscroll-x-none"
       aria-label="Featured Product Showcase"
     >
       {/* Slider Track with Smooth Leftward Sliding Physics & GPU layer */}
@@ -345,7 +402,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
         ref={trackRef}
         onTransitionEnd={handleTransitionEnd}
         onTransitionCancel={handleTransitionEnd}
-        className="flex w-full h-full will-change-transform [backface-visibility:hidden]"
+        className="flex w-full h-full will-change-transform [backface-visibility:hidden] touch-pan-y"
         style={{
           transform: getTransform(),
           transition:
