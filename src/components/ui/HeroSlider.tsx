@@ -96,9 +96,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
 
   // Keep a ref to currentIndex to avoid stale closure issues in callbacks & timeouts
   const currentIndexRef = useRef(currentIndex);
-  useEffect(() => {
-    currentIndexRef.current = currentIndex;
-  }, [currentIndex]);
+  currentIndexRef.current = currentIndex;
 
   const isPointerDownRef = useRef<boolean>(false);
   const pointerStartXRef = useRef<number | null>(null);
@@ -300,7 +298,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
       }
     }
 
-    const threshold = 40; // Responsive threshold for slide triggering
+    const threshold = 28; // Responsive threshold for quick mobile swipes on Android
     const wasHorizontal = isHorizontalSwipeRef.current === true;
     const currentOffset = dragOffset;
 
@@ -422,18 +420,23 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
           return (
             <div
               key={`${slide.id}-${index}`}
-              className="relative min-w-full h-full flex items-center justify-center flex-shrink-0"
+              className="relative w-full min-w-full max-w-full basis-full shrink-0 grow-0 h-full flex items-center justify-center overflow-hidden"
               aria-hidden={!isCurrentActive}
             >
-              {/* Background Image with subtle zoom dynamics */}
+              {/* Background Image with subtle zoom dynamics and mobile focal alignment */}
               <img
                 src={slide.image}
                 alt={slide.title}
                 draggable={false}
-                className={`absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none transition-transform duration-1000 ease-out ${
-                  isCurrentActive ? 'scale-105' : 'scale-100'
-                }`}
-                loading={index <= 2 ? 'eager' : 'lazy'}
+                loading="eager"
+                decoding="async"
+                className={`absolute inset-0 w-full h-full object-cover select-none pointer-events-none transition-transform duration-1000 ease-out ${
+                  slide.id === 'slide-4'
+                    ? 'object-[60%_center]'
+                    : slide.id === 'slide-5'
+                      ? 'object-[55%_center]'
+                      : 'object-center'
+                } ${isCurrentActive ? 'scale-105' : 'scale-100'}`}
               />
 
               {/* Gradient & Dark Overlays for optimal readability and luxury look */}
