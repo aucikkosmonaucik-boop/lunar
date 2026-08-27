@@ -93,11 +93,11 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
   const trackRef = useRef<HTMLDivElement>(null);
   const isAnimatingRef = useRef<boolean>(false);
   const animationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const touchStartX = useRef<number | null>(null);
-  const touchStartY = useRef<number | null>(null);
-  const isSwipingHorizontal = useRef<boolean | null>(null);
-  const mouseStartX = useRef<number | null>(null);
-  const isMouseDown = useRef<boolean>(false);
+
+  const isPointerDownRef = useRef<boolean>(false);
+  const pointerStartXRef = useRef<number | null>(null);
+  const pointerStartYRef = useRef<number | null>(null);
+  const isHorizontalSwipeRef = useRef<boolean | null>(null);
   const hasDraggedRef = useRef<boolean>(false);
 
   const clearAnimationTimeout = useCallback(() => {
@@ -109,10 +109,10 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
 
   const setAnimationSafeguard = useCallback(() => {
     clearAnimationTimeout();
-    // Safety fallback: ensure isAnimatingRef never gets stuck even if the browser drops transitionend
+    // Safety fallback: ensure animation lock is always released even if browser drops transitionend
     animationTimeoutRef.current = setTimeout(() => {
       isAnimatingRef.current = false;
-    }, 750);
+    }, 700);
   }, [clearAnimationTimeout]);
 
   // Clean up animation timeout on unmount
@@ -125,27 +125,39 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
   // Active real slide index for dots and counters (0 to slides.length - 1)
   const activeRealIndex = useMemo(() => {
     if (slides.length <= 1) return 0;
-    if (currentIndex === 0) return slides.length - 1;
-    if (currentIndex === extendedSlides.length - 1) return 0;
+    if (currentIndex <= 0) return slides.length - 1;
+    if (currentIndex >= extendedSlides.length - 1) return 0;
     return (currentIndex - 1 + slides.length) % slides.length;
   }, [currentIndex, extendedSlides.length, slides.length]);
 
-  // Smooth slide to left (next slide)
+  // Smooth slide to left (next slide) with safe bounds wrapping
   const nextSlide = useCallback(() => {
     if (slides.length <= 1 || isAnimatingRef.current) return;
     isAnimatingRef.current = true;
     setIsTransitioning(true);
     setAnimationSafeguard();
-    setCurrentIndex((prev) => prev + 1);
-  }, [slides.length, setAnimationSafeguard]);
+    setCurrentIndex((prev) => {
+      // If we are at or beyond the last clone, wrap safely to slide index 2
+      if (prev >= extendedSlides.length - 1) {
+        return 2;
+      }
+      return prev + 1;
+    });
+  }, [slides.length, extendedSlides.length, setAnimationSafeguard]);
 
-  // Smooth slide to right (previous slide)
+  // Smooth slide to right (previous slide) with safe bounds wrapping
   const prevSlide = useCallback(() => {
     if (slides.length <= 1 || isAnimatingRef.current) return;
     isAnimatingRef.current = true;
     setIsTransitioning(true);
     setAnimationSafeguard();
-    setCurrentIndex((prev) => prev - 1);
+    setCurrentIndex((prev) => {
+      // If we are at or before the first clone, wrap safely to second-to-last slide
+      if (prev <= 0) {
+        return slides.length - 1;
+      }
+      return prev - 1;
+    });
   }, [slides.length, setAnimationSafeguard]);
 
   // Go directly to a specific slide
@@ -160,17 +172,17 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
 
   // Seamless infinite wrap on transition end or cancel
   const handleTransitionEnd = (e: React.TransitionEvent<HTMLDivElement>) => {
-    if (e.target !== trackRef.current) return;
+    if (e.target !== trackRef.current || e.propertyName !== 'transform') return;
     clearAnimationTimeout();
     isAnimatingRef.current = false;
 
     if (slides.length <= 1) return;
 
-    if (currentIndex === extendedSlides.length - 1) {
+    if (currentIndex >= extendedSlides.length - 1) {
       // Arrived at cloned first slide -> instantly snap to real first slide (index 1) without transition
       setIsTransitioning(false);
       setCurrentIndex(1);
-    } else if (currentIndex === 0) {
+    } else if (currentIndex <= 0) {
       // Arrived at cloned last slide -> instantly snap to real last slide (index slides.length) without transition
       setIsTransitioning(false);
       setCurrentIndex(slides.length);
@@ -201,40 +213,45 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
     return () => clearInterval(timer);
   }, [nextSlide, isPaused, isDragging, autoPlayInterval, slides.length]);
 
-  // Touch Swipe Handlers for Mobile (Android & iOS)
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (slides.length <= 1) return;
-    // Release any in-flight animation lock so user touch has instant responsiveness
+  // Unified Pointer Drag & Swipe Handlers (Works seamlessly across Desktop Mouse, Touchpad, Android & iOS)
+  const handlePointerDown = (e: React.PointerEvent<HTMLElement>) => {
+    if (slides.length <= 1 || (e.pointerType === 'mouse' && e.button !== 0)) return;
+
+    // Release any in-flight animation lock so user interaction is instantaneous
     isAnimatingRef.current = false;
     clearAnimationTimeout();
 
-    touchStartX.current = e.touches[0].clientX;
-    touchStartY.current = e.touches[0].clientY;
-    isSwipingHorizontal.current = null;
+    isPointerDownRef.current = true;
+    pointerStartXRef.current = e.clientX;
+    pointerStartYRef.current = e.clientY;
+    isHorizontalSwipeRef.current = null;
     hasDraggedRef.current = false;
     setIsPaused(true);
+
+    try {
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    } catch {
+      // ignore if pointer capture unsupported
+    }
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (touchStartX.current === null || touchStartY.current === null) return;
-    const currentX = e.touches[0].clientX;
-    const currentY = e.touches[0].clientY;
-    const diffX = currentX - touchStartX.current;
-    const diffY = currentY - touchStartY.current;
+  const handlePointerMove = (e: React.PointerEvent<HTMLElement>) => {
+    if (!isPointerDownRef.current || pointerStartXRef.current === null || pointerStartYRef.current === null) return;
 
-    // Determine gesture direction intent if not decided yet
-    if (isSwipingHorizontal.current === null) {
+    const diffX = e.clientX - pointerStartXRef.current;
+    const diffY = e.clientY - pointerStartYRef.current;
+
+    // Determine direction intent (horizontal swipe vs vertical scroll)
+    if (isHorizontalSwipeRef.current === null) {
       const absX = Math.abs(diffX);
       const absY = Math.abs(diffY);
-      // Wait for a slight threshold before locking axis
-      if (absX > 8 || absY > 8) {
-        isSwipingHorizontal.current = absX > absY;
+      if (absX > 6 || absY > 6) {
+        isHorizontalSwipeRef.current = absX > absY;
       }
     }
 
-    // Only engage slider drag if horizontal swipe intent is confirmed
-    if (isSwipingHorizontal.current === true) {
-      if (Math.abs(diffX) > 14) {
+    if (isHorizontalSwipeRef.current === true) {
+      if (Math.abs(diffX) > 10) {
         hasDraggedRef.current = true;
       }
       if (!isDragging) {
@@ -244,14 +261,26 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
     }
   };
 
-  const handleTouchEnd = () => {
-    if (touchStartX.current === null) return;
-    const threshold = 45;
+  const finishPointerDrag = (e: React.PointerEvent<HTMLElement>) => {
+    if (!isPointerDownRef.current) return;
+    isPointerDownRef.current = false;
 
-    if (isSwipingHorizontal.current === true) {
+    try {
+      if ((e.currentTarget as HTMLElement).hasPointerCapture(e.pointerId)) {
+        (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+      }
+    } catch {
+      // ignore
+    }
+
+    const threshold = 40; // Responsive threshold for slide triggering
+
+    if (isHorizontalSwipeRef.current === true) {
       if (dragOffset < -threshold) {
+        // Dragged/swiped to left -> slide to left (next slide)
         nextSlide();
       } else if (dragOffset > threshold) {
+        // Dragged/swiped to right -> slide to right (previous slide)
         prevSlide();
       } else {
         setIsTransitioning(true);
@@ -263,66 +292,17 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
     setDragOffset(0);
     setIsDragging(false);
     setIsPaused(false);
-    touchStartX.current = null;
-    touchStartY.current = null;
-    isSwipingHorizontal.current = null;
+    pointerStartXRef.current = null;
+    pointerStartYRef.current = null;
+    isHorizontalSwipeRef.current = null;
   };
 
-  const handleTouchCancel = () => {
-    clearAnimationTimeout();
-    isAnimatingRef.current = false;
-    setDragOffset(0);
-    setIsDragging(false);
-    setIsPaused(false);
-    setIsTransitioning(true);
-    touchStartX.current = null;
-    touchStartY.current = null;
-    isSwipingHorizontal.current = null;
+  const handlePointerUp = (e: React.PointerEvent<HTMLElement>) => {
+    finishPointerDrag(e);
   };
 
-  // Mouse Drag Handlers for Desktop
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (slides.length <= 1 || e.button !== 0) return;
-    isMouseDown.current = true;
-    mouseStartX.current = e.clientX;
-    setIsDragging(true);
-    setIsPaused(true);
-    hasDraggedRef.current = false;
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isMouseDown.current || mouseStartX.current === null) return;
-    const diffX = e.clientX - mouseStartX.current;
-    if (Math.abs(diffX) > 12) {
-      hasDraggedRef.current = true;
-    }
-    setDragOffset(diffX);
-  };
-
-  const handleMouseUp = () => {
-    if (!isMouseDown.current) return;
-    isMouseDown.current = false;
-    const threshold = 45;
-
-    if (dragOffset < -threshold) {
-      nextSlide();
-    } else if (dragOffset > threshold) {
-      prevSlide();
-    } else {
-      setIsTransitioning(true);
-    }
-
-    setDragOffset(0);
-    setIsDragging(false);
-    setIsPaused(false);
-    mouseStartX.current = null;
-  };
-
-  const handleMouseLeave = () => {
-    if (isMouseDown.current) {
-      handleMouseUp();
-    }
-    setIsPaused(false);
+  const handlePointerCancel = (e: React.PointerEvent<HTMLElement>) => {
+    finishPointerDrag(e);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -345,16 +325,19 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
     <section
       tabIndex={0}
       onKeyDown={handleKeyDown}
-      className="relative h-[75svh] sm:h-[80vh] min-h-[480px] sm:min-h-[560px] max-h-[920px] w-full overflow-hidden bg-black select-none group focus:outline-none cursor-grab active:cursor-grabbing touch-pan-y"
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerCancel}
       onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={handleMouseLeave}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-      onTouchCancel={handleTouchCancel}
+      onMouseLeave={() => {
+        if (!isPointerDownRef.current) {
+          setIsPaused(false);
+        }
+      }}
+      onDragStart={(e) => e.preventDefault()}
+      style={{ touchAction: 'pan-y' }}
+      className="relative h-[75svh] sm:h-[80vh] min-h-[480px] sm:min-h-[560px] max-h-[920px] w-full overflow-hidden bg-black select-none group focus:outline-none cursor-grab active:cursor-grabbing"
       aria-label="Featured Product Showcase"
     >
       {/* Slider Track with Smooth Leftward Sliding Physics & GPU layer */}
@@ -424,6 +407,8 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
 
                 <Link
                   to={slide.ctaLink}
+                  draggable={false}
+                  onPointerDown={(e) => e.stopPropagation()}
                   onClick={(e) => {
                     if (hasDraggedRef.current) {
                       e.preventDefault();
@@ -444,6 +429,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
         <>
           <button
             type="button"
+            onPointerDown={(e) => e.stopPropagation()}
             onClick={(e) => {
               e.stopPropagation();
               prevSlide();
@@ -456,6 +442,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
 
           <button
             type="button"
+            onPointerDown={(e) => e.stopPropagation()}
             onClick={(e) => {
               e.stopPropagation();
               nextSlide();
@@ -479,6 +466,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                 <button
                   type="button"
                   key={slide.id}
+                  onPointerDown={(e) => e.stopPropagation()}
                   onClick={(e) => {
                     e.stopPropagation();
                     goToSlide(index);
