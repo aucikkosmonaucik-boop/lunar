@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingBag, User, Search, Menu, X, Heart, ChevronDown, ChevronRight, Sparkles, Smartphone } from 'lucide-react';
+import { ShoppingBag, User, Search, Menu, X, Heart, ChevronDown, ChevronRight, Sparkles, Smartphone, Truck } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
 import { useFavorites } from '../../hooks/useFavorites';
 import SearchMenuBox from './SearchMenuBox';
@@ -121,20 +121,28 @@ const Navbar: React.FC = () => {
           >
             {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3.5 sm:gap-4">
             <NotificationBell isMobile />
+            <Link 
+              to="/track-order" 
+              className="text-[#1a1a1a] hover:text-[#8C6D4F] transition-colors p-1" 
+              aria-label="Track Package"
+              title="Track Package"
+            >
+              <Truck className="w-6 h-6 stroke-[1.2]" />
+            </Link>
             <button 
               onClick={() => setSearchOpen(!searchOpen)} 
-              className={`transition-colors ${searchOpen ? 'text-[#8C6D4F]' : 'text-[#1a1a1a]'}`} 
+              className={`transition-colors p-1 ${searchOpen ? 'text-[#8C6D4F]' : 'text-[#1a1a1a]'}`} 
               aria-label="Search and Categories"
               aria-expanded={searchOpen}
             >
               <Search className="w-6 h-6 stroke-[1.2]" />
             </button>
-            <Link to="/cart" className="relative" aria-label="Shopping Cart">
+            <Link to="/cart" className="relative p-1" aria-label="Shopping Cart">
               <ShoppingBag className="w-6 h-6 stroke-[1.2]" />
               {totalItems > 0 && (
-                <span className="absolute -top-1.5 -right-2 w-4 h-4 bg-black rounded-full text-[10px] flex items-center justify-center text-white font-bold">
+                <span className="absolute -top-0.5 -right-1 w-4 h-4 bg-black rounded-full text-[10px] flex items-center justify-center text-white font-bold">
                   {totalItems}
                 </span>
               )}
@@ -349,6 +357,15 @@ const Navbar: React.FC = () => {
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>Admin</span>
+          </Link>
+
+          <Link
+            to="/track-order"
+            className="text-[#1a1a1a] hover:text-[#8C6D4F] transition-colors"
+            aria-label="Track Package"
+            title="Track Package"
+          >
+            <Truck className="w-[22px] h-[22px] stroke-[1.2]" />
           </Link>
 
           <NotificationBell />
