@@ -315,7 +315,7 @@ export const AdminPage: React.FC = () => {
         const data = await res.json();
         if (Array.isArray(data.orders) && data.orders.length > 0) {
           setOrders(
-            data.orders.map((o: any) => ({
+            data.orders.map((o: AdminOrder & { items?: unknown[] }) => ({
               id: o.id,
               orderNumber: o.orderNumber,
               customerName: o.customerName,
@@ -576,6 +576,70 @@ export const AdminPage: React.FC = () => {
   // ─────────────────────────────────────────────────────────────
   // 2. AUTHENTICATED ADMIN DASHBOARD (WHITE LUXURY DESIGN)
   // ─────────────────────────────────────────────────────────────
+  const adminTabs: Array<{
+    id: 'overview' | 'products' | 'promos' | 'loyalty' | 'orders' | 'reviews' | 'notifications' | 'settings';
+    label: string;
+    sublabel: string;
+    icon: React.ComponentType<{ className?: string }>;
+    count?: number;
+    highlightIcon?: boolean;
+  }> = [
+    {
+      id: 'overview',
+      label: 'Overview & KPIs',
+      sublabel: 'Store Analytics',
+      icon: TrendingUp,
+    },
+    {
+      id: 'products',
+      label: 'Catalog & Moderation',
+      sublabel: 'Products & Inventory',
+      icon: Package,
+      count: products.length,
+    },
+    {
+      id: 'promos',
+      label: 'Promo Codes',
+      sublabel: 'Vouchers & Discounts',
+      icon: Tag,
+    },
+    {
+      id: 'loyalty',
+      label: 'Loyalty Program',
+      sublabel: 'Points & Rewards',
+      icon: Award,
+      count: rewards.length,
+      highlightIcon: true,
+    },
+    {
+      id: 'orders',
+      label: 'Orders',
+      sublabel: 'Fulfillment & Shipping',
+      icon: ShoppingBag,
+      count: orders.length,
+    },
+    {
+      id: 'reviews',
+      label: 'Reviews & Ratings',
+      sublabel: 'Customer Feedback',
+      icon: Star,
+      highlightIcon: true,
+    },
+    {
+      id: 'notifications',
+      label: 'Customer Notifications',
+      sublabel: 'Broadcasts & Alerts',
+      icon: Bell,
+      highlightIcon: true,
+    },
+    {
+      id: 'settings',
+      label: 'Security & Password',
+      sublabel: 'Access & Credentials',
+      icon: Settings,
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-[#FBF9F6] text-[#1A1A1A] pb-24">
       {/* Toast Notification */}
@@ -643,103 +707,73 @@ export const AdminPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Navigation Tabs */}
-          <div className="flex items-center gap-1 sm:gap-2 mt-8 overflow-x-auto no-scrollbar border-b border-gray-200">
-            <button
-              onClick={() => setActiveTab('overview')}
-              className={`px-4 py-3 text-xs uppercase tracking-widest font-bold border-b-2 whitespace-nowrap transition-all flex items-center gap-2 ${
-                activeTab === 'overview'
-                  ? 'border-[#1A1A1A] text-[#1A1A1A] bg-[#FAF8F5]'
-                  : 'border-transparent text-gray-500 hover:text-black'
-              }`}
-            >
-              <TrendingUp className="w-4 h-4" />
-              <span>Overview & KPIs</span>
-            </button>
+          {/* Navigation Tiles */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-8 gap-2.5 sm:gap-3 mt-8">
+            {adminTabs.map((tab) => {
+              const isActive = activeTab === tab.id;
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`group relative flex flex-col justify-between p-3.5 rounded-lg border text-left transition-all duration-200 cursor-pointer select-none ${
+                    isActive
+                      ? 'bg-[#1A1A1A] text-white border-[#1A1A1A] shadow-md shadow-black/15 -translate-y-1 ring-2 ring-[#D4AF37]/50'
+                      : 'bg-[#FAF8F5] text-gray-700 border-[#EAE3D9] hover:border-[#D4AF37] hover:bg-white hover:shadow-lg hover:shadow-[#D4AF37]/10 hover:-translate-y-1'
+                  }`}
+                >
+                  <div className="flex items-center justify-between w-full mb-3">
+                    <div
+                      className={`w-9 h-9 rounded-md flex items-center justify-center transition-all duration-200 ${
+                        isActive
+                          ? 'bg-white/10 text-[#D4AF37]'
+                          : 'bg-white text-gray-600 border border-[#EAE3D9] group-hover:text-[#D4AF37] group-hover:border-[#D4AF37]/50 group-hover:bg-[#FAF7F2] group-hover:scale-105 shadow-2xs'
+                      }`}
+                    >
+                      <Icon className={`w-4 h-4 ${tab.highlightIcon && !isActive ? 'text-[#D4AF37]' : ''}`} />
+                    </div>
+                    {tab.count !== undefined && (
+                      <span
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full transition-all duration-200 ${
+                          isActive
+                            ? 'bg-[#D4AF37] text-[#1A1A1A] shadow-xs'
+                            : 'bg-white border border-[#EAE3D9] text-gray-700 group-hover:border-[#D4AF37]/60 group-hover:text-black shadow-2xs'
+                        }`}
+                      >
+                        {tab.count}
+                      </span>
+                    )}
+                  </div>
 
-            <button
-              onClick={() => setActiveTab('products')}
-              className={`px-4 py-3 text-xs uppercase tracking-widest font-bold border-b-2 whitespace-nowrap transition-all flex items-center gap-2 ${
-                activeTab === 'products'
-                  ? 'border-[#1A1A1A] text-[#1A1A1A] bg-[#FAF8F5]'
-                  : 'border-transparent text-gray-500 hover:text-black'
-              }`}
-            >
-              <Package className="w-4 h-4" />
-              <span>Catalog & Moderation ({products.length})</span>
-            </button>
+                  <div className="space-y-0.5">
+                    <div
+                      className={`text-xs font-bold uppercase tracking-wider line-clamp-1 transition-colors ${
+                        isActive ? 'text-white' : 'text-gray-900 group-hover:text-black'
+                      }`}
+                    >
+                      {tab.label}
+                    </div>
+                    <div
+                      className={`text-[10px] line-clamp-1 transition-colors ${
+                        isActive ? 'text-gray-300' : 'text-gray-500 group-hover:text-gray-700'
+                      }`}
+                    >
+                      {tab.sublabel}
+                    </div>
+                  </div>
 
-            <button
-              onClick={() => setActiveTab('promos')}
-              className={`px-4 py-3 text-xs uppercase tracking-widest font-bold border-b-2 whitespace-nowrap transition-all flex items-center gap-2 ${
-                activeTab === 'promos'
-                  ? 'border-[#1A1A1A] text-[#1A1A1A] bg-[#FAF8F5]'
-                  : 'border-transparent text-gray-500 hover:text-black'
-              }`}
-            >
-              <Tag className="w-4 h-4" />
-              <span>Promo Codes</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('loyalty')}
-              className={`px-4 py-3 text-xs uppercase tracking-widest font-bold border-b-2 whitespace-nowrap transition-all flex items-center gap-2 ${
-                activeTab === 'loyalty'
-                  ? 'border-[#1A1A1A] text-[#1A1A1A] bg-[#FAF8F5]'
-                  : 'border-transparent text-gray-500 hover:text-black'
-              }`}
-            >
-              <Award className="w-4 h-4 text-[#D4AF37]" />
-              <span>Loyalty Program ({rewards.length})</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('orders')}
-              className={`px-4 py-3 text-xs uppercase tracking-widest font-bold border-b-2 whitespace-nowrap transition-all flex items-center gap-2 ${
-                activeTab === 'orders'
-                  ? 'border-[#1A1A1A] text-[#1A1A1A] bg-[#FAF8F5]'
-                  : 'border-transparent text-gray-500 hover:text-black'
-              }`}
-            >
-              <ShoppingBag className="w-4 h-4" />
-              <span>Orders ({orders.length})</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('reviews')}
-              className={`px-4 py-3 text-xs uppercase tracking-widest font-bold border-b-2 whitespace-nowrap transition-all flex items-center gap-2 ${
-                activeTab === 'reviews'
-                  ? 'border-[#1A1A1A] text-[#1A1A1A] bg-[#FAF8F5]'
-                  : 'border-transparent text-gray-500 hover:text-black'
-              }`}
-            >
-              <Star className="w-4 h-4 text-[#D4AF37]" />
-              <span>Reviews &amp; Ratings</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('notifications')}
-              className={`px-4 py-3 text-xs uppercase tracking-widest font-bold border-b-2 whitespace-nowrap transition-all flex items-center gap-2 ${
-                activeTab === 'notifications'
-                  ? 'border-[#1A1A1A] text-[#1A1A1A] bg-[#FAF8F5]'
-                  : 'border-transparent text-gray-500 hover:text-black'
-              }`}
-            >
-              <Bell className="w-4 h-4 text-[#D4AF37]" />
-              <span>Customer Notifications</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('settings')}
-              className={`px-4 py-3 text-xs uppercase tracking-widest font-bold border-b-2 whitespace-nowrap transition-all flex items-center gap-2 ${
-                activeTab === 'settings'
-                  ? 'border-[#1A1A1A] text-[#1A1A1A] bg-[#FAF8F5]'
-                  : 'border-transparent text-gray-500 hover:text-black'
-              }`}
-            >
-              <Settings className="w-4 h-4" />
-              <span>Security & Password</span>
-            </button>
+                  {/* Active / Hover accent indicator */}
+                  <div
+                    className={`mt-3 h-0.5 w-full rounded-full transition-all duration-200 ${
+                      isActive
+                        ? 'bg-[#D4AF37]'
+                        : 'bg-transparent group-hover:bg-[#D4AF37]/60'
+                    }`}
+                  />
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
