@@ -233,3 +233,74 @@ export async function sendShipmentNotificationEmail(order: any) {
   });
 }
 
+export async function sendCustomNotificationEmail({
+  to,
+  recipientName,
+  title,
+  message,
+  orderNumber,
+  linkUrl,
+}: {
+  to: string;
+  recipientName?: string;
+  title: string;
+  message: string;
+  orderNumber?: string;
+  linkUrl?: string;
+}) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn(`[Resend] RESEND_API_KEY is not set. Simulation mode: Email to ${to} with title "${title}" was skipped.`);
+    return { id: `simulated_${Date.now()}` };
+  }
+
+  try {
+    const resend = new Resend(apiKey);
+    const appUrl = process.env.APP_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://mylunar.shop';
+    const fullLink = linkUrl
+      ? linkUrl.startsWith('http')
+        ? linkUrl
+        : `${appUrl}${linkUrl.startsWith('/') ? '' : '/'}${linkUrl}`
+      : appUrl;
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head><meta charset="utf-8"><title>${title}</title></head>
+      <body style="font-family: 'Inter', -apple-system, sans-serif; background-color: #FAF8F5; margin: 0; padding: 30px 15px; color: #1A1A1A;">
+        <div style="max-width: 580px; margin: 0 auto; background: #ffffff; border: 1px solid #EDE6DF; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.04);">
+          <div style="background-color: #1A1A1A; padding: 24px; text-align: center;">
+            <h1 style="margin: 0; color: #D4AF37; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 26px; letter-spacing: 4px;">L U N A R</h1>
+          </div>
+          <div style="padding: 32px 28px;">
+            ${recipientName ? `<p style="font-size: 13px; color: #8C827A; margin-top: 0; margin-bottom: 8px;">Hello ${recipientName},</p>` : ''}
+            <h2 style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 22px; color: #1A1A1A; margin-top: 0; line-height: 1.3;">${title}</h2>
+            <p style="font-size: 14px; line-height: 1.6; color: #4A4A4A; white-space: pre-line;">${message}</p>
+            ${orderNumber ? `<div style="margin: 18px 0; padding: 12px 16px; background: #FAF6F3; border-left: 3px solid #D4AF37; font-size: 13px; font-weight: 600; color: #1A1A1A;">Order Reference: #${orderNumber}</div>` : ''}
+            <div style="margin-top: 30px; text-align: center;">
+              <a href="${fullLink}" style="display: inline-block; background-color: #1A1A1A; color: #ffffff; text-decoration: none; padding: 13px 32px; border-radius: 4px; font-size: 13px; font-weight: 600; letter-spacing: 1px;">VIEW DETAILS / SHOP</a>
+            </div>
+          </div>
+          <div style="background-color: #FAF8F5; border-top: 1px solid #EDE6DF; padding: 18px 24px; text-align: center; font-size: 11px; color: #8C827A;">
+            Lunar Atelier • Haute Joaillerie & Perfumery<br/>
+            Need assistance? Contact us at <a href="mailto:contact@mylunar.shop" style="color: #8C6D4F;">contact@mylunar.shop</a>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    const fromAddress = process.env.EMAIL_FROM || 'Lunar <noreply@mylunar.shop>';
+    const resData = await resend.emails.send({
+      from: fromAddress,
+      to: [to],
+      subject: title,
+      html,
+    });
+    return resData;
+  } catch (error) {
+    console.error('Custom notification email error:', error);
+    return null;
+  }
+}
+
