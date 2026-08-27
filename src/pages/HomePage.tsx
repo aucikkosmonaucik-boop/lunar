@@ -24,6 +24,9 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="bg-white min-h-screen">
+      {/* Primary Accessible Brand Heading for Search Engines */}
+      <h1 className="sr-only">MyLunar — Luxury Perfumes &amp; Fine Jewelry Official Shop (mylunar.shop)</h1>
+
       {/* Dynamic Left-Sliding Hero Banner */}
       <HeroSlider />
 

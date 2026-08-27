@@ -59,9 +59,9 @@
         send_page_view: true
       });
     </script>
-    <meta name="description" content="Lunar — Discover luxury perfumes and fine jewelry handcrafted with elegance and distinction." />
-    <meta name="keywords" content="perfumes, jewelry, luxury, lunar, shop, biżuteria, perfumy, luxury jewelry, gold, silver" />
-    <meta name="author" content="Lunar" />
+    <meta name="description" content="Official MyLunar Shop (mylunar.shop) — Handcrafted luxury perfumes, eau de parfum, and fine jewelry. Discover exclusive rings, necklaces, bracelets, and earrings with worldwide delivery." />
+    <meta name="keywords" content="mylunar, mylunar shop, mylunar.shop, lunar shop, my lunar, lunar, luxury perfumes, fine jewelry, perfumy, biżuteria, luxury boutique, gold jewelry, silver necklaces, lunar boutique" />
+    <meta name="author" content="MyLunar" />
     <link rel="canonical" href="https://mylunar.shop/" />
 
     <!-- Googlebot & Search Engine Crawlers -->
@@ -72,22 +72,22 @@
     <!-- Open Graph / Facebook / Google -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://mylunar.shop/" />
-    <meta property="og:title" content="Lunar | Luxury Perfumes & Jewelry" />
-    <meta property="og:description" content="Discover luxury perfumes and fine jewelry handcrafted with elegance and distinction." />
+    <meta property="og:title" content="MyLunar — Luxury Perfumes & Fine Jewelry | Official Store" />
+    <meta property="og:description" content="Official MyLunar Shop (mylunar.shop). Handcrafted luxury perfumes, eau de parfum, and fine artisan jewelry with worldwide shipping." />
     <meta property="og:image" content="https://mylunar.shop/og-image.png" />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Lunar Luxury Perfumes and Jewelry Moon Logo" />
-    <meta property="og:site_name" content="Lunar" />
+    <meta property="og:image:alt" content="MyLunar Luxury Perfumes and Jewelry Moon Logo" />
+    <meta property="og:site_name" content="MyLunar Shop" />
 
     <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://mylunar.shop/" />
-    <meta name="twitter:title" content="Lunar | Luxury Perfumes & Jewelry" />
-    <meta name="twitter:description" content="Discover luxury perfumes and fine jewelry handcrafted with elegance and distinction." />
+    <meta name="twitter:title" content="MyLunar — Luxury Perfumes & Fine Jewelry | Official Store" />
+    <meta name="twitter:description" content="Official MyLunar Shop (mylunar.shop). Handcrafted luxury perfumes and fine artisan jewelry with worldwide shipping." />
     <meta name="twitter:image" content="https://mylunar.shop/og-image.png" />
-    <meta name="twitter:image:alt" content="Lunar Luxury Perfumes and Jewelry Moon Logo" />
+    <meta name="twitter:image:alt" content="MyLunar Luxury Perfumes and Jewelry Moon Logo" />
 
     <!-- Schema.org JSON-LD for Googlebot Rich Results & Knowledge Graph -->
     <script type="application/ld+json">
@@ -97,7 +97,8 @@
         {
           "@type": "Organization",
           "@id": "https://mylunar.shop/#organization",
-          "name": "Lunar",
+          "name": "MyLunar",
+          "alternateName": ["Lunar", "mylunar.shop", "MyLunar Shop", "My Lunar", "Lunar Boutique", "Lunar Shop"],
           "url": "https://mylunar.shop/",
           "logo": {
             "@type": "ImageObject",
@@ -108,7 +109,8 @@
           "contactPoint": {
             "@type": "ContactPoint",
             "email": "contact@mylunar.shop",
-            "contactType": "customer service"
+            "contactType": "customer service",
+            "availableLanguage": ["English", "Polish"]
           },
           "sameAs": [
             "https://www.instagram.com/mylunar.ie",
@@ -119,8 +121,9 @@
           "@type": "WebSite",
           "@id": "https://mylunar.shop/#website",
           "url": "https://mylunar.shop/",
-          "name": "Lunar",
-          "description": "Discover luxury perfumes and fine jewelry.",
+          "name": "MyLunar Shop",
+          "alternateName": ["MyLunar", "mylunar.shop", "Lunar", "Lunar Shop"],
+          "description": "Official MyLunar online shop for luxury perfumes and fine jewelry.",
           "publisher": {
             "@id": "https://mylunar.shop/#organization"
           },
@@ -133,22 +136,96 @@
         {
           "@type": "Store",
           "@id": "https://mylunar.shop/#store",
-          "name": "Lunar Boutique",
+          "name": "MyLunar Boutique",
+          "alternateName": ["MyLunar", "mylunar.shop", "Lunar Boutique", "MyLunar Shop", "Lunar Store"],
           "url": "https://mylunar.shop/",
           "image": "https://mylunar.shop/og-image.png",
-          "description": "Luxury perfumes and fine jewelry collections.",
-          "priceRange": "$$"
+          "description": "Official boutique offering handcrafted luxury perfumes and fine artisan jewelry collections.",
+          "priceRange": "$$",
+          "currenciesAccepted": "EUR, USD, PLN, GBP",
+          "paymentAccepted": "Credit Card, Stripe, Apple Pay, Google Pay, BLIK",
+          "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "MyLunar Collections",
+            "itemListElement": [
+              {
+                "@type": "OfferCatalog",
+                "name": "Luxury Perfumes",
+                "url": "https://mylunar.shop/shop?category=perfumes"
+              },
+              {
+                "@type": "OfferCatalog",
+                "name": "Fine Rings",
+                "url": "https://mylunar.shop/shop?category=rings"
+              },
+              {
+                "@type": "OfferCatalog",
+                "name": "Chains & Necklaces",
+                "url": "https://mylunar.shop/shop?category=necklaces"
+              },
+              {
+                "@type": "OfferCatalog",
+                "name": "Bracelets",
+                "url": "https://mylunar.shop/shop?category=bracelets"
+              },
+              {
+                "@type": "OfferCatalog",
+                "name": "Earrings",
+                "url": "https://mylunar.shop/shop?category=earrings"
+              }
+            ]
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://mylunar.shop/#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://mylunar.shop/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Shop Collections",
+              "item": "https://mylunar.shop/shop"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Mobile App",
+              "item": "https://mylunar.shop/app"
+            }
+          ]
         }
       ]
     }
     </script>
 
-    <title>Lunar | Luxury Perfumes & Jewelry</title>
+    <title>MyLunar — Luxury Perfumes & Fine Jewelry | Official Store (mylunar.shop)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   </head>
   <body>
+    <noscript>
+      <header style="padding: 2rem; background: #1a1a1a; color: #fff; text-align: center; font-family: sans-serif;">
+        <h1 style="font-size: 1.8rem; margin-bottom: 0.5rem;">MyLunar — Luxury Perfumes &amp; Fine Jewelry Official Shop</h1>
+        <p style="color: #DFC8B0; font-size: 1rem; margin-bottom: 1.5rem;">
+          Welcome to <strong>MyLunar (mylunar.shop)</strong>. Discover handcrafted luxury perfumes, exclusive fine jewelry, rings, necklaces, bracelets, and earrings.
+        </p>
+        <nav>
+          <a href="/shop" style="color: #DFC8B0; margin: 0 12px; text-decoration: underline;">Shop Collections</a>
+          <a href="/shop?category=perfumes" style="color: #DFC8B0; margin: 0 12px; text-decoration: underline;">Luxury Perfumes</a>
+          <a href="/shop?category=necklaces" style="color: #DFC8B0; margin: 0 12px; text-decoration: underline;">Necklaces</a>
+          <a href="/shop?category=rings" style="color: #DFC8B0; margin: 0 12px; text-decoration: underline;">Rings</a>
+          <a href="/app" style="color: #DFC8B0; margin: 0 12px; text-decoration: underline;">Mobile App</a>
+          <a href="/contact" style="color: #DFC8B0; margin: 0 12px; text-decoration: underline;">Contact</a>
+        </nav>
+      </header>
+    </noscript>
     <div id="root"></div>
     <div id="recaptcha-container"></div>
     <script type="module" src="/src/main.tsx"></script>
