@@ -16,8 +16,8 @@ class ShopScreen extends StatefulWidget {
     this.initialBadge,
   });
 
-  static void showCategoriesBottomSheet(BuildContext context) =>
-      _ShopScreenState.showCategoriesBottomSheet(context);
+  static void showCategoriesBottomSheet(BuildContext context, {bool navigateToShop = false}) =>
+      _ShopScreenState.showCategoriesBottomSheet(context, navigateToShop: navigateToShop);
 
   static IconData getCategoryIcon(String slug) =>
       _ShopScreenState.getCategoryIcon(slug);
@@ -132,7 +132,7 @@ class _ShopScreenState extends State<ShopScreen> {
     return Icons.spa_outlined;
   }
 
-  static void showCategoriesBottomSheet(BuildContext context) {
+  static void showCategoriesBottomSheet(BuildContext context, {bool navigateToShop = false}) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     showModalBottomSheet(
@@ -270,6 +270,11 @@ class _ShopScreenState extends State<ShopScreen> {
                               onTap: () {
                                 prod.setCategory('all');
                                 Navigator.pop(ctx);
+                                if (navigateToShop) {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(builder: (_) => const ShopScreen()),
+                                  );
+                                }
                               },
                             ),
                           );
@@ -331,6 +336,13 @@ class _ShopScreenState extends State<ShopScreen> {
                                   onTap: () {
                                     prod.setCategory(cat.slug);
                                     Navigator.pop(ctx);
+                                    if (navigateToShop) {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (_) => ShopScreen(initialCategory: cat.slug),
+                                        ),
+                                      );
+                                    }
                                   },
                                 ),
                               );

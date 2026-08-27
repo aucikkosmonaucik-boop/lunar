@@ -220,7 +220,62 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 18),
+
+            // Hamburger CATEGORIES Button (Centered under Lunar Club)
+            Center(
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => ShopScreen.showCategoriesBottomSheet(context, navigateToShop: true),
+                  borderRadius: BorderRadius.circular(28),
+                  child: Ink(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: isDark ? AppColors.darkSurfaceElevated : AppColors.lightSurface,
+                      borderRadius: BorderRadius.circular(28),
+                      border: Border.all(
+                        color: isDark
+                            ? AppColors.primary.withValues(alpha: 0.5)
+                            : AppColors.primary.withValues(alpha: 0.7),
+                        width: 1.5,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: isDark
+                              ? Colors.black.withValues(alpha: 0.35)
+                              : AppColors.primary.withValues(alpha: 0.15),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.menu_rounded,
+                          size: 20,
+                          color: isDark ? AppColors.primary : AppColors.primaryDark,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          'CATEGORIES',
+                          style: GoogleFonts.cormorantGaramond(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 2.5,
+                            color: isDark ? AppColors.primary : AppColors.lightText,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 22),
 
             // All Products Collection (Siatka 2-kolumnowa, scroll w dół bez duplikatów)
             if (allProducts.isNotEmpty) ...[
