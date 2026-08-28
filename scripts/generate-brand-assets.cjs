@@ -3,7 +3,8 @@ const fs = require('fs');
 const path = require('path');
 
 async function generateAssets() {
-  const publicIconsDir = path.join(__dirname, 'public', 'icons');
+  const publicDir = path.join(__dirname, '..', 'public');
+  const publicIconsDir = path.join(publicDir, 'icons');
   if (!fs.existsSync(publicIconsDir)) {
     fs.mkdirSync(publicIconsDir, { recursive: true });
   }
@@ -17,9 +18,21 @@ async function generateAssets() {
     </svg>
   `;
 
+  // 1. Generate moon.svg with dark luxury background circle and 48x48 viewBox
+  const moonSvgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <circle cx="24" cy="24" r="22.8" fill="#1a1a1a" stroke="#C1A98F" stroke-width="1.44"/>
+  <g transform="translate(10.56, 10.56) scale(1.12)">
+    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" fill="none" stroke="#C1A98F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>
+`;
+  fs.writeFileSync(path.join(publicDir, 'moon.svg'), moonSvgContent);
+  console.log('Generated: public/moon.svg (48x48 luxury moon badge)');
+
+  // 2. Generate PNG sizes
   const sizes = [
-    { size: 16, dest: path.join(__dirname, 'public', 'favicon-16x16.png') },
-    { size: 32, dest: path.join(__dirname, 'public', 'favicon-32x32.png') },
+    { size: 16, dest: path.join(publicDir, 'favicon-16x16.png') },
+    { size: 32, dest: path.join(publicDir, 'favicon-32x32.png') },
     { size: 48, dest: path.join(publicIconsDir, 'icon-48.png') },
     { size: 96, dest: path.join(publicIconsDir, 'icon-96.png') },
     { size: 144, dest: path.join(publicIconsDir, 'icon-144.png') },
@@ -38,9 +51,39 @@ async function generateAssets() {
     console.log(`Generated: ${item.dest} (${item.size}x${item.size})`);
   }
 
-  const ico32Buffer = await sharp(Buffer.from(createIconSvg(32, true))).png().toBuffer();
-  fs.writeFileSync(path.join(__dirname, 'public', 'favicon.ico'), ico32Buffer);
-  console.log('Generated: public/favicon.ico');
+  // 3. Generate multi-resolution ICO (16x16, 32x32, 48x48)
+  const icoSizes = [16, 32, 48];
+  const pngBuffers = await Promise.all(icoSizes.map(s => sharp(Buffer.from(createIconSvg(s, true))).resize(s, s).png().toBuffer()));
+  const numImages = icoSizes.length;
+  const headerSize = 6;
+  const dirEntrySize = 16;
+  let offset = headerSize + (numImages * dirEntrySize);
+  
+  const header = Buffer.alloc(headerSize);
+  header.writeUInt16LE(0, 0); // reserved
+  header.writeUInt16LE(1, 2); // ICO type
+  header.writeUInt16LE(numImages, 4); // count
+  
+  const entries = [];
+  for (let i = 0; i < numImages; i++) {
+    const size = icoSizes[i];
+    const buf = pngBuffers[i];
+    const entry = Buffer.alloc(dirEntrySize);
+    entry.writeUInt8(size >= 256 ? 0 : size, 0); // width
+    entry.writeUInt8(size >= 256 ? 0 : size, 1); // height
+    entry.writeUInt8(0, 2); // color palette
+    entry.writeUInt8(0, 3); // reserved
+    entry.writeUInt16LE(1, 4); // color planes
+    entry.writeUInt16LE(32, 6); // bpp
+    entry.writeUInt32LE(buf.length, 8); // size
+    entry.writeUInt32LE(offset, 12); // offset
+    entries.push(entry);
+    offset += buf.length;
+  }
+  
+  const icoBuffer = Buffer.concat([header, ...entries, ...pngBuffers]);
+  fs.writeFileSync(path.join(publicDir, 'favicon.ico'), icoBuffer);
+  console.log('Generated: public/favicon.ico (Multi-res: 16x16, 32x32, 48x48)');
 
   const ogSvg = `
     <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
@@ -87,7 +130,7 @@ async function generateAssets() {
   `;
 
   const ogBuffer = Buffer.from(ogSvg);
-  const ogDest = path.join(__dirname, 'public', 'og-image.png');
+  const ogDest = path.join(publicDir, 'og-image.png');
   await sharp(ogBuffer)
     .resize(1200, 630)
     .png({ quality: 95 })
