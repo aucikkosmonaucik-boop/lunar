@@ -256,12 +256,35 @@ export async function sendCustomNotificationEmail({
 
   try {
     const resend = new Resend(apiKey);
-    const appUrl = process.env.APP_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://mylunar.shop';
-    const fullLink = linkUrl
-      ? linkUrl.startsWith('http')
-        ? linkUrl
-        : `${appUrl}${linkUrl.startsWith('/') ? '' : '/'}${linkUrl}`
-      : appUrl;
+    const appUrl = (process.env.APP_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://mylunar.shop').replace(/\/$/, '');
+
+    // Determine intelligent tracking or action link
+    let targetLink = linkUrl ? String(linkUrl).trim() : '';
+    const cleanOrderNum = orderNumber ? String(orderNumber).trim().toUpperCase() : null;
+
+    if (!targetLink) {
+      if (cleanOrderNum) {
+        targetLink = `/track-order?orderNumber=${encodeURIComponent(cleanOrderNum)}&email=${encodeURIComponent(to)}`;
+      } else {
+        targetLink = '/track-order';
+      }
+    } else if (cleanOrderNum && targetLink.startsWith('/track-order') && !targetLink.includes('orderNumber=')) {
+      const sep = targetLink.includes('?') ? '&' : '?';
+      targetLink = `${targetLink}${sep}orderNumber=${encodeURIComponent(cleanOrderNum)}&email=${encodeURIComponent(to)}`;
+    }
+
+    const fullLink = targetLink.startsWith('http')
+      ? targetLink
+      : `${appUrl}${targetLink.startsWith('/') ? '' : '/'}${targetLink}`;
+
+    const isTracking = Boolean(cleanOrderNum || targetLink.includes('/track'));
+    const buttonLabel = isTracking
+      ? 'TRACK YOUR ORDER'
+      : targetLink.includes('/shop')
+      ? 'EXPLORE THE BOUTIQUE'
+      : targetLink.includes('/account')
+      ? 'VIEW YOUR ACCOUNT'
+      : 'VIEW DETAILS / TRACK ORDER';
 
     const html = `
       <!DOCTYPE html>
@@ -278,7 +301,7 @@ export async function sendCustomNotificationEmail({
             <p style="font-size: 14px; line-height: 1.6; color: #4A4A4A; white-space: pre-line;">${message}</p>
             ${orderNumber ? `<div style="margin: 18px 0; padding: 12px 16px; background: #FAF6F3; border-left: 3px solid #D4AF37; font-size: 13px; font-weight: 600; color: #1A1A1A;">Order Reference: #${orderNumber}</div>` : ''}
             <div style="margin-top: 30px; text-align: center;">
-              <a href="${fullLink}" style="display: inline-block; background-color: #1A1A1A; color: #ffffff; text-decoration: none; padding: 13px 32px; border-radius: 4px; font-size: 13px; font-weight: 600; letter-spacing: 1px;">VIEW DETAILS / SHOP</a>
+              <a href="${fullLink}" style="display: inline-block; background-color: #1A1A1A; color: #ffffff; text-decoration: none; padding: 13px 32px; border-radius: 4px; font-size: 13px; font-weight: 600; letter-spacing: 1px;">${buttonLabel}</a>
             </div>
           </div>
           <div style="background-color: #FAF8F5; border-top: 1px solid #EDE6DF; padding: 18px 24px; text-align: center; font-size: 11px; color: #8C827A;">

@@ -172,11 +172,24 @@ export const NotificationsAdminManager: React.FC<{
     fetchHistory();
   }, [fetchCustomers, fetchHistory]);
 
+  const handleOrderNumberChange = (val: string) => {
+    setOrderNumber(val);
+    const clean = val.trim().toUpperCase();
+    if (!linkUrl || linkUrl.startsWith('/track-order')) {
+      setLinkUrl(clean ? `/track-order?orderNumber=${clean}` : '/track-order');
+    }
+  };
+
   const applyTemplate = (tpl: TemplatePreset) => {
     setType(tpl.type);
     setTitle(tpl.title);
     setMessage(tpl.message);
-    setLinkUrl(tpl.linkUrl);
+    const cleanOrd = orderNumber.trim().toUpperCase();
+    if (tpl.linkUrl.startsWith('/track-order') && cleanOrd) {
+      setLinkUrl(`/track-order?orderNumber=${cleanOrd}`);
+    } else {
+      setLinkUrl(tpl.linkUrl);
+    }
     setFeedback(null);
   };
 
@@ -205,6 +218,14 @@ export const NotificationsAdminManager: React.FC<{
       return;
     }
 
+    const cleanOrder = orderNumber.trim().toUpperCase();
+    let finalLinkUrl = linkUrl.trim();
+    if (!finalLinkUrl) {
+      finalLinkUrl = cleanOrder ? `/track-order?orderNumber=${cleanOrder}` : '/track-order';
+    } else if (cleanOrder && finalLinkUrl.startsWith('/track-order') && !finalLinkUrl.includes('orderNumber=')) {
+      finalLinkUrl = `${finalLinkUrl}${finalLinkUrl.includes('?') ? '&' : '?'}orderNumber=${cleanOrder}`;
+    }
+
     setIsSubmitting(true);
     try {
       const res = await fetch('/api/notifications/send', {
@@ -217,8 +238,8 @@ export const NotificationsAdminManager: React.FC<{
           title: title.trim(),
           message: message.trim(),
           type,
-          orderNumber: orderNumber.trim() || undefined,
-          linkUrl: linkUrl.trim() || undefined,
+          orderNumber: cleanOrder || undefined,
+          linkUrl: finalLinkUrl || undefined,
           sendEmailCopy,
         }),
       });
@@ -536,7 +557,7 @@ export const NotificationsAdminManager: React.FC<{
                 type="text"
                 placeholder="e.g. LUNAR-2026-0801"
                 value={orderNumber}
-                onChange={(e) => setOrderNumber(e.target.value)}
+                onChange={(e) => handleOrderNumberChange(e.target.value)}
                 className="w-full px-3.5 py-2.5 text-sm font-mono bg-white border border-[#D5CCC1] rounded focus:border-black focus:outline-none uppercase"
               />
             </div>

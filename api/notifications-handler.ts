@@ -114,11 +114,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const cleanTitle = String(title).trim();
       const cleanMessage = String(message).trim();
       const cleanOrderNum = orderNumber ? String(orderNumber).trim().toUpperCase() : null;
-      const cleanLink = linkUrl
-        ? String(linkUrl).trim()
-        : cleanOrderNum
-        ? `/track-order?orderNumber=${cleanOrderNum}`
-        : null;
+      let cleanLink = linkUrl ? String(linkUrl).trim() : null;
+      if (!cleanLink) {
+        cleanLink = cleanOrderNum ? `/track-order?orderNumber=${cleanOrderNum}` : '/track-order';
+      } else if (cleanOrderNum && cleanLink.startsWith('/track-order') && !cleanLink.includes('orderNumber=')) {
+        cleanLink = `${cleanLink}${cleanLink.includes('?') ? '&' : '?'}orderNumber=${cleanOrderNum}`;
+      }
 
       // Broadcast to all registered customers
       if (targetType === 'all') {
