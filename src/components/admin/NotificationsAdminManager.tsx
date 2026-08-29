@@ -643,13 +643,13 @@ export const NotificationsAdminManager: React.FC<{
                 {getTypeIcon(type)}
               </div>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-2">
-                  <h4 className="text-sm font-semibold text-white truncate">
+                <div className="flex items-start justify-between gap-2">
+                  <h4 className="text-sm font-semibold text-white break-words leading-snug">
                     {title || 'Your Notification Title'}
                   </h4>
-                  <span className="text-[10px] text-gray-400 shrink-0">Just now</span>
+                  <span className="text-[10px] text-gray-400 shrink-0 mt-0.5">Just now</span>
                 </div>
-                <p className="text-xs text-gray-300 mt-1 line-clamp-3 leading-relaxed">
+                <p className="text-xs text-gray-300 mt-1.5 leading-relaxed break-words whitespace-pre-wrap">
                   {message || 'Your custom message content will be displayed here...'}
                 </p>
                 {orderNumber && (
@@ -756,10 +756,10 @@ export const NotificationsAdminManager: React.FC<{
                       </span>
                     </td>
                     <td className="py-3 px-4 max-w-xs">
-                      <strong className="block text-[#1A1A1A] font-semibold truncate">
+                      <strong className="block text-[#1A1A1A] font-semibold break-words">
                         {item.title}
                       </strong>
-                      <p className="text-gray-500 text-[11px] line-clamp-1">
+                      <p className="text-gray-600 text-[11px] leading-relaxed break-words mt-0.5">
                         {item.message}
                       </p>
                     </td>

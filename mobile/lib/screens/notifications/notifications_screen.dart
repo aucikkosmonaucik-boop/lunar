@@ -69,7 +69,150 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     }
   }
 
-  Future<void> _handleNotificationTap(NotificationModel notif) async {
+  void _showNotificationDetailModal(NotificationModel notif, bool isDark) {
+    final typeColor = _getTypeColor(notif.type);
+    final typeIcon = _getTypeIcon(notif.type);
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: isDark ? AppColors.darkSurfaceElevated : Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Drag Handle
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: isDark ? Colors.white24 : Colors.black12,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+
+                  // Category & Date Row
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: typeColor.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: typeColor.withValues(alpha: 0.3)),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(typeIcon, color: typeColor, size: 14),
+                            const SizedBox(width: 6),
+                            Text(
+                              notif.type,
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: typeColor,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Spacer(),
+                      Text(
+                        DateFormat('MMM d, yyyy • HH:mm').format(notif.createdAt),
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+
+                  // Full Title
+                  Text(
+                    notif.title,
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w700,
+                      color: isDark ? AppColors.darkText : AppColors.lightText,
+                      height: 1.3,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Full Message Content
+                  SelectableText(
+                    notif.message,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: isDark ? AppColors.darkTextSecondary : const Color(0xFF333333),
+                      height: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Action Button for tracking order
+                  if (notif.orderNumber != null && notif.orderNumber!.isNotEmpty)
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.of(ctx).pop();
+                          _trackOrderDirectly(notif.orderNumber!);
+                        },
+                        icon: const Icon(Icons.local_shipping_outlined, size: 18),
+                        label: Text('Track Order #${notif.orderNumber}'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.black,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          textStyle: const TextStyle(fontWeight: FontWeight.w700),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _trackOrderDirectly(String orderNumber) async {
+    final auth = context.read<AuthProvider>();
+    final email = auth.user?.email ?? '';
+
+    final orderProvider = context.read<OrderProvider>();
+    final existing = orderProvider.orders.where((o) => o.orderNumber == orderNumber).toList();
+    if (existing.isNotEmpty) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => OrderDetailScreen(order: existing.first)),
+      );
+    } else if (email.isNotEmpty) {
+      final order = await orderProvider.trackOrder(orderNumber: orderNumber, email: email);
+      if (order != null && mounted) {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => OrderDetailScreen(order: order)),
+        );
+      }
+    }
+  }
+
+  Future<void> _handleNotificationTap(NotificationModel notif, bool isDark) async {
     final notifProvider = context.read<NotificationProvider>();
     if (!notif.isRead) {
       await notifProvider.markAsRead(notif.id);
@@ -77,26 +220,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
     if (!mounted) return;
 
-    // If order-related, try to find and open order detail
     if (notif.orderNumber != null && notif.orderNumber!.isNotEmpty) {
-      final auth = context.read<AuthProvider>();
-      final email = auth.user?.email ?? '';
-      
-      final orderProvider = context.read<OrderProvider>();
-      // Check if order is already in list
-      final existing = orderProvider.orders.where((o) => o.orderNumber == notif.orderNumber).toList();
-      if (existing.isNotEmpty) {
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => OrderDetailScreen(order: existing.first)),
-        );
-      } else if (email.isNotEmpty) {
-        final order = await orderProvider.trackOrder(orderNumber: notif.orderNumber!, email: email);
-        if (order != null && mounted) {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => OrderDetailScreen(order: order)),
-          );
-        }
-      }
+      await _trackOrderDirectly(notif.orderNumber!);
+    } else {
+      _showNotificationDetailModal(notif, isDark);
     }
   }
 
@@ -217,7 +344,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     final typeIcon = _getTypeIcon(notif.type);
 
     return InkWell(
-      onTap: () => _handleNotificationTap(notif),
+      onTap: () => _handleNotificationTap(notif, isDark),
       borderRadius: BorderRadius.circular(14),
       child: Container(
         padding: const EdgeInsets.all(14),
@@ -257,7 +384,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: Text(
@@ -266,28 +393,33 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                             fontSize: 14,
                             fontWeight: notif.isRead ? FontWeight.w600 : FontWeight.w700,
                             color: isDark ? AppColors.darkText : AppColors.lightText,
+                            height: 1.3,
                           ),
-                          overflow: TextOverflow.ellipsis,
+                          softWrap: true,
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Text(
-                        _formatDate(notif.createdAt),
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2),
+                        child: Text(
+                          _formatDate(notif.createdAt),
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                          ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 6),
                   Text(
                     notif.message,
                     style: TextStyle(
-                      fontSize: 12.5,
-                      color: isDark ? AppColors.darkTextSecondary : const Color(0xFF4A4A4A),
-                      height: 1.35,
+                      fontSize: 13,
+                      color: isDark ? AppColors.darkTextSecondary : const Color(0xFF333333),
+                      height: 1.45,
                     ),
+                    softWrap: true,
                   ),
                   if (notif.orderNumber != null && notif.orderNumber!.isNotEmpty) ...[
                     const SizedBox(height: 8),

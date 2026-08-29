@@ -293,20 +293,20 @@ export const NotificationBell: React.FC<{ isMobile?: boolean }> = ({ isMobile = 
 
                   {/* Text Content */}
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-1 mb-0.5">
+                    <div className="flex items-start justify-between gap-2 mb-1">
                       <p
-                        className={`text-xs font-semibold truncate ${
+                        className={`text-xs font-semibold leading-snug break-words ${
                           notif.isRead ? 'text-gray-700' : 'text-gray-900 font-bold'
                         }`}
                       >
                         {notif.title}
                       </p>
-                      <span className="text-[10px] text-gray-400 whitespace-nowrap">
+                      <span className="text-[10px] text-gray-400 whitespace-nowrap shrink-0 mt-0.5">
                         {formatTimeAgo(notif.createdAt)}
                       </span>
                     </div>
 
-                    <p className="text-[12px] text-gray-600 line-clamp-2 leading-relaxed">
+                    <p className="text-[12px] text-gray-600 leading-relaxed break-words">
                       {notif.message}
                     </p>
 
