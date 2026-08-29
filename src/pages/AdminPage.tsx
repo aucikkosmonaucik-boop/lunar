@@ -132,6 +132,9 @@ export const AdminPage: React.FC = () => {
       if (res.ok && data.success) {
         setIsAdminAuthenticated(true);
         localStorage.setItem('lunar_admin_session', 'true');
+        if (data.adminToken) {
+          localStorage.setItem('lunar_admin_token', data.adminToken);
+        }
         if (data.user) {
           login(data.user);
         }
@@ -194,6 +197,7 @@ export const AdminPage: React.FC = () => {
   const handleAdminLogout = () => {
     setIsAdminAuthenticated(false);
     localStorage.removeItem('lunar_admin_session');
+    localStorage.removeItem('lunar_admin_token');
     logout();
     setLoginPassword('');
     showToast('Signed out of admin dashboard.', 'info');

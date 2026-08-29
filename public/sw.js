@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lunar-pwa-v2';
+const CACHE_NAME = 'lunar-pwa-v3';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -53,39 +53,66 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Navigation requests (HTML pages) -> Network first, fallback to cached index.html
-  if (event.request.mode === 'navigate') {
+  const isHtmlNavigation =
+    event.request.mode === 'navigate' ||
+    event.request.destination === 'document' ||
+    Boolean(event.request.headers.get('accept')?.includes('text/html')) ||
+    (!url.pathname.includes('.') && url.origin === self.location.origin);
+
+  // Navigation requests (HTML pages & SPA routes like /admin) -> Network first, fallback to cached index.html
+  if (isHtmlNavigation) {
     event.respondWith(
-      fetch(event.request).catch(() => {
-        return caches.match('/index.html') || caches.match('/');
-      })
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const responseClone = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put('/index.html', responseClone)).catch(() => {});
+          }
+          return networkResponse;
+        })
+        .catch(async () => {
+          const cached = (await caches.match('/index.html')) || (await caches.match('/'));
+          if (cached) {
+            return cached;
+          }
+          return new Response('<!DOCTYPE html><html><head><meta charset="utf-8"><title>Lunar Boutique</title></head><body><h1>Offline</h1><p>Please check your connection and reload.</p></body></html>', {
+            status: 200,
+            headers: { 'Content-Type': 'text/html' }
+          });
+        })
     );
     return;
   }
 
-  // Static assets (images, icons, fonts) -> Stale-while-revalidate / Cache first
+  // Static assets (images, icons, fonts, scripts, css) -> Stale-while-revalidate / Cache first
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
         // Fetch in background to update cache
         fetch(event.request).then((networkResponse) => {
           if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse));
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse)).catch(() => {});
           }
         }).catch(() => {});
         return cachedResponse;
       }
 
-      return fetch(event.request).then((networkResponse) => {
-        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+      return fetch(event.request)
+        .then((networkResponse) => {
+          if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+            return networkResponse;
+          }
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          }).catch(() => {});
           return networkResponse;
-        }
-        const responseToCache = networkResponse.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
+        })
+        .catch(async () => {
+          const fallback = await caches.match(event.request);
+          if (fallback) return fallback;
+          return new Response(null, { status: 408, statusText: 'Request Timed Out / Offline' });
         });
-        return networkResponse;
-      });
     })
   );
 });

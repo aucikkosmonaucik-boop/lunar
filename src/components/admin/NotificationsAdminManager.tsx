@@ -123,11 +123,21 @@ export const NotificationsAdminManager: React.FC<{
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [feedback, setFeedback] = useState<{ message: string; isError?: boolean } | null>(null);
 
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem('lunar_admin_token');
+    return {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    };
+  };
+
   // Fetch registered customers
   const fetchCustomers = useCallback(async () => {
     setLoadingCustomers(true);
     try {
-      const res = await fetch('/api/notifications/customers');
+      const res = await fetch('/api/notifications/customers', {
+        headers: getAuthHeaders(),
+      });
       if (res.ok) {
         const data = await res.json();
         setCustomers(data.customers || []);
@@ -143,7 +153,9 @@ export const NotificationsAdminManager: React.FC<{
   const fetchHistory = useCallback(async () => {
     setLoadingHistory(true);
     try {
-      const res = await fetch('/api/notifications/admin-history');
+      const res = await fetch('/api/notifications/admin-history', {
+        headers: getAuthHeaders(),
+      });
       if (res.ok) {
         const data = await res.json();
         setHistory(data.history || []);
@@ -197,7 +209,7 @@ export const NotificationsAdminManager: React.FC<{
     try {
       const res = await fetch('/api/notifications/send', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           targetType,
           targetUserId: targetType === 'single' ? selectedCustomerId || undefined : undefined,
@@ -252,6 +264,7 @@ export const NotificationsAdminManager: React.FC<{
     try {
       const res = await fetch(`/api/notifications/delete-admin?id=${id}`, {
         method: 'DELETE',
+        headers: getAuthHeaders(),
       });
       if (res.ok) {
         setHistory((prev) => prev.filter((item) => item.id !== id));

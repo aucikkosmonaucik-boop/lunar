@@ -248,6 +248,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const userId = callerUser?.id;
     if (!userId) {
+      if (req.method === 'GET') {
+        return res.status(200).json({ notifications: [], unreadCount: 0 });
+      }
       return res.status(401).json({ message: 'Authentication required' });
     }
 

@@ -85,7 +85,10 @@ export const NotificationBell: React.FC<{ isMobile?: boolean }> = ({ isMobile = 
 
     try {
       if (isInitial) setLoading(true);
-      const res = await fetch('/api/notifications');
+      const token = localStorage.getItem('lunar_admin_token');
+      const res = await fetch('/api/notifications', {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
       if (res.ok) {
         const data = await res.json();
         const newUnread = data.unreadCount || 0;
@@ -98,9 +101,12 @@ export const NotificationBell: React.FC<{ isMobile?: boolean }> = ({ isMobile = 
 
         setNotifications(data.notifications || []);
         setUnreadCount(newUnread);
+      } else if (res.status === 401) {
+        setNotifications([]);
+        setUnreadCount(0);
       }
     } catch (err) {
-      console.error('Failed to fetch notifications:', err);
+      console.warn('Could not fetch notifications:', err);
     } finally {
       if (isInitial) setLoading(false);
     }
@@ -138,9 +144,13 @@ export const NotificationBell: React.FC<{ isMobile?: boolean }> = ({ isMobile = 
       );
       setUnreadCount((prev) => Math.max(0, prev - 1));
 
+      const token = localStorage.getItem('lunar_admin_token');
       await fetch('/api/notifications?action=mark-read', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         body: JSON.stringify({ id }),
       });
 
@@ -149,7 +159,7 @@ export const NotificationBell: React.FC<{ isMobile?: boolean }> = ({ isMobile = 
         navigate(linkUrl);
       }
     } catch (err) {
-      console.error('Failed to mark notification as read:', err);
+      console.warn('Failed to mark notification as read:', err);
     }
   };
 
@@ -159,13 +169,17 @@ export const NotificationBell: React.FC<{ isMobile?: boolean }> = ({ isMobile = 
       setUnreadCount(0);
       previousUnreadCountRef.current = 0;
 
+      const token = localStorage.getItem('lunar_admin_token');
       await fetch('/api/notifications?action=mark-all-read', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         body: JSON.stringify({ all: true }),
       });
     } catch (err) {
-      console.error('Failed to mark all as read:', err);
+      console.warn('Failed to mark all as read:', err);
     }
   };
 

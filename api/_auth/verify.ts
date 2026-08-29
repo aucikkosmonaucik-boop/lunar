@@ -14,10 +14,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const token = extractToken(req);
 
     if (!token) {
-      return res.status(401).json({ message: 'Not authenticated' });
+      return res.status(200).json({ user: null, authenticated: false });
     }
 
-    const decoded = jwt.verify(token, JWT_SECRET) as { userId: string; email: string };
+    let decoded: { userId: string; email: string };
+    try {
+      decoded = jwt.verify(token, JWT_SECRET) as { userId: string; email: string };
+    } catch {
+      return res.status(200).json({ user: null, authenticated: false });
+    }
 
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId },
@@ -36,10 +41,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
 
     if (!user) {
-      return res.status(401).json({ message: 'User not found' });
+      return res.status(200).json({ user: null, authenticated: false });
     }
 
-    return res.status(200).json({ user });
+    return res.status(200).json({ user, authenticated: true });
   } catch (error) {
     const err = error as Error;
     console.error('Verification error:', err);
