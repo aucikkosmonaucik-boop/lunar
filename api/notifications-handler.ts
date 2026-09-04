@@ -1,11 +1,9 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { handleCors } from './_lib/cors.js';
-import { extractToken } from './_lib/auth-util.js';
+import { extractToken, getJwtSecret, checkAdmin } from './_lib/auth-util.js';
 import { prisma } from './_lib/prisma.js';
 import { sendCustomNotificationEmail } from './_lib/email.js';
 import jwt from 'jsonwebtoken';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-in-production';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (handleCors(req, res)) return;
@@ -15,7 +13,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   if (token) {
     try {
-      const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
+      const decoded = jwt.verify(token, getJwtSecret(), { algorithms: ['HS256'] }) as { userId: string };
       callerUser = await (prisma as any).user.findUnique({
         where: { id: decoded.userId },
         select: { id: true, role: true, email: true },
@@ -25,11 +23,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
   }
 
-  const adminKey = req.headers['x-admin-key'];
-  const isAdmin =
-    callerUser?.role === 'ADMIN' ||
-    (adminKey && adminKey === process.env.ADMIN_KEY) ||
-    process.env.NODE_ENV !== 'production';
+  const { isAdmin } = await checkAdmin(req);
 
   let action = req.query.action as string;
   if (!action || action.startsWith(':') || action.startsWith('$')) {

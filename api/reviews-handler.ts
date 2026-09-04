@@ -1,11 +1,14 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { prisma } from './_lib/prisma.js';
 import { handleCors } from './_lib/cors.js';
+import { checkAdmin, extractToken, getJwtSecret } from './_lib/auth-util.js';
+import { applyRateLimit } from './_lib/rate-limit.js';
+import jwt from 'jsonwebtoken';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (handleCors(req, res)) return;
 
-  // DELETE: Remove a review (admin or author)
+  // DELETE: Remove a review (admin or author only!)
   if (req.method === 'DELETE') {
     try {
       const { id } = req.query as { id?: string };
@@ -22,6 +25,26 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       if (!existing) {
         return res.status(404).json({ message: 'Review not found' });
+      }
+
+      // Check permissions: Admin or Author
+      const { isAdmin } = await checkAdmin(req);
+      let isAuthor = false;
+
+      const token = extractToken(req);
+      if (token) {
+        try {
+          const decoded = jwt.verify(token, getJwtSecret(), { algorithms: ['HS256'] }) as { userId: string };
+          if (decoded && decoded.userId && existing.userId && decoded.userId === existing.userId) {
+            isAuthor = true;
+          }
+        } catch {
+          // Token invalid
+        }
+      }
+
+      if (!isAdmin && !isAuthor) {
+        return res.status(403).json({ message: 'Forbidden. You do not have permission to delete this review.' });
       }
 
       const productId = existing.productId;
@@ -61,6 +84,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   // POST: Create review or mark review as helpful
   if (req.method === 'POST') {
+    if (applyRateLimit(req, res, { windowMs: 10 * 60 * 1000, max: 10, keyPrefix: 'review' })) {
+      return;
+    }
+
     try {
       const { action } = req.query as { action?: string };
       const body = req.body || {};
@@ -94,7 +121,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         title,
         comment,
         userId,
-        verified,
       } = body;
 
       const rawId = productId || productSlug || slug;
@@ -132,15 +158,38 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         console.warn('Product lookup warning in reviews:', findErr);
       }
 
+      // Verify if the author actually purchased this product
+      let isVerifiedPurchase = false;
+      if (userId) {
+        try {
+          const purchasedOrder = await (prisma as any).order.findFirst({
+            where: {
+              userId,
+              paymentStatus: 'paid',
+              items: {
+                some: {
+                  OR: [{ productId: targetProductId }, { productId: rawId }],
+                },
+              },
+            },
+          });
+          if (purchasedOrder) {
+            isVerifiedPurchase = true;
+          }
+        } catch {
+          // DB check failed
+        }
+      }
+
       const created = await (prisma as any).review.create({
         data: {
           productId: targetProductId,
-          authorName: authorName.trim(),
+          authorName: String(authorName).trim().slice(0, 80),
           rating: Math.round(numRating),
-          title: title ? title.trim() : null,
-          comment: comment.trim(),
+          title: title ? String(title).trim().slice(0, 150) : null,
+          comment: String(comment).trim().slice(0, 2000),
           userId: userId || null,
-          verified: Boolean(verified ?? true),
+          verified: isVerifiedPurchase,
           helpfulCount: 0,
         },
       });

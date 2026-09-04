@@ -1,35 +1,42 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { prisma } from '../_lib/prisma.js';
+import { getJwtSecret } from '../_lib/auth-util.js';
+import { applyRateLimit } from '../_lib/rate-limit.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { serialize, parse } from 'cookie';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-in-production';
+import { serialize } from 'cookie';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
+  // Rate Limiting: Max 10 attempts per 15 min per IP to prevent brute force
+  if (applyRateLimit(req, res, { windowMs: 15 * 60 * 1000, max: 10, keyPrefix: 'login' })) {
+    return;
+  }
+
   try {
-    const { email, password } = req.body;
+    const { email, password } = req.body || {};
 
     if (!email || !password) {
       return res.status(400).json({ message: 'Email and password are required' });
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email },
+    const cleanEmail = String(email).trim().toLowerCase();
+
+    const user = await (prisma as any).user.findUnique({
+      where: { email: cleanEmail },
     });
 
     if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compare(String(password), user.password);
 
     if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(401).json({ message: 'Invalid email or password' });
     }
 
     // Block login if email is not verified yet
@@ -41,10 +48,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
     }
 
+    const jwtSecret = getJwtSecret();
     const token = jwt.sign(
-      { userId: user.id, email: user.email },
-      JWT_SECRET,
-      { expiresIn: '7d' }
+      { userId: user.id, email: user.email, role: user.role || 'USER' },
+      jwtSecret,
+      { expiresIn: '7d', algorithm: 'HS256' }
     );
 
     const cookie = serialize('auth_token', token, {
@@ -64,18 +72,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         id: user.id,
         email: user.email,
         name: user.name,
-        street: (user as any).street,
-        city: (user as any).city,
-        postalCode: (user as any).postalCode,
-        country: (user as any).country,
-        phone: (user as any).phone,
-        role: (user as any).role || 'USER',
-        loyaltyPoints: (user as any).loyaltyPoints || 0,
+        street: user.street,
+        city: user.city,
+        postalCode: user.postalCode,
+        country: user.country,
+        phone: user.phone,
+        role: user.role || 'USER',
+        loyaltyPoints: user.loyaltyPoints || 0,
       },
     });
   } catch (error) {
-    const err = error as Error;
-    console.error('Login error:', err);
-    return res.status(500).json({ message: `Prisma/Vercel Error: ${err.message}`, stack: err.stack });
+    console.error('Login error:', error);
+    return res.status(500).json({ message: 'Authentication service temporarily unavailable. Please try again later.' });
   }
 }

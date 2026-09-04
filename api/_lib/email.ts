@@ -2,6 +2,16 @@ import { Resend } from 'resend';
 import fs from 'fs';
 import path from 'path';
 
+export function escapeHtml(str: unknown): string {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 interface EmailTemplateData {
   [key: string]: string;
 }
@@ -48,10 +58,11 @@ export async function sendEmail({
     // Merge provided data with defaults
     const fullData = { ...defaults, ...data };
 
-    // Replace all {{KEY}} placeholders in HTML
+    // Replace all {{KEY}} placeholders in HTML with escaped values (unless key ends with _HTML)
     Object.entries(fullData).forEach(([key, value]) => {
       const placeholder = new RegExp(`{{${key}}}`, 'g');
-      html = html.replace(placeholder, value !== undefined && value !== null ? String(value) : '');
+      const safeValue = key.endsWith('_HTML') || key.endsWith('_URL') ? String(value || '') : escapeHtml(value);
+      html = html.replace(placeholder, safeValue);
     });
 
     const fromAddress = process.env.EMAIL_FROM || 'Lunar <noreply@mylunar.shop>';

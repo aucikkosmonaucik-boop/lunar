@@ -1,11 +1,18 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { prisma } from './_lib/prisma.js';
 import { handleCors } from './_lib/cors.js';
+import { checkAdmin } from './_lib/auth-util.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (handleCors(req, res)) return;
 
-  // DELETE method
+  // Protect mutating methods with admin check
+  if (req.method !== 'GET') {
+    const { isAdmin } = await checkAdmin(req);
+    if (!isAdmin) {
+      return res.status(403).json({ message: 'Forbidden. Administrative privileges required to manage catalog products.' });
+    }
+  }
   if (req.method === 'DELETE') {
     try {
       const { id } = req.query as { id?: string };

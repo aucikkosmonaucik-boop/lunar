@@ -8,12 +8,7 @@ export function getPrisma() {
   if (globalForPrisma.prisma) return globalForPrisma.prisma;
 
   try {
-    const connectionString = process.env.DATABASE_URL;
-    if (!connectionString) {
-      console.warn('DATABASE_URL is missing, using default PrismaClient');
-      return new PrismaClient();
-    }
-
+    const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:postgrespassword@localhost:5432/lunar_db';
     const pool = new Pool({ connectionString });
     const adapter = new PrismaPg(pool as any);
     const prisma = new PrismaClient({ adapter });
@@ -24,7 +19,9 @@ export function getPrisma() {
     return prisma;
   } catch (error) {
     console.error('Prisma Initialization Error:', error);
-    return new PrismaClient();
+    const pool = new Pool({ connectionString: 'postgresql://postgres:postgrespassword@localhost:5432/lunar_db' });
+    const adapter = new PrismaPg(pool as any);
+    return new PrismaClient({ adapter });
   }
 }
 

@@ -298,10 +298,14 @@ export const LoyaltyProvider: React.FC<{ children: ReactNode }> = ({ children })
 
   // Admin adjustments
   const adminAdjustPoints = async (targetUserId: string, diff: number, reason: string): Promise<boolean> => {
+    const adminToken = localStorage.getItem('lunar_admin_token');
     try {
       await fetch('/api/loyalty/admin-adjust', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(adminToken ? { Authorization: `Bearer ${adminToken}` } : {}),
+        },
         body: JSON.stringify({ targetUserId, points: diff, reason }),
       });
     } catch (e) {
@@ -346,10 +350,14 @@ export const LoyaltyProvider: React.FC<{ children: ReactNode }> = ({ children })
       setRewards(prev => [...prev, newReward]);
     }
 
+    const adminToken = localStorage.getItem('lunar_admin_token');
     try {
       await fetch('/api/loyalty/admin-reward', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(adminToken ? { Authorization: `Bearer ${adminToken}` } : {}),
+        },
         body: JSON.stringify(rewardData),
       });
     } catch (e) {
@@ -361,10 +369,14 @@ export const LoyaltyProvider: React.FC<{ children: ReactNode }> = ({ children })
 
   const adminDeleteReward = async (rewardId: string): Promise<boolean> => {
     setRewards(prev => prev.filter(r => r.id !== rewardId));
+    const adminToken = localStorage.getItem('lunar_admin_token');
     try {
       await fetch('/api/loyalty/admin-reward', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(adminToken ? { Authorization: `Bearer ${adminToken}` } : {}),
+        },
         body: JSON.stringify({ id: rewardId, _action: 'delete' }),
       });
     } catch (e) {

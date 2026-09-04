@@ -1,17 +1,16 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { prisma } from './_lib/prisma.js';
+import { handleCors } from './_lib/cors.js';
+import { extractToken, getJwtSecret, checkAdmin } from './_lib/auth-util.js';
 import jwt from 'jsonwebtoken';
-import { parse } from 'cookie';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-in-production';
 
 // Helper to get authenticated user ID from cookies or Authorization header
 function getAuthUserId(req: VercelRequest): string | null {
+  const token = extractToken(req);
+  if (!token) return null;
   try {
-    const cookies = parse(req.headers.cookie || '');
-    const token = cookies.auth_token || req.headers.authorization?.replace('Bearer ', '');
-    if (!token) return null;
-    const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
+    const jwtSecret = getJwtSecret();
+    const decoded = jwt.verify(token, jwtSecret, { algorithms: ['HS256'] }) as { userId: string };
     return decoded.userId || null;
   } catch {
     return null;
@@ -57,8 +56,6 @@ const DEFAULT_REWARDS = [
     isActive: true,
   },
 ];
-
-import { handleCors } from './_lib/cors.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (handleCors(req, res)) return;
@@ -209,6 +206,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // 4. ADMIN: MANAGE REWARDS (Create / Update / Delete)
     if (req.method === 'POST' && action === 'admin-reward') {
+      const { isAdmin } = await checkAdmin(req);
+      if (!isAdmin) {
+        return res.status(403).json({ message: 'Forbidden. Administrative privileges required.' });
+      }
+
       const { id, title, description, pointsCost, discountType, discountValue, minOrderValue, isActive, _action } = req.body || {};
 
       if (_action === 'delete' && id) {
@@ -255,6 +257,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // 5. ADMIN: ADJUST USER POINTS
     if (req.method === 'POST' && action === 'admin-adjust') {
+      const { isAdmin } = await checkAdmin(req);
+      if (!isAdmin) {
+        return res.status(403).json({ message: 'Forbidden. Administrative privileges required.' });
+      }
+
       const { targetUserId, points, reason } = req.body || {};
       if (!targetUserId || points === undefined) {
         return res.status(400).json({ message: 'targetUserId and points are required' });
@@ -286,6 +293,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // 6. ADMIN: LIST ALL USERS & STATS
     if (req.method === 'GET' && action === 'admin-users') {
+      const { isAdmin } = await checkAdmin(req);
+      if (!isAdmin) {
+        return res.status(403).json({ message: 'Forbidden. Administrative privileges required.' });
+      }
+
       const users = await (prisma as any).user.findMany({
         select: {
           id: true,

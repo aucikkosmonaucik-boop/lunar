@@ -44,9 +44,19 @@ export const PromoCodesManager: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
+  const getAdminHeaders = () => {
+    const token = localStorage.getItem('lunar_admin_token');
+    return {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    };
+  };
+
   const fetchPromos = useCallback(async () => {
     try {
-      const res = await fetch('/api/promos');
+      const res = await fetch('/api/promos', {
+        headers: getAdminHeaders(),
+      });
       if (res.ok) {
         const data = await res.json();
         if (data.promos && Array.isArray(data.promos) && data.promos.length > 0) {
@@ -95,7 +105,7 @@ export const PromoCodesManager: React.FC = () => {
     try {
       await fetch('/api/promos?action=create', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAdminHeaders(),
         body: JSON.stringify({
           action: 'create',
           code: newPromo.code,
@@ -127,7 +137,7 @@ export const PromoCodesManager: React.FC = () => {
     try {
       await fetch(`/api/promos?id=${id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAdminHeaders(),
         body: JSON.stringify({ isActive: !currentStatus }),
       });
     } catch (e) {
@@ -141,6 +151,7 @@ export const PromoCodesManager: React.FC = () => {
     try {
       await fetch(`/api/promos?id=${id}&code=${codeName}`, {
         method: 'DELETE',
+        headers: getAdminHeaders(),
       });
     } catch (e) {
       console.warn('Delete promo error:', e);

@@ -1,9 +1,7 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import { prisma } from '../_lib/prisma.js';
-import { extractToken } from '../_lib/auth-util.js';
+import { extractToken, getJwtSecret, checkAdmin } from '../_lib/auth-util.js';
 import jwt from 'jsonwebtoken';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-in-production';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'GET') {
@@ -11,25 +9,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const token = extractToken(req);
-
   let userId: string | null = null;
-  let userRole: string = 'USER';
+  let userEmail: string | null = null;
 
   if (token) {
     try {
-      const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
+      const jwtSecret = getJwtSecret();
+      const decoded = jwt.verify(token, jwtSecret, { algorithms: ['HS256'] }) as { userId: string; email?: string };
       userId = decoded.userId;
-      const user = await (prisma as any).user.findUnique({
-        where: { id: decoded.userId },
-        select: { role: true },
-      });
-      if (user?.role) userRole = user.role;
+      userEmail = decoded.email || null;
     } catch {
-      // invalid token
+      // Invalid or expired token
     }
   }
 
-  // Admin access or order query by orderNumber/trackingNumber and email for tracking
+  const { isAdmin } = await checkAdmin(req);
+
   const { orderNumber, email, trackingNumber, all } = req.query as {
     orderNumber?: string;
     email?: string;
@@ -38,29 +33,67 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   };
 
   try {
-    // 1. Search by Tracking Number
+    // 1. Full database dump request (Admin only!)
+    if (all === 'true') {
+      if (!isAdmin) {
+        return res.status(403).json({ message: 'Forbidden. Administrative privileges required to list all orders.' });
+      }
+
+      const orders = await (prisma as any).order.findMany({
+        include: { items: true, user: { select: { id: true, email: true, name: true } } },
+        orderBy: { createdAt: 'desc' },
+      });
+      return res.status(200).json({ orders, total: orders.length });
+    }
+
+    // 2. Search by Tracking Number (Requires matching email for non-admins to prevent enumeration)
     if (trackingNumber && trackingNumber.trim()) {
+      const cleanTracking = trackingNumber.trim();
+      const cleanEmail = email ? email.trim().toLowerCase() : (userEmail ? userEmail.toLowerCase() : null);
+
+      if (!isAdmin && !cleanEmail) {
+        return res.status(400).json({ 
+          message: 'Customer email address is required alongside tracking number to verify identity.' 
+        });
+      }
+
+      const whereClause: any = {
+        trackingNumber: { equals: cleanTracking, mode: 'insensitive' },
+      };
+
+      if (!isAdmin && cleanEmail) {
+        whereClause.customerEmail = { equals: cleanEmail, mode: 'insensitive' };
+      }
+
       const order = await (prisma as any).order.findFirst({
-        where: {
-          trackingNumber: { equals: trackingNumber.trim(), mode: 'insensitive' },
-        },
+        where: whereClause,
         include: { items: true },
       });
 
       if (!order) {
-        return res.status(404).json({ message: 'No shipment found with this tracking number.' });
+        return res.status(404).json({ message: 'No shipment found matching provided tracking details.' });
       }
 
       return res.status(200).json({ order });
     }
 
-    // 2. Search by Order Number (+ optional email)
+    // 3. Search by Order Number (Requires matching email for non-admins)
     if (orderNumber && orderNumber.trim()) {
+      const cleanOrderNumber = orderNumber.trim();
+      const cleanEmail = email ? email.trim().toLowerCase() : (userEmail ? userEmail.toLowerCase() : null);
+
+      if (!isAdmin && !cleanEmail) {
+        return res.status(400).json({ 
+          message: 'Customer email address is required alongside order number to verify order ownership.' 
+        });
+      }
+
       const whereClause: any = {
-        orderNumber: { equals: orderNumber.trim(), mode: 'insensitive' },
+        orderNumber: { equals: cleanOrderNumber, mode: 'insensitive' },
       };
-      if (email && email.trim()) {
-        whereClause.customerEmail = { equals: email.trim(), mode: 'insensitive' };
+
+      if (!isAdmin && cleanEmail) {
+        whereClause.customerEmail = { equals: cleanEmail, mode: 'insensitive' };
       }
 
       const order = await (prisma as any).order.findFirst({
@@ -75,7 +108,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).json({ order });
     }
 
-    if (userRole === 'ADMIN' || all === 'true') {
+    // 4. Default: If Admin, return all orders
+    if (isAdmin) {
       const orders = await (prisma as any).order.findMany({
         include: { items: true, user: { select: { id: true, email: true, name: true } } },
         orderBy: { createdAt: 'desc' },
@@ -83,8 +117,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).json({ orders, total: orders.length });
     }
 
+    // 5. Authenticated User: Return only their personal orders
     if (!userId) {
-      return res.status(401).json({ message: 'Unauthorized. Sign in to view your orders, or provide orderNumber and email.' });
+      return res.status(401).json({ message: 'Unauthorized. Please sign in to view your orders.' });
     }
 
     const orders = await (prisma as any).order.findMany({
@@ -97,15 +132,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       },
     });
 
-    return res.status(200).json({
-      orders,
-    });
-  } catch (error: unknown) {
-    const err = error as Error;
-    console.error('Order List Error:', err);
-    return res.status(500).json({
-      message: 'Internal server error',
-      error: err.message,
-    });
+    return res.status(200).json({ orders });
+  } catch (error) {
+    console.error('Order List Error:', error);
+    return res.status(500).json({ message: 'Internal server error while retrieving orders.' });
   }
 }

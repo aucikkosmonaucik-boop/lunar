@@ -122,11 +122,20 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
     // Optimistically update state
     setProducts(prev => [newProduct, ...prev]);
 
+    // Helper for admin authorization headers
+    const getAdminHeaders = () => {
+      const token = localStorage.getItem('lunar_admin_token');
+      return {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      };
+    };
+
     // Async backend save
     try {
       const res = await fetch('/api/products', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAdminHeaders(),
         body: JSON.stringify(newProduct),
       });
       if (res.ok) {
@@ -169,11 +178,20 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
       throw new Error(`Product with ID ${id} not found`);
     }
 
+    // Helper for admin authorization headers
+    const getAdminHeaders = () => {
+      const token = localStorage.getItem('lunar_admin_token');
+      return {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      };
+    };
+
     // Async backend update
     try {
       await fetch(`/api/products?id=${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAdminHeaders(),
         body: JSON.stringify(updatedItem),
       });
     } catch (e) {
@@ -186,9 +204,11 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
   const deleteProduct = async (id: string): Promise<boolean> => {
     setProducts(prev => prev.filter(p => p.id !== id));
 
+    const token = localStorage.getItem('lunar_admin_token');
     try {
       await fetch(`/api/products?id=${id}`, {
         method: 'DELETE',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
     } catch (e) {
       console.warn('Backend product deletion skipped/failed:', e);

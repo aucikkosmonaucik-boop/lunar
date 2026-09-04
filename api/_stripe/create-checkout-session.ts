@@ -5,8 +5,8 @@ import { parse, serialize } from 'cookie';
 import bcrypt from 'bcryptjs';
 import { prisma } from '../_lib/prisma.js';
 import { sendOrderConfirmationEmail } from '../_lib/email.js';
+import { getJwtSecret } from '../_lib/auth-util.js';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-in-production';
 const FREE_SHIPPING_THRESHOLD = 50;
 
 interface CartItem {
@@ -100,7 +100,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const cookies = parse(req.headers.cookie || '');
     const token = cookies.auth_token;
     if (token) {
-      const decoded = jwt.verify(token, JWT_SECRET) as { userId: string; email?: string };
+      const decoded = jwt.verify(token, getJwtSecret(), { algorithms: ['HS256'] }) as { userId: string; email?: string };
       userId = decoded.userId;
       if (decoded.email && !userEmail) {
         userEmail = decoded.email;
@@ -159,8 +159,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // Generate login cookie
       const token = jwt.sign(
         { userId: newUser.id, email: newUser.email },
-        JWT_SECRET,
-        { expiresIn: '7d' }
+        getJwtSecret(),
+        { expiresIn: '7d', algorithm: 'HS256' }
       );
 
       const cookie = serialize('auth_token', token, {
@@ -194,22 +194,53 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
   }
 
-  // 4. Calculate Subtotal, Discounts, Shipping Fee, and Total
-  const itemsTotal = items.reduce((sum: number, item: CartItem) => {
-    return sum + (Number(item.product.price) || 0) * (Number(item.quantity) || 1);
-  }, 0);
+  // 4. Calculate Subtotal, Discounts, Shipping Fee, and Total with Server-Side DB Price Verification
+  const productIds = items
+    .map((it: CartItem) => it.product?.id)
+    .filter((id: any) => typeof id === 'string');
+
+  const dbProducts = await (prisma as any).product.findMany({
+    where: { id: { in: productIds } },
+  });
+  const dbProductMap = new Map<string, any>();
+  dbProducts.forEach((p: any) => dbProductMap.set(p.id, p));
+
+  let itemsTotal = 0;
+  items.forEach((item: CartItem) => {
+    const pId = item.product?.id;
+    const dbProduct = pId ? dbProductMap.get(pId) : null;
+    if (dbProduct) {
+      item.product.price = Number(dbProduct.price);
+      item.product.name = dbProduct.name;
+    }
+    const qty = Math.max(1, Math.min(100, Math.floor(Number(item.quantity) || 1)));
+    item.quantity = qty;
+    itemsTotal += Number(item.product.price || 0) * qty;
+  });
 
   let discountPct = 0;
   let discountAmount = 0;
 
   if (discountCode) {
     try {
+      const cleanPromo = String(discountCode).toUpperCase().trim();
       const promo = await (prisma as any).promoCode.findUnique({
-        where: { code: discountCode.toUpperCase().trim() },
+        where: { code: cleanPromo },
       });
       if (promo && promo.isActive) {
         discountPct = promo.discountPct || 0;
         discountAmount = (itemsTotal * discountPct) / 100;
+      } else {
+        const userCoupon = await (prisma as any).userCoupon.findUnique({
+          where: { code: cleanPromo },
+        });
+        if (userCoupon && !userCoupon.isUsed) {
+          if (userCoupon.discountType === 'PERCENTAGE') {
+            discountAmount = (itemsTotal * userCoupon.discountValue) / 100;
+          } else {
+            discountAmount = Math.min(itemsTotal, userCoupon.discountValue);
+          }
+        }
       }
     } catch (promoErr) {
       console.error('Error verifying promo code:', promoErr);
@@ -217,8 +248,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const priceAfterDiscount = Math.max(0, itemsTotal - discountAmount);
-  const isFreeShipping = clientShippingFee !== undefined ? clientShippingFee === 0 : priceAfterDiscount >= FREE_SHIPPING_THRESHOLD;
-  const shippingFee = clientShippingFee !== undefined ? Number(clientShippingFee) : (isFreeShipping ? 0 : 10);
+  const isFreeShipping = priceAfterDiscount >= FREE_SHIPPING_THRESHOLD;
+  const shippingFee = isFreeShipping ? 0 : 10;
   const finalTotal = priceAfterDiscount + shippingFee;
 
   const chosenCarrierCode = carrier || 'AN_POST';

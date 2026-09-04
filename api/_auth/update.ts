@@ -1,10 +1,10 @@
-import { VercelRequest, VercelResponse } from '@vercel/node';
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { prisma } from '../_lib/prisma.js';
-import { extractToken } from '../_lib/auth-util.js';
+import { extractToken, getJwtSecret } from '../_lib/auth-util.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-in-production';
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
@@ -13,37 +13,70 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     const token = extractToken(req);
-
     if (!token) {
-      return res.status(401).json({ message: 'Unauthorized' });
+      return res.status(401).json({ message: 'Unauthorized. Please sign in.' });
     }
 
-    const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
-    const { name, email, password, street, city, postalCode, country, phone } = req.body;
+    const jwtSecret = getJwtSecret();
+    let decoded: { userId: string };
+    try {
+      decoded = jwt.verify(token, jwtSecret, { algorithms: ['HS256'] }) as { userId: string };
+    } catch {
+      return res.status(401).json({ message: 'Session expired or invalid. Please sign in again.' });
+    }
 
-    const dataToUpdate: { 
-      name?: string; 
-      email?: string; 
-      password?: string;
-      street?: string;
-      city?: string;
-      postalCode?: string;
-      country?: string;
-      phone?: string;
-    } = {};
+    const { name, email, currentPassword, password, street, city, postalCode, country, phone } = req.body || {};
 
-    if (name) dataToUpdate.name = name;
-    if (email) dataToUpdate.email = email;
-    if (street !== undefined) dataToUpdate.street = street;
-    if (city !== undefined) dataToUpdate.city = city;
-    if (postalCode !== undefined) dataToUpdate.postalCode = postalCode;
-    if (country !== undefined) dataToUpdate.country = country;
-    if (phone !== undefined) dataToUpdate.phone = phone;
+    const existingUser = await (prisma as any).user.findUnique({
+      where: { id: decoded.userId },
+      select: { id: true, email: true, password: true },
+    });
+
+    if (!existingUser) {
+      return res.status(404).json({ message: 'User account not found.' });
+    }
+
+    const dataToUpdate: Record<string, any> = {};
+
+    if (name !== undefined) dataToUpdate.name = String(name).trim().slice(0, 100);
+    if (street !== undefined) dataToUpdate.street = String(street).trim().slice(0, 150);
+    if (city !== undefined) dataToUpdate.city = String(city).trim().slice(0, 80);
+    if (postalCode !== undefined) dataToUpdate.postalCode = String(postalCode).trim().slice(0, 30);
+    if (country !== undefined) dataToUpdate.country = String(country).trim().slice(0, 60);
+    if (phone !== undefined) dataToUpdate.phone = String(phone).trim().slice(0, 30);
+
+    // Email change check
+    if (email && String(email).trim().toLowerCase() !== existingUser.email) {
+      const cleanEmail = String(email).trim().toLowerCase();
+      if (!EMAIL_REGEX.test(cleanEmail)) {
+        return res.status(400).json({ message: 'Invalid email address provided.' });
+      }
+      const duplicate = await (prisma as any).user.findUnique({ where: { email: cleanEmail } });
+      if (duplicate && duplicate.id !== existingUser.id) {
+        return res.status(400).json({ message: 'This email is already in use by another account.' });
+      }
+      dataToUpdate.email = cleanEmail;
+    }
+
+    // Password change check: REQUIRE current password verification!
     if (password) {
-      dataToUpdate.password = await bcrypt.hash(password, 10);
+      if (!currentPassword) {
+        return res.status(400).json({ message: 'Current password is required to set a new password.' });
+      }
+
+      const isCurrentMatch = await bcrypt.compare(String(currentPassword), existingUser.password);
+      if (!isCurrentMatch) {
+        return res.status(401).json({ message: 'Current password is incorrect.' });
+      }
+
+      if (String(password).length < 8) {
+        return res.status(400).json({ message: 'New password must be at least 8 characters long.' });
+      }
+
+      dataToUpdate.password = await bcrypt.hash(String(password), 12);
     }
 
-    const updatedUser = await prisma.user.update({
+    const updatedUser = await (prisma as any).user.update({
       where: { id: decoded.userId },
       data: dataToUpdate,
       select: {
@@ -57,22 +90,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         phone: true,
         createdAt: true,
         updatedAt: true,
-      } as any
+      },
     });
 
     return res.status(200).json({
       message: 'Profile updated successfully',
       user: updatedUser,
     });
-  } catch (error: unknown) {
-    const err = error as Error;
-    console.error('Update Error:', err);
-    if (err.name === 'JsonWebTokenError') {
-      return res.status(401).json({ message: 'Invalid token' });
-    }
-    return res.status(500).json({ 
-      message: 'Internal server error',
-      error: err.message
-    });
+  } catch (error) {
+    console.error('Update Error:', error);
+    return res.status(500).json({ message: 'Failed to update profile.' });
   }
 }

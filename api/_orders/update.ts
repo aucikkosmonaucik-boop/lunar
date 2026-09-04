@@ -1,45 +1,18 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { prisma } from '../_lib/prisma.js';
-import { extractToken } from '../_lib/auth-util.js';
+import { checkAdmin } from '../_lib/auth-util.js';
 import { sendShipmentNotificationEmail } from '../_lib/email.js';
 import { getBackendCarrier, buildTrackingUrl } from '../_lib/carriers.js';
 import { notifyOrderStatusChanged } from '../_lib/notifications.js';
-import jwt from 'jsonwebtoken';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-in-production';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST' && req.method !== 'PUT' && req.method !== 'PATCH') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
-  const token = extractToken(req);
-  let isAuthorized = false;
-
-  if (token) {
-    try {
-      const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
-      const user = await (prisma as any).user.findUnique({
-        where: { id: decoded.userId },
-        select: { role: true },
-      });
-      if (user?.role === 'ADMIN') {
-        isAuthorized = true;
-      }
-    } catch {
-      // Invalid token
-    }
-  }
-
-  // Allow admin session via header or cookie for admin portal convenience
-  const adminSecret = req.headers['x-admin-key'];
-  if (adminSecret && adminSecret === process.env.ADMIN_KEY) {
-    isAuthorized = true;
-  }
-
-  // Fallback: If in local development or admin panel without strict API key header, allow if authenticated via session
-  if (!isAuthorized && process.env.NODE_ENV !== 'production') {
-    isAuthorized = true;
+  const { isAdmin } = await checkAdmin(req);
+  if (!isAdmin) {
+    return res.status(403).json({ message: 'Forbidden. Administrative privileges required to update orders.' });
   }
 
   try {
@@ -145,11 +118,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       emailSent: !!emailResult,
     });
   } catch (error: unknown) {
-    const err = error as Error;
-    console.error('Order Update Error:', err);
+    console.error('Order Update Error:', error);
     return res.status(500).json({
-      message: 'Internal server error',
-      error: err.message,
+      message: 'Internal server error while updating order.',
     });
   }
 }

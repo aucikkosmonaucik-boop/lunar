@@ -1,5 +1,6 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import { prisma } from '../_lib/prisma.js';
+import { applyRateLimit } from '../_lib/rate-limit.js';
 import bcrypt from 'bcryptjs';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -7,16 +8,26 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
+  if (applyRateLimit(req, res, { windowMs: 15 * 60 * 1000, max: 10, keyPrefix: 'reset-pwd' })) {
+    return;
+  }
+
   try {
-    const { token, password } = req.body;
+    const { token, password } = req.body || {};
 
     if (!token || !password) {
       return res.status(400).json({ message: 'Token and password are required' });
     }
 
-    const user = await prisma.user.findFirst({
+    if (String(password).length < 8) {
+      return res.status(400).json({ message: 'Password must be at least 8 characters long.' });
+    }
+
+    const cleanToken = String(token).trim();
+
+    const user = await (prisma as any).user.findFirst({
       where: {
-        resetToken: token,
+        resetToken: cleanToken,
         resetTokenExpiry: {
           gt: new Date(),
         },
@@ -24,12 +35,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
 
     if (!user) {
-      return res.status(400).json({ message: 'Invalid or expired token' });
+      return res.status(400).json({ message: 'Invalid or expired password reset link.' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(String(password), 12);
 
-    await prisma.user.update({
+    await (prisma as any).user.update({
       where: { id: user.id },
       data: {
         password: hashedPassword,
@@ -38,9 +49,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       },
     });
 
-    return res.status(200).json({ message: 'Password reset successful' });
+    return res.status(200).json({ message: 'Password reset successful. You can now sign in.' });
   } catch (error) {
     console.error('Reset password error:', error);
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json({ message: 'Internal server error while resetting password.' });
   }
 }

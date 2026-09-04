@@ -1,26 +1,35 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { prisma } from './_lib/prisma.js';
 import { handleCors } from './_lib/cors.js';
+import { checkAdmin } from './_lib/auth-util.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (handleCors(req, res)) return;
 
-  // GET: List all promo codes (for admin)
+  // GET: List all promo codes (for admin only!)
   if (req.method === 'GET') {
+    const { isAdmin } = await checkAdmin(req);
+    if (!isAdmin) {
+      return res.status(403).json({ message: 'Forbidden. Administrative privileges required to view all promo codes.' });
+    }
+
     try {
       const promos = await (prisma as any).promoCode.findMany({
         orderBy: { createdAt: 'desc' },
       });
       return res.status(200).json({ promos });
     } catch (error: unknown) {
-      const err = error as Error;
-      console.error('List Promos Error:', err);
-      return res.status(500).json({ message: 'Failed to fetch promo codes', error: err.message });
+      console.error('List Promos Error:', error);
+      return res.status(500).json({ message: 'Failed to fetch promo codes' });
     }
   }
 
-  // DELETE: Delete a promo code
+  // DELETE: Delete a promo code (admin only!)
   if (req.method === 'DELETE') {
+    const { isAdmin } = await checkAdmin(req);
+    if (!isAdmin) {
+      return res.status(403).json({ message: 'Forbidden. Administrative privileges required to delete promo codes.' });
+    }
     try {
       const { id, code } = req.query as { id?: string; code?: string };
       const body = req.body || {};
@@ -46,8 +55,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
   }
 
-  // PATCH / PUT: Toggle or update promo code
+  // PATCH / PUT: Toggle or update promo code (admin only!)
   if (req.method === 'PATCH' || req.method === 'PUT') {
+    const { isAdmin } = await checkAdmin(req);
+    if (!isAdmin) {
+      return res.status(403).json({ message: 'Forbidden. Administrative privileges required to update promo codes.' });
+    }
+
     try {
       const { id } = req.query as { id?: string };
       const body = req.body || {};
@@ -71,9 +85,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       return res.status(200).json({ success: true, promo: updated });
     } catch (error: unknown) {
-      const err = error as Error;
-      console.error('Update Promo Error:', err);
-      return res.status(500).json({ message: 'Failed to update promo code', error: err.message });
+      console.error('Update Promo Error:', error);
+      return res.status(500).json({ message: 'Failed to update promo code' });
     }
   }
 
@@ -82,8 +95,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const { action } = req.query as { action?: string };
     const body = req.body || {};
 
-    // 1. Create new promo code
+    // 1. Create new promo code (admin only!)
     if (action === 'create' || body.action === 'create') {
+      const { isAdmin } = await checkAdmin(req);
+      if (!isAdmin) {
+        return res.status(403).json({ message: 'Forbidden. Administrative privileges required to create promo codes.' });
+      }
       try {
         const { code, discountPct, discountAmount, minOrderValue, expiresAt, maxUses, isActive } = body;
 

@@ -140,54 +140,10 @@ export const AdminPage: React.FC = () => {
         }
         showToast('Successfully signed in as Owner!');
       } else {
-        // Fallback master credential check if offline
-        if (
-          (loginEmail.trim().toLowerCase() === 'admin@lunar.com' || loginEmail.trim().toLowerCase() === 'admin') &&
-          loginPassword === 'LunarAdmin2026!'
-        ) {
-          setIsAdminAuthenticated(true);
-          localStorage.setItem('lunar_admin_session', 'true');
-          login({
-            id: 'admin-master',
-            email: 'admin@lunar.com',
-            name: 'Lunar Boutique Owner',
-            street: null,
-            city: null,
-            postalCode: null,
-            country: null,
-            phone: null,
-            role: 'ADMIN',
-            loyaltyPoints: 1000,
-          });
-          showToast('Successfully signed in as Owner!');
-        } else {
-          setLoginError(data.message || 'Invalid administrator login or password.');
-        }
+        setLoginError(data.message || 'Invalid administrator login or password.');
       }
     } catch {
-      // Local check fallback
-      if (
-        (loginEmail.trim().toLowerCase() === 'admin@lunar.com' || loginEmail.trim().toLowerCase() === 'admin') &&
-        loginPassword === 'LunarAdmin2026!'
-      ) {
-        setIsAdminAuthenticated(true);
-        localStorage.setItem('lunar_admin_session', 'true');
-        login({
-          id: 'admin-master',
-          email: 'admin@lunar.com',
-          name: 'Lunar Boutique Owner',
-          street: null,
-          city: null,
-          postalCode: null,
-          country: null,
-          phone: null,
-          role: 'ADMIN',
-          loyaltyPoints: 1000,
-        });
-        showToast('Successfully signed in as Owner!');
-      } else {
-        setLoginError('Invalid administrator credentials.');
-      }
+      setLoginError('Could not connect to administrator authentication service. Please try again.');
     } finally {
       setLoginLoading(false);
     }
@@ -314,7 +270,10 @@ export const AdminPage: React.FC = () => {
 
   const fetchAdminOrders = async () => {
     try {
-      const res = await fetch('/api/orders/list?all=true');
+      const adminToken = localStorage.getItem('lunar_admin_token');
+      const res = await fetch('/api/orders/list?all=true', {
+        headers: adminToken ? { Authorization: `Bearer ${adminToken}` } : {},
+      });
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data.orders) && data.orders.length > 0) {
@@ -370,9 +329,13 @@ export const AdminPage: React.FC = () => {
     if (!trackingModalOrder) return;
     setIsSavingOrder(true);
     try {
+      const adminToken = localStorage.getItem('lunar_admin_token');
       const res = await fetch('/api/orders/update', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(adminToken ? { Authorization: `Bearer ${adminToken}` } : {}),
+        },
         body: JSON.stringify({
           orderId: trackingModalOrder.id,
           orderNumber: trackingModalOrder.orderNumber,

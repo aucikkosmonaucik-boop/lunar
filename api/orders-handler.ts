@@ -27,8 +27,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   } catch (error) {
     console.error(`Orders Handler Error [${action}]:`, error);
     return res.status(500).json({ 
-      message: 'Runtime error in Orders Handler', 
-      error: error instanceof Error ? error.message : String(error)
+      message: 'Internal server error in orders handler.', 
     });
   }
 }

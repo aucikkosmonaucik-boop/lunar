@@ -1,38 +1,61 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { prisma } from '../_lib/prisma.js';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import { sendEmail } from '../_lib/email.js';
+import { applyRateLimit } from '../_lib/rate-limit.js';
+import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
+  // Rate Limiting: Max 5 registration attempts per hour per IP
+  if (applyRateLimit(req, res, { windowMs: 60 * 60 * 1000, max: 5, keyPrefix: 'register' })) {
+    return;
+  }
+
   try {
-    const { email, password, name } = req.body;
+    const { email, password, name } = req.body || {};
 
     if (!email || !password) {
       return res.status(400).json({ message: 'Email and password are required' });
     }
 
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
+    const cleanEmail = String(email).trim().toLowerCase();
+    if (!EMAIL_REGEX.test(cleanEmail) || cleanEmail.length > 255) {
+      return res.status(400).json({ message: 'Please provide a valid email address.' });
+    }
+
+    const cleanPassword = String(password);
+    if (cleanPassword.length < 8) {
+      return res.status(400).json({ message: 'Password must be at least 8 characters long.' });
+    }
+    if (cleanPassword.length > 128) {
+      return res.status(400).json({ message: 'Password cannot exceed 128 characters.' });
+    }
+
+    const cleanName = name ? String(name).trim().slice(0, 100) : null;
+
+    const existingUser = await (prisma as any).user.findUnique({
+      where: { email: cleanEmail },
     });
 
     if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(400).json({ message: 'An account with this email already exists.' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(cleanPassword, 12);
     const verificationToken = crypto.randomBytes(32).toString('hex');
 
-    const user = await prisma.user.create({
+    const user = await (prisma as any).user.create({
       data: {
-        email,
+        email: cleanEmail,
         password: hashedPassword,
-        name,
+        name: cleanName,
+        role: 'USER', // Always enforce USER role
         verificationToken,
       },
       select: {
@@ -48,7 +71,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const baseUrl = process.env.APP_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://mylunar.shop';
       const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${verificationToken}`;
       await sendEmail({
-        to: email,
+        to: cleanEmail,
         subject: 'Verify Your Account — Lunar',
         templateName: 'verify-account',
         data: {
@@ -69,8 +92,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       },
     });
   } catch (error) {
-    const err = error as Error;
-    console.error('Registration error:', err);
-    res.status(500).json({ message: `Prisma/Vercel Error: ${err.message}`, stack: err.stack });
+    console.error('Registration error:', error);
+    return res.status(500).json({ message: 'Could not complete registration. Please try again later.' });
   }
 }
