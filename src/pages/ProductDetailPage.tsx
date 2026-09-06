@@ -41,7 +41,7 @@ const ProductDetailPage: React.FC = () => {
   if (!product) {
     return (
       <div className="pt-32 px-4 min-h-screen flex flex-col items-center justify-center text-center">
-        <h2 className="text-2xl font-light uppercase tracking-widest text-wonders-dark mb-8">Product Not Found</h2>
+        <h2 className="text-2xl font-medium uppercase tracking-widest text-wonders-dark mb-8">Product Not Found</h2>
         <Link to="/shop" className="text-wonders-gold hover:underline flex items-center gap-2 text-xs uppercase tracking-widest font-bold font-montserrat">
           <ArrowLeft className="w-4 h-4" /> Back to Boutique
         </Link>
@@ -195,7 +195,7 @@ const ProductDetailPage: React.FC = () => {
               )}
             </div>
 
-            <h1 className="text-3xl md:text-5xl font-light uppercase tracking-[0.1em] text-wonders-dark mb-3 leading-tight">
+            <h1 className="text-3xl md:text-5xl font-medium uppercase tracking-[0.1em] text-wonders-dark mb-3 leading-tight">
               {product.name}
             </h1>
 

@@ -13,10 +13,10 @@ const Footer: React.FC = () => {
               <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
-          <span className="font-serif font-light text-2xl md:text-3xl tracking-[0.35em] text-[#1a1a1a] uppercase leading-none pl-[0.35em] transition-opacity duration-300 group-hover:opacity-75">
+          <span className="font-serif font-medium text-2xl md:text-3xl tracking-[0.35em] text-[#1a1a1a] uppercase leading-none pl-[0.35em] transition-opacity duration-300 group-hover:opacity-75">
             Lunar
           </span>
-          <span className="text-[10px] md:text-[11px] font-light tracking-[0.5em] text-[#78716c] uppercase pl-[0.5em] mt-2 transition-opacity duration-300 group-hover:opacity-75">
+          <span className="text-[10px] md:text-[11px] font-medium tracking-[0.5em] text-[#57534e] uppercase pl-[0.5em] mt-2 transition-opacity duration-300 group-hover:opacity-75">
             2026
           </span>
         </Link>

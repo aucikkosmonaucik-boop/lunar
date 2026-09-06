@@ -461,7 +461,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                   {slide.title}
                 </h1>
 
-                <p className="text-xs sm:text-base md:text-xl uppercase tracking-[0.18em] sm:tracking-[0.25em] mb-6 sm:mb-10 text-gray-100 font-light max-w-2xl drop-shadow line-clamp-2 sm:line-clamp-none">
+                <p className="text-xs sm:text-base md:text-xl uppercase tracking-[0.18em] sm:tracking-[0.25em] mb-6 sm:mb-10 text-white font-normal max-w-2xl drop-shadow line-clamp-2 sm:line-clamp-none">
                   {slide.subtitle}
                 </p>
 

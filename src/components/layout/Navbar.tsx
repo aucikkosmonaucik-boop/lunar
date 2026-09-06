@@ -347,7 +347,7 @@ const Navbar: React.FC = () => {
             aria-label="Search and Categories Menu"
             aria-expanded={searchOpen}
           >
-            <span className="text-base font-light font-serif uppercase tracking-widest mr-1">Search</span>
+            <span className="text-base font-medium font-serif uppercase tracking-widest mr-1">Search</span>
             <Search className="w-[22px] h-[22px] stroke-[1.2]" />
           </button>
           <Link

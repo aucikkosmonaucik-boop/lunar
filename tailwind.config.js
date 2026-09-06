@@ -9,13 +9,13 @@ export default {
       colors: {
         'wonders-gold': '#C1A98F',
         'wonders-dark': '#1A1A1A',
-        'wonders-muted': '#757575',
+        'wonders-muted': '#525252',
         'wonders-bg': '#FFFFFF',
         'wonders-border': '#E5E5E5',
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        serif: ['Cormorant Garamond', 'serif'],
+        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif'],
+        serif: ['Cormorant Garamond', 'Georgia', 'serif'],
       },
       backdropBlur: {
         xs: '2px',

@@ -371,14 +371,14 @@ const CartPage: React.FC = () => {
 
           <h2
             style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
-            className="text-4xl text-[#1A1A1A] uppercase font-light tracking-wide mb-3"
+            className="text-4xl text-[#1A1A1A] uppercase font-medium tracking-wide mb-3"
           >
             Your bag is empty
           </h2>
 
           <div className="w-10 h-[1px] bg-[#C1A98F] mx-auto mb-5" />
 
-          <p className="text-gray-500 text-[13px] leading-relaxed mb-8 max-w-sm mx-auto font-light">
+          <p className="text-gray-600 text-[13px] leading-relaxed mb-8 max-w-sm mx-auto font-normal">
             Discover our unique collection of handcrafted jewellery and luxury accessories by Lunar.
           </p>
 
@@ -449,7 +449,7 @@ const CartPage: React.FC = () => {
 
           <h1
             style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
-            className="text-4xl sm:text-5xl lg:text-6xl text-[#1A1A1A] tracking-wider uppercase font-light mb-3"
+            className="text-4xl sm:text-5xl lg:text-6xl text-[#1A1A1A] tracking-wider uppercase font-medium mb-3"
           >
             Bag & Checkout
           </h1>

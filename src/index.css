@@ -4,7 +4,7 @@
 :root {
   --bg: #ffffff;
   --text: #1a1a1a;
-  --muted: #757575;
+  --muted: #525252;
   --gold: #c1a98f;
   --border: #e5e5e5;
 }
@@ -12,19 +12,77 @@
 
 html {
   scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  font-optical-sizing: auto;
+  font-weight: 400;
   background-color: var(--bg);
   color: var(--text);
   min-height: 100vh;
   overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+  text-rendering: optimizeLegibility;
 }
 
-h1, h2, h3, h4, .font-serif {
-  font-family: 'Cormorant Garamond', serif;
+/* On standard screens (especially Windows ClearType), keep subpixel rendering for maximum sharpness. Enable antialiased grayscale only on high-DPI screens */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Headings & Serif Typography: Use Cormorant Garamond with substantial weight (600) so hairlines are crisp and legible */
+h1, h2, h3, h4, h5, h6, .font-serif {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-rendering: optimizeLegibility;
+}
+
+/* Override font-light on serif elements: Cormorant 300 hairlines are unreadable on screens; weight 500 gives perfect elegance and clarity */
+.font-serif.font-light,
+h1.font-light,
+h2.font-light,
+h3.font-light,
+h4.font-light,
+h5.font-light,
+h6.font-light,
+[style*="Cormorant Garamond"].font-light,
+[style*="cormorant garamond"].font-light {
+  font-weight: 500 !important;
+}
+
+/* Ensure font-light on body text doesn't fade into unreadable 300 weight */
+.font-light:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6):not(.font-serif) {
+  font-weight: 400;
+}
+
+/* Improve contrast for small text and muted labels across the site */
+p.text-gray-400,
+span.text-gray-400,
+label.text-gray-400,
+div.text-gray-400 {
+  color: #64748b;
+}
+
+p.text-gray-500,
+span.text-gray-500,
+label.text-gray-500,
+div.text-gray-500 {
+  color: #475569;
+}
+
+/* Inputs & placeholders clarity */
+input::placeholder,
+textarea::placeholder {
+  color: #64748b !important;
+  opacity: 1;
 }
 
 /* Scrollbar */
@@ -55,7 +113,7 @@ h1, h2, h3, h4, .font-serif {
 }
 
 .section-title {
-  @apply text-3xl md:text-4xl text-center uppercase tracking-[0.3em] font-light mb-12;
+  @apply text-3xl md:text-4xl text-center uppercase tracking-[0.25em] font-semibold mb-12;
 }
 
 /* Animation utilities */
