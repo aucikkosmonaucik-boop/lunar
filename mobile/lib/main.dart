@@ -22,6 +22,7 @@ void main() async {
   Stripe.publishableKey = 'pk_live_51U8GXcFTXDZcKBNuXeFipeSIpVUpt74Wfa7EQHaUan4CKN1eh5e5yNFLTONMqPbrNfyBcrQUXtnGqf3Fda748HSd00rIhuigF0';
   Stripe.merchantIdentifier = 'merchant.com.lunar.store';
   Stripe.urlScheme = 'lunar';
+  Stripe.setReturnUrlSchemeOnAndroid = true;
   try {
     await Stripe.instance.applySettings();
   } catch (e) {

@@ -81,14 +81,6 @@ class StripePaymentService {
               state: null,
             ),
           ),
-          googlePay: const PaymentSheetGooglePay(
-            merchantCountryCode: 'IE',
-            currencyCode: 'EUR',
-            testEnv: false,
-          ),
-          applePay: const PaymentSheetApplePay(
-            merchantCountryCode: 'IE',
-          ),
           appearance: PaymentSheetAppearance(
             colors: PaymentSheetAppearanceColors(
               primary: const Color(0xFFC1A98F),

@@ -30,6 +30,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   final _postalCodeController = TextEditingController();
   final _countryController = TextEditingController(text: 'Ireland');
   final _notesController = TextEditingController();
+  final _scrollController = ScrollController();
 
   String _selectedPaymentMethod = 'card';
   String _selectedCarrierId = 'AN_POST';
@@ -63,11 +64,26 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     _postalCodeController.dispose();
     _countryController.dispose();
     _notesController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
   Future<void> _submitOrder() async {
-    if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) {
+      _scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.easeOut,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please complete all required shipping address fields (*).'),
+          backgroundColor: AppColors.error,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
 
     final cartProvider = context.read<CartProvider>();
     final carrier = getCarrierById(_selectedCarrierId);
@@ -139,6 +155,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       body: Form(
         key: _formKey,
         child: ListView(
+          controller: _scrollController,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           children: [
             // Section 1: Shipping Address
