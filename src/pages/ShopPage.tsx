@@ -172,7 +172,7 @@ const ShopPage: React.FC = () => {
   const isAnyFilterActive = search.trim() !== '' || category !== 'All' || activeTag !== null || sort !== 'featured';
 
   return (
-    <div className="pt-16 sm:pt-24 pb-20 sm:pb-24 px-3 sm:px-6 lg:px-8 min-h-screen bg-[#FCFBF9] dark:bg-[#121212] transition-colors duration-200">
+    <div className="pt-4 sm:pt-8 md:pt-10 pb-20 sm:pb-24 px-3 sm:px-6 lg:px-8 min-h-screen bg-[#FCFBF9] dark:bg-[#121212] transition-colors duration-200">
       <div className="max-w-7xl mx-auto">
         
         {/* Page Header */}

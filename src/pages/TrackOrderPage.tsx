@@ -142,7 +142,7 @@ export const TrackOrderPage: React.FC = () => {
   const stepIndex = order ? getStepIndex(order.status) : 0;
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] dark:bg-[#121212] py-12 md:py-20 px-4 sm:px-6 transition-colors duration-200">
+    <div className="min-h-screen bg-[#FAF8F5] dark:bg-[#121212] pt-6 sm:pt-8 md:pt-12 pb-16 px-4 sm:px-6 transition-colors duration-200">
       <div className="max-w-4xl mx-auto">
         
         {/* Page Header */}

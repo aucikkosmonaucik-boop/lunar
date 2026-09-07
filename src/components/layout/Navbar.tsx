@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ShoppingBag, User, Search, Menu, X, Heart, ChevronDown, ChevronRight, Sparkles, Smartphone, Truck, Sun, Moon } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
@@ -59,6 +59,38 @@ const Navbar: React.FC = () => {
   const location = useLocation();
   const { totalItems: favCount } = useFavorites();
 
+  const headerRef = useRef<HTMLElement>(null);
+
+  // Dynamically synchronize header height with CSS variable --navbar-height
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+
+    const updateHeight = () => {
+      const height = el.offsetHeight;
+      if (height > 0) {
+        document.documentElement.style.setProperty('--navbar-height', `${Math.round(height)}px`);
+      }
+    };
+
+    updateHeight();
+
+    let resizeObserver: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver(() => {
+        updateHeight();
+      });
+      resizeObserver.observe(el);
+    }
+
+    window.addEventListener('resize', updateHeight);
+
+    return () => {
+      if (resizeObserver) resizeObserver.disconnect();
+      window.removeEventListener('resize', updateHeight);
+    };
+  }, []);
+
   // Desktop Hover & Dropdown states with grace timeout
   const [isShopHovered, setIsShopHovered] = useState(false);
   const [activeFlyout, setActiveFlyout] = useState<string | null>(null);
@@ -99,7 +131,7 @@ const Navbar: React.FC = () => {
   const isShopActive = location.pathname.startsWith('/shop');
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-[#121212] shadow-sm border-b border-gray-200 dark:border-[#2E2E2E] transition-colors duration-200">
+    <header ref={headerRef} className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-[#121212] shadow-sm border-b border-gray-200 dark:border-[#2E2E2E] transition-colors duration-200">
       {/* Smart Mobile App Install Banner */}
       <SmartAppBanner />
 

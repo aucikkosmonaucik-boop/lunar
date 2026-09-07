@@ -257,7 +257,7 @@ const AccountPage: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-col items-center w-full min-h-screen bg-white dark:bg-[#121212] transition-colors duration-200" style={{ paddingTop: '100px' }}>
+    <div className="flex flex-col items-center w-full min-h-screen bg-white dark:bg-[#121212] transition-colors duration-200 py-6 sm:py-10">
       <div className="w-full max-w-5xl px-4 pb-24 flex flex-col items-center mx-auto">
         <div className="mb-10 w-full">
           <h1 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-4xl md:text-5xl tracking-widest text-[#1a1a1a] dark:text-[#F5F5F5] uppercase font-light text-center">

@@ -104,8 +104,8 @@ const CookieConsentBanner: React.FC = () => {
   }
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-50 p-3 sm:p-6 pointer-events-none flex justify-center">
-      <div className="w-full max-w-3xl bg-white/98 dark:bg-[#1E1E1E]/98 backdrop-blur-md border border-[#EDE6DF] dark:border-[#2E2E2E] shadow-2xl rounded-2xl p-5 sm:p-7 pointer-events-auto transition-all duration-300 animate-in fade-in slide-in-from-bottom-6">
+    <div className="fixed inset-x-0 bottom-0 z-50 p-3 sm:p-6 pb-[max(0.75rem,env(safe-area-inset-bottom))] pointer-events-none flex justify-center">
+      <div className="w-full max-w-3xl bg-white/98 dark:bg-[#1E1E1E]/98 backdrop-blur-md border border-[#EDE6DF] dark:border-[#2E2E2E] shadow-2xl rounded-2xl p-4 sm:p-7 pointer-events-auto transition-all duration-300 animate-in fade-in slide-in-from-bottom-6 max-h-[85vh] overflow-y-auto">
         
         {/* Header bar */}
         <div className="flex items-start justify-between gap-4 mb-3">

@@ -54,7 +54,7 @@ const App: React.FC = () => {
                   <PageViewTracker />
                   <div className="flex flex-col min-h-screen bg-[#FAF9F6] dark:bg-[#121212] text-[#1A1A1A] dark:text-[#F5F5F5] transition-colors duration-200">
                     <Navbar />
-                    <main className="flex-grow" style={{ paddingTop: '250px' }}>
+                    <main className="flex-grow" style={{ paddingTop: 'var(--navbar-height, 160px)' }}>
                       <Routes>
                         <Route path="/" element={<HomePage />} />
                         <Route path="/shop" element={<ShopPage />} />

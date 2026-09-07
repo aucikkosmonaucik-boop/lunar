@@ -456,7 +456,7 @@ const CartPage: React.FC = () => {
         </div>
       )}
 
-      <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 pt-8 md:pt-12">
+      <div className="max-w-[1240px] mx-auto px-3 sm:px-6 lg:px-8 pt-4 sm:pt-8 md:pt-10">
         {/* ── Breadcrumb & Page Header ─────────────────── */}
         <div className="text-center mb-10 md:mb-14">
           <div className="flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 mb-3 font-light">

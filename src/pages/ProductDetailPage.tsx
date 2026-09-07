@@ -40,7 +40,7 @@ const ProductDetailPage: React.FC = () => {
 
   if (!product) {
     return (
-      <div className="pt-32 px-4 min-h-screen flex flex-col items-center justify-center text-center">
+      <div className="pt-10 sm:pt-16 px-4 min-h-[60vh] flex flex-col items-center justify-center text-center">
         <h2 className="text-2xl font-medium uppercase tracking-widest text-wonders-dark mb-8">Product Not Found</h2>
         <Link to="/shop" className="text-wonders-gold hover:underline flex items-center gap-2 text-xs uppercase tracking-widest font-bold font-montserrat">
           <ArrowLeft className="w-4 h-4" /> Back to Boutique
@@ -88,10 +88,10 @@ const ProductDetailPage: React.FC = () => {
   };
 
   return (
-    <div className="pt-32 pb-24 px-4 min-h-screen bg-white dark:bg-[#121212] transition-colors duration-200">
+    <div className="pt-4 sm:pt-8 pb-20 sm:pb-24 px-4 sm:px-6 lg:px-8 min-h-screen bg-white dark:bg-[#121212] transition-colors duration-200">
       <div className="max-w-7xl mx-auto">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-bold text-wonders-muted dark:text-[#AAAAAA] mb-12">
+        <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-bold text-wonders-muted dark:text-[#AAAAAA] mb-6 sm:mb-10">
           <button onClick={() => navigate(-1)} className="hover:text-wonders-dark dark:hover:text-[#F5F5F5] transition-colors">Back</button>
           <span>/</span>
           <Link to="/shop" className="hover:text-wonders-dark dark:hover:text-[#F5F5F5] transition-colors">Boutique</Link>
@@ -100,7 +100,7 @@ const ProductDetailPage: React.FC = () => {
         </div>
 
         {/* Main content */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-24">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 mb-16 sm:mb-24">
           {/* Gallery Section */}
           <div className="flex flex-col-reverse md:flex-row gap-4">
             {/* Thumbnails list if multiple images */}
@@ -242,9 +242,9 @@ const ProductDetailPage: React.FC = () => {
             </div>
 
             {/* Loyalty Points Banner */}
-            <div className="mb-8 p-3.5 bg-gradient-to-r from-amber-50/80 via-white to-amber-50/50 dark:from-[#252018] dark:via-[#1E1E1E] dark:to-[#252018] border border-amber-200/80 dark:border-amber-900/40 rounded-sm flex items-center justify-between">
+            <div className="mb-8 p-3.5 bg-gradient-to-r from-amber-50/80 via-white to-amber-50/50 dark:from-[#252018] dark:via-[#1E1E1E] dark:to-[#252018] border border-amber-200/80 dark:border-amber-900/40 rounded-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-[#332B20] border border-amber-300 dark:border-amber-700/50 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-[#332B20] border border-amber-300 dark:border-amber-700/50 flex items-center justify-center shrink-0">
                   <Coins className="w-4 h-4 text-[#D4AF37]" />
                 </div>
                 <div>
@@ -258,7 +258,7 @@ const ProductDetailPage: React.FC = () => {
               </div>
               <Link
                 to="/account"
-                className="text-[10px] uppercase tracking-wider font-bold text-[#1A1A1A] dark:text-[#C1A98F] hover:text-[#D4AF37] underline whitespace-nowrap ml-2"
+                className="text-[10px] uppercase tracking-wider font-bold text-[#1A1A1A] dark:text-[#C1A98F] hover:text-[#D4AF37] underline whitespace-nowrap self-end sm:self-auto"
               >
                 View Rewards
               </Link>
@@ -282,12 +282,13 @@ const ProductDetailPage: React.FC = () => {
             )}
 
             {/* Qty + Cart */}
-            <div className="flex flex-col sm:flex-row items-center gap-6 mb-12">
-              <div className="flex items-center gap-6 border border-wonders-border dark:border-[#2E2E2E] bg-white dark:bg-[#1E1E1E] rounded-full px-6 py-3">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 sm:gap-6 mb-12">
+              <div className="flex items-center justify-between sm:justify-center gap-6 border border-wonders-border dark:border-[#2E2E2E] bg-white dark:bg-[#1E1E1E] rounded-full px-6 py-3 shrink-0">
                 <button 
                   onClick={() => setQty(q => Math.max(1, q - 1))} 
                   disabled={isSoldOut || qty <= 1}
-                  className="text-wonders-muted dark:text-[#AAAAAA] hover:text-wonders-dark dark:hover:text-[#F5F5F5] transition-colors disabled:opacity-30"
+                  className="text-wonders-muted dark:text-[#AAAAAA] hover:text-wonders-dark dark:hover:text-[#F5F5F5] transition-colors disabled:opacity-30 cursor-pointer p-1"
+                  aria-label="Decrease quantity"
                 >
                   <Minus className="w-4 h-4" />
                 </button>
@@ -295,34 +296,36 @@ const ProductDetailPage: React.FC = () => {
                 <button
                   onClick={() => setQty(q => Math.min(product.stock || 100, q + 1))}
                   disabled={isSoldOut || (product.stock > 0 && qty >= product.stock)}
-                  className="text-wonders-muted dark:text-[#AAAAAA] hover:text-wonders-dark dark:hover:text-[#F5F5F5] transition-colors disabled:opacity-30"
+                  className="text-wonders-muted dark:text-[#AAAAAA] hover:text-wonders-dark dark:hover:text-[#F5F5F5] transition-colors disabled:opacity-30 cursor-pointer p-1"
+                  aria-label="Increase quantity"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
 
-              <button
-                id="product-add-to-cart"
-                onClick={handleAddToCart}
-                disabled={isSoldOut}
-                className={`flex-1 w-full sm:w-auto flex items-center justify-center gap-3 py-4 px-12 rounded-full text-xs uppercase tracking-[0.2em] font-bold transition-all duration-300
-                  ${added 
-                    ? 'bg-green-600 text-white' 
-                    : isSoldOut 
-                      ? 'bg-gray-100 dark:bg-[#252525] text-gray-400 dark:text-gray-600 cursor-not-allowed' 
-                      : 'bg-wonders-dark dark:bg-[#C1A98F] text-white dark:text-black hover:bg-wonders-gold dark:hover:bg-[#d6beab]'}`}
-              >
-                {added ? (
-                  <><Check className="w-4 h-4" /> Added to Bag</>
-                ) : (
-                  <><ShoppingBag className="w-4 h-4" /> {isSoldOut ? 'Sold Out' : 'Add to Bag'}</>
-                )}
-              </button>
+              <div className="flex items-center gap-3 w-full sm:flex-1">
+                <button
+                  id="product-add-to-cart"
+                  onClick={handleAddToCart}
+                  disabled={isSoldOut}
+                  className={`flex-1 flex items-center justify-center gap-3 py-4 px-8 sm:px-12 rounded-full text-xs uppercase tracking-[0.2em] font-bold transition-all duration-300 cursor-pointer
+                    ${added 
+                      ? 'bg-green-600 text-white' 
+                      : isSoldOut 
+                        ? 'bg-gray-100 dark:bg-[#252525] text-gray-400 dark:text-gray-600 cursor-not-allowed' 
+                        : 'bg-wonders-dark dark:bg-[#C1A98F] text-white dark:text-black hover:bg-wonders-gold dark:hover:bg-[#d6beab]'}`}
+                >
+                  {added ? (
+                    <><Check className="w-4 h-4" /> Added to Bag</>
+                  ) : (
+                    <><ShoppingBag className="w-4 h-4" /> {isSoldOut ? 'Sold Out' : 'Add to Bag'}</>
+                  )}
+                </button>
 
-              {/* Favorite toggle */}
-              <button
-                onClick={() => toggleFavorite(product)}
-                className="w-14 h-14 rounded-full border border-wonders-border dark:border-[#2E2E2E] bg-white dark:bg-[#1E1E1E] text-[#1a1a1a] dark:text-[#F5F5F5] flex items-center justify-center hover:border-red-300 dark:hover:border-red-400/50 transition-all duration-300 shrink-0"
+                {/* Favorite toggle */}
+                <button
+                  onClick={() => toggleFavorite(product)}
+                  className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-wonders-border dark:border-[#2E2E2E] bg-white dark:bg-[#1E1E1E] text-[#1a1a1a] dark:text-[#F5F5F5] flex items-center justify-center hover:border-red-300 dark:hover:border-red-400/50 transition-all duration-300 shrink-0 cursor-pointer"
                 aria-label={isFavorite(product.id) ? 'Remove from wishlist' : 'Add to wishlist'}
               >
                 <Heart
@@ -333,6 +336,7 @@ const ProductDetailPage: React.FC = () => {
                   }}
                 />
               </button>
+              </div>
             </div>
 
             {/* Assurances */}

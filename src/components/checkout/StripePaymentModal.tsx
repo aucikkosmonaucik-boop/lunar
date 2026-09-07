@@ -135,8 +135,8 @@ export const StripePaymentModal: React.FC<StripePaymentModalProps> = ({
   const stripePromise = React.useMemo(() => loadStripe(publishableKey), [publishableKey]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/75 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg bg-white dark:bg-[#1E1E1E] border border-[#EAE3D9] dark:border-[#2E2E2E] shadow-2xl p-6 sm:p-8 transition-colors">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/75 backdrop-blur-xs animate-in fade-in duration-200 overflow-y-auto">
+      <div className="relative w-full max-w-lg bg-white dark:bg-[#1E1E1E] border border-[#EAE3D9] dark:border-[#2E2E2E] shadow-2xl p-4 sm:p-8 transition-colors max-h-[92dvh] overflow-y-auto my-auto rounded-sm">
         
         {/* Close Button */}
         <button
