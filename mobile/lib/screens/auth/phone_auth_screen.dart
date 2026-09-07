@@ -304,6 +304,7 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
             fontSize: 22,
             fontWeight: FontWeight.w700,
             letterSpacing: 3,
+            height: 1.2,
             color: isDark ? AppColors.primary : AppColors.lightText,
           ),
         ),

@@ -111,22 +111,34 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'L U N A R',
-          style: GoogleFonts.cormorantGaramond(
-            fontSize: 24,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 4.0,
-            color: isDark ? AppColors.primary : AppColors.lightText,
+        centerTitle: false,
+        titleSpacing: 16,
+        title: FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: Text(
+            'L U N A R',
+            maxLines: 1,
+            style: GoogleFonts.cormorantGaramond(
+              fontSize: 22,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 3.5,
+              height: 1.2,
+              color: isDark ? AppColors.primary : AppColors.lightText,
+            ),
           ),
         ),
         actions: [
           IconButton(
+            visualDensity: VisualDensity.compact,
+            padding: const EdgeInsets.all(6),
             icon: Icon(isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined),
             tooltip: 'Toggle Theme',
             onPressed: () => context.read<ThemeProvider>().toggleTheme(),
           ),
           IconButton(
+            visualDensity: VisualDensity.compact,
+            padding: const EdgeInsets.all(6),
             icon: const Icon(Icons.search_rounded),
             tooltip: 'Search',
             onPressed: () {
@@ -136,6 +148,8 @@ class HomeScreen extends StatelessWidget {
             },
           ),
           IconButton(
+            visualDensity: VisualDensity.compact,
+            padding: const EdgeInsets.all(6),
             icon: const Icon(Icons.local_shipping_outlined),
             tooltip: 'Track Package',
             onPressed: () {
@@ -148,6 +162,8 @@ class HomeScreen extends StatelessWidget {
             builder: (context, notifProvider, _) {
               final unread = notifProvider.unreadCount;
               return IconButton(
+                visualDensity: VisualDensity.compact,
+                padding: const EdgeInsets.all(6),
                 icon: Badge(
                   isLabelVisible: unread > 0,
                   label: Text(unread > 9 ? '9+' : '$unread'),
