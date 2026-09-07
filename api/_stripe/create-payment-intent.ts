@@ -167,7 +167,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     itemsTotal += verifiedPrice * verifiedQty;
 
     return {
-      productId: dbProduct ? dbProduct.id : (pId || null),
+      productId: dbProduct ? dbProduct.id : null,
       name: dbProduct ? dbProduct.name : (item.product?.name || 'Item'),
       price: verifiedPrice,
       quantity: verifiedQty,
@@ -256,9 +256,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amountInCents,
       currency: 'eur',
-      automatic_payment_methods: {
-        enabled: true,
-      },
+      payment_method_types: ['card', 'link'],
       metadata: {
         orderId: String(order.id),
         orderNumber: String(order.orderNumber),
