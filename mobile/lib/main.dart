@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -20,7 +21,9 @@ void main() async {
   
   // Initialize Stripe SDK with Live Publishable Key
   Stripe.publishableKey = 'pk_live_51U8GXcFTXDZcKBNuXeFipeSIpVUpt74Wfa7EQHaUan4CKN1eh5e5yNFLTONMqPbrNfyBcrQUXtnGqf3Fda748HSd00rIhuigF0';
-  Stripe.merchantIdentifier = 'merchant.com.lunar.store';
+  if (defaultTargetPlatform == TargetPlatform.iOS) {
+    Stripe.merchantIdentifier = 'merchant.com.lunar.store';
+  }
   Stripe.urlScheme = 'lunar';
   Stripe.setReturnUrlSchemeOnAndroid = true;
   try {

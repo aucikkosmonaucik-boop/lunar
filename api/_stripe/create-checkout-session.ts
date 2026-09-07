@@ -319,6 +319,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       demoMode: true,
       message: 'Checkout completed (Demo Simulation mode). Order and shipping address saved in database.',
       mockSessionId,
+      orderNumber,
       url: `${origin}/order-success?session_id=${mockSessionId}&demo=true&address=${encodedAddress}`,
       user: createdUser,
     });
@@ -463,6 +464,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).json({
       sessionId: session.id,
       url: session.url,
+      orderNumber,
       demoMode: false,
       user: createdUser,
     });
