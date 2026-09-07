@@ -21,6 +21,7 @@ void main() async {
   // Initialize Stripe SDK with Live Publishable Key
   Stripe.publishableKey = 'pk_live_51U8GXcFTXDZcKBNuXeFipeSIpVUpt74Wfa7EQHaUan4CKN1eh5e5yNFLTONMqPbrNfyBcrQUXtnGqf3Fda748HSd00rIhuigF0';
   Stripe.merchantIdentifier = 'merchant.com.lunar.store';
+  Stripe.urlScheme = 'lunar';
   try {
     await Stripe.instance.applySettings();
   } catch (e) {

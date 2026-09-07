@@ -70,7 +70,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     final cartProvider = context.read<CartProvider>();
-    final orderProvider = context.read<OrderProvider>();
     final carrier = getCarrierById(_selectedCarrierId);
 
     final discountedSubtotal = (cartProvider.subtotal - cartProvider.promoDiscountAmount).clamp(0.0, double.infinity);
@@ -78,91 +77,49 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     final effectiveShippingFee = isFreeShipping ? 0.0 : carrier.basePrice;
     final finalTotal = discountedSubtotal + effectiveShippingFee;
 
-    // A) Native Stripe PaymentSheet for Card / BLIK
-    if (_selectedPaymentMethod == 'card' || _selectedPaymentMethod == 'blik') {
-      setState(() => _isProcessingPayment = true);
-      try {
-        final order = await StripePaymentService.processPayment(
-          context: context,
-          items: cartProvider.items,
-          total: finalTotal,
-          name: _nameController.text.trim(),
-          email: _emailController.text.trim(),
-          phone: _phoneController.text.trim(),
-          street: _streetController.text.trim(),
-          city: _cityController.text.trim(),
-          postalCode: _postalCodeController.text.trim(),
-          country: _countryController.text.trim(),
-          carrier: carrier.id,
-          carrierName: carrier.name,
-          estimatedDelivery: carrier.estimatedDelivery,
-          discountCode: cartProvider.appliedPromo?.code,
-          isDark: Theme.of(context).brightness == Brightness.dark,
+    // Native Stripe PaymentSheet Checkout
+    setState(() => _isProcessingPayment = true);
+    try {
+      final order = await StripePaymentService.processPayment(
+        context: context,
+        items: cartProvider.items,
+        total: finalTotal,
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        phone: _phoneController.text.trim(),
+        street: _streetController.text.trim(),
+        city: _cityController.text.trim(),
+        postalCode: _postalCodeController.text.trim(),
+        country: _countryController.text.trim(),
+        carrier: carrier.id,
+        carrierName: carrier.name,
+        estimatedDelivery: carrier.estimatedDelivery,
+        discountCode: cartProvider.appliedPromo?.code,
+        isDark: Theme.of(context).brightness == Brightness.dark,
+      );
+
+      if (order != null && mounted) {
+        cartProvider.clearCart();
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (_) => OrderSuccessScreen(order: order),
+          ),
+          (route) => route.isFirst,
         );
-
-        if (order != null && mounted) {
-          cartProvider.clearCart();
-          Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(
-              builder: (_) => OrderSuccessScreen(order: order),
-            ),
-            (route) => route.isFirst,
-          );
-        }
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(e.toString()),
-              backgroundColor: AppColors.error,
-            ),
-          );
-        }
-      } finally {
-        if (mounted) {
-          setState(() => _isProcessingPayment = false);
-        }
       }
-      return;
-    }
-
-    // B) Standard Offline / COD / Transfer Order Creation
-    final newOrder = await orderProvider.createOrder(
-      items: cartProvider.items,
-      total: finalTotal,
-      subtotal: cartProvider.subtotal,
-      paymentMethod: _selectedPaymentMethod,
-      name: _nameController.text.trim(),
-      email: _emailController.text.trim(),
-      phone: _phoneController.text.trim(),
-      street: _streetController.text.trim(),
-      city: _cityController.text.trim(),
-      postalCode: _postalCodeController.text.trim(),
-      country: _countryController.text.trim(),
-      orderNotes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
-      discountCode: cartProvider.appliedPromo?.code,
-      discountAmount: cartProvider.promoDiscountAmount,
-      shippingFee: effectiveShippingFee,
-      carrier: carrier.id,
-      carrierName: carrier.name,
-      estimatedDelivery: carrier.estimatedDelivery,
-    );
-
-    if (newOrder != null && mounted) {
-      cartProvider.clearCart();
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-          builder: (_) => OrderSuccessScreen(order: newOrder),
-        ),
-        (route) => route.isFirst,
-      );
-    } else if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(orderProvider.errorMessage ?? 'An error occurred while placing your order.'),
-          backgroundColor: AppColors.error,
-        ),
-      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString()),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isProcessingPayment = false);
+      }
     }
   }
 
@@ -297,31 +254,36 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               children: [
                 _buildPaymentOption(
                   id: 'card',
-                  title: 'Credit / Debit Card (Stripe)',
-                  subtitle: 'Visa, Mastercard, Apple Pay, Google Pay',
+                  title: 'Stripe Secure Checkout',
+                  subtitle: 'Credit / Debit Card, Apple Pay, Google Pay, Revolut',
                   icon: Icons.credit_card_rounded,
                   color: AppColors.primary,
                 ),
-                _buildPaymentOption(
-                  id: 'blik',
-                  title: 'BLIK',
-                  subtitle: 'Instant mobile PIN code payment',
-                  icon: Icons.flash_on_rounded,
-                  color: const Color(0xFFE6007E),
-                ),
-                _buildPaymentOption(
-                  id: 'transfer',
-                  title: 'Direct Bank Transfer / Wire',
-                  subtitle: 'Online banking transfer / Wire',
-                  icon: Icons.account_balance_rounded,
-                  color: AppColors.info,
-                ),
-                _buildPaymentOption(
-                  id: 'cod',
-                  title: 'Cash on Delivery',
-                  subtitle: 'Pay upon parcel delivery',
-                  icon: Icons.local_atm_rounded,
-                  color: AppColors.warning,
+                Container(
+                  margin: const EdgeInsets.only(top: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: isDark ? Colors.white.withValues(alpha: 0.04) : Colors.black.withValues(alpha: 0.03),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.shield_outlined, size: 18, color: AppColors.success),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          '256-bit SSL encrypted • Instant, 100% secure payment verified by Stripe',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

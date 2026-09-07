@@ -50,14 +50,12 @@
                     android:pathPrefix="/reset-password" />
             </intent-filter>
 
-            <!-- Custom URL Scheme fallback for lunar://reset-password -->
+            <!-- Custom URL Scheme for Stripe 3D Secure / SCA redirects & deep links -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="lunar"
-                    android:host="reset-password" />
+                <data android:scheme="lunar" />
             </intent-filter>
         </activity>
         <meta-data

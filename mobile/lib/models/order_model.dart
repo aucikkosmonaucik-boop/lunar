@@ -95,18 +95,20 @@ class OrderModel {
           .toList();
     }
 
+    final shippingAddr = json['shippingAddress'] is Map ? json['shippingAddress'] as Map<String, dynamic> : null;
+
     return OrderModel(
       id: json['id']?.toString() ?? '',
       orderNumber: json['orderNumber']?.toString() ?? 'LUNAR-000000',
-      customerName: json['customerName']?.toString() ?? '',
-      customerEmail: json['customerEmail']?.toString() ?? '',
-      shippingPhone: json['shippingPhone']?.toString(),
-      shippingStreet: json['shippingStreet']?.toString() ?? '',
-      shippingCity: json['shippingCity']?.toString() ?? '',
-      shippingPostalCode: json['shippingPostalCode']?.toString() ?? '',
-      shippingCountry: json['shippingCountry']?.toString() ?? 'Ireland',
+      customerName: json['customerName']?.toString() ?? shippingAddr?['name']?.toString() ?? '',
+      customerEmail: json['customerEmail']?.toString() ?? shippingAddr?['email']?.toString() ?? '',
+      shippingPhone: json['shippingPhone']?.toString() ?? shippingAddr?['phone']?.toString(),
+      shippingStreet: json['shippingStreet']?.toString() ?? shippingAddr?['line1']?.toString() ?? shippingAddr?['street']?.toString() ?? '',
+      shippingCity: json['shippingCity']?.toString() ?? shippingAddr?['city']?.toString() ?? '',
+      shippingPostalCode: json['shippingPostalCode']?.toString() ?? shippingAddr?['postal_code']?.toString() ?? shippingAddr?['postalCode']?.toString() ?? '',
+      shippingCountry: json['shippingCountry']?.toString() ?? shippingAddr?['country']?.toString() ?? 'Ireland',
       orderNotes: json['orderNotes']?.toString(),
-      subtotal: (json['subtotal'] as num?)?.toDouble() ?? 0.0,
+      subtotal: (json['subtotal'] as num?)?.toDouble() ?? (json['total'] as num?)?.toDouble() ?? 0.0,
       discountCode: json['discountCode']?.toString(),
       discountAmount: (json['discountAmount'] as num?)?.toDouble() ?? 0.0,
       shippingFee: (json['shippingFee'] as num?)?.toDouble() ?? 0.0,
