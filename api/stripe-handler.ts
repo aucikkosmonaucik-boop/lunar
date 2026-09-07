@@ -21,6 +21,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       case 'verify-session':
         subHandler = (await import('./_stripe/verify-session.js')).default;
         break;
+      case 'payment-intent':
+      case 'create-payment-intent':
+        subHandler = (await import('./_stripe/create-payment-intent.js')).default;
+        break;
+      case 'verify-payment-intent':
+        subHandler = (await import('./_stripe/verify-payment-intent.js')).default;
+        break;
       case 'config':
         return res.status(200).json({
           publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || '',

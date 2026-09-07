@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { 
   Plus, 
   Minus, 
@@ -31,7 +31,9 @@ import {
 import { useCart } from '../hooks/useCart';
 import { useAuth } from '../hooks/useAuth';
 import { useLoyalty } from '../hooks/useLoyalty';
+import { useTheme } from '../hooks/useTheme';
 import { CARRIERS, getCarrierById, DEFAULT_CARRIER_ID } from '../data/carriers';
+import StripePaymentModal from '../components/checkout/StripePaymentModal';
 
 const FREE_SHIPPING_THRESHOLD = 50;
 
@@ -65,10 +67,18 @@ const CartPage: React.FC = () => {
   const { user, login } = useAuth();
   const { loyaltyPoints, userCoupons, calculatePointsToEarn } = useLoyalty();
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const { theme } = useTheme();
 
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showCanceledNotice, setShowCanceledNotice] = useState(false);
+
+  // Stripe PaymentIntent Model B states
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [paymentClientSecret, setPaymentClientSecret] = useState<string | null>(null);
+  const [paymentOrderNumber, setPaymentOrderNumber] = useState<string | null>(null);
+  const [paymentAmount, setPaymentAmount] = useState<number>(0);
 
   // Promo code / Loyalty Coupon state
   const [promoCode, setPromoCode] = useState('');
@@ -306,7 +316,7 @@ const CartPage: React.FC = () => {
     setIsCheckingOut(true);
 
     try {
-      const response = await fetch('/api/stripe/create-checkout-session', {
+      const response = await fetch('/api/stripe/payment-intent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -344,14 +354,20 @@ const CartPage: React.FC = () => {
         login(data.user);
       }
 
-      if (data.url) {
+      if (data.clientSecret) {
+        setPaymentClientSecret(data.clientSecret);
+        setPaymentOrderNumber(data.orderNumber);
+        setPaymentAmount(data.amount || grandTotal);
+        setIsPaymentModalOpen(true);
+      } else if (data.url) {
         window.location.href = data.url;
       } else {
-        throw new Error('No Stripe session URL received.');
+        throw new Error('No payment secret received from server.');
       }
     } catch (err) {
       console.error('Checkout error:', err);
       setError(err instanceof Error ? err.message : 'An error occurred during checkout');
+    } finally {
       setIsCheckingOut(false);
     }
   };
@@ -1359,6 +1375,26 @@ const CartPage: React.FC = () => {
 
         </div>
       </div>
+
+      {/* Embedded Stripe Model B Payment Modal */}
+      <StripePaymentModal
+        isOpen={isPaymentModalOpen}
+        onClose={() => setIsPaymentModalOpen(false)}
+        clientSecret={paymentClientSecret || ''}
+        publishableKey={
+          import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY ||
+          'pk_live_51U8GXcFTXDZcKBNuXeFipeSIpVUpt74Wfa7EQHaUan4CKN1eh5e5yNFLTONMqPbrNfyBcrQUXtnGqf3Fda748HSd00rIhuigF0'
+        }
+        amount={paymentAmount || grandTotal}
+        currency="EUR"
+        orderNumber={paymentOrderNumber || undefined}
+        isDark={theme === 'dark'}
+        onSuccess={(paymentIntentId) => {
+          clearCart();
+          setIsPaymentModalOpen(false);
+          navigate(`/order-success?payment_intent=${encodeURIComponent(paymentIntentId)}`);
+        }}
+      />
     </div>
   );
 };

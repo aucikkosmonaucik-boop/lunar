@@ -1,0 +1,4 @@
+# Stripe ProGuard / R8 Rules
+-dontwarn com.stripe.android.pushProvisioning.**
+-keep class com.stripe.android.** { *; }
+-keep class com.reactnativestripesdk.** { *; }

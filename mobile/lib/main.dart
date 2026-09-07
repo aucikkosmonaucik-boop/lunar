@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'firebase_options.dart';
 import 'core/constants/app_theme.dart';
 import 'core/services/deep_link_service.dart';
@@ -16,6 +17,16 @@ import 'screens/main_nav_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize Stripe SDK with Live Publishable Key
+  Stripe.publishableKey = 'pk_live_51U8GXcFTXDZcKBNuXeFipeSIpVUpt74Wfa7EQHaUan4CKN1eh5e5yNFLTONMqPbrNfyBcrQUXtnGqf3Fda748HSd00rIhuigF0';
+  Stripe.merchantIdentifier = 'merchant.com.lunar.store';
+  try {
+    await Stripe.instance.applySettings();
+  } catch (e) {
+    debugPrint('Stripe settings initialization note: $e');
+  }
+
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,

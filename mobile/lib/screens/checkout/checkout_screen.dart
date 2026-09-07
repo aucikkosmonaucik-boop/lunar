@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/services/stripe_payment_service.dart';
 import '../../core/utils/formatters.dart';
 import '../../models/carrier_model.dart';
 import '../../providers/auth_provider.dart';
@@ -32,6 +33,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   String _selectedPaymentMethod = 'card';
   String _selectedCarrierId = 'AN_POST';
+  bool _isProcessingPayment = false;
 
   @override
   void initState() {
@@ -75,6 +77,55 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     final effectiveShippingFee = isFreeShipping ? 0.0 : carrier.basePrice;
     final finalTotal = discountedSubtotal + effectiveShippingFee;
 
+    // A) Native Stripe PaymentSheet for Card / BLIK
+    if (_selectedPaymentMethod == 'card' || _selectedPaymentMethod == 'blik') {
+      setState(() => _isProcessingPayment = true);
+      try {
+        final order = await StripePaymentService.processPayment(
+          context: context,
+          items: cartProvider.items,
+          total: finalTotal,
+          name: _nameController.text.trim(),
+          email: _emailController.text.trim(),
+          phone: _phoneController.text.trim(),
+          street: _streetController.text.trim(),
+          city: _cityController.text.trim(),
+          postalCode: _postalCodeController.text.trim(),
+          country: _countryController.text.trim(),
+          carrier: carrier.id,
+          carrierName: carrier.name,
+          estimatedDelivery: carrier.estimatedDelivery,
+          discountCode: cartProvider.appliedPromo?.code,
+          isDark: Theme.of(context).brightness == Brightness.dark,
+        );
+
+        if (order != null && mounted) {
+          cartProvider.clearCart();
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (_) => OrderSuccessScreen(order: order),
+            ),
+            (route) => route.isFirst,
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(e.toString()),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() => _isProcessingPayment = false);
+        }
+      }
+      return;
+    }
+
+    // B) Standard Offline / COD / Transfer Order Creation
     final newOrder = await orderProvider.createOrder(
       items: cartProvider.items,
       total: finalTotal,
@@ -323,7 +374,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 return CustomButton(
                   text: 'Place Order • ${Formatters.formatPrice(grandTotal)}',
                   icon: Icons.lock_rounded,
-                  isLoading: orderProvider.isLoading,
+                  isLoading: orderProvider.isLoading || _isProcessingPayment,
                   onPressed: _submitOrder,
                 );
               },

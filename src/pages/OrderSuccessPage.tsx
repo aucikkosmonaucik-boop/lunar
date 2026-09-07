@@ -24,6 +24,7 @@ interface VerifiedSession {
 const OrderSuccessPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get('session_id');
+  const paymentIntentId = searchParams.get('payment_intent') || searchParams.get('payment_intent_id');
   const isDemo = searchParams.get('demo') === 'true';
   const { clearCart } = useCart();
   const { user } = useAuth();
@@ -37,22 +38,28 @@ const OrderSuccessPage: React.FC = () => {
     // Clear cart immediately upon reaching success page
     clearCart();
 
-    if (!sessionId) {
+    if (!sessionId && !paymentIntentId) {
       setLoading(false);
       return;
     }
 
     const verifyPayment = async () => {
       try {
-        const addressParam = searchParams.get('address');
-        const url = `/api/stripe/verify-session?session_id=${encodeURIComponent(sessionId)}${
-          addressParam ? `&address=${encodeURIComponent(addressParam)}` : ''
-        }`;
+        let url = '';
+        if (paymentIntentId) {
+          url = `/api/stripe/verify-payment-intent?payment_intent_id=${encodeURIComponent(paymentIntentId)}`;
+        } else if (sessionId) {
+          const addressParam = searchParams.get('address');
+          url = `/api/stripe/verify-session?session_id=${encodeURIComponent(sessionId)}${
+            addressParam ? `&address=${encodeURIComponent(addressParam)}` : ''
+          }`;
+        }
+
         const response = await fetch(url);
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.message || 'Failed to verify payment session.');
+          throw new Error(data.message || 'Failed to verify payment.');
         }
 
         if (data.demoMode || isDemo) {
@@ -63,8 +70,8 @@ const OrderSuccessPage: React.FC = () => {
           setSessionData(data.session);
         } else if (data.order) {
           setSessionData({
-            id: data.order.id,
-            paymentStatus: data.order.status,
+            id: data.order.id || data.order.orderNumber,
+            paymentStatus: data.order.paymentStatus || data.order.status || 'Paid',
             customerEmail: data.order.customerEmail,
             customerName: data.order.customerName,
             shippingPhone: data.order.shippingPhone,
@@ -74,7 +81,7 @@ const OrderSuccessPage: React.FC = () => {
           });
         }
       } catch (err) {
-        console.error('Session verification error:', err);
+        console.error('Payment verification error:', err);
         setError(err instanceof Error ? err.message : 'Verification failed');
       } finally {
         setLoading(false);
@@ -82,7 +89,7 @@ const OrderSuccessPage: React.FC = () => {
     };
 
     verifyPayment();
-  }, [sessionId, clearCart, isDemo, searchParams]);
+  }, [sessionId, paymentIntentId, clearCart, isDemo, searchParams]);
 
   if (loading) {
     return (
