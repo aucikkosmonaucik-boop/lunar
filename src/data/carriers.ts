@@ -1,5 +1,5 @@
 export interface Carrier {
-  id: string; // "AN_POST" | "DPD_IE" | "GLS_IE" | "UPS" | "FEDEX"
+  id: string; // "AN_POST_LETTER" | "AN_POST_REGISTERED" | "AN_POST" | "DPD_IE" | "GLS_IE"
   name: string;
   shortName: string;
   tagline: string;
@@ -16,11 +16,47 @@ export interface Carrier {
 
 export const CARRIERS: Carrier[] = [
   {
+    id: 'AN_POST_LETTER',
+    name: 'An Post (Standard Letter / Envelope)',
+    shortName: 'An Post Letter',
+    tagline: 'Economy Padded Mailer',
+    description: 'Economical standard post in a secure bubble-padded envelope. Ideal for rings, earrings, and lighter pieces.',
+    estimatedDelivery: '2 – 3 Business Days',
+    basePrice: 2.90,
+    freeShippingAvailable: true,
+    freeThreshold: 35,
+    trackingPlaceholder: 'e.g. Standard Post or Receipt Ref',
+    trackingRegexHint: 'An Post standard post reference',
+    badgeColor: 'bg-[#00703C]/10 text-[#00703C] border-[#00703C]/30 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-500/50',
+    getTrackingUrl: (trackingNumber: string) => {
+      const clean = trackingNumber.trim().replace(/\s+/g, '');
+      return `https://www.anpost.com/Post-Parcels/Track/History?item=${encodeURIComponent(clean)}`;
+    },
+  },
+  {
+    id: 'AN_POST_REGISTERED',
+    name: 'An Post (Registered Post & Signature)',
+    shortName: 'An Post Registered',
+    tagline: 'Signature & Priority Tracking',
+    description: 'Priority registered post with barcode tracking and mandatory recipient signature upon delivery throughout Ireland.',
+    estimatedDelivery: '1 – 2 Business Days',
+    basePrice: 5.50,
+    freeShippingAvailable: true,
+    freeThreshold: 50,
+    trackingPlaceholder: 'e.g. RL123456789IE or 1198547382IE',
+    trackingRegexHint: 'An Post Registered barcode (usually starts with RL or 9-13 digits)',
+    badgeColor: 'bg-[#00703C]/10 text-[#00703C] border-[#00703C]/30 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-500/50',
+    getTrackingUrl: (trackingNumber: string) => {
+      const clean = trackingNumber.trim().replace(/\s+/g, '');
+      return `https://www.anpost.com/Post-Parcels/Track/History?item=${encodeURIComponent(clean)}`;
+    },
+  },
+  {
     id: 'AN_POST',
-    name: 'An Post (Ireland)',
-    shortName: 'An Post',
-    tagline: 'Standard & Express Postal Service',
-    description: 'National postal service with reliable coverage across all 32 counties and international connections.',
+    name: 'An Post (Tracked Express Parcel)',
+    shortName: 'An Post Parcel',
+    tagline: 'Rigid Jewellery Box & Full Telemetry',
+    description: 'National postal parcel service in a rigid luxury jewellery presentation box with live milestone telemetry across all 32 counties.',
     estimatedDelivery: '1 – 3 Business Days',
     basePrice: 6.50,
     freeShippingAvailable: true,
@@ -69,50 +105,43 @@ export const CARRIERS: Carrier[] = [
       return `https://gls-group.eu/IE/en/track-trace?match=${encodeURIComponent(clean)}`;
     },
   },
-  {
-    id: 'UPS',
-    name: 'UPS Express',
-    shortName: 'UPS',
-    tagline: 'Time-Definite Insured Luxury Courier',
-    description: 'Global express freight with maximum insurance coverage, ideal for high-value jewellery pieces.',
-    estimatedDelivery: '1 – 2 Business Days',
-    basePrice: 12.00,
-    freeShippingAvailable: false,
-    freeThreshold: 150,
-    trackingPlaceholder: 'e.g. 1Z9999999999999999',
-    trackingRegexHint: 'UPS tracking (starts with 1Z, 18 characters)',
-    badgeColor: 'bg-[#351C15]/10 text-[#59341C] border-[#59341C]/30 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-500/50',
-    getTrackingUrl: (trackingNumber: string) => {
-      const clean = trackingNumber.trim().replace(/\s+/g, '');
-      return `https://www.ups.com/track?tracknum=${encodeURIComponent(clean)}`;
-    },
-  },
-  {
-    id: 'FEDEX',
-    name: 'FedEx Priority',
-    shortName: 'FedEx',
-    tagline: 'Worldwide Priority & Direct Signature',
-    description: 'Ultra-fast direct air courier service with strict direct signature verification and full real-time milestone telemetry.',
-    estimatedDelivery: '1 – 2 Business Days',
-    basePrice: 14.00,
-    freeShippingAvailable: false,
-    freeThreshold: 180,
-    trackingPlaceholder: 'e.g. 794823901234 or 123456789012',
-    trackingRegexHint: 'FedEx tracking number (12 or 15 digits)',
-    badgeColor: 'bg-[#4D148C]/10 text-[#4D148C] border-[#4D148C]/30 dark:bg-purple-950/60 dark:text-purple-300 dark:border-purple-500/50',
-    getTrackingUrl: (trackingNumber: string) => {
-      const clean = trackingNumber.trim().replace(/\s+/g, '');
-      return `https://www.fedex.com/fedextrack/?trknbr=${encodeURIComponent(clean)}`;
-    },
-  },
 ];
 
 export const DEFAULT_CARRIER_ID = 'AN_POST';
 
+// Historical carrier lookup for past orders (UPS, FedEx)
+const HISTORICAL_CARRIERS: Record<string, Partial<Carrier>> = {
+  UPS: {
+    id: 'UPS',
+    name: 'UPS Express',
+    shortName: 'UPS',
+    getTrackingUrl: (clean: string) => `https://www.ups.com/track?tracknum=${encodeURIComponent(clean)}`,
+  },
+  FEDEX: {
+    id: 'FEDEX',
+    name: 'FedEx Priority',
+    shortName: 'FedEx',
+    getTrackingUrl: (clean: string) => `https://www.fedex.com/fedextrack/?trknbr=${encodeURIComponent(clean)}`,
+  },
+};
+
 export function getCarrierById(id?: string | null): Carrier {
   if (!id) return CARRIERS[0];
   const found = CARRIERS.find(c => c.id.toUpperCase() === id.toUpperCase());
-  return found || CARRIERS[0];
+  if (found) return found;
+
+  const historical = HISTORICAL_CARRIERS[id.toUpperCase()];
+  if (historical) {
+    return {
+      ...CARRIERS[0],
+      id: historical.id || id,
+      name: historical.name || id,
+      shortName: historical.shortName || id,
+      getTrackingUrl: historical.getTrackingUrl || CARRIERS[0].getTrackingUrl,
+    };
+  }
+
+  return CARRIERS[0];
 }
 
 export function generateTrackingUrl(carrierId: string | null | undefined, trackingNumber: string): string {

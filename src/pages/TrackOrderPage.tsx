@@ -161,7 +161,7 @@ export const TrackOrderPage: React.FC = () => {
           </h1>
           <div className="w-12 h-[1px] bg-[#C1A98F] mx-auto mb-4" />
           <p className="text-gray-600 dark:text-[#AAAAAA] text-sm font-light leading-relaxed max-w-lg mx-auto">
-            Real-time status updates for orders dispatched via <strong>An Post</strong>, <strong>DPD Ireland</strong>, <strong>GLS Ireland</strong>, <strong>UPS</strong>, and <strong>FedEx</strong>.
+            Real-time status updates for orders dispatched via <strong>An Post</strong>, <strong>DPD Ireland</strong>, and <strong>GLS Ireland</strong>.
           </p>
         </div>
 

@@ -26,6 +26,8 @@ class CarrierModel {
   String getTrackingUrl(String trackingNumber) {
     final clean = trackingNumber.trim().replaceAll(RegExp(r'\s+'), '');
     switch (id.toUpperCase()) {
+      case 'AN_POST_LETTER':
+      case 'AN_POST_REGISTERED':
       case 'AN_POST':
         return 'https://www.anpost.com/Post-Parcels/Track/History?item=${Uri.encodeComponent(clean)}';
       case 'DPD_IE':
@@ -44,22 +46,46 @@ class CarrierModel {
 
 const List<CarrierModel> kCarriers = [
   CarrierModel(
+    id: 'AN_POST_LETTER',
+    name: 'An Post (Standard Letter)',
+    shortName: 'An Post Letter',
+    tagline: 'Standard Letter • Padded Mailer',
+    description: 'Economical standard post in a protective bubble envelope. Ideal for rings and smaller jewelry.',
+    estimatedDelivery: '2 – 3 Business Days',
+    basePrice: 2.90,
+    freeShippingAvailable: true,
+    freeThreshold: 35.0,
+    trackingPlaceholder: 'e.g. Standard Post / Ref',
+  ),
+  CarrierModel(
+    id: 'AN_POST_REGISTERED',
+    name: 'An Post (Registered Post & Signature)',
+    shortName: 'An Post Registered',
+    tagline: 'Signature & Priority Tracking',
+    description: 'Signed-for registered delivery with barcode tracking and direct recipient signature across Ireland.',
+    estimatedDelivery: '1 – 2 Business Days',
+    basePrice: 5.50,
+    freeShippingAvailable: true,
+    freeThreshold: 50.0,
+    trackingPlaceholder: 'e.g. RL123456789IE',
+  ),
+  CarrierModel(
     id: 'AN_POST',
-    name: 'An Post (Ireland)',
-    shortName: 'An Post',
-    tagline: 'Standard & Express Post',
-    description: 'National postal service across all 32 counties and international connections.',
+    name: 'An Post (Tracked Express Parcel)',
+    shortName: 'An Post Parcel',
+    tagline: 'Rigid Jewellery Box & Telemetry',
+    description: 'National parcel service in a rigid luxury jewellery presentation box with live milestone telemetry.',
     estimatedDelivery: '1 – 3 Business Days',
     basePrice: 6.50,
     freeShippingAvailable: true,
     freeThreshold: 50.0,
-    trackingPlaceholder: 'e.g. 1198547382IE',
+    trackingPlaceholder: 'e.g. 1198547382IE or CE123456789IE',
   ),
   CarrierModel(
     id: 'DPD_IE',
     name: 'DPD Ireland',
     shortName: 'DPD Ireland',
-    tagline: 'Predict 1-Hour Delivery Window',
+    tagline: 'Predict 1-Hour Delivery Window & Live Map',
     description: 'Express delivery with 1-hour delivery time slot SMS/Email notification.',
     estimatedDelivery: '1 – 2 Business Days',
     basePrice: 8.50,
@@ -78,30 +104,6 @@ const List<CarrierModel> kCarriers = [
     freeShippingAvailable: true,
     freeThreshold: 75.0,
     trackingPlaceholder: 'e.g. 23908172641',
-  ),
-  CarrierModel(
-    id: 'UPS',
-    name: 'UPS Express',
-    shortName: 'UPS',
-    tagline: 'Insured Luxury Express Courier',
-    description: 'Global express freight with maximum insurance for high-value jewellery.',
-    estimatedDelivery: '1 – 2 Business Days',
-    basePrice: 12.00,
-    freeShippingAvailable: false,
-    freeThreshold: 150.0,
-    trackingPlaceholder: 'e.g. 1Z9999999999999999',
-  ),
-  CarrierModel(
-    id: 'FEDEX',
-    name: 'FedEx Priority',
-    shortName: 'FedEx',
-    tagline: 'Worldwide Priority Air Delivery',
-    description: 'Ultra-fast direct air courier with direct signature verification.',
-    estimatedDelivery: '1 – 2 Business Days',
-    basePrice: 14.00,
-    freeShippingAvailable: false,
-    freeThreshold: 180.0,
-    trackingPlaceholder: 'e.g. 794823901234',
   ),
 ];
 

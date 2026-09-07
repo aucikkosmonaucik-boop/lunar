@@ -7,10 +7,24 @@ export interface CarrierInfo {
 }
 
 export const BACKEND_CARRIERS: Record<string, CarrierInfo> = {
+  AN_POST_LETTER: {
+    id: 'AN_POST_LETTER',
+    name: 'An Post (Standard Letter)',
+    shortName: 'An Post Letter',
+    estimatedDelivery: '2 – 3 Business Days',
+    getTrackingUrl: (num: string) => `https://www.anpost.com/Post-Parcels/Track/History?item=${encodeURIComponent(num.trim().replace(/\s+/g, ''))}`,
+  },
+  AN_POST_REGISTERED: {
+    id: 'AN_POST_REGISTERED',
+    name: 'An Post (Registered Post)',
+    shortName: 'An Post Registered',
+    estimatedDelivery: '1 – 2 Business Days',
+    getTrackingUrl: (num: string) => `https://www.anpost.com/Post-Parcels/Track/History?item=${encodeURIComponent(num.trim().replace(/\s+/g, ''))}`,
+  },
   AN_POST: {
     id: 'AN_POST',
-    name: 'An Post (Ireland)',
-    shortName: 'An Post',
+    name: 'An Post (Tracked Express Parcel)',
+    shortName: 'An Post Parcel',
     estimatedDelivery: '1 – 3 Business Days',
     getTrackingUrl: (num: string) => `https://www.anpost.com/Post-Parcels/Track/History?item=${encodeURIComponent(num.trim().replace(/\s+/g, ''))}`,
   },

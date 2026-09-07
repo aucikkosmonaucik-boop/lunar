@@ -101,7 +101,7 @@ const CartPage: React.FC = () => {
   const [shippingCity, setShippingCity] = useState('');
   const [shippingCountry, setShippingCountry] = useState('IE');
 
-  // Delivery Carrier Selection: "AN_POST" | "DPD_IE" | "GLS_IE" | "UPS" | "FEDEX"
+  // Delivery Carrier Selection: "AN_POST_LETTER" | "AN_POST_REGISTERED" | "AN_POST" | "DPD_IE" | "GLS_IE"
   const [selectedCarrierId, setSelectedCarrierId] = useState<string>(DEFAULT_CARRIER_ID);
 
   // Account options for unauthenticated users: 'guest' | 'create_account'
