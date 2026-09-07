@@ -77,17 +77,22 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       builder: (ctx) {
         return StatefulBuilder(
           builder: (context, setModalState) {
-            return Padding(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom + 20,
-                left: 20,
-                right: 20,
-                top: 20,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+            final screenHeight = MediaQuery.of(context).size.height;
+            return SafeArea(
+              child: Padding(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+                  left: 20,
+                  right: 20,
+                  top: 16,
+                ),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxHeight: screenHeight * 0.85),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -220,10 +225,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   ),
                 ],
               ),
-            );
-          },
-        );
-      },
+            ),
+          ),
+        ),
+      );
+    },
+  );
+},
     );
   }
 
@@ -233,6 +241,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     final product = widget.product;
     final wishlistProvider = context.watch<WishlistProvider>();
     final isFav = wishlistProvider.isFavorite(product.id);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final galleryHeight = (screenWidth * 0.85).clamp(240.0, 400.0);
 
     final allImages = product.images.isNotEmpty
         ? product.images
@@ -268,7 +278,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             // Gallery
             if (allImages.isNotEmpty) ...[
               SizedBox(
-                height: 340,
+                height: galleryHeight,
                 child: PageView.builder(
                   itemCount: allImages.length,
                   onPageChanged: (idx) => setState(() => _selectedImageIndex = idx),

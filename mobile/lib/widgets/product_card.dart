@@ -180,28 +180,35 @@ class ProductCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            Formatters.formatPrice(product.price),
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                              color: isDark ? AppColors.primary : AppColors.lightText,
-                            ),
-                          ),
-                          if (product.hasDiscount)
-                            Text(
-                              Formatters.formatPrice(product.originalPrice),
-                              style: TextStyle(
-                                fontSize: 11,
-                                decoration: TextDecoration.lineThrough,
-                                color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                      Expanded(
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                Formatters.formatPrice(product.price),
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                  color: isDark ? AppColors.primary : AppColors.lightText,
+                                ),
                               ),
-                            ),
-                        ],
+                              if (product.hasDiscount)
+                                Text(
+                                  Formatters.formatPrice(product.originalPrice),
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    decoration: TextDecoration.lineThrough,
+                                    color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
                       ),
+                      const SizedBox(width: 6),
                       if (product.isSoldOut)
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),

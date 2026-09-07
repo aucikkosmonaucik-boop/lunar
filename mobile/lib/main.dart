@@ -70,6 +70,15 @@ class LunarApp extends StatelessWidget {
       darkTheme: AppTheme.darkTheme,
       themeMode: themeProvider.themeMode,
       home: const MainNavScreen(),
+      builder: (context, child) {
+        final media = MediaQuery.of(context);
+        return MediaQuery(
+          data: media.copyWith(
+            textScaler: media.textScaler.clamp(minScaleFactor: 0.85, maxScaleFactor: 1.15),
+          ),
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
     );
   }
 }

@@ -239,14 +239,18 @@ class HomeScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'All Products Collection',
-                      style: GoogleFonts.cormorantGaramond(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w700,
-                        color: isDark ? AppColors.darkText : AppColors.lightText,
+                    Flexible(
+                      child: Text(
+                        'All Products Collection',
+                        style: GoogleFonts.cormorantGaramond(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
+                          color: isDark ? AppColors.darkText : AppColors.lightText,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
+                    const SizedBox(width: 8),
                     Text(
                       '${allProducts.length} items',
                       style: TextStyle(
@@ -269,17 +273,23 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildProductGrid(BuildContext context, List<Product> products) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final int crossAxisCount = screenWidth >= 900 ? 4 : (screenWidth >= 600 ? 3 : 2);
+    final double childAspectRatio = crossAxisCount > 2
+        ? 0.70
+        : (screenWidth < 350 ? 0.53 : (screenWidth < 385 ? 0.57 : 0.62));
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: GridView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: products.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: crossAxisCount,
           mainAxisSpacing: 14,
           crossAxisSpacing: 14,
-          childAspectRatio: 0.58,
+          childAspectRatio: childAspectRatio,
         ),
         itemBuilder: (context, index) {
           return ProductCard(product: products[index]);

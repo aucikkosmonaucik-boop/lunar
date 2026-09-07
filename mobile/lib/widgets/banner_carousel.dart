@@ -170,6 +170,8 @@ class _BannerCarouselState extends State<BannerCarousel> {
                               ],
                               Text(
                                 banner.title,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                                 style: GoogleFonts.cormorantGaramond(
                                   color: Colors.white,
                                   fontSize: 24,
@@ -180,6 +182,8 @@ class _BannerCarouselState extends State<BannerCarousel> {
                               const SizedBox(height: 4),
                               Text(
                                 banner.subtitle,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   color: Colors.white70,
                                   fontSize: 13,

@@ -67,17 +67,27 @@ class FavoritesScreen extends StatelessWidget {
                 );
               },
             )
-          : GridView.builder(
-              padding: const EdgeInsets.all(16),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.62,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-              ),
-              itemCount: favProducts.length,
-              itemBuilder: (context, index) {
-                return ProductCard(product: favProducts[index]);
+          : Builder(
+              builder: (context) {
+                final screenWidth = MediaQuery.of(context).size.width;
+                final int crossAxisCount = screenWidth >= 900 ? 4 : (screenWidth >= 600 ? 3 : 2);
+                final double childAspectRatio = crossAxisCount > 2
+                    ? 0.70
+                    : (screenWidth < 350 ? 0.53 : (screenWidth < 385 ? 0.57 : 0.62));
+
+                return GridView.builder(
+                  padding: const EdgeInsets.all(16),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: crossAxisCount,
+                    childAspectRatio: childAspectRatio,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                  ),
+                  itemCount: favProducts.length,
+                  itemBuilder: (context, index) {
+                    return ProductCard(product: favProducts[index]);
+                  },
+                );
               },
             ),
     );

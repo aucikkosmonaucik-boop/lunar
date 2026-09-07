@@ -494,31 +494,45 @@ class _ShopScreenState extends State<ShopScreen> {
                           provider.clearFilters();
                         },
                       )
-                    : RefreshIndicator(
-                        color: AppColors.primary,
-                        onRefresh: () => provider.fetchProducts(refresh: true),
-                        child: GridView.builder(
-                          controller: _scrollController,
-                          padding: const EdgeInsets.all(16),
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: _isSingleColumn ? 1 : 2,
-                            childAspectRatio: _isSingleColumn ? 0.95 : 0.62,
-                            crossAxisSpacing: 12,
-                            mainAxisSpacing: 12,
-                          ),
-                          itemCount: provider.products.length + (provider.isLoadingMore ? 1 : 0),
-                          itemBuilder: (context, index) {
-                            if (index == provider.products.length) {
-                              return const Center(
-                                child: Padding(
-                                  padding: EdgeInsets.all(16),
-                                  child: CircularProgressIndicator(color: AppColors.primary, strokeWidth: 2),
-                                ),
-                              );
-                            }
-                            return ProductCard(product: provider.products[index]);
-                          },
-                        ),
+                    : Builder(
+                        builder: (context) {
+                          final screenWidth = MediaQuery.of(context).size.width;
+                          final int gridCols = _isSingleColumn
+                              ? 1
+                              : (screenWidth >= 900 ? 4 : (screenWidth >= 600 ? 3 : 2));
+                          final double gridRatio = _isSingleColumn
+                              ? (screenWidth < 360 ? 1.05 : 0.95)
+                              : (gridCols > 2
+                                  ? 0.70
+                                  : (screenWidth < 350 ? 0.53 : (screenWidth < 385 ? 0.57 : 0.62)));
+
+                          return RefreshIndicator(
+                            color: AppColors.primary,
+                            onRefresh: () => provider.fetchProducts(refresh: true),
+                            child: GridView.builder(
+                              controller: _scrollController,
+                              padding: const EdgeInsets.all(16),
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: gridCols,
+                                childAspectRatio: gridRatio,
+                                crossAxisSpacing: 12,
+                                mainAxisSpacing: 12,
+                              ),
+                              itemCount: provider.products.length + (provider.isLoadingMore ? 1 : 0),
+                              itemBuilder: (context, index) {
+                                if (index == provider.products.length) {
+                                  return const Center(
+                                    child: Padding(
+                                      padding: EdgeInsets.all(16),
+                                      child: CircularProgressIndicator(color: AppColors.primary, strokeWidth: 2),
+                                    ),
+                                  );
+                                }
+                                return ProductCard(product: provider.products[index]);
+                              },
+                            ),
+                          );
+                        },
                       ),
           ),
         ],

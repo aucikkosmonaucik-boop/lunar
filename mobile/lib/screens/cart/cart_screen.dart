@@ -405,7 +405,14 @@ class _CartScreenState extends State<CartScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: const TextStyle(fontSize: 13, color: Colors.grey)),
+        Flexible(
+          child: Text(
+            label,
+            style: const TextStyle(fontSize: 13, color: Colors.grey),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        const SizedBox(width: 8),
         Text(
           value,
           style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: color),
