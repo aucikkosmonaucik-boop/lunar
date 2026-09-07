@@ -3,6 +3,9 @@ export interface CarrierInfo {
   name: string;
   shortName: string;
   estimatedDelivery: string;
+  basePrice: number;
+  freeShippingAvailable: boolean;
+  freeThreshold: number;
   getTrackingUrl: (trackingNumber: string) => string;
 }
 
@@ -12,6 +15,9 @@ export const BACKEND_CARRIERS: Record<string, CarrierInfo> = {
     name: 'An Post (Standard Letter)',
     shortName: 'An Post Letter',
     estimatedDelivery: '2 – 3 Business Days',
+    basePrice: 2.90,
+    freeShippingAvailable: true,
+    freeThreshold: 35,
     getTrackingUrl: (num: string) => `https://www.anpost.com/Post-Parcels/Track/History?item=${encodeURIComponent(num.trim().replace(/\s+/g, ''))}`,
   },
   AN_POST_REGISTERED: {
@@ -19,6 +25,9 @@ export const BACKEND_CARRIERS: Record<string, CarrierInfo> = {
     name: 'An Post (Registered Post)',
     shortName: 'An Post Registered',
     estimatedDelivery: '1 – 2 Business Days',
+    basePrice: 5.50,
+    freeShippingAvailable: true,
+    freeThreshold: 50,
     getTrackingUrl: (num: string) => `https://www.anpost.com/Post-Parcels/Track/History?item=${encodeURIComponent(num.trim().replace(/\s+/g, ''))}`,
   },
   AN_POST: {
@@ -26,6 +35,9 @@ export const BACKEND_CARRIERS: Record<string, CarrierInfo> = {
     name: 'An Post (Tracked Express Parcel)',
     shortName: 'An Post Parcel',
     estimatedDelivery: '1 – 3 Business Days',
+    basePrice: 6.50,
+    freeShippingAvailable: true,
+    freeThreshold: 50,
     getTrackingUrl: (num: string) => `https://www.anpost.com/Post-Parcels/Track/History?item=${encodeURIComponent(num.trim().replace(/\s+/g, ''))}`,
   },
   DPD_IE: {
@@ -33,6 +45,9 @@ export const BACKEND_CARRIERS: Record<string, CarrierInfo> = {
     name: 'DPD Ireland',
     shortName: 'DPD Ireland',
     estimatedDelivery: '1 – 2 Business Days',
+    basePrice: 8.50,
+    freeShippingAvailable: true,
+    freeThreshold: 80,
     getTrackingUrl: (num: string) => `https://dpd.ie/tracking?parcelnumber=${encodeURIComponent(num.trim().replace(/\s+/g, ''))}`,
   },
   GLS_IE: {
@@ -40,6 +55,9 @@ export const BACKEND_CARRIERS: Record<string, CarrierInfo> = {
     name: 'GLS Ireland',
     shortName: 'GLS Ireland',
     estimatedDelivery: '1 – 3 Business Days',
+    basePrice: 7.50,
+    freeShippingAvailable: true,
+    freeThreshold: 75,
     getTrackingUrl: (num: string) => `https://gls-group.eu/IE/en/track-trace?match=${encodeURIComponent(num.trim().replace(/\s+/g, ''))}`,
   },
   UPS: {
@@ -47,6 +65,9 @@ export const BACKEND_CARRIERS: Record<string, CarrierInfo> = {
     name: 'UPS Express',
     shortName: 'UPS',
     estimatedDelivery: '1 – 2 Business Days',
+    basePrice: 12.00,
+    freeShippingAvailable: false,
+    freeThreshold: 150,
     getTrackingUrl: (num: string) => `https://www.ups.com/track?tracknum=${encodeURIComponent(num.trim().replace(/\s+/g, ''))}`,
   },
   FEDEX: {
@@ -54,6 +75,9 @@ export const BACKEND_CARRIERS: Record<string, CarrierInfo> = {
     name: 'FedEx Priority',
     shortName: 'FedEx',
     estimatedDelivery: '1 – 2 Business Days',
+    basePrice: 14.00,
+    freeShippingAvailable: false,
+    freeThreshold: 180,
     getTrackingUrl: (num: string) => `https://www.fedex.com/fedextrack/?trknbr=${encodeURIComponent(num.trim().replace(/\s+/g, ''))}`,
   },
 };

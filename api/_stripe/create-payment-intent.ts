@@ -5,6 +5,7 @@ import { parse } from 'cookie';
 import bcrypt from 'bcryptjs';
 import { prisma } from '../_lib/prisma.js';
 import { getJwtSecret } from '../_lib/auth-util.js';
+import { getBackendCarrier } from '../_lib/carriers.js';
 
 const FREE_SHIPPING_THRESHOLD = 50;
 
@@ -205,14 +206,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
   }
 
-  const priceAfterDiscount = Math.max(0, itemsTotal - discountAmount);
-  const isFreeShipping = priceAfterDiscount >= FREE_SHIPPING_THRESHOLD;
-  const shippingFee = isFreeShipping ? 0 : 10;
-  const finalTotal = Number((priceAfterDiscount + shippingFee).toFixed(2));
-
   const chosenCarrierCode = carrier || 'AN_POST';
-  const chosenCarrierName = carrierName || 'An Post';
-  const chosenEstDelivery = estimatedDelivery || '1 – 3 Business Days';
+  const backendCarrier = getBackendCarrier(chosenCarrierCode);
+  const chosenCarrierName = carrierName || backendCarrier.name;
+  const chosenEstDelivery = estimatedDelivery || backendCarrier.estimatedDelivery;
+
+  const priceAfterDiscount = Math.max(0, itemsTotal - discountAmount);
+  const isFreeShipping = backendCarrier.freeShippingAvailable && priceAfterDiscount >= backendCarrier.freeThreshold;
+  const shippingFee = isFreeShipping ? 0 : backendCarrier.basePrice;
+  const finalTotal = Number((priceAfterDiscount + shippingFee).toFixed(2));
   const orderNumber = `LUNAR-${Date.now().toString().slice(-6)}-${Math.floor(100 + Math.random() * 900)}`;
 
   try {

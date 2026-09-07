@@ -34,6 +34,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   String _selectedPaymentMethod = 'card';
   String _selectedCarrierId = 'AN_POST';
   bool _isProcessingPayment = false;
+  bool _isAnPostExpanded = true;
 
   @override
   void initState() {
@@ -257,21 +258,33 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             const SizedBox(height: 16),
 
             // Section 2: Delivery Carrier Partner
-            _buildSectionCard(
-              isDark: isDark,
-              title: 'Delivery Carrier Partner',
-              icon: Icons.local_shipping_outlined,
-              children: [
-                ...kCarriers.map((carrier) {
-                  final discountedSubtotal = (cartProvider.subtotal - cartProvider.promoDiscountAmount).clamp(0.0, double.infinity);
-                  return _buildCarrierOption(
-                    carrier: carrier,
-                    isSelected: _selectedCarrierId == carrier.id,
-                    discountedSubtotal: discountedSubtotal,
-                    isDark: isDark,
-                  );
-                }),
-              ],
+            Builder(
+              builder: (context) {
+                final discountedSubtotal = (cartProvider.subtotal - cartProvider.promoDiscountAmount).clamp(0.0, double.infinity);
+                final anPostCarriers = kCarriers.where((c) => c.id.startsWith('AN_POST')).toList();
+                final otherCarriers = kCarriers.where((c) => !c.id.startsWith('AN_POST')).toList();
+
+                return _buildSectionCard(
+                  isDark: isDark,
+                  title: 'Delivery Carrier Partner',
+                  icon: Icons.local_shipping_outlined,
+                  children: [
+                    _buildAnPostExpandablePanel(
+                      anPostCarriers: anPostCarriers,
+                      discountedSubtotal: discountedSubtotal,
+                      isDark: isDark,
+                    ),
+                    ...otherCarriers.map((carrier) {
+                      return _buildCarrierOption(
+                        carrier: carrier,
+                        isSelected: _selectedCarrierId == carrier.id,
+                        discountedSubtotal: discountedSubtotal,
+                        isDark: isDark,
+                      );
+                    }),
+                  ],
+                );
+              },
             ),
 
             const SizedBox(height: 16),
@@ -494,6 +507,257 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         Text(label, style: const TextStyle(fontSize: 13, color: Colors.grey)),
         Text(value, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: color)),
       ],
+    );
+  }
+
+  Widget _buildAnPostExpandablePanel({
+    required List<CarrierModel> anPostCarriers,
+    required double discountedSubtotal,
+    required bool isDark,
+  }) {
+    final isAnPostSelected = _selectedCarrierId.startsWith('AN_POST');
+    final activeAnPostCarrier = isAnPostSelected ? getCarrierById(_selectedCarrierId) : anPostCarriers.first;
+    final isFree = activeAnPostCarrier.freeShippingAvailable && discountedSubtotal >= activeAnPostCarrier.freeThreshold;
+    final priceText = isFree ? 'Free' : Formatters.formatPrice(activeAnPostCarrier.basePrice);
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isAnPostSelected ? AppColors.primary : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+          width: isAnPostSelected ? 1.5 : 1.0,
+        ),
+        color: isAnPostSelected
+            ? (isDark ? AppColors.primary.withValues(alpha: 0.08) : AppColors.primaryLight.withValues(alpha: 0.15))
+            : (isDark ? Colors.white.withValues(alpha: 0.02) : Colors.black.withValues(alpha: 0.01)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // An Post Header
+          InkWell(
+            onTap: () {
+              setState(() {
+                if (!isAnPostSelected) {
+                  _selectedCarrierId = activeAnPostCarrier.id;
+                  _isAnPostExpanded = true;
+                } else {
+                  _isAnPostExpanded = !_isAnPostExpanded;
+                }
+              });
+            },
+            borderRadius: BorderRadius.circular(12),
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: isAnPostSelected
+                          ? AppColors.primary.withValues(alpha: 0.15)
+                          : (isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.04)),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      Icons.markunread_mailbox_rounded,
+                      color: isAnPostSelected ? AppColors.primary : (isDark ? Colors.white70 : Colors.black87),
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Flexible(
+                              child: Text(
+                                'An Post (Ireland)',
+                                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
+                              decoration: BoxDecoration(
+                                color: isDark ? const Color(0xFF00703C).withValues(alpha: 0.2) : const Color(0xFFE8F5E9),
+                                border: Border.all(color: const Color(0xFF00703C).withValues(alpha: 0.4)),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: const Text(
+                                '3 OPTIONS',
+                                style: TextStyle(
+                                  fontSize: 8.5,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFF00703C),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          isAnPostSelected
+                              ? 'Active: ${activeAnPostCarrier.shortName}'
+                              : 'Standard Letter, Registered Post & Parcel',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: isDark ? Colors.white70 : Colors.black54,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        isAnPostSelected ? priceText : 'From €2.90',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 13,
+                          color: (isAnPostSelected && isFree)
+                              ? AppColors.success
+                              : (isDark ? AppColors.primary : AppColors.primaryDark),
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            _isAnPostExpanded ? 'Hide' : 'Show (3)',
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: isDark ? AppColors.primary : const Color(0xFF8C6D4F),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Icon(
+                            _isAnPostExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+                            size: 16,
+                            color: isDark ? AppColors.primary : const Color(0xFF8C6D4F),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Collapsible Sub-options
+          if (_isAnPostExpanded) ...[
+            Divider(height: 1, color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                children: anPostCarriers.map((subCarrier) {
+                  final isSubSelected = _selectedCarrierId == subCarrier.id;
+                  final isSubFree = subCarrier.freeShippingAvailable && discountedSubtotal >= subCarrier.freeThreshold;
+                  final subPriceText = isSubFree ? 'Free' : Formatters.formatPrice(subCarrier.basePrice);
+
+                  return GestureDetector(
+                    onTap: () => setState(() => _selectedCarrierId = subCarrier.id),
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 6),
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: isSubSelected ? AppColors.primary : (isDark ? Colors.white12 : Colors.black12),
+                          width: isSubSelected ? 1.5 : 1.0,
+                        ),
+                        color: isSubSelected
+                            ? (isDark ? AppColors.primary.withValues(alpha: 0.15) : AppColors.primaryLight.withValues(alpha: 0.25))
+                            : (isDark ? Colors.white.withValues(alpha: 0.03) : Colors.white),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 16,
+                            height: 16,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: isSubSelected ? AppColors.primary : Colors.grey,
+                                width: 1.5,
+                              ),
+                            ),
+                            child: isSubSelected
+                                ? Center(
+                                    child: Container(
+                                      width: 8,
+                                      height: 8,
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: AppColors.primary,
+                                      ),
+                                    ),
+                                  )
+                                : null,
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Flexible(
+                                      child: Text(
+                                        subCarrier.name,
+                                        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      '• ${subCarrier.estimatedDelivery}',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w500,
+                                        color: isDark ? AppColors.primary : const Color(0xFF8C6D4F),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  subCarrier.tagline,
+                                  style: TextStyle(
+                                    fontSize: 10.5,
+                                    color: isDark ? Colors.white60 : Colors.black54,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            subPriceText,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 12,
+                              color: isSubFree ? AppColors.success : (isDark ? AppColors.primary : AppColors.primaryDark),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 

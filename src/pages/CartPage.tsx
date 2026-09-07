@@ -27,6 +27,7 @@ import {
   UserCheck,
   Sparkles,
   Coins,
+  ChevronDown,
 } from 'lucide-react';
 import { useCart } from '../hooks/useCart';
 import { useAuth } from '../hooks/useAuth';
@@ -103,6 +104,7 @@ const CartPage: React.FC = () => {
 
   // Delivery Carrier Selection: "AN_POST_LETTER" | "AN_POST_REGISTERED" | "AN_POST" | "DPD_IE" | "GLS_IE"
   const [selectedCarrierId, setSelectedCarrierId] = useState<string>(DEFAULT_CARRIER_ID);
+  const [isAnPostExpanded, setIsAnPostExpanded] = useState<boolean>(true);
 
   // Account options for unauthenticated users: 'guest' | 'create_account'
   const [checkoutMode, setCheckoutMode] = useState<'guest' | 'create_account'>('guest');
@@ -1020,77 +1022,295 @@ const CartPage: React.FC = () => {
               </div>
 
               <div className="p-6 sm:p-8 space-y-3">
-                {CARRIERS.map((c) => {
-                  const isSelected = selectedCarrierId === c.id;
-                  const carrierFree = c.freeShippingAvailable && priceAfterDiscount >= c.freeThreshold;
-                  const cost = carrierFree ? 0 : c.basePrice;
+                {(() => {
+                  const anPostCarriers = CARRIERS.filter((c) => c.id.startsWith('AN_POST'));
+                  const otherCarriers = CARRIERS.filter((c) => !c.id.startsWith('AN_POST'));
+                  const isAnPostSelected = selectedCarrierId.startsWith('AN_POST');
+                  const currentAnPostCarrier = isAnPostSelected ? getCarrierById(selectedCarrierId) : anPostCarriers[0];
+                  const anPostFree = currentAnPostCarrier.freeShippingAvailable && priceAfterDiscount >= currentAnPostCarrier.freeThreshold;
+                  const anPostCost = anPostFree ? 0 : currentAnPostCarrier.basePrice;
 
                   return (
-                    <label
-                      key={c.id}
-                      onClick={() => setSelectedCarrierId(c.id)}
-                      className={`relative border p-4 sm:p-5 cursor-pointer transition-all duration-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xs ${
-                        isSelected
-                          ? 'border-[#1A1A1A] dark:border-[#C1A98F] bg-[#FAF8F5] dark:bg-[#252525] shadow-xs ring-1 ring-[#1A1A1A] dark:ring-[#C1A98F]'
-                          : 'border-[#EAE3D9] dark:border-[#2E2E2E] hover:border-gray-400 dark:hover:border-gray-600 bg-white dark:bg-[#1E1E1E]'
-                      }`}
-                    >
-                      <div className="flex items-start sm:items-center gap-3.5">
-                        {/* Custom Radio Button */}
-                        <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 mt-0.5 sm:mt-0 ${
-                          isSelected ? 'border-[#1A1A1A] dark:border-[#C1A98F] bg-[#1A1A1A] dark:bg-[#C1A98F]' : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1E1E1E]'
-                        }`}>
-                          {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white dark:bg-black" />}
+                    <>
+                      {/* ── An Post Expandable Delivery Panel ── */}
+                      <div
+                        className={`border transition-all duration-200 rounded-xs overflow-hidden ${
+                          isAnPostSelected
+                            ? 'border-[#1A1A1A] dark:border-[#C1A98F] bg-[#FAF8F5] dark:bg-[#222222] shadow-xs ring-1 ring-[#1A1A1A] dark:ring-[#C1A98F]'
+                            : 'border-[#EAE3D9] dark:border-[#2E2E2E] bg-white dark:bg-[#1E1E1E] hover:border-gray-400 dark:hover:border-gray-600'
+                        }`}
+                      >
+                        {/* Header row (Click to toggle accordion / select An Post) */}
+                        <div
+                          onClick={() => {
+                            if (!isAnPostSelected) {
+                              setSelectedCarrierId(currentAnPostCarrier.id);
+                              setIsAnPostExpanded(true);
+                            } else {
+                              setIsAnPostExpanded((prev) => !prev);
+                            }
+                          }}
+                          className="p-4 sm:p-5 cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4 select-none"
+                        >
+                          <div className="flex items-start sm:items-center gap-3.5">
+                            {/* Radio indicator */}
+                            <div
+                              className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 mt-0.5 sm:mt-0 ${
+                                isAnPostSelected
+                                  ? 'border-[#1A1A1A] dark:border-[#C1A98F] bg-[#1A1A1A] dark:bg-[#C1A98F]'
+                                  : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1E1E1E]'
+                              }`}
+                            >
+                              {isAnPostSelected && <div className="w-1.5 h-1.5 rounded-full bg-white dark:bg-black" />}
+                            </div>
+
+                            <div>
+                              <div className="flex flex-wrap items-center gap-2 mb-1">
+                                <span className="font-serif text-base text-[#1A1A1A] dark:text-[#F5F5F5] font-semibold tracking-wide">
+                                  An Post (National Postal Service)
+                                </span>
+                                <span className="text-[9px] uppercase tracking-wider font-bold px-2 py-0.5 rounded border bg-[#00703C]/10 text-[#00703C] border-[#00703C]/30 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-500/50">
+                                  3 Delivery Options
+                                </span>
+                                {isAnPostSelected && (
+                                  <span className="text-[9px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded bg-[#C1A98F]/20 text-[#8C6D4F] dark:text-[#DFC8B0] border border-[#C1A98F]/40">
+                                    Active: {currentAnPostCarrier.shortName}
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-xs text-gray-600 dark:text-[#E2E8F0] font-normal leading-relaxed max-w-lg">
+                                {isAnPostSelected
+                                  ? currentAnPostCarrier.description
+                                  : 'Ireland’s national postal service with 3 tailored tiers: Standard Letter, Registered Post, or Tracked Parcel.'}
+                              </p>
+                              <div className="flex items-center gap-3 mt-1.5 text-[11px] text-[#8C6D4F] dark:text-[#DFC8B0]">
+                                <span className="flex items-center gap-1 font-semibold">
+                                  ✦ Est. Delivery: {currentAnPostCarrier.estimatedDelivery}
+                                </span>
+                                <span className="text-gray-300 dark:text-gray-500">•</span>
+                                <span className="text-gray-600 dark:text-[#CBD5E1] font-medium">
+                                  {isAnPostExpanded ? 'Click header to collapse' : 'Click to expand options (3 available)'}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0 pl-7 sm:pl-0">
+                            <div className="sm:text-right">
+                              <div className="text-sm font-semibold">
+                                {isAnPostSelected ? (
+                                  anPostFree ? (
+                                    <div className="flex flex-col items-start sm:items-end">
+                                      <span className="text-emerald-700 dark:text-emerald-400 font-bold text-xs uppercase tracking-wider">
+                                        Complimentary
+                                      </span>
+                                      <span className="text-[10px] text-gray-400 dark:text-gray-400 line-through">
+                                        €{currentAnPostCarrier.basePrice.toFixed(2)}
+                                      </span>
+                                    </div>
+                                  ) : (
+                                    <span className="text-[#8C6D4F] dark:text-[#DFC8B0] font-bold text-base">
+                                      €{anPostCost.toFixed(2)}
+                                    </span>
+                                  )
+                                ) : (
+                                  <span className="text-[#8C6D4F] dark:text-[#DFC8B0] font-bold text-base">
+                                    From €2.90
+                                  </span>
+                                )}
+                              </div>
+                              {isAnPostSelected && currentAnPostCarrier.freeShippingAvailable && !anPostFree && (
+                                <span className="text-[10px] text-gray-500 dark:text-[#CBD5E1] font-medium block mt-0.5">
+                                  Free over €{currentAnPostCarrier.freeThreshold}
+                                </span>
+                              )}
+                            </div>
+
+                            <button
+                              type="button"
+                              aria-label={isAnPostExpanded ? 'Collapse An Post options' : 'Expand An Post options'}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setIsAnPostExpanded((prev) => !prev);
+                              }}
+                              className="p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors cursor-pointer text-gray-500 dark:text-gray-400"
+                            >
+                              <ChevronDown
+                                className={`w-5 h-5 transition-transform duration-300 ${
+                                  isAnPostExpanded ? 'rotate-180 text-[#1A1A1A] dark:text-[#F5F5F5]' : ''
+                                }`}
+                              />
+                            </button>
+                          </div>
                         </div>
 
-                        <div>
-                          <div className="flex flex-wrap items-center gap-2 mb-1">
-                            <span className="font-serif text-base text-[#1A1A1A] dark:text-[#F5F5F5] font-semibold tracking-wide">
-                              {c.name}
-                            </span>
-                            <span className={`text-[9px] uppercase tracking-wider font-bold px-2 py-0.5 rounded border ${c.badgeColor}`}>
-                              {c.tagline}
-                            </span>
-                          </div>
-                          <p className="text-xs text-gray-600 dark:text-[#E2E8F0] font-normal leading-relaxed max-w-lg">
-                            {c.description}
-                          </p>
-                          <div className="flex items-center gap-3 mt-1.5 text-[11px] text-[#8C6D4F] dark:text-[#DFC8B0]">
-                            <span className="flex items-center gap-1 font-semibold">
-                              ✦ Est. Delivery: {c.estimatedDelivery}
-                            </span>
-                            <span className="text-gray-300 dark:text-gray-500">•</span>
-                            <span className="text-gray-600 dark:text-[#CBD5E1] font-medium">Live Tracking Included</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="sm:text-right shrink-0 pl-7 sm:pl-0">
-                        <div className="text-sm font-semibold">
-                          {carrierFree ? (
-                            <div className="flex flex-col items-start sm:items-end">
-                              <span className="text-emerald-700 dark:text-emerald-400 font-bold text-xs uppercase tracking-wider">
-                                Complimentary
-                              </span>
-                              <span className="text-[10px] text-gray-400 dark:text-gray-400 line-through">
-                                €{c.basePrice.toFixed(2)}
+                        {/* Accordion Body: The 3 An Post options */}
+                        {isAnPostExpanded && (
+                          <div className="p-3 sm:p-5 pt-0 sm:pt-0 space-y-2.5 border-t border-[#EAE3D9] dark:border-[#2E2E2E] bg-[#FAF8F5]/80 dark:bg-[#1A1A1A]/80">
+                            <div className="text-[10px] font-semibold uppercase tracking-widest text-[#8C6D4F] dark:text-[#DFC8B0] pt-3 pb-1 flex items-center justify-between">
+                              <span>Select An Post Delivery Tier:</span>
+                              <span className="text-[10px] text-gray-500 dark:text-gray-400 font-normal lowercase tracking-normal">
+                                3 options available
                               </span>
                             </div>
-                          ) : (
-                            <span className="text-[#8C6D4F] dark:text-[#DFC8B0] font-bold text-base">
-                              €{cost.toFixed(2)}
-                            </span>
-                          )}
-                        </div>
-                        {c.freeShippingAvailable && !carrierFree && (
-                          <span className="text-[10px] text-gray-500 dark:text-[#CBD5E1] font-medium block mt-0.5">
-                            Free over €{c.freeThreshold}
-                          </span>
+
+                            {anPostCarriers.map((c) => {
+                              const isSubSelected = selectedCarrierId === c.id;
+                              const subCarrierFree = c.freeShippingAvailable && priceAfterDiscount >= c.freeThreshold;
+                              const subCost = subCarrierFree ? 0 : c.basePrice;
+
+                              return (
+                                <div
+                                  key={c.id}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedCarrierId(c.id);
+                                  }}
+                                  className={`relative p-3.5 sm:p-4 cursor-pointer transition-all duration-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xs border ${
+                                    isSubSelected
+                                      ? 'border-[#C1A98F] bg-white dark:bg-[#252525] shadow-xs ring-1 ring-[#C1A98F]'
+                                      : 'border-[#EAE3D9] dark:border-[#333333] hover:border-gray-400 dark:hover:border-gray-500 bg-white/70 dark:bg-[#1E1E1E]'
+                                  }`}
+                                >
+                                  <div className="flex items-start sm:items-center gap-3">
+                                    {/* Sub Radio indicator */}
+                                    <div
+                                      className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 mt-0.5 sm:mt-0 ${
+                                        isSubSelected
+                                          ? 'border-[#C1A98F] bg-[#C1A98F]'
+                                          : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1E1E1E]'
+                                      }`}
+                                    >
+                                      {isSubSelected && <div className="w-1.5 h-1.5 rounded-full bg-white dark:bg-black" />}
+                                    </div>
+
+                                    <div>
+                                      <div className="flex flex-wrap items-center gap-2 mb-1">
+                                        <span className="font-serif text-[15px] text-[#1A1A1A] dark:text-[#F5F5F5] font-semibold tracking-wide">
+                                          {c.name}
+                                        </span>
+                                        <span className={`text-[9px] uppercase tracking-wider font-bold px-2 py-0.5 rounded border ${c.badgeColor}`}>
+                                          {c.tagline}
+                                        </span>
+                                      </div>
+                                      <p className="text-xs text-gray-600 dark:text-[#E2E8F0] font-normal leading-relaxed max-w-lg">
+                                        {c.description}
+                                      </p>
+                                      <div className="flex items-center gap-3 mt-1.5 text-[11px] text-[#8C6D4F] dark:text-[#DFC8B0]">
+                                        <span className="flex items-center gap-1 font-semibold">
+                                          ✦ Est. Delivery: {c.estimatedDelivery}
+                                        </span>
+                                        <span className="text-gray-300 dark:text-gray-500">•</span>
+                                        <span className="text-gray-600 dark:text-[#CBD5E1] font-medium">Live Tracking Included</span>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div className="sm:text-right shrink-0 pl-7 sm:pl-0">
+                                    <div className="text-sm font-semibold">
+                                      {subCarrierFree ? (
+                                        <div className="flex flex-col items-start sm:items-end">
+                                          <span className="text-emerald-700 dark:text-emerald-400 font-bold text-xs uppercase tracking-wider">
+                                            Complimentary
+                                          </span>
+                                          <span className="text-[10px] text-gray-400 dark:text-gray-400 line-through">
+                                            €{c.basePrice.toFixed(2)}
+                                          </span>
+                                        </div>
+                                      ) : (
+                                        <span className="text-[#8C6D4F] dark:text-[#DFC8B0] font-bold text-base">
+                                          €{subCost.toFixed(2)}
+                                        </span>
+                                      )}
+                                    </div>
+                                    {c.freeShippingAvailable && !subCarrierFree && (
+                                      <span className="text-[10px] text-gray-500 dark:text-[#CBD5E1] font-medium block mt-0.5">
+                                        Free over €{c.freeThreshold}
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
                         )}
                       </div>
-                    </label>
+
+                      {/* ── Other Carrier Options (DPD, GLS) ── */}
+                      {otherCarriers.map((c) => {
+                        const isSelected = selectedCarrierId === c.id;
+                        const carrierFree = c.freeShippingAvailable && priceAfterDiscount >= c.freeThreshold;
+                        const cost = carrierFree ? 0 : c.basePrice;
+
+                        return (
+                          <label
+                            key={c.id}
+                            onClick={() => setSelectedCarrierId(c.id)}
+                            className={`relative border p-4 sm:p-5 cursor-pointer transition-all duration-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xs ${
+                              isSelected
+                                ? 'border-[#1A1A1A] dark:border-[#C1A98F] bg-[#FAF8F5] dark:bg-[#252525] shadow-xs ring-1 ring-[#1A1A1A] dark:ring-[#C1A98F]'
+                                : 'border-[#EAE3D9] dark:border-[#2E2E2E] hover:border-gray-400 dark:hover:border-gray-600 bg-white dark:bg-[#1E1E1E]'
+                            }`}
+                          >
+                            <div className="flex items-start sm:items-center gap-3.5">
+                              {/* Custom Radio Button */}
+                              <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 mt-0.5 sm:mt-0 ${
+                                isSelected ? 'border-[#1A1A1A] dark:border-[#C1A98F] bg-[#1A1A1A] dark:bg-[#C1A98F]' : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1E1E1E]'
+                              }`}>
+                                {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white dark:bg-black" />}
+                              </div>
+
+                              <div>
+                                <div className="flex flex-wrap items-center gap-2 mb-1">
+                                  <span className="font-serif text-base text-[#1A1A1A] dark:text-[#F5F5F5] font-semibold tracking-wide">
+                                    {c.name}
+                                  </span>
+                                  <span className={`text-[9px] uppercase tracking-wider font-bold px-2 py-0.5 rounded border ${c.badgeColor}`}>
+                                    {c.tagline}
+                                  </span>
+                                </div>
+                                <p className="text-xs text-gray-600 dark:text-[#E2E8F0] font-normal leading-relaxed max-w-lg">
+                                  {c.description}
+                                </p>
+                                <div className="flex items-center gap-3 mt-1.5 text-[11px] text-[#8C6D4F] dark:text-[#DFC8B0]">
+                                  <span className="flex items-center gap-1 font-semibold">
+                                    ✦ Est. Delivery: {c.estimatedDelivery}
+                                  </span>
+                                  <span className="text-gray-300 dark:text-gray-500">•</span>
+                                  <span className="text-gray-600 dark:text-[#CBD5E1] font-medium">Live Tracking Included</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="sm:text-right shrink-0 pl-7 sm:pl-0">
+                              <div className="text-sm font-semibold">
+                                {carrierFree ? (
+                                  <div className="flex flex-col items-start sm:items-end">
+                                    <span className="text-emerald-700 dark:text-emerald-400 font-bold text-xs uppercase tracking-wider">
+                                      Complimentary
+                                    </span>
+                                    <span className="text-[10px] text-gray-400 dark:text-gray-400 line-through">
+                                      €{c.basePrice.toFixed(2)}
+                                    </span>
+                                  </div>
+                                ) : (
+                                  <span className="text-[#8C6D4F] dark:text-[#DFC8B0] font-bold text-base">
+                                    €{cost.toFixed(2)}
+                                  </span>
+                                )}
+                              </div>
+                              {c.freeShippingAvailable && !carrierFree && (
+                                <span className="text-[10px] text-gray-500 dark:text-[#CBD5E1] font-medium block mt-0.5">
+                                  Free over €{c.freeThreshold}
+                                </span>
+                              )}
+                            </div>
+                          </label>
+                        );
+                      })}
+                    </>
                   );
-                })}
+                })()}
               </div>
             </div>
 
