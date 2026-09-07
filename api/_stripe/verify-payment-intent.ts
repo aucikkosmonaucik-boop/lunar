@@ -3,6 +3,7 @@ import Stripe from 'stripe';
 import { prisma } from '../_lib/prisma.js';
 import { sendOrderConfirmationEmail } from '../_lib/email.js';
 import { notifyPaymentConfirmed, notifyOrderPlaced, notifyLoyaltyPointsEarned } from '../_lib/notifications.js';
+import { getStripeSecretKey } from './_stripe-key.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const paymentIntentId =
@@ -15,7 +16,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ message: 'Payment Intent ID is required' });
   }
 
-  const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+  const stripeSecretKey = getStripeSecretKey();
   if (!stripeSecretKey) {
     return res.status(500).json({ message: 'Stripe secret key is not configured.' });
   }

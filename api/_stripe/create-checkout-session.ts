@@ -6,6 +6,7 @@ import bcrypt from 'bcryptjs';
 import { prisma } from '../_lib/prisma.js';
 import { sendOrderConfirmationEmail } from '../_lib/email.js';
 import { getJwtSecret } from '../_lib/auth-util.js';
+import { getStripeSecretKey } from './_stripe-key.js';
 
 const FREE_SHIPPING_THRESHOLD = 50;
 
@@ -43,7 +44,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
-  const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+  const stripeSecretKey = getStripeSecretKey();
 
   const {
     items,

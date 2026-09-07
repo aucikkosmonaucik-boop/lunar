@@ -3,6 +3,7 @@ import Stripe from 'stripe';
 import { prisma } from '../_lib/prisma.js';
 import { sendOrderConfirmationEmail } from '../_lib/email.js';
 import { notifyPaymentConfirmed, notifyOrderPlaced } from '../_lib/notifications.js';
+import { getStripeSecretKey } from './_stripe-key.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const sessionId = (req.query.session_id as string) || (req.body?.session_id as string);
@@ -98,7 +99,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
   }
 
-  const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+  const stripeSecretKey = getStripeSecretKey();
   if (!stripeSecretKey) {
     return res.status(500).json({ message: 'Stripe secret key not configured on server' });
   }

@@ -28,17 +28,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       case 'verify-payment-intent':
         subHandler = (await import('./_stripe/verify-payment-intent.js')).default;
         break;
-      case 'config':
+      case 'config': {
+        const { getStripePublishableKey, getStripeSecretKey } = await import('./_stripe/_stripe-key.js');
+        const pubKey = getStripePublishableKey();
+        const secKey = getStripeSecretKey();
         return res.status(200).json({
-          publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || '',
-          hasSecretKey: !!process.env.STRIPE_SECRET_KEY,
+          publishableKey: pubKey,
+          hasSecretKey: !!secKey && secKey.length > 10,
         });
-      case 'status':
+      }
+      case 'status': {
+        const { getStripeSecretKey } = await import('./_stripe/_stripe-key.js');
+        const secKey = getStripeSecretKey();
         return res.status(200).json({ 
           status: 'ok', 
           message: 'Stripe Handler is active',
-          stripeConfigured: !!process.env.STRIPE_SECRET_KEY
+          stripeConfigured: !!secKey && secKey.length > 10,
+          vercelEnv: process.env.VERCEL_ENV || 'unknown',
         });
+      }
       default:
         return res.status(404).json({ message: `Action '${action}' not found in Stripe Handler` });
     }
