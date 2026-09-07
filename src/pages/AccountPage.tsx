@@ -233,37 +233,37 @@ const AccountPage: React.FC = () => {
     {
       title: 'My Orders',
       description: 'Track packages, return or reorder purchased items',
-      icon: <Package className="w-8 h-8 text-[#1a1a1a] stroke-[1.2] group-hover:text-[#D4AF37] transition-colors duration-300" />,
+      icon: <Package className="w-8 h-8 text-[#1a1a1a] dark:text-[#F5F5F5] stroke-[1.2] group-hover:text-[#D4AF37] dark:group-hover:text-[#C1A98F] transition-colors duration-300" />,
       action: () => setActiveTab('orders'),
     },
     {
       title: 'Addresses',
       description: 'Edit your delivery preferences and addresses for orders',
-      icon: <MapPin className="w-8 h-8 text-[#1a1a1a] stroke-[1.2] group-hover:text-[#D4AF37] transition-colors duration-300" />,
+      icon: <MapPin className="w-8 h-8 text-[#1a1a1a] dark:text-[#F5F5F5] stroke-[1.2] group-hover:text-[#D4AF37] dark:group-hover:text-[#C1A98F] transition-colors duration-300" />,
       action: () => setActiveTab('addresses'),
     },
     {
       title: 'Wishlist',
       description: 'View your saved favorite items and collections',
-      icon: <Heart className="w-8 h-8 text-[#1a1a1a] stroke-[1.2] group-hover:text-[#D4AF37] transition-colors duration-300" />,
+      icon: <Heart className="w-8 h-8 text-[#1a1a1a] dark:text-[#F5F5F5] stroke-[1.2] group-hover:text-[#D4AF37] dark:group-hover:text-[#C1A98F] transition-colors duration-300" />,
       action: () => setActiveTab('wishlist'),
     },
     {
       title: 'Account Settings',
       description: 'Manage your personal details and password',
-      icon: <Settings className="w-8 h-8 text-[#1a1a1a] stroke-[1.2] group-hover:text-[#D4AF37] transition-colors duration-300" />,
+      icon: <Settings className="w-8 h-8 text-[#1a1a1a] dark:text-[#F5F5F5] stroke-[1.2] group-hover:text-[#D4AF37] dark:group-hover:text-[#C1A98F] transition-colors duration-300" />,
       action: () => setActiveTab('settings'),
     },
   ];
 
   return (
-    <div className="flex flex-col items-center w-full min-h-screen bg-white" style={{ paddingTop: '100px' }}>
+    <div className="flex flex-col items-center w-full min-h-screen bg-white dark:bg-[#121212] transition-colors duration-200" style={{ paddingTop: '100px' }}>
       <div className="w-full max-w-5xl px-4 pb-24 flex flex-col items-center mx-auto">
         <div className="mb-10 w-full">
-          <h1 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-4xl md:text-5xl tracking-widest text-[#1a1a1a] uppercase font-light text-center">
+          <h1 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-4xl md:text-5xl tracking-widest text-[#1a1a1a] dark:text-[#F5F5F5] uppercase font-light text-center">
             My Account
           </h1>
-          <p className="mt-4 text-center text-xs uppercase tracking-[0.2em] text-gray-500">
+          <p className="mt-4 text-center text-xs uppercase tracking-[0.2em] text-gray-500 dark:text-[#AAAAAA]">
             Welcome back, {user?.name || user?.email}
           </p>
         </div>
@@ -276,18 +276,18 @@ const AccountPage: React.FC = () => {
                   key={index}
                   type="button"
                   onClick={section.action}
-                  className="group flex flex-col sm:flex-row items-center sm:items-start p-8 border border-gray-200 hover:border-[#D4AF37] bg-white transition-all duration-300 text-center sm:text-left rounded-sm w-full shadow-sm hover:shadow-md"
+                  className="group flex flex-col sm:flex-row items-center sm:items-start p-8 border border-gray-200 dark:border-[#2E2E2E] hover:border-[#D4AF37] dark:hover:border-[#C1A98F] bg-white dark:bg-[#1E1E1E] transition-all duration-300 text-center sm:text-left rounded-sm w-full shadow-sm hover:shadow-md cursor-pointer"
                 >
                   <div className="flex-shrink-0 sm:mr-6 mb-4 sm:mb-0">
-                    <div className="w-16 h-16 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-[#fcfaf5] transition-colors duration-300">
+                    <div className="w-16 h-16 rounded-full bg-gray-50 dark:bg-[#282828] flex items-center justify-center group-hover:bg-[#fcfaf5] dark:group-hover:bg-[#2e2e2e] transition-colors duration-300">
                       {section.icon}
                     </div>
                   </div>
                   <div className="flex-1">
-                    <h2 className="text-[14px] uppercase tracking-widest font-medium text-[#1a1a1a] mb-2 group-hover:text-[#D4AF37] transition-colors duration-300">
+                    <h2 className="text-[14px] uppercase tracking-widest font-medium text-[#1a1a1a] dark:text-[#F5F5F5] mb-2 group-hover:text-[#D4AF37] dark:group-hover:text-[#C1A98F] transition-colors duration-300">
                       {section.title}
                     </h2>
-                    <p className="text-gray-500 text-sm font-light leading-relaxed">
+                    <p className="text-gray-500 dark:text-[#AAAAAA] text-sm font-light leading-relaxed">
                       {section.description}
                     </p>
                   </div>
@@ -298,7 +298,7 @@ const AccountPage: React.FC = () => {
             <div className="mt-16 flex items-center justify-center w-full text-center">
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-2 text-[11px] uppercase tracking-[0.3em] font-medium text-gray-500 hover:text-red-600 transition-colors border-b border-transparent hover:border-red-600 pb-0.5"
+                className="flex items-center gap-2 text-[11px] uppercase tracking-[0.3em] font-medium text-gray-500 dark:text-[#AAAAAA] hover:text-red-600 dark:hover:text-red-400 transition-colors border-b border-transparent hover:border-red-600 pb-0.5 cursor-pointer"
               >
                 <LogOut className="w-4 h-4" />
                 Sign Out
@@ -307,7 +307,7 @@ const AccountPage: React.FC = () => {
           </>
         ) : activeTab === 'orders' ? (
           <div className="w-full max-w-4xl flex flex-col items-center">
-            <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-3xl text-[#1a1a1a] mb-10 tracking-widest uppercase text-center font-light">
+            <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-3xl text-[#1a1a1a] dark:text-[#F5F5F5] mb-10 tracking-widest uppercase text-center font-light">
               Order History
             </h2>
             
@@ -317,10 +317,10 @@ const AccountPage: React.FC = () => {
                   <div className="w-8 h-8 border-2 border-wonders-gold border-t-transparent rounded-full animate-spin" />
                 </div>
               ) : orders.length === 0 ? (
-                <div className="text-center py-20 bg-gray-50 rounded-sm border border-dashed border-gray-200">
-                  <Package className="w-12 h-12 text-gray-300 mx-auto mb-4 stroke-[1]" />
-                  <p className="text-gray-500 uppercase tracking-widest text-xs">No orders found yet</p>
-                  <Link to="/shop" className="mt-6 inline-block text-[10px] uppercase tracking-[0.3em] font-bold text-wonders-gold hover:text-[#1a1a1a] transition-colors">
+                <div className="text-center py-20 bg-gray-50 dark:bg-[#1E1E1E] rounded-sm border border-dashed border-gray-200 dark:border-[#2E2E2E]">
+                  <Package className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4 stroke-[1]" />
+                  <p className="text-gray-500 dark:text-[#AAAAAA] uppercase tracking-widest text-xs">No orders found yet</p>
+                  <Link to="/shop" className="mt-6 inline-block text-[10px] uppercase tracking-[0.3em] font-bold text-wonders-gold hover:text-[#1a1a1a] dark:hover:text-[#F5F5F5] transition-colors">
                     Start Shopping
                   </Link>
                 </div>
@@ -330,29 +330,29 @@ const AccountPage: React.FC = () => {
                   const trackUrl = order.trackingUrl || (order.trackingNumber ? carrier.getTrackingUrl(order.trackingNumber) : '');
 
                   return (
-                    <div key={order.id} className="bg-white border border-gray-100 rounded-sm shadow-sm overflow-hidden text-left">
-                      <div className="bg-gray-50 px-6 py-4 border-b border-gray-100 flex flex-wrap justify-between items-center gap-4">
+                    <div key={order.id} className="bg-white dark:bg-[#1E1E1E] border border-gray-100 dark:border-[#2E2E2E] rounded-sm shadow-sm overflow-hidden text-left transition-colors duration-200">
+                      <div className="bg-gray-50 dark:bg-[#252525] px-6 py-4 border-b border-gray-100 dark:border-[#2E2E2E] flex flex-wrap justify-between items-center gap-4">
                         <div className="flex flex-wrap gap-6 sm:gap-8">
                           <div>
-                            <p className="text-[10px] uppercase tracking-widest text-gray-400 font-medium mb-1">Order Placed</p>
-                            <p className="text-xs text-[#1a1a1a] font-medium">
+                            <p className="text-[10px] uppercase tracking-widest text-gray-400 dark:text-[#888888] font-medium mb-1">Order Placed</p>
+                            <p className="text-xs text-[#1a1a1a] dark:text-[#F5F5F5] font-medium">
                               {new Date(order.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                             </p>
                           </div>
                           <div>
-                            <p className="text-[10px] uppercase tracking-widest text-gray-400 font-medium mb-1">Order Ref</p>
-                            <p className="text-xs text-[#1a1a1a] font-medium font-mono">
+                            <p className="text-[10px] uppercase tracking-widest text-gray-400 dark:text-[#888888] font-medium mb-1">Order Ref</p>
+                            <p className="text-xs text-[#1a1a1a] dark:text-[#F5F5F5] font-medium font-mono">
                               {order.orderNumber || order.id.slice(-8).toUpperCase()}
                             </p>
                           </div>
                           <div>
-                            <p className="text-[10px] uppercase tracking-widest text-gray-400 font-medium mb-1">Total</p>
-                            <p className="text-xs text-[#1a1a1a] font-medium">
+                            <p className="text-[10px] uppercase tracking-widest text-gray-400 dark:text-[#888888] font-medium mb-1">Total</p>
+                            <p className="text-xs text-[#1a1a1a] dark:text-[#F5F5F5] font-medium">
                               {order.total.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}
                             </p>
                           </div>
                           <div>
-                            <p className="text-[10px] uppercase tracking-widest text-gray-400 font-medium mb-1">Carrier</p>
+                            <p className="text-[10px] uppercase tracking-widest text-gray-400 dark:text-[#888888] font-medium mb-1">Carrier</p>
                             <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-[9px] uppercase tracking-wider font-bold rounded border ${carrier.badgeColor}`}>
                               <Truck className="w-2.5 h-2.5" />
                               {order.carrierName || carrier.shortName}
@@ -362,10 +362,10 @@ const AccountPage: React.FC = () => {
                         <div>
                           <span className={`px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-bold ${
                             order.status === 'Delivered'
-                              ? 'bg-green-50 text-green-700 border border-green-200'
+                              ? 'bg-green-50 dark:bg-green-950/40 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-900/50'
                               : order.status === 'Shipped'
-                              ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                              : 'bg-amber-50 text-amber-700 border border-amber-200'
+                              ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-900/50'
+                              : 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-900/50'
                           }`}>
                             {order.status}
                           </span>
@@ -374,15 +374,15 @@ const AccountPage: React.FC = () => {
                       
                       {/* Tracking Waybill Banner (if tracking exists) */}
                       {order.trackingNumber && (
-                        <div className="bg-[#FCFAF7] px-6 py-3 border-b border-[#F0EBE3] flex flex-wrap items-center justify-between gap-3 text-xs">
+                        <div className="bg-[#FCFAF7] dark:bg-[#201d19] px-6 py-3 border-b border-[#F0EBE3] dark:border-[#383228] flex flex-wrap items-center justify-between gap-3 text-xs">
                           <div className="flex items-center gap-2">
-                            <span className="text-[10px] uppercase tracking-[0.2em] text-[#8C6D4F] font-semibold">
+                            <span className="text-[10px] uppercase tracking-[0.2em] text-[#8C6D4F] dark:text-[#C1A98F] font-semibold">
                               Tracking No:
                             </span>
-                            <span className="font-mono font-bold text-[#1a1a1a] bg-white px-2 py-0.5 border border-dashed border-[#C1A98F]">
+                            <span className="font-mono font-bold text-[#1a1a1a] dark:text-[#F5F5F5] bg-white dark:bg-[#1E1E1E] px-2 py-0.5 border border-dashed border-[#C1A98F]">
                               {order.trackingNumber}
                             </span>
-                            <span className="text-[11px] text-gray-500 hidden sm:inline">
+                            <span className="text-[11px] text-gray-500 dark:text-[#AAAAAA] hidden sm:inline">
                               ({order.carrierName || carrier.name})
                             </span>
                           </div>
@@ -392,7 +392,7 @@ const AccountPage: React.FC = () => {
                               href={trackUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a] hover:text-[#D4AF37] transition-colors"
+                              className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a] dark:text-[#F5F5F5] hover:text-[#D4AF37] dark:hover:text-[#C1A98F] transition-colors"
                             >
                               <span>Track with {carrier.shortName}</span>
                               <ExternalLink className="w-3 h-3" />
@@ -403,13 +403,13 @@ const AccountPage: React.FC = () => {
 
                       <div className="p-6">
                         {order.items.map((item: OrderItem) => (
-                          <div key={item.id} className="flex flex-col sm:flex-row items-center sm:items-start gap-6 border-b border-gray-50 last:border-0 pb-6 last:pb-0 mb-6 last:mb-0">
-                            <div className="w-24 h-24 bg-gray-50 flex-shrink-0 rounded-sm overflow-hidden border border-gray-100">
+                          <div key={item.id} className="flex flex-col sm:flex-row items-center sm:items-start gap-6 border-b border-gray-50 dark:border-[#2E2E2E] last:border-0 pb-6 last:pb-0 mb-6 last:mb-0">
+                            <div className="w-24 h-24 bg-gray-50 dark:bg-[#252525] flex-shrink-0 rounded-sm overflow-hidden border border-gray-100 dark:border-[#2E2E2E]">
                               <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                             </div>
                             <div className="flex-grow text-center sm:text-left">
-                              <h3 className="text-sm font-medium text-[#1a1a1a] uppercase tracking-widest mb-2">{item.name}</h3>
-                              <p className="text-gray-400 text-[10px] uppercase tracking-widest mb-4">Qty: {item.quantity} • {item.price.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}</p>
+                              <h3 className="text-sm font-medium text-[#1a1a1a] dark:text-[#F5F5F5] uppercase tracking-widest mb-2">{item.name}</h3>
+                              <p className="text-gray-400 dark:text-[#AAAAAA] text-[10px] uppercase tracking-widest mb-4">Qty: {item.quantity} • {item.price.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}</p>
                               <div className="flex items-center justify-center sm:justify-start gap-2 text-[10px] text-wonders-gold uppercase tracking-widest font-bold">
                                 <Clock className="w-3.5 h-3.5" />
                                 Est. delivery: {order.estimatedDelivery || carrier.estimatedDelivery}
@@ -418,7 +418,7 @@ const AccountPage: React.FC = () => {
                             <div className="flex-shrink-0">
                               <Link 
                                 to={`/product/${item.productId}`}
-                                className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a] border border-[#1a1a1a] px-6 py-2.5 hover:bg-[#1a1a1a] hover:text-white transition-all duration-300"
+                                className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#1a1a1a] dark:text-[#F5F5F5] border border-[#1a1a1a] dark:border-[#444444] px-6 py-2.5 hover:bg-[#1a1a1a] dark:hover:bg-[#C1A98F] hover:text-white dark:hover:text-[#121212] transition-all duration-300"
                               >
                                 View Product
                               </Link>
@@ -427,16 +427,16 @@ const AccountPage: React.FC = () => {
                         ))}
                       </div>
 
-                      <div className="px-6 py-3 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between">
+                      <div className="px-6 py-3 bg-gray-50/50 dark:bg-[#252525]/60 border-t border-gray-100 dark:border-[#2E2E2E] flex items-center justify-between">
                         <Link
                           to={`/track-order?orderNumber=${encodeURIComponent(order.orderNumber || order.id)}`}
-                          className="text-[10px] uppercase tracking-widest font-semibold text-[#8C6D4F] hover:text-black inline-flex items-center gap-1 transition-colors"
+                          className="text-[10px] uppercase tracking-widest font-semibold text-[#8C6D4F] dark:text-[#C1A98F] hover:text-black dark:hover:text-white inline-flex items-center gap-1 transition-colors"
                         >
                           <span>Live Progress Timeline</span>
                           <ArrowRight className="w-3 h-3" />
                         </Link>
 
-                        <span className="text-[10px] text-gray-400">
+                        <span className="text-[10px] text-gray-400 dark:text-[#888888]">
                           {order.items.length} {order.items.length === 1 ? 'item' : 'items'}
                         </span>
                       </div>
@@ -448,39 +448,39 @@ const AccountPage: React.FC = () => {
             
             <button 
               onClick={() => setActiveTab('overview')}
-              className="mt-12 text-[11px] uppercase tracking-widest text-gray-500 hover:text-[#1a1a1a] border-b border-transparent hover:border-[#1a1a1a] transition-all pb-0.5"
+              className="mt-12 text-[11px] uppercase tracking-widest text-gray-500 dark:text-[#AAAAAA] hover:text-[#1a1a1a] dark:hover:text-[#F5F5F5] border-b border-transparent hover:border-[#1a1a1a] dark:hover:border-[#F5F5F5] transition-all pb-0.5 cursor-pointer"
             >
               Back to Overview
             </button>
           </div>
         ) : activeTab === 'wishlist' ? (
           <div className="w-full max-w-4xl flex flex-col items-center">
-            <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-3xl text-[#1a1a1a] mb-10 tracking-widest uppercase text-center font-light">
+            <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-3xl text-[#1a1a1a] dark:text-[#F5F5F5] mb-10 tracking-widest uppercase text-center font-light">
               Your Wishlist
             </h2>
-                       <div className="w-full">
+            <div className="w-full">
               {wishlistItems.length === 0 ? (
-                <div className="text-center py-24 bg-gray-50/50 rounded-sm border border-dashed border-gray-200 w-full">
-                  <Heart className="w-16 h-16 text-gray-200 mx-auto mb-6 stroke-[1]" />
-                  <p className="text-gray-400 uppercase tracking-[0.3em] text-[10px] font-medium">Your wishlist is currently empty</p>
-                  <Link to="/shop" className="mt-8 inline-block text-[11px] uppercase tracking-[0.4em] font-bold text-[#D4AF37] hover:text-[#1a1a1a] transition-all border-b border-[#D4AF37] pb-1">
+                <div className="text-center py-24 bg-gray-50/50 dark:bg-[#1E1E1E] rounded-sm border border-dashed border-gray-200 dark:border-[#2E2E2E] w-full">
+                  <Heart className="w-16 h-16 text-gray-200 dark:text-gray-700 mx-auto mb-6 stroke-[1]" />
+                  <p className="text-gray-400 dark:text-[#AAAAAA] uppercase tracking-[0.3em] text-[10px] font-medium">Your wishlist is currently empty</p>
+                  <Link to="/shop" className="mt-8 inline-block text-[11px] uppercase tracking-[0.4em] font-bold text-[#D4AF37] dark:text-[#C1A98F] hover:text-[#1a1a1a] dark:hover:text-[#F5F5F5] transition-all border-b border-[#D4AF37] dark:border-[#C1A98F] pb-1">
                     Explore Our Collection
                   </Link>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 w-full">
                   {wishlistItems.map((product) => (
-                    <div key={product.id} className="bg-white border border-gray-100 rounded-sm shadow-sm hover:shadow-md transition-shadow duration-300 flex p-5 gap-7 group relative">
-                      <Link to={`/product/${product.id}`} className="w-28 h-36 bg-gray-50 flex-shrink-0 rounded-sm overflow-hidden border border-gray-100">
+                    <div key={product.id} className="bg-white dark:bg-[#1E1E1E] border border-gray-100 dark:border-[#2E2E2E] rounded-sm shadow-sm hover:shadow-md transition-all duration-300 flex p-5 gap-7 group relative">
+                      <Link to={`/product/${product.id}`} className="w-28 h-36 bg-gray-50 dark:bg-[#252525] flex-shrink-0 rounded-sm overflow-hidden border border-gray-100 dark:border-[#2E2E2E]">
                         <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                       </Link>
                       <div className="flex-grow flex flex-col justify-between py-1">
                         <div>
-                          <p className="text-[9px] text-gray-400 uppercase tracking-[0.3em] mb-2 font-medium">Lunar Collection</p>
-                          <h3 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-xl font-light text-[#1a1a1a] uppercase tracking-wider mb-2 leading-tight">
+                          <p className="text-[9px] text-gray-400 dark:text-[#888888] uppercase tracking-[0.3em] mb-2 font-medium">Lunar Collection</p>
+                          <h3 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-xl font-light text-[#1a1a1a] dark:text-[#F5F5F5] uppercase tracking-wider mb-2 leading-tight">
                             {product.name}
                           </h3>
-                          <p className="text-[#D4AF37] text-sm font-bold tracking-[0.15em]">
+                          <p className="text-[#D4AF37] dark:text-[#C1A98F] text-sm font-bold tracking-[0.15em]">
                             {product.price.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}
                           </p>
                         </div>
@@ -489,10 +489,10 @@ const AccountPage: React.FC = () => {
                             type="button"
                             onClick={() => addToCart(product, 1)}
                             disabled={(product.stock !== undefined && product.stock <= 0) || product.badge === 'SOLD OUT' || product.isAvailable === false}
-                            className={`text-[10px] uppercase tracking-[0.25em] font-bold px-6 py-3 transition-all duration-300 ${
+                            className={`text-[10px] uppercase tracking-[0.25em] font-bold px-6 py-3 transition-all duration-300 cursor-pointer ${
                               ((product.stock !== undefined && product.stock <= 0) || product.badge === 'SOLD OUT' || product.isAvailable === false)
-                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                                : 'bg-[#1a1a1a] text-white hover:bg-[#D4AF37]'
+                                ? 'bg-gray-100 dark:bg-[#282828] text-gray-400 dark:text-gray-600 cursor-not-allowed' 
+                                : 'bg-[#1a1a1a] dark:bg-[#C1A98F] text-white dark:text-[#121212] hover:bg-[#D4AF37] dark:hover:bg-[#d4be9f]'
                             }`}
                           >
                             {((product.stock !== undefined && product.stock <= 0) || product.badge === 'SOLD OUT' || product.isAvailable === false) ? 'Sold Out' : 'Add to Bag'}
@@ -500,7 +500,7 @@ const AccountPage: React.FC = () => {
                           <button 
                             type="button"
                             onClick={() => removeFromFavorites(product.id)}
-                            className="text-[10px] uppercase tracking-[0.2em] font-medium text-gray-400 hover:text-red-500 transition-colors flex items-center gap-1.5"
+                            className="text-[10px] uppercase tracking-[0.2em] font-medium text-gray-400 dark:text-[#AAAAAA] hover:text-red-500 dark:hover:text-red-400 transition-colors flex items-center gap-1.5 cursor-pointer"
                           >
                             <span>Remove</span>
                           </button>
@@ -514,7 +514,7 @@ const AccountPage: React.FC = () => {
             
             <button 
               onClick={() => setActiveTab('overview')}
-              className="mt-12 text-[11px] uppercase tracking-widest text-gray-500 hover:text-[#1a1a1a] border-b border-transparent hover:border-[#1a1a1a] transition-all pb-0.5"
+              className="mt-12 text-[11px] uppercase tracking-widest text-gray-500 dark:text-[#AAAAAA] hover:text-[#1a1a1a] dark:hover:text-[#F5F5F5] border-b border-transparent hover:border-[#1a1a1a] dark:hover:border-[#F5F5F5] transition-all pb-0.5 cursor-pointer"
             >
               Back to Overview
             </button>
@@ -568,12 +568,12 @@ const AccountPage: React.FC = () => {
 
             {/* REWARDS STORE SECTION */}
             <div className="w-full space-y-6">
-              <div className="flex items-center justify-between border-b border-gray-200 pb-4">
+              <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#2E2E2E] pb-4">
                 <div>
-                  <h3 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-3xl text-[#1a1a1a] tracking-widest uppercase font-light">
+                  <h3 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-3xl text-[#1a1a1a] dark:text-[#F5F5F5] tracking-widest uppercase font-light">
                     Redeem Points for Discount Vouchers
                   </h3>
-                  <p className="text-xs text-gray-500 uppercase tracking-widest mt-1">
+                  <p className="text-xs text-gray-500 dark:text-[#AAAAAA] uppercase tracking-widest mt-1">
                     Select your reward to generate an instant voucher code in your wallet below
                   </p>
                 </div>
@@ -587,31 +587,31 @@ const AccountPage: React.FC = () => {
                   return (
                     <div
                       key={reward.id}
-                      className={`bg-white border rounded-sm p-6 shadow-sm flex flex-col justify-between transition-all duration-300 ${
+                      className={`bg-white dark:bg-[#1E1E1E] border rounded-sm p-6 shadow-sm flex flex-col justify-between transition-all duration-300 ${
                         canAfford
-                          ? 'border-gray-200 hover:border-[#D4AF37] hover:shadow-md'
-                          : 'border-gray-100 opacity-60 bg-gray-50/50'
+                          ? 'border-gray-200 dark:border-[#2E2E2E] hover:border-[#D4AF37] dark:hover:border-[#C1A98F] hover:shadow-md'
+                          : 'border-gray-100 dark:border-[#2E2E2E] opacity-60 bg-gray-50/50 dark:bg-[#1A1A1A]'
                       }`}
                     >
                       <div>
                         <div className="flex items-center justify-between mb-3">
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-900 border border-amber-200 text-xs font-bold rounded-full">
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 border border-amber-200 dark:border-amber-900/50 text-xs font-bold rounded-full">
                             <Coins className="w-3.5 h-3.5 text-[#D4AF37]" />
                             {reward.pointsCost} PTS
                           </span>
-                          <span className="text-sm font-bold text-emerald-700 font-mono">
+                          <span className="text-sm font-bold text-emerald-700 dark:text-emerald-400 font-mono">
                             {reward.discountType === 'PERCENTAGE' ? `-${reward.discountValue}%` : `-€${reward.discountValue.toFixed(2)}`}
                           </span>
                         </div>
 
-                        <h4 className="font-serif text-xl text-[#1a1a1a] font-bold mb-2">
+                        <h4 className="font-serif text-xl text-[#1a1a1a] dark:text-[#F5F5F5] font-bold mb-2">
                           {reward.title}
                         </h4>
-                        <p className="text-xs text-gray-500 leading-relaxed mb-4">
+                        <p className="text-xs text-gray-500 dark:text-[#AAAAAA] leading-relaxed mb-4">
                           {reward.description || 'Exclusive discount voucher for the Lunar Boutique collection.'}
                         </p>
                         {reward.minOrderValue > 0 && (
-                          <p className="text-[10px] text-gray-400 uppercase tracking-wider mb-4">
+                          <p className="text-[10px] text-gray-400 dark:text-[#888888] uppercase tracking-wider mb-4">
                             Min. order: €{reward.minOrderValue.toFixed(2)}
                           </p>
                         )}
@@ -630,10 +630,10 @@ const AccountPage: React.FC = () => {
                             showNotification(res.message, 'error');
                           }
                         }}
-                        className={`w-full py-3.5 px-4 text-xs uppercase tracking-[0.2em] font-bold rounded-sm transition-all duration-300 flex items-center justify-center gap-2 ${
+                        className={`w-full py-3.5 px-4 text-xs uppercase tracking-[0.2em] font-bold rounded-sm transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
                           canAfford
-                            ? 'bg-[#1a1a1a] text-white hover:bg-[#D4AF37] hover:text-black shadow'
-                            : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                            ? 'bg-[#1a1a1a] dark:bg-[#C1A98F] text-white dark:text-[#121212] hover:bg-[#D4AF37] dark:hover:bg-[#d4be9f] shadow'
+                            : 'bg-gray-100 dark:bg-[#282828] text-gray-400 dark:text-gray-600 cursor-not-allowed'
                         }`}
                       >
                         {isRedeeming ? (
@@ -654,19 +654,19 @@ const AccountPage: React.FC = () => {
             </div>
 
             {/* MY ACTIVE COUPONS WALLET */}
-            <div className="w-full space-y-6 pt-6 border-t border-gray-200">
+            <div className="w-full space-y-6 pt-6 border-t border-gray-200 dark:border-[#2E2E2E]">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-3xl text-[#1a1a1a] tracking-widest uppercase font-light">
+                  <h3 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-3xl text-[#1a1a1a] dark:text-[#F5F5F5] tracking-widest uppercase font-light">
                     My Active Vouchers ({userCoupons.filter(c => !c.isUsed).length} available)
                   </h3>
-                  <p className="text-xs text-gray-500 uppercase tracking-widest mt-1">
+                  <p className="text-xs text-gray-500 dark:text-[#AAAAAA] uppercase tracking-widest mt-1">
                     Your redeemed discount vouchers ready to be applied in checkout
                   </p>
                 </div>
                 <Link
                   to="/cart"
-                  className="text-xs uppercase tracking-widest font-bold text-[#D4AF37] hover:text-black flex items-center gap-1 border-b border-[#D4AF37] pb-0.5"
+                  className="text-xs uppercase tracking-widest font-bold text-[#D4AF37] dark:text-[#C1A98F] hover:text-black dark:hover:text-white flex items-center gap-1 border-b border-[#D4AF37] dark:border-[#C1A98F] pb-0.5"
                 >
                   <span>View Bag</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -674,12 +674,12 @@ const AccountPage: React.FC = () => {
               </div>
 
               {userCoupons.length === 0 ? (
-                <div className="text-center py-12 bg-gray-50 rounded-sm border border-dashed border-gray-200">
-                  <Coins className="w-10 h-10 text-gray-300 mx-auto mb-3" />
-                  <p className="text-xs uppercase tracking-widest text-gray-500">
+                <div className="text-center py-12 bg-gray-50 dark:bg-[#1E1E1E] rounded-sm border border-dashed border-gray-200 dark:border-[#2E2E2E]">
+                  <Coins className="w-10 h-10 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
+                  <p className="text-xs uppercase tracking-widest text-gray-500 dark:text-[#AAAAAA]">
                     No active discount vouchers in your wallet
                   </p>
-                  <p className="text-[11px] text-gray-400 mt-1">
+                  <p className="text-[11px] text-gray-400 dark:text-[#888888] mt-1">
                     Redeem your earned points above to generate a voucher code.
                   </p>
                 </div>
@@ -690,32 +690,32 @@ const AccountPage: React.FC = () => {
                       key={coupon.id}
                       className={`p-5 rounded-sm border transition-all ${
                         coupon.isUsed
-                          ? 'bg-gray-50 border-gray-200 opacity-50'
-                          : 'bg-white border-[#D4AF37]/50 shadow-sm hover:shadow-md'
+                          ? 'bg-gray-50 dark:bg-[#1A1A1A] border-gray-200 dark:border-[#2E2E2E] opacity-50'
+                          : 'bg-white dark:bg-[#1E1E1E] border-[#D4AF37]/50 shadow-sm hover:shadow-md'
                       }`}
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <span className="font-mono font-bold text-base text-black bg-gray-100 px-3 py-1 rounded border border-gray-200">
+                        <span className="font-mono font-bold text-base text-black dark:text-[#F5F5F5] bg-gray-100 dark:bg-[#282828] px-3 py-1 rounded border border-gray-200 dark:border-[#2E2E2E]">
                           {coupon.code}
                         </span>
                         <span
                           className={`text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-wider ${
-                            coupon.isUsed ? 'bg-gray-200 text-gray-600' : 'bg-emerald-100 text-emerald-800'
+                            coupon.isUsed ? 'bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-400' : 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300'
                           }`}
                         >
                           {coupon.isUsed ? 'Used' : 'Active'}
                         </span>
                       </div>
 
-                      <div className="flex items-center justify-between text-xs text-gray-600 my-2">
+                      <div className="flex items-center justify-between text-xs text-gray-600 dark:text-[#AAAAAA] my-2">
                         <span>Discount:</span>
-                        <span className="font-bold text-emerald-700 text-sm">
+                        <span className="font-bold text-emerald-700 dark:text-emerald-400 text-sm">
                           {coupon.discountType === 'PERCENTAGE' ? `-${coupon.discountValue}%` : `-€${coupon.discountValue.toFixed(2)}`}
                         </span>
                       </div>
 
                       {!coupon.isUsed && (
-                        <div className="flex items-center gap-2 mt-4 pt-3 border-t border-gray-100">
+                        <div className="flex items-center gap-2 mt-4 pt-3 border-t border-gray-100 dark:border-[#2E2E2E]">
                           <button
                             type="button"
                             onClick={() => {
@@ -723,7 +723,7 @@ const AccountPage: React.FC = () => {
                               setCopiedCouponCode(coupon.code);
                               setTimeout(() => setCopiedCouponCode(null), 2000);
                             }}
-                            className="flex-1 py-2 px-3 bg-gray-100 hover:bg-gray-200 text-black text-xs font-bold uppercase tracking-wider rounded flex items-center justify-center gap-1.5 transition-colors"
+                            className="flex-1 py-2 px-3 bg-gray-100 dark:bg-[#282828] hover:bg-gray-200 dark:hover:bg-[#333333] text-black dark:text-[#F5F5F5] text-xs font-bold uppercase tracking-wider rounded flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                           >
                             <Copy className="w-3.5 h-3.5" />
                             <span>{copiedCouponCode === coupon.code ? 'Copied!' : 'Copy Code'}</span>
@@ -731,7 +731,7 @@ const AccountPage: React.FC = () => {
 
                           <Link
                             to="/cart"
-                            className="py-2 px-4 bg-[#1a1a1a] hover:bg-[#D4AF37] text-white hover:text-black text-xs font-bold uppercase tracking-wider rounded transition-colors text-center"
+                            className="py-2 px-4 bg-[#1a1a1a] dark:bg-[#C1A98F] hover:bg-[#D4AF37] dark:hover:bg-[#d4be9f] text-white dark:text-[#121212] hover:text-black text-xs font-bold uppercase tracking-wider rounded transition-colors text-center"
                           >
                             Apply
                           </Link>
@@ -744,22 +744,22 @@ const AccountPage: React.FC = () => {
             </div>
 
             {/* POINTS HISTORY AUDIT */}
-            <div className="w-full space-y-4 pt-6 border-t border-gray-200">
-              <h3 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-2xl text-[#1a1a1a] tracking-widest uppercase font-light">
+            <div className="w-full space-y-4 pt-6 border-t border-gray-200 dark:border-[#2E2E2E]">
+              <h3 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-2xl text-[#1a1a1a] dark:text-[#F5F5F5] tracking-widest uppercase font-light">
                 Points Ledger & History
               </h3>
 
-              <div className="bg-white border border-gray-200 rounded-sm overflow-hidden">
-                <div className="divide-y divide-gray-100 text-xs">
+              <div className="bg-white dark:bg-[#1E1E1E] border border-gray-200 dark:border-[#2E2E2E] rounded-sm overflow-hidden">
+                <div className="divide-y divide-gray-100 dark:divide-[#2E2E2E] text-xs">
                   {history.map((h) => (
-                    <div key={h.id} className="p-3.5 flex items-center justify-between hover:bg-gray-50">
+                    <div key={h.id} className="p-3.5 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-[#252525] transition-colors">
                       <div>
-                        <p className="font-medium text-black">{h.description}</p>
-                        <p className="text-[10px] text-gray-400">
+                        <p className="font-medium text-black dark:text-[#F5F5F5]">{h.description}</p>
+                        <p className="text-[10px] text-gray-400 dark:text-[#888888]">
                           {new Date(h.createdAt).toLocaleDateString('en-US')}
                         </p>
                       </div>
-                      <span className={`font-bold text-sm ${h.points > 0 ? 'text-emerald-600' : 'text-amber-700'}`}>
+                      <span className={`font-bold text-sm ${h.points > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-700 dark:text-amber-400'}`}>
                         {h.points > 0 ? `+${h.points}` : h.points} PTS
                       </span>
                     </div>
@@ -770,68 +770,68 @@ const AccountPage: React.FC = () => {
 
             <button 
               onClick={() => setActiveTab('overview')}
-              className="mt-8 text-[11px] uppercase tracking-widest text-gray-500 hover:text-[#1a1a1a] border-b border-transparent hover:border-[#1a1a1a] transition-all pb-0.5"
+              className="mt-8 text-[11px] uppercase tracking-widest text-gray-500 dark:text-[#AAAAAA] hover:text-[#1a1a1a] dark:hover:text-[#F5F5F5] border-b border-transparent hover:border-[#1a1a1a] dark:hover:border-[#F5F5F5] transition-all pb-0.5 cursor-pointer"
             >
               Back to Overview
             </button>
           </div>
         ) : activeTab === 'addresses' ? (
-          <div className="w-full max-w-2xl bg-white p-8 md:p-10 border border-gray-100 rounded-sm shadow-sm md:mt-[-130px] transition-all duration-500">
-            <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-3xl text-[#1a1a1a] mb-8 tracking-widest uppercase text-center font-light">
+          <div className="w-full max-w-2xl bg-white dark:bg-[#1E1E1E] p-8 md:p-10 border border-gray-100 dark:border-[#2E2E2E] rounded-sm shadow-sm md:mt-[-130px] transition-all duration-500">
+            <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-3xl text-[#1a1a1a] dark:text-[#F5F5F5] mb-8 tracking-widest uppercase text-center font-light">
               Delivery Address
             </h2>
             <form className="space-y-6" onSubmit={handleUpdateAddress}>
               <div>
-                <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">Street Address</label>
+                <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 dark:text-[#888888] font-medium mb-2">Street Address</label>
                 <input
                   type="text"
                   value={editStreet}
                   onChange={(e) => setEditStreet(e.target.value)}
                   placeholder="e.g. 123 Luxury Ave"
-                  className="w-full bg-transparent border-b border-gray-200 py-3 text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#D4AF37] transition-colors duration-300"
+                  className="w-full bg-transparent border-b border-gray-200 dark:border-[#2E2E2E] py-3 text-[15px] text-[#1a1a1a] dark:text-[#F5F5F5] placeholder-gray-300 dark:placeholder-[#555555] font-light tracking-wide focus:outline-none focus:border-[#D4AF37] dark:focus:border-[#C1A98F] transition-colors duration-300"
                 />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">City</label>
+                  <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 dark:text-[#888888] font-medium mb-2">City</label>
                   <input
                     type="text"
                     value={editCity}
                     onChange={(e) => setEditCity(e.target.value)}
                     placeholder="New York"
-                    className="w-full bg-transparent border-b border-gray-200 py-3 text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#D4AF37] transition-colors duration-300"
+                    className="w-full bg-transparent border-b border-gray-200 dark:border-[#2E2E2E] py-3 text-[15px] text-[#1a1a1a] dark:text-[#F5F5F5] placeholder-gray-300 dark:placeholder-[#555555] font-light tracking-wide focus:outline-none focus:border-[#D4AF37] dark:focus:border-[#C1A98F] transition-colors duration-300"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">Postal Code</label>
+                  <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 dark:text-[#888888] font-medium mb-2">Postal Code</label>
                   <input
                     type="text"
                     value={editPostal}
                     onChange={(e) => setEditPostal(e.target.value)}
                     placeholder="10001"
-                    className="w-full bg-transparent border-b border-gray-200 py-3 text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#D4AF37] transition-colors duration-300"
+                    className="w-full bg-transparent border-b border-gray-200 dark:border-[#2E2E2E] py-3 text-[15px] text-[#1a1a1a] dark:text-[#F5F5F5] placeholder-gray-300 dark:placeholder-[#555555] font-light tracking-wide focus:outline-none focus:border-[#D4AF37] dark:focus:border-[#C1A98F] transition-colors duration-300"
                   />
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">Country</label>
+                  <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 dark:text-[#888888] font-medium mb-2">Country</label>
                   <input
                     type="text"
                     value={editCountry}
                     onChange={(e) => setEditCountry(e.target.value)}
                     placeholder="United States"
-                    className="w-full bg-transparent border-b border-gray-200 py-3 text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#D4AF37] transition-colors duration-300"
+                    className="w-full bg-transparent border-b border-gray-200 dark:border-[#2E2E2E] py-3 text-[15px] text-[#1a1a1a] dark:text-[#F5F5F5] placeholder-gray-300 dark:placeholder-[#555555] font-light tracking-wide focus:outline-none focus:border-[#D4AF37] dark:focus:border-[#C1A98F] transition-colors duration-300"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">Phone Number</label>
+                  <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 dark:text-[#888888] font-medium mb-2">Phone Number</label>
                   <input
                     type="tel"
                     value={editPhone}
                     onChange={(e) => setEditPhone(e.target.value)}
                     placeholder="+1 234 567 890"
-                    className="w-full bg-transparent border-b border-gray-200 py-3 text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#D4AF37] transition-colors duration-300"
+                    className="w-full bg-transparent border-b border-gray-200 dark:border-[#2E2E2E] py-3 text-[15px] text-[#1a1a1a] dark:text-[#F5F5F5] placeholder-gray-300 dark:placeholder-[#555555] font-light tracking-wide focus:outline-none focus:border-[#D4AF37] dark:focus:border-[#C1A98F] transition-colors duration-300"
                   />
                 </div>
               </div>
@@ -840,14 +840,14 @@ const AccountPage: React.FC = () => {
                 <button 
                   type="button" 
                   onClick={() => setActiveTab('overview')} 
-                  className="text-[11px] uppercase tracking-widest text-gray-500 hover:text-[#1a1a1a] border-b border-transparent hover:border-[#1a1a1a] transition-all pb-0.5"
+                  className="text-[11px] uppercase tracking-widest text-gray-500 dark:text-[#AAAAAA] hover:text-[#1a1a1a] dark:hover:text-[#F5F5F5] border-b border-transparent hover:border-[#1a1a1a] dark:hover:border-[#F5F5F5] transition-all pb-0.5 cursor-pointer"
                 >
                   Back to Overview
                 </button>
                 <button 
                   type="submit"
                   disabled={loading}
-                  className="w-full sm:w-auto bg-[#1a1a1a] text-white text-[11px] uppercase tracking-[0.3em] py-4 px-10 hover:bg-[#D4AF37] transition-colors duration-300 disabled:opacity-50"
+                  className="w-full sm:w-auto bg-[#1a1a1a] dark:bg-[#C1A98F] text-white dark:text-[#121212] text-[11px] uppercase tracking-[0.3em] py-4 px-10 hover:bg-[#D4AF37] dark:hover:bg-[#d4be9f] transition-colors duration-300 disabled:opacity-50 cursor-pointer"
                 >
                   {loading ? 'Updating...' : 'Update Address'}
                 </button>
@@ -855,12 +855,12 @@ const AccountPage: React.FC = () => {
             </form>
 
             {(user?.street || user?.city || user?.postalCode || user?.country) && (
-              <div className="mt-12 pt-12 border-t border-gray-100 w-full">
-                <h3 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-2xl text-[#1a1a1a] mb-8 tracking-widest uppercase text-center font-light">
+              <div className="mt-12 pt-12 border-t border-gray-100 dark:border-[#2E2E2E] w-full">
+                <h3 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-2xl text-[#1a1a1a] dark:text-[#F5F5F5] mb-8 tracking-widest uppercase text-center font-light">
                   Saved Delivery Address
                 </h3>
                 <div className="max-w-md mx-auto relative group">
-                  <div className="bg-[#fcfaf5] border border-[#f5eeeb] p-10 rounded-sm shadow-sm group-hover:shadow-md transition-all duration-500 relative overflow-hidden">
+                  <div className="bg-[#fcfaf5] dark:bg-[#252525] border border-[#f5eeeb] dark:border-[#2E2E2E] p-10 rounded-sm shadow-sm group-hover:shadow-md transition-all duration-500 relative overflow-hidden">
                     {/* Decorative gold line */}
                     <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent opacity-50" />
                     
@@ -868,7 +868,7 @@ const AccountPage: React.FC = () => {
                       <button 
                         type="button"
                         onClick={handleDeleteAddress}
-                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all"
+                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-full transition-all cursor-pointer"
                         title="Remove Address"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -876,24 +876,24 @@ const AccountPage: React.FC = () => {
                     </div>
 
                     <div className="flex flex-col items-center">
-                      <div className="mb-6 w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm border border-[#f5eeeb]">
-                        <MapPin className="w-5 h-5 text-[#D4AF37] stroke-[1.5]" />
+                      <div className="mb-6 w-12 h-12 bg-white dark:bg-[#1E1E1E] rounded-full flex items-center justify-center shadow-sm border border-[#f5eeeb] dark:border-[#2E2E2E]">
+                        <MapPin className="w-5 h-5 text-[#D4AF37] dark:text-[#C1A98F] stroke-[1.5]" />
                       </div>
                       
                       <div className="space-y-4 text-center">
-                        <span className="text-[9px] uppercase tracking-[0.4em] text-[#D4AF37] font-bold">Default Residence</span>
+                        <span className="text-[9px] uppercase tracking-[0.4em] text-[#D4AF37] dark:text-[#C1A98F] font-bold">Default Residence</span>
                         <div className="pt-2">
-                          <p className="text-[17px] text-[#1a1a1a] font-light tracking-wide mb-1 leading-relaxed" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                          <p className="text-[17px] text-[#1a1a1a] dark:text-[#F5F5F5] font-light tracking-wide mb-1 leading-relaxed" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
                             {user.street}
                           </p>
-                          <p className="text-[14px] text-gray-600 font-light tracking-[0.05em] mb-1">
+                          <p className="text-[14px] text-gray-600 dark:text-[#AAAAAA] font-light tracking-[0.05em] mb-1">
                             {user.postalCode} • {user.city}
                           </p>
-                          <p className="text-[12px] text-gray-400 font-medium tracking-[0.2em] uppercase pt-2">
+                          <p className="text-[12px] text-gray-400 dark:text-[#888888] font-medium tracking-[0.2em] uppercase pt-2">
                             {user.country}
                           </p>
                           {user.phone && (
-                            <div className="flex items-center justify-center gap-2 mt-4 text-[#D4AF37]">
+                            <div className="flex items-center justify-center gap-2 mt-4 text-[#D4AF37] dark:text-[#C1A98F]">
                               <Phone className="w-3.5 h-3.5" />
                               <p className="text-[13px] font-medium tracking-wider">{user.phone}</p>
                             </div>
@@ -907,69 +907,69 @@ const AccountPage: React.FC = () => {
             )}
           </div>
         ) : (
-          <div className="w-full max-w-2xl bg-white p-8 md:p-10 border border-gray-100 rounded-sm shadow-sm">
-            <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-3xl text-[#1a1a1a] mb-8 tracking-widest uppercase text-center font-light">
+          <div className="w-full max-w-2xl bg-white dark:bg-[#1E1E1E] p-8 md:p-10 border border-gray-100 dark:border-[#2E2E2E] rounded-sm shadow-sm">
+            <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-3xl text-[#1a1a1a] dark:text-[#F5F5F5] mb-8 tracking-widest uppercase text-center font-light">
               Personal Details
             </h2>
             <form className="space-y-6" onSubmit={handleUpdateProfile}>
               <div>
-                <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">Full Name</label>
+                <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 dark:text-[#888888] font-medium mb-2">Full Name</label>
                 <input
                   type="text"
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
-                  className="w-full bg-transparent border-b border-gray-200 py-3 text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#D4AF37] transition-colors duration-300"
+                  className="w-full bg-transparent border-b border-gray-200 dark:border-[#2E2E2E] py-3 text-[15px] text-[#1a1a1a] dark:text-[#F5F5F5] placeholder-gray-300 dark:placeholder-[#555555] font-light tracking-wide focus:outline-none focus:border-[#D4AF37] dark:focus:border-[#C1A98F] transition-colors duration-300"
                 />
               </div>
               <div>
-                <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">Email Address</label>
+                <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 dark:text-[#888888] font-medium mb-2">Email Address</label>
                 <input
                   type="email"
                   value={editEmail}
                   onChange={(e) => setEditEmail(e.target.value)}
-                  className="w-full bg-transparent border-b border-gray-200 py-3 text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#D4AF37] transition-colors duration-300"
+                  className="w-full bg-transparent border-b border-gray-200 dark:border-[#2E2E2E] py-3 text-[15px] text-[#1a1a1a] dark:text-[#F5F5F5] placeholder-gray-300 dark:placeholder-[#555555] font-light tracking-wide focus:outline-none focus:border-[#D4AF37] dark:focus:border-[#C1A98F] transition-colors duration-300"
                 />
               </div>
               <div>
-                <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">New Password (Optional)</label>
+                <label className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 dark:text-[#888888] font-medium mb-2">New Password (Optional)</label>
                 <input
                   type="password"
                   value={editPassword}
                   onChange={(e) => setEditPassword(e.target.value)}
                   placeholder="Leave blank to keep current"
-                  className="w-full bg-transparent border-b border-gray-200 py-3 text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#D4AF37] transition-colors duration-300"
+                  className="w-full bg-transparent border-b border-gray-200 dark:border-[#2E2E2E] py-3 text-[15px] text-[#1a1a1a] dark:text-[#F5F5F5] placeholder-gray-300 dark:placeholder-[#555555] font-light tracking-wide focus:outline-none focus:border-[#D4AF37] dark:focus:border-[#C1A98F] transition-colors duration-300"
                 />
               </div>
               <div className="flex flex-col sm:flex-row justify-between items-center mt-12 gap-6 pt-6">
                 <button 
                   type="button" 
                   onClick={() => setActiveTab('overview')} 
-                  className="text-[11px] uppercase tracking-widest text-gray-500 hover:text-[#1a1a1a] border-b border-transparent hover:border-[#1a1a1a] transition-all pb-0.5"
+                  className="text-[11px] uppercase tracking-widest text-gray-500 dark:text-[#AAAAAA] hover:text-[#1a1a1a] dark:hover:text-[#F5F5F5] border-b border-transparent hover:border-[#1a1a1a] dark:hover:border-[#F5F5F5] transition-all pb-0.5 cursor-pointer"
                 >
                   Back to Overview
                 </button>
                 <button 
                   type="submit"
                   disabled={loading}
-                  className="w-full sm:w-auto bg-[#1a1a1a] text-white text-[11px] uppercase tracking-[0.3em] py-4 px-10 hover:bg-[#D4AF37] transition-colors duration-300 disabled:opacity-50"
+                  className="w-full sm:w-auto bg-[#1a1a1a] dark:bg-[#C1A98F] text-white dark:text-[#121212] text-[11px] uppercase tracking-[0.3em] py-4 px-10 hover:bg-[#D4AF37] dark:hover:bg-[#d4be9f] transition-colors duration-300 disabled:opacity-50 cursor-pointer"
                 >
                   {loading ? 'Saving...' : 'Save Changes'}
                 </button>
               </div>
             </form>
 
-            <div className="mt-16 pt-12 border-t border-red-50">
-              <h3 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-xl text-red-800 mb-4 tracking-widest uppercase font-light">
+            <div className="mt-16 pt-12 border-t border-red-50 dark:border-red-900/30">
+              <h3 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-xl text-red-800 dark:text-red-400 mb-4 tracking-widest uppercase font-light">
                 Danger Zone
               </h3>
-              <p className="text-[13px] text-gray-400 font-light mb-6 tracking-wide leading-relaxed">
+              <p className="text-[13px] text-gray-400 dark:text-[#AAAAAA] font-light mb-6 tracking-wide leading-relaxed">
                 Deleting your account will permanently remove all your data, including your address, order history, and wishlist. This action cannot be undone.
               </p>
               <button 
                 type="button"
                 onClick={handleDeleteAccount}
                 disabled={loading}
-                className="text-[10px] uppercase tracking-[0.2em] font-medium text-red-500 hover:text-white border border-red-200 hover:bg-red-500 hover:border-red-500 px-6 py-3 transition-all duration-300 disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-red-500"
+                className="text-[10px] uppercase tracking-[0.2em] font-medium text-red-500 dark:text-red-400 hover:text-white border border-red-200 dark:border-red-800 hover:bg-red-500 hover:border-red-500 px-6 py-3 transition-all duration-300 disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-red-500 cursor-pointer"
               >
                 Delete Account Permanently
               </button>
@@ -980,14 +980,14 @@ const AccountPage: React.FC = () => {
 
       {/* Notification Toast */}
       {notification && (
-        <div className={`fixed bottom-10 left-1/2 -translate-x-1/2 px-8 py-4 bg-white border border-gray-100 shadow-2xl rounded-sm flex items-center gap-4 animate-in fade-in slide-in-from-bottom-5 duration-500 z-50`}>
+        <div className={`fixed bottom-10 left-1/2 -translate-x-1/2 px-8 py-4 bg-white dark:bg-[#1E1E1E] border border-gray-100 dark:border-[#2E2E2E] shadow-2xl rounded-sm flex items-center gap-4 animate-in fade-in slide-in-from-bottom-5 duration-500 z-50`}>
           <div className={`w-2 h-2 rounded-full ${notification.type === 'success' ? 'bg-[#D4AF37]' : 'bg-red-500'}`} />
-          <p className="text-[11px] uppercase tracking-[0.2em] font-medium text-[#1a1a1a]">
+          <p className="text-[11px] uppercase tracking-[0.2em] font-medium text-[#1a1a1a] dark:text-[#F5F5F5]">
             {notification.message}
           </p>
           <button 
             onClick={() => setNotification(null)}
-            className="ml-4 text-gray-400 hover:text-[#1a1a1a] transition-colors"
+            className="ml-4 text-gray-400 dark:text-[#AAAAAA] hover:text-[#1a1a1a] dark:hover:text-[#F5F5F5] transition-colors cursor-pointer"
           >
             ✕
           </button>

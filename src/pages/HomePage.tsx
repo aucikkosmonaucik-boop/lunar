@@ -23,7 +23,7 @@ const HomePage: React.FC = () => {
   }, [products]);
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white dark:bg-[#121212] min-h-screen transition-colors duration-200">
       {/* Primary Accessible Brand Heading for Search Engines */}
       <h1 className="sr-only">MyLunar — Luxury Perfumes &amp; Fine Jewelry Official Shop (mylunar.shop)</h1>
 
@@ -33,8 +33,8 @@ const HomePage: React.FC = () => {
       {/* Featured Chains Section */}
       <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-[#1a1a1a] mb-6">Featured Chains</h2>
-          <div className="w-20 h-[1px] bg-gray-300 mx-auto" />
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-[#1a1a1a] dark:text-[#F5F5F5] mb-6">Featured Chains</h2>
+          <div className="w-20 h-[1px] bg-gray-300 dark:bg-[#2E2E2E] mx-auto" />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -45,7 +45,7 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Secondary Image Block */}
-      <section className="grid grid-cols-1 md:grid-cols-2 bg-[#f5f5f5]">
+      <section className="grid grid-cols-1 md:grid-cols-2 bg-[#f5f5f5] dark:bg-[#1A1A1A]">
         <div className="h-[50vh] md:h-[70vh]">
           <img 
             src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&q=80&w=1200" 
@@ -54,13 +54,13 @@ const HomePage: React.FC = () => {
           />
         </div>
         <div className="flex flex-col items-center justify-center p-12 md:p-24 text-center">
-          <h2 className="text-4xl md:text-6xl font-serif italic text-gray-900 mb-6">Timeless Beauty</h2>
-          <p className="text-gray-600 mb-10 max-w-md text-base md:text-lg leading-relaxed overflow-hidden">
+          <h2 className="text-4xl md:text-6xl font-serif italic text-gray-900 dark:text-[#F5F5F5] mb-6">Timeless Beauty</h2>
+          <p className="text-gray-600 dark:text-[#AAAAAA] mb-10 max-w-md text-base md:text-lg leading-relaxed overflow-hidden">
             Crafted for the modern aesthetic, our pieces are designed to be worn every day and cherished forever. Explore delicate chains, bold statements, and everything in between.
           </p>
           <Link 
             to="/shop" 
-            className="text-sm md:text-base font-medium uppercase tracking-widest pb-1 border-b-2 border-black hover:text-gray-500 hover:border-gray-500 transition-colors"
+            className="text-sm md:text-base font-medium uppercase tracking-widest pb-1 border-b-2 border-black dark:border-[#C1A98F] text-[#1a1a1a] dark:text-[#C1A98F] hover:text-gray-500 dark:hover:text-white hover:border-gray-500 transition-colors"
           >
             Explore All Collection
           </Link>

@@ -11,6 +11,21 @@
     <link rel="shortcut icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     
+    <!-- Prevent Dark Mode FOUC (Flash of Unstyled Content) -->
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('lunar_theme');
+          var isDark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
+    
     <!-- PWA & Apple iOS Mobile App Configuration -->
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#1a1a1a" />

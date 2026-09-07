@@ -12,6 +12,7 @@ import { FavoritesProvider } from './context/FavoritesProvider';
 import { AuthProvider } from './context/AuthProvider';
 import { ProductsProvider } from './context/ProductsContext';
 import { LoyaltyProvider } from './context/LoyaltyContext';
+import { ThemeProvider } from './context/ThemeProvider';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import VerifyEmailPage from './pages/VerifyEmailPage';
@@ -43,45 +44,47 @@ const PageViewTracker: React.FC = () => {
 
 const App: React.FC = () => {
   return (
-    <AuthProvider>
-      <ProductsProvider>
-        <LoyaltyProvider>
-          <CartProvider>
-            <FavoritesProvider>
-              <Router>
-                <PageViewTracker />
-                <div className="flex flex-col min-h-screen bg-white text-wonders-dark">
-                  <Navbar />
-                  <main className="flex-grow" style={{ paddingTop: '250px' }}>
-                    <Routes>
-                      <Route path="/" element={<HomePage />} />
-                      <Route path="/shop" element={<ShopPage />} />
-                      <Route path="/product/:id" element={<ProductDetailPage />} />
-                      <Route path="/cart" element={<CartPage />} />
-                      <Route path="/order-success" element={<OrderSuccessPage />} />
-                      <Route path="/track-order" element={<TrackOrderPage />} />
-                      <Route path="/track" element={<TrackOrderPage />} />
-                      <Route path="/contact" element={<ContactPage />} />
-                      <Route path="/login" element={<LoginPage />} />
-                      <Route path="/register" element={<RegisterPage />} />
-                      <Route path="/verify-email" element={<VerifyEmailPage />} />
-                      <Route path="/reset-password" element={<ResetPasswordPage />} />
-                      <Route path="/account" element={<AccountPage />} />
-                      <Route path="/admin" element={<AdminPage />} />
-                      <Route path="/terms" element={<TermsPage />} />
-                      <Route path="/cookies" element={<CookiesPage />} />
-                      <Route path="/app" element={<MobileAppPage />} />
-                    </Routes>
-                  </main>
-                  <Footer />
-                  <CookieConsentBanner />
-                </div>
-              </Router>
-            </FavoritesProvider>
-          </CartProvider>
-        </LoyaltyProvider>
-      </ProductsProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <ProductsProvider>
+          <LoyaltyProvider>
+            <CartProvider>
+              <FavoritesProvider>
+                <Router>
+                  <PageViewTracker />
+                  <div className="flex flex-col min-h-screen bg-[#FAF9F6] dark:bg-[#121212] text-[#1A1A1A] dark:text-[#F5F5F5] transition-colors duration-200">
+                    <Navbar />
+                    <main className="flex-grow" style={{ paddingTop: '250px' }}>
+                      <Routes>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/shop" element={<ShopPage />} />
+                        <Route path="/product/:id" element={<ProductDetailPage />} />
+                        <Route path="/cart" element={<CartPage />} />
+                        <Route path="/order-success" element={<OrderSuccessPage />} />
+                        <Route path="/track-order" element={<TrackOrderPage />} />
+                        <Route path="/track" element={<TrackOrderPage />} />
+                        <Route path="/contact" element={<ContactPage />} />
+                        <Route path="/login" element={<LoginPage />} />
+                        <Route path="/register" element={<RegisterPage />} />
+                        <Route path="/verify-email" element={<VerifyEmailPage />} />
+                        <Route path="/reset-password" element={<ResetPasswordPage />} />
+                        <Route path="/account" element={<AccountPage />} />
+                        <Route path="/admin" element={<AdminPage />} />
+                        <Route path="/terms" element={<TermsPage />} />
+                        <Route path="/cookies" element={<CookiesPage />} />
+                        <Route path="/app" element={<MobileAppPage />} />
+                      </Routes>
+                    </main>
+                    <Footer />
+                    <CookieConsentBanner />
+                  </div>
+                </Router>
+              </FavoritesProvider>
+            </CartProvider>
+          </LoyaltyProvider>
+        </ProductsProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 };
 

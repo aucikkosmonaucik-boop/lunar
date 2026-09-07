@@ -25,27 +25,27 @@ const FavoritesDrawer: React.FC<FavoritesDrawerProps> = ({ isOpen, onClose }) =>
 
       {/* Drawer */}
       <div
-        className={`fixed top-0 right-0 h-full z-[101] w-full sm:w-[420px] bg-[#f5eeeb] shadow-2xl flex flex-col transition-transform duration-500 ease-in-out ${
+        className={`fixed top-0 right-0 h-full z-[101] w-full sm:w-[420px] bg-[#f5eeeb] dark:bg-[#1E1E1E] border-l border-transparent dark:border-[#2E2E2E] shadow-2xl flex flex-col transition-transform duration-500 ease-in-out ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-8 pt-10 pb-6 border-b border-gray-200">
+        <div className="flex items-center justify-between px-8 pt-10 pb-6 border-b border-gray-200 dark:border-[#2E2E2E]">
           <Link to="/" onClick={onClose} className="flex flex-col items-center group">
             <span 
-              className="text-3xl text-[#1a1a1a]"
+              className="text-3xl text-[#1a1a1a] dark:text-[#F5F5F5]"
               style={{ fontFamily: "'Alex Brush', cursive" }}
             >
               My
             </span>
-            <span className="font-serif text-[14px] tracking-[0.3em] text-[#1a1a1a] uppercase -mt-3">
+            <span className="font-serif text-[14px] tracking-[0.3em] text-[#1a1a1a] dark:text-[#F5F5F5] uppercase -mt-3">
               Lunar
             </span>
           </Link>
           <div className="flex flex-col items-end gap-1">
             <button
               onClick={onClose}
-              className="p-2 text-[#1a1a1a] hover:text-gray-500 transition-colors"
+              className="p-2 text-[#1a1a1a] dark:text-[#F5F5F5] hover:text-gray-500 dark:hover:text-[#C1A98F] transition-colors"
               aria-label="Close"
             >
               <X className="w-5 h-5 stroke-[1.5]" />
@@ -55,39 +55,39 @@ const FavoritesDrawer: React.FC<FavoritesDrawerProps> = ({ isOpen, onClose }) =>
 
         {/* Title row */}
         <div className="flex items-center gap-3 px-8 pt-8 pb-4">
-          <Heart className="w-4 h-4 stroke-[1.5] text-[#1a1a1a]" />
-          <span className="text-[12px] uppercase tracking-[0.35em] font-medium text-[#1a1a1a]">
+          <Heart className="w-4 h-4 stroke-[1.5] text-[#1a1a1a] dark:text-[#C1A98F]" />
+          <span className="text-[12px] uppercase tracking-[0.35em] font-medium text-[#1a1a1a] dark:text-[#F5F5F5]">
             Wishlist
           </span>
           {totalItems > 0 && (
-            <span className="ml-auto text-[11px] tracking-[0.2em] text-gray-400">
+            <span className="ml-auto text-[11px] tracking-[0.2em] text-gray-400 dark:text-[#AAAAAA]">
               {totalItems} {totalItems === 1 ? 'item' : 'items'}
             </span>
           )}
         </div>
 
         {/* Divider */}
-        <div className="mx-8 border-b border-gray-200 mb-2" />
+        <div className="mx-8 border-b border-gray-200 dark:border-[#2E2E2E] mb-2" />
 
         {/* Items list */}
         <div className="flex-1 overflow-y-auto px-8 py-6">
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full gap-6 text-center pb-16">
-              <div className="w-16 h-16 rounded-full border border-gray-200 flex items-center justify-center">
-                <Heart className="w-7 h-7 stroke-[1] text-gray-300" />
+              <div className="w-16 h-16 rounded-full border border-gray-200 dark:border-[#2E2E2E] flex items-center justify-center">
+                <Heart className="w-7 h-7 stroke-[1] text-gray-300 dark:text-gray-600" />
               </div>
               <div>
-                <p className="text-[13px] uppercase tracking-[0.25em] text-[#1a1a1a] font-medium mb-2">
+                <p className="text-[13px] uppercase tracking-[0.25em] text-[#1a1a1a] dark:text-[#F5F5F5] font-medium mb-2">
                   Your wishlist is empty
                 </p>
-                <p className="text-[12px] text-gray-400 font-light tracking-wide">
+                <p className="text-[12px] text-gray-400 dark:text-[#AAAAAA] font-light tracking-wide">
                   Save pieces you love to come back to them.
                 </p>
               </div>
               <Link
                 to="/shop?category=jewelry"
                 onClick={onClose}
-                className="mt-2 text-[11px] uppercase tracking-[0.3em] font-medium text-[#1a1a1a] border-b border-[#1a1a1a] pb-0.5 hover:text-gray-500 hover:border-gray-500 transition-colors"
+                className="mt-2 text-[11px] uppercase tracking-[0.3em] font-medium text-[#1a1a1a] dark:text-[#C1A98F] border-b border-[#1a1a1a] dark:border-[#C1A98F] pb-0.5 hover:text-gray-500 transition-colors"
               >
                 Explore Collection
               </Link>
@@ -98,7 +98,7 @@ const FavoritesDrawer: React.FC<FavoritesDrawerProps> = ({ isOpen, onClose }) =>
                 <div key={product.id} className="flex gap-4 group">
                   {/* Image */}
                   <Link to={`/product/${product.id}`} onClick={onClose} className="shrink-0">
-                    <div className="w-20 h-24 bg-gray-100 overflow-hidden border border-gray-200">
+                    <div className="w-20 h-24 bg-gray-100 dark:bg-[#252525] overflow-hidden border border-gray-200 dark:border-[#2E2E2E]">
                       <img
                         src={product.image}
                         alt={product.name}
@@ -113,11 +113,11 @@ const FavoritesDrawer: React.FC<FavoritesDrawerProps> = ({ isOpen, onClose }) =>
                       <Link
                         to={`/product/${product.id}`}
                         onClick={onClose}
-                        className="text-[12px] uppercase tracking-[0.15em] font-medium text-[#1a1a1a] hover:text-gray-500 transition-colors line-clamp-2"
+                        className="text-[12px] uppercase tracking-[0.15em] font-medium text-[#1a1a1a] dark:text-[#F5F5F5] hover:text-gray-500 dark:hover:text-[#C1A98F] transition-colors line-clamp-2"
                       >
                         {product.name}
                       </Link>
-                      <p className="text-[13px] font-light text-gray-500 mt-1 tracking-wide">
+                      <p className="text-[13px] font-light text-gray-500 dark:text-[#AAAAAA] mt-1 tracking-wide">
                         {product.price.toLocaleString('en-US', { style: 'currency', currency: 'EUR' })}
                       </p>
                     </div>
@@ -127,7 +127,7 @@ const FavoritesDrawer: React.FC<FavoritesDrawerProps> = ({ isOpen, onClose }) =>
                       <button
                         onClick={() => { addToCart(product, 1); }}
                         disabled={(product.stock !== undefined && product.stock <= 0) || product.badge === 'SOLD OUT' || product.isAvailable === false}
-                        className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-medium bg-[#1a1a1a] text-white px-4 py-2 hover:bg-gray-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-medium bg-[#1a1a1a] dark:bg-[#C1A98F] text-white dark:text-black px-4 py-2 hover:bg-gray-700 dark:hover:bg-[#D4AF37] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                       >
                         <ShoppingBag className="w-3 h-3" />
                         {((product.stock !== undefined && product.stock <= 0) || product.badge === 'SOLD OUT' || product.isAvailable === false) ? 'Sold Out' : 'Add to Bag'}
@@ -148,7 +148,7 @@ const FavoritesDrawer: React.FC<FavoritesDrawerProps> = ({ isOpen, onClose }) =>
         </div>
 
         {/* Footer */}
-        <p className="px-8 pb-8 pt-4 text-center text-[10px] uppercase tracking-[0.2em] text-gray-400 border-t border-gray-100 mt-auto">
+        <p className="px-8 pb-8 pt-4 text-center text-[10px] uppercase tracking-[0.2em] text-gray-400 dark:text-[#888888] border-t border-gray-100 dark:border-[#2E2E2E] mt-auto">
           Your wishlist is saved for this session
         </p>
       </div>

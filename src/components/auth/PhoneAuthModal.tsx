@@ -238,11 +238,11 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
       <div className="fixed inset-0 bg-black/60 backdrop-blur-[3px] transition-opacity" onClick={onClose} />
 
       {/* Modal Container */}
-      <div className="relative bg-[#f5eeeb] w-full max-w-md rounded-2xl shadow-2xl p-6 sm:p-8 z-10 border border-gray-200">
+      <div className="relative bg-[#f5eeeb] dark:bg-[#1E1E1E] w-full max-w-md rounded-2xl shadow-2xl p-6 sm:p-8 z-10 border border-gray-200 dark:border-[#2E2E2E] transition-colors duration-200">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-2 text-gray-500 hover:text-gray-900 transition-colors"
+          className="absolute top-5 right-5 p-2 text-gray-500 dark:text-[#AAAAAA] hover:text-gray-900 dark:hover:text-[#F5F5F5] transition-colors"
           aria-label="Close modal"
         >
           <X className="w-5 h-5 stroke-[1.5]" />
@@ -250,16 +250,16 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
 
         {/* Header */}
         <div className="text-center mb-6">
-          <div className="w-12 h-12 rounded-full bg-white shadow-xs border border-gray-200 flex items-center justify-center mx-auto mb-3">
-            <Phone className="w-5 h-5 text-[#1a1a1a]" />
+          <div className="w-12 h-12 rounded-full bg-white dark:bg-[#282828] shadow-xs border border-gray-200 dark:border-[#2E2E2E] flex items-center justify-center mx-auto mb-3">
+            <Phone className="w-5 h-5 text-[#1a1a1a] dark:text-[#C1A98F]" />
           </div>
           <h3
             style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
-            className="text-2xl sm:text-3xl font-semibold tracking-wide text-[#1a1a1a]"
+            className="text-2xl sm:text-3xl font-semibold tracking-wide text-[#1a1a1a] dark:text-[#F5F5F5]"
           >
             {step === 'phone' ? 'Phone Sign In' : 'Enter Verification Code'}
           </h3>
-          <p className="text-[12px] text-gray-500 mt-1">
+          <p className="text-[12px] text-gray-500 dark:text-[#AAAAAA] mt-1">
             {step === 'phone'
               ? 'Instant sign in & registration for Ireland (+353) and Poland (+48)'
               : `We sent a 6-digit SMS code to ${formatPhoneNumber(phone, selectedCountry.code)}`}
@@ -268,7 +268,7 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
 
         {/* Error Alert */}
         {error && (
-          <div className="mb-4 bg-red-50 border border-red-200 text-red-600 p-3 rounded-xl flex items-start space-x-2 text-xs">
+          <div className="mb-4 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 p-3 rounded-xl flex items-start space-x-2 text-xs">
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
             <span className="leading-relaxed">{error}</span>
           </div>
@@ -278,7 +278,7 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
           <form onSubmit={handleSendOtp} className="space-y-4">
             {/* Optional Name */}
             <div>
-              <label className="block text-[10px] uppercase tracking-[0.2em] text-gray-500 font-semibold mb-1">
+              <label className="block text-[10px] uppercase tracking-[0.2em] text-gray-500 dark:text-[#888888] font-semibold mb-1">
                 Your Name (Optional)
               </label>
               <input
@@ -286,13 +286,13 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Liam Murphy / Jan Kowalski"
-                className="w-full border border-gray-300 bg-white text-[#1a1a1a] text-[13px] px-3.5 py-2.5 rounded-xl outline-none focus:border-[#1a1a1a] transition-colors"
+                className="w-full border border-gray-300 dark:border-[#2E2E2E] bg-white dark:bg-[#252525] text-[#1a1a1a] dark:text-[#F5F5F5] placeholder-gray-400 dark:placeholder-gray-500 text-[13px] px-3.5 py-2.5 rounded-xl outline-none focus:border-[#1a1a1a] dark:focus:border-[#C1A98F] transition-colors"
               />
             </div>
 
             {/* Country and Phone input */}
             <div>
-              <label className="block text-[10px] uppercase tracking-[0.2em] text-gray-500 font-semibold mb-1">
+              <label className="block text-[10px] uppercase tracking-[0.2em] text-gray-500 dark:text-[#888888] font-semibold mb-1">
                 Mobile Number
               </label>
               <div className="flex gap-2">
@@ -303,10 +303,10 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
                     const country = COUNTRIES.find((c) => c.code === e.target.value);
                     if (country) setSelectedCountry(country);
                   }}
-                  className="bg-white border border-gray-300 rounded-xl px-2 py-2.5 text-[13px] font-medium text-[#1a1a1a] outline-none focus:border-[#1a1a1a] cursor-pointer"
+                  className="bg-white dark:bg-[#252525] border border-gray-300 dark:border-[#2E2E2E] rounded-xl px-2 py-2.5 text-[13px] font-medium text-[#1a1a1a] dark:text-[#F5F5F5] outline-none focus:border-[#1a1a1a] dark:focus:border-[#C1A98F] cursor-pointer"
                 >
                   {COUNTRIES.map((c) => (
-                    <option key={c.code} value={c.code}>
+                    <option key={c.code} value={c.code} className="dark:bg-[#252525] dark:text-[#F5F5F5]">
                       {c.flag} {c.code}
                     </option>
                   ))}
@@ -319,7 +319,7 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder={selectedCountry.hint}
-                  className="flex-1 border border-gray-300 bg-white text-[#1a1a1a] text-[13px] px-3.5 py-2.5 rounded-xl outline-none focus:border-[#1a1a1a] transition-colors"
+                  className="flex-1 border border-gray-300 dark:border-[#2E2E2E] bg-white dark:bg-[#252525] text-[#1a1a1a] dark:text-[#F5F5F5] placeholder-gray-400 dark:placeholder-gray-500 text-[13px] px-3.5 py-2.5 rounded-xl outline-none focus:border-[#1a1a1a] dark:focus:border-[#C1A98F] transition-colors"
                 />
               </div>
             </div>
@@ -328,7 +328,7 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-2 flex items-center justify-center gap-2 bg-[#1a1a1a] text-white text-[12px] uppercase tracking-[0.25em] py-3.5 rounded-xl hover:bg-gray-800 transition-all font-medium disabled:opacity-50 cursor-pointer"
+              className="w-full mt-2 flex items-center justify-center gap-2 bg-[#1a1a1a] dark:bg-[#C1A98F] text-white dark:text-[#121212] text-[12px] uppercase tracking-[0.25em] py-3.5 rounded-xl hover:bg-gray-800 dark:hover:bg-[#d4be9f] transition-all font-medium disabled:opacity-50 cursor-pointer"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Send Verification Code'}
             </button>
@@ -337,7 +337,7 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
           <form onSubmit={handleVerifyOtp} className="space-y-4">
             {/* OTP Code input */}
             <div>
-              <label className="block text-[10px] uppercase tracking-[0.2em] text-gray-500 font-semibold mb-1 text-center">
+              <label className="block text-[10px] uppercase tracking-[0.2em] text-gray-500 dark:text-[#888888] font-semibold mb-1 text-center">
                 6-Digit SMS Code
               </label>
               <input
@@ -350,7 +350,7 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
                 placeholder="123456"
-                className="w-full text-center tracking-[0.5em] text-2xl font-bold border border-gray-300 bg-white text-[#1a1a1a] py-3 rounded-xl outline-none focus:border-[#1a1a1a] transition-colors"
+                className="w-full text-center tracking-[0.5em] text-2xl font-bold border border-gray-300 dark:border-[#2E2E2E] bg-white dark:bg-[#252525] text-[#1a1a1a] dark:text-[#F5F5F5] placeholder-gray-400 dark:placeholder-gray-500 py-3 rounded-xl outline-none focus:border-[#1a1a1a] dark:focus:border-[#C1A98F] transition-colors"
               />
             </div>
 
@@ -358,7 +358,7 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 bg-[#1a1a1a] text-white text-[12px] uppercase tracking-[0.25em] py-3.5 rounded-xl hover:bg-gray-800 transition-all font-medium disabled:opacity-50 cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 bg-[#1a1a1a] dark:bg-[#C1A98F] text-white dark:text-[#121212] text-[12px] uppercase tracking-[0.25em] py-3.5 rounded-xl hover:bg-gray-800 dark:hover:bg-[#d4be9f] transition-all font-medium disabled:opacity-50 cursor-pointer"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Verify & Sign In'}
             </button>
@@ -372,7 +372,7 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
                   setOtp('');
                   setError(null);
                 }}
-                className="text-gray-500 hover:text-gray-900 flex items-center gap-1 transition-colors cursor-pointer"
+                className="text-gray-500 dark:text-[#AAAAAA] hover:text-gray-900 dark:hover:text-[#F5F5F5] flex items-center gap-1 transition-colors cursor-pointer"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
                 Change number
@@ -383,7 +383,7 @@ export const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({
                 disabled={countdown > 0 || loading}
                 onClick={handleSendOtp}
                 className={`font-semibold transition-colors ${
-                  countdown > 0 ? 'text-gray-400 cursor-not-allowed' : 'text-[#1a1a1a] hover:underline cursor-pointer'
+                  countdown > 0 ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed' : 'text-[#1a1a1a] dark:text-[#C1A98F] hover:underline cursor-pointer'
                 }`}
               >
                 {countdown > 0 ? `Resend in ${countdown}s` : 'Resend SMS'}

@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { Send } from 'lucide-react';
 
 const inputClass =
-  'w-full bg-transparent border-b-2 border-gray-200 py-4 text-[16px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none focus:border-[#1a1a1a] transition-colors duration-300';
+  'w-full bg-transparent border-b-2 border-gray-200 dark:border-[#2E2E2E] py-4 text-[16px] text-[#1a1a1a] dark:text-[#F5F5F5] placeholder-gray-300 dark:placeholder-[#555555] font-light tracking-wide focus:outline-none focus:border-[#1a1a1a] dark:focus:border-[#C1A98F] transition-colors duration-300';
 
 const labelClass =
-  'block text-[11px] uppercase tracking-[0.4em] text-gray-400 font-medium mb-3';
+  'block text-[11px] uppercase tracking-[0.4em] text-gray-400 dark:text-[#888888] font-medium mb-3';
 
 const ContactPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -57,21 +57,21 @@ const ContactPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-white min-h-screen flex flex-col items-center justify-start px-6 pt-8 md:pt-16 pb-20">
+    <div className="bg-white dark:bg-[#121212] min-h-screen flex flex-col items-center justify-start px-6 pt-8 md:pt-16 pb-20 transition-colors duration-200">
 
       {/* ── Header ──────────────────────────── */}
       <div className="text-center mb-8 md:mb-12 w-full">
-        <p className="text-[11px] text-wonders-gold font-bold uppercase tracking-[0.45em] mb-5">
+        <p className="text-[11px] text-wonders-gold uppercase tracking-[0.45em] mb-5 font-bold">
           Get in Touch
         </p>
         <h1
           style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
-          className="text-6xl md:text-7xl tracking-widest text-[#1a1a1a] uppercase font-light mb-6"
+          className="text-6xl md:text-7xl tracking-widest text-[#1a1a1a] dark:text-[#F5F5F5] uppercase font-light mb-6"
         >
           Contact Us
         </h1>
         <div className="w-12 h-[1px] bg-wonders-gold mx-auto mb-6" />
-        <p className="text-gray-400 text-[14px] uppercase tracking-widest font-light max-w-sm mx-auto leading-relaxed">
+        <p className="text-gray-400 dark:text-[#AAAAAA] text-[14px] uppercase tracking-widest font-light max-w-sm mx-auto leading-relaxed">
           We'd love to hear from you. We'll respond within 24 hours.
         </p>
       </div>
@@ -79,18 +79,18 @@ const ContactPage: React.FC = () => {
       {/* ── Form / Success ───────────────────── */}
       <div className="w-full max-w-xl mx-auto">
         {isSubmitted ? (
-          <div className="bg-[#f5eeeb] border border-[#e8ddd8] p-14 text-center">
-            <div className="w-16 h-16 rounded-full border border-[#ddd0c8] flex items-center justify-center mx-auto mb-7">
-              <Send className="w-6 h-6 text-[#1a1a1a] stroke-[1.3]" />
+          <div className="bg-[#f5eeeb] dark:bg-[#1E1E1E] border border-[#e8ddd8] dark:border-[#2E2E2E] p-14 text-center rounded-sm transition-colors duration-200">
+            <div className="w-16 h-16 rounded-full border border-[#ddd0c8] dark:border-[#2E2E2E] bg-white dark:bg-[#282828] flex items-center justify-center mx-auto mb-7">
+              <Send className="w-6 h-6 text-[#1a1a1a] dark:text-[#C1A98F] stroke-[1.3]" />
             </div>
             <h3
               style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
-              className="text-4xl tracking-widest text-[#1a1a1a] uppercase mb-5 font-light"
+              className="text-4xl tracking-widest text-[#1a1a1a] dark:text-[#F5F5F5] uppercase mb-5 font-light"
             >
               Message Sent
             </h3>
-            <div className="w-8 h-[1px] bg-[#c8b8ae] mx-auto mb-5" />
-            <p className="text-[14px] text-gray-400 font-light tracking-wide leading-relaxed">
+            <div className="w-8 h-[1px] bg-[#c8b8ae] dark:bg-[#C1A98F] mx-auto mb-5" />
+            <p className="text-[14px] text-gray-400 dark:text-[#AAAAAA] font-light tracking-wide leading-relaxed">
               Thank you for reaching out. We will get back to you shortly.
             </p>
           </div>
@@ -162,7 +162,7 @@ const ContactPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="inline-flex items-center gap-3 bg-[#1a1a1a] text-white text-[12px] uppercase tracking-[0.45em] py-5 px-14 hover:bg-gray-800 transition-colors duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-3 bg-[#1a1a1a] dark:bg-[#C1A98F] text-white dark:text-[#121212] text-[12px] uppercase tracking-[0.45em] py-5 px-14 hover:bg-gray-800 dark:hover:bg-[#d4be9f] transition-colors duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
                 {isSubmitting ? 'Sending...' : 'Send Message'} <Send className="w-4 h-4" />
               </button>

@@ -172,7 +172,7 @@ const ShopPage: React.FC = () => {
   const isAnyFilterActive = search.trim() !== '' || category !== 'All' || activeTag !== null || sort !== 'featured';
 
   return (
-    <div className="pt-16 sm:pt-24 pb-20 sm:pb-24 px-3 sm:px-6 lg:px-8 min-h-screen bg-[#FCFBF9]">
+    <div className="pt-16 sm:pt-24 pb-20 sm:pb-24 px-3 sm:px-6 lg:px-8 min-h-screen bg-[#FCFBF9] dark:bg-[#121212] transition-colors duration-200">
       <div className="max-w-7xl mx-auto">
         
         {/* Page Header */}
@@ -182,11 +182,11 @@ const ShopPage: React.FC = () => {
             Lunar Catalog
             <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#c1a98f]" />
           </p>
-          <h1 className="text-2xl sm:text-4xl md:text-5xl font-serif text-[#1a1a1a] tracking-[0.12em] mb-2 sm:mb-3 uppercase">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-serif text-[#1a1a1a] dark:text-[#F5F5F5] tracking-[0.12em] mb-2 sm:mb-3 uppercase">
             {pageTitle}
           </h1>
           <div className="w-10 sm:w-12 h-[1.5px] bg-[#c1a98f] mx-auto mb-2 sm:mb-3"></div>
-          <p className="text-[#757575] text-[11px] sm:text-xs uppercase tracking-[0.2em]">
+          <p className="text-[#757575] dark:text-[#AAAAAA] text-[11px] sm:text-xs uppercase tracking-[0.2em]">
             {filtered.length} {filtered.length === 1 ? 'exceptional piece' : 'exceptional pieces'} available
           </p>
         </div>
@@ -205,16 +205,16 @@ const ShopPage: React.FC = () => {
                   onClick={() => handleCategoryChange(cat)}
                   className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium tracking-wider uppercase transition-all duration-200 ${
                     isSelected
-                      ? 'bg-[#1a1a1a] text-white shadow-sm border border-[#1a1a1a]'
-                      : 'bg-white text-gray-700 hover:bg-[#FAF7F5] border border-[#EDE6DF]'
+                      ? 'bg-[#1a1a1a] dark:bg-[#C1A98F] text-white dark:text-black shadow-sm border border-[#1a1a1a] dark:border-[#C1A98F]'
+                      : 'bg-white dark:bg-[#1E1E1E] text-gray-700 dark:text-[#AAAAAA] hover:bg-[#FAF7F5] dark:hover:bg-[#252525] border border-[#EDE6DF] dark:border-[#2E2E2E]'
                   }`}
                 >
                   <span className="truncate">{cat}</span>
                   <span
                     className={`text-[9px] px-1.5 py-0.2 rounded-full font-bold ${
                       isSelected
-                        ? 'bg-[#C1A98F] text-black'
-                        : 'bg-gray-100 text-gray-500'
+                        ? 'bg-[#C1A98F] dark:bg-black text-black dark:text-[#C1A98F]'
+                        : 'bg-gray-100 dark:bg-[#2A2A2A] text-gray-500 dark:text-[#AAAAAA]'
                     }`}
                   >
                     {count}
@@ -228,14 +228,14 @@ const ShopPage: React.FC = () => {
         {/* ======================================================== */}
         {/* MOBILE CONTROLS BAR: Dropdowns, View Switcher & Filter    */}
         {/* ======================================================== */}
-        <div className="lg:hidden mb-5 bg-white p-2.5 sm:p-3 rounded-2xl border border-[#EDE6DF] shadow-xs flex flex-wrap items-center gap-2">
+        <div className="lg:hidden mb-5 bg-white dark:bg-[#1E1E1E] p-2.5 sm:p-3 rounded-2xl border border-[#EDE6DF] dark:border-[#2E2E2E] shadow-xs flex flex-wrap items-center gap-2">
           
           {/* 1. Category Dropdown Selector */}
           <div className="relative flex-1 min-w-[140px]">
             <select
               value={category}
               onChange={(e) => handleCategoryChange(e.target.value)}
-              className="w-full pl-3 pr-8 py-2 text-xs font-semibold uppercase tracking-wider bg-[#FAF7F5] border border-[#EDE6DF] text-[#1a1a1a] rounded-xl outline-none focus:border-[#c1a98f] focus:bg-white transition-all appearance-none cursor-pointer"
+              className="w-full pl-3 pr-8 py-2 text-xs font-semibold uppercase tracking-wider bg-[#FAF7F5] dark:bg-[#252525] border border-[#EDE6DF] dark:border-[#2E2E2E] text-[#1a1a1a] dark:text-[#F5F5F5] rounded-xl outline-none focus:border-[#c1a98f] focus:bg-white dark:focus:bg-[#282828] transition-all appearance-none cursor-pointer"
             >
               <option value="All">All Categories ({products.length})</option>
               {categories.filter(c => c !== 'All').map(cat => (
@@ -244,7 +244,7 @@ const ShopPage: React.FC = () => {
                 </option>
               ))}
             </select>
-            <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500" />
+            <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500 dark:text-gray-400" />
           </div>
 
           {/* 2. Sort Dropdown */}
@@ -252,7 +252,7 @@ const ShopPage: React.FC = () => {
             <select
               value={sort}
               onChange={(e) => handleSortChange(e.target.value as SortOption)}
-              className="w-full pl-3 pr-8 py-2 text-xs font-semibold uppercase tracking-wider bg-[#FAF7F5] border border-[#EDE6DF] text-[#1a1a1a] rounded-xl outline-none focus:border-[#c1a98f] focus:bg-white transition-all appearance-none cursor-pointer"
+              className="w-full pl-3 pr-8 py-2 text-xs font-semibold uppercase tracking-wider bg-[#FAF7F5] dark:bg-[#252525] border border-[#EDE6DF] dark:border-[#2E2E2E] text-[#1a1a1a] dark:text-[#F5F5F5] rounded-xl outline-none focus:border-[#c1a98f] focus:bg-white dark:focus:bg-[#282828] transition-all appearance-none cursor-pointer"
             >
               {sortOptions.map(o => (
                 <option key={o.value} value={o.value}>
@@ -260,17 +260,17 @@ const ShopPage: React.FC = () => {
                 </option>
               ))}
             </select>
-            <SlidersHorizontal className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500" />
+            <SlidersHorizontal className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500 dark:text-gray-400" />
           </div>
 
           {/* 3. View Mode Toggle (1-Col vs 2-Col) */}
-          <div className="flex items-center bg-[#FAF7F5] p-1 rounded-xl border border-[#EDE6DF]">
+          <div className="flex items-center bg-[#FAF7F5] dark:bg-[#252525] p-1 rounded-xl border border-[#EDE6DF] dark:border-[#2E2E2E]">
             <button
               onClick={() => setViewMode('1-col')}
               className={`p-1.5 rounded-lg transition-all ${
                 viewMode === '1-col'
-                  ? 'bg-[#1a1a1a] text-[#C1A98F] shadow-xs'
-                  : 'text-gray-400 hover:text-gray-800'
+                  ? 'bg-[#1a1a1a] dark:bg-[#333333] text-[#C1A98F] shadow-xs'
+                  : 'text-gray-400 hover:text-gray-800 dark:hover:text-[#F5F5F5]'
               }`}
               title="Full Width 1-Column View"
               aria-label="1 Column View"
@@ -281,8 +281,8 @@ const ShopPage: React.FC = () => {
               onClick={() => setViewMode('2-col')}
               className={`p-1.5 rounded-lg transition-all ${
                 viewMode === '2-col'
-                  ? 'bg-[#1a1a1a] text-[#C1A98F] shadow-xs'
-                  : 'text-gray-400 hover:text-gray-800'
+                  ? 'bg-[#1a1a1a] dark:bg-[#333333] text-[#C1A98F] shadow-xs'
+                  : 'text-gray-400 hover:text-gray-800 dark:hover:text-[#F5F5F5]'
               }`}
               title="Compact 2-Column Grid View"
               aria-label="2 Columns View"
@@ -297,7 +297,7 @@ const ShopPage: React.FC = () => {
             className={`p-2 rounded-xl border flex items-center justify-center transition-all ${
               isAnyFilterActive
                 ? 'bg-[#C1A98F] text-black border-[#C1A98F]'
-                : 'bg-[#FAF7F5] hover:bg-white text-gray-700 border-[#EDE6DF]'
+                : 'bg-[#FAF7F5] dark:bg-[#252525] hover:bg-white dark:hover:bg-[#282828] text-gray-700 dark:text-[#F5F5F5] border-[#EDE6DF] dark:border-[#2E2E2E]'
             }`}
             title="Open Filters & Search"
             aria-label="Filters"
@@ -317,19 +317,19 @@ const ShopPage: React.FC = () => {
               onClick={() => setIsMobileDrawerOpen(false)}
             />
             
-            <div className="relative bg-white rounded-t-3xl border-t border-[#EDE6DF] max-h-[85vh] flex flex-col overflow-hidden shadow-2xl z-10 animate-slide-up">
+            <div className="relative bg-white dark:bg-[#1E1E1E] rounded-t-3xl border-t border-[#EDE6DF] dark:border-[#2E2E2E] max-h-[85vh] flex flex-col overflow-hidden shadow-2xl z-10 animate-slide-up">
               
               {/* Drawer Header */}
-              <div className="p-4 sm:p-5 border-b border-[#EDE6DF] flex items-center justify-between bg-[#FAF7F5]">
+              <div className="p-4 sm:p-5 border-b border-[#EDE6DF] dark:border-[#2E2E2E] flex items-center justify-between bg-[#FAF7F5] dark:bg-[#252525]">
                 <div className="flex items-center gap-2">
-                  <Sliders className="w-4 h-4 text-[#8c6d4f]" />
-                  <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#1a1a1a]">
+                  <Sliders className="w-4 h-4 text-[#8c6d4f] dark:text-[#C1A98F]" />
+                  <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#1a1a1a] dark:text-[#F5F5F5]">
                     Filters & Catalog
                   </span>
                 </div>
                 <button
                   onClick={() => setIsMobileDrawerOpen(false)}
-                  className="p-1.5 rounded-full hover:bg-gray-200 text-gray-500 transition-colors"
+                  className="p-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-[#333333] text-gray-500 dark:text-[#AAAAAA] transition-colors"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -340,7 +340,7 @@ const ShopPage: React.FC = () => {
                 
                 {/* 1. Search Box */}
                 <div>
-                  <label className="block text-[10px] uppercase tracking-[0.25em] font-bold text-gray-400 mb-2">
+                  <label className="block text-[10px] uppercase tracking-[0.25em] font-bold text-gray-400 dark:text-gray-500 mb-2">
                     Search Catalog
                   </label>
                   <div className="relative">
@@ -350,12 +350,12 @@ const ShopPage: React.FC = () => {
                       value={search}
                       onChange={e => setSearch(e.target.value)}
                       placeholder="Find rings, necklaces, perfumes..."
-                      className="w-full pl-8 pr-7 py-2.5 text-xs bg-[#FAF7F5] border border-gray-200 text-[#1a1a1a] placeholder:text-gray-400 rounded-xl outline-none focus:border-[#c1a98f] focus:bg-white transition-all"
+                      className="w-full pl-8 pr-7 py-2.5 text-xs bg-[#FAF7F5] dark:bg-[#252525] border border-gray-200 dark:border-[#2E2E2E] text-[#1a1a1a] dark:text-[#F5F5F5] placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-xl outline-none focus:border-[#c1a98f] focus:bg-white dark:focus:bg-[#282828] transition-all"
                     />
                     {search && (
                       <button
                         onClick={() => setSearch('')}
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black p-0.5"
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black dark:hover:text-white p-0.5"
                       >
                         <X className="w-3.5 h-3.5" />
                       </button>
@@ -365,7 +365,7 @@ const ShopPage: React.FC = () => {
 
                 {/* 2. Curated Filters */}
                 <div>
-                  <span className="block text-[10px] uppercase tracking-[0.25em] font-bold text-gray-400 mb-2.5">
+                  <span className="block text-[10px] uppercase tracking-[0.25em] font-bold text-gray-400 dark:text-gray-500 mb-2.5">
                     Curated Collections
                   </span>
                   <div className="grid grid-cols-2 gap-2">
@@ -377,14 +377,14 @@ const ShopPage: React.FC = () => {
                           onClick={() => handleTagChange(col.tag)}
                           className={`flex items-center justify-between p-3 rounded-xl text-xs uppercase tracking-wider transition-all border ${
                             isSelected
-                              ? 'bg-[#1a1a1a] text-[#C1A98F] border-[#1a1a1a] font-bold shadow-xs'
-                              : 'bg-[#FAF7F5] text-gray-700 border-[#EDE6DF] hover:border-gray-300'
+                              ? 'bg-[#1a1a1a] dark:bg-[#C1A98F] text-[#C1A98F] dark:text-black border-[#1a1a1a] dark:border-[#C1A98F] font-bold shadow-xs'
+                              : 'bg-[#FAF7F5] dark:bg-[#252525] text-gray-700 dark:text-[#AAAAAA] border-[#EDE6DF] dark:border-[#2E2E2E] hover:border-gray-300 dark:hover:border-gray-600'
                           }`}
                         >
                           <span className="truncate">{col.label}</span>
                           {col.badge && (
                             <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded ${
-                              isSelected ? 'bg-[#C1A98F] text-black' : 'bg-gray-200 text-gray-700'
+                              isSelected ? 'bg-[#C1A98F] dark:bg-black text-black dark:text-[#C1A98F]' : 'bg-gray-200 dark:bg-[#333333] text-gray-700 dark:text-[#AAAAAA]'
                             }`}>
                               {col.badge}
                             </span>
@@ -397,7 +397,7 @@ const ShopPage: React.FC = () => {
 
                 {/* 3. All Categories Quick Grid */}
                 <div>
-                  <span className="block text-[10px] uppercase tracking-[0.25em] font-bold text-gray-400 mb-2.5">
+                  <span className="block text-[10px] uppercase tracking-[0.25em] font-bold text-gray-400 dark:text-gray-500 mb-2.5">
                     Categories
                   </span>
                   <div className="grid grid-cols-2 gap-2">
@@ -410,12 +410,12 @@ const ShopPage: React.FC = () => {
                           onClick={() => handleCategoryChange(cat)}
                           className={`flex items-center justify-between p-2.5 rounded-xl text-xs uppercase tracking-wider transition-all border ${
                             isSelected
-                              ? 'bg-[#1a1a1a] text-white border-[#1a1a1a] font-bold shadow-xs'
-                              : 'bg-white text-gray-700 border-[#EDE6DF] hover:bg-[#FAF7F5]'
+                              ? 'bg-[#1a1a1a] dark:bg-[#C1A98F] text-white dark:text-black border-[#1a1a1a] dark:border-[#C1A98F] font-bold shadow-xs'
+                              : 'bg-white dark:bg-[#252525] text-gray-700 dark:text-[#AAAAAA] border-[#EDE6DF] dark:border-[#2E2E2E] hover:bg-[#FAF7F5] dark:hover:bg-[#282828]'
                           }`}
                         >
                           <span className="truncate">{cat}</span>
-                          <span className="text-[10px] text-gray-400">({count})</span>
+                          <span className="text-[10px] text-gray-400 dark:text-gray-500">({count})</span>
                         </button>
                       );
                     })}
@@ -426,7 +426,7 @@ const ShopPage: React.FC = () => {
                 {isAnyFilterActive && (
                   <button
                     onClick={handleResetFilters}
-                    className="w-full py-2.5 px-4 bg-white hover:bg-gray-50 text-red-700 border border-red-200 rounded-xl text-xs uppercase tracking-widest font-bold flex items-center justify-center gap-2 transition-all shadow-2xs"
+                    className="w-full py-2.5 px-4 bg-white dark:bg-[#252525] hover:bg-gray-50 dark:hover:bg-[#2E2E2E] text-red-700 dark:text-red-400 border border-red-200 dark:border-red-900/50 rounded-xl text-xs uppercase tracking-widest font-bold flex items-center justify-center gap-2 transition-all shadow-2xs"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
                     <span>Reset All Filters</span>
@@ -436,10 +436,10 @@ const ShopPage: React.FC = () => {
               </div>
 
               {/* Drawer Footer CTA */}
-              <div className="p-4 border-t border-[#EDE6DF] bg-white">
+              <div className="p-4 border-t border-[#EDE6DF] dark:border-[#2E2E2E] bg-white dark:bg-[#1E1E1E]">
                 <button
                   onClick={() => setIsMobileDrawerOpen(false)}
-                  className="w-full py-3.5 bg-[#1a1a1a] hover:bg-black text-[#C1A98F] rounded-xl text-xs uppercase tracking-widest font-bold transition-all shadow-md flex items-center justify-center gap-2"
+                  className="w-full py-3.5 bg-[#1a1a1a] dark:bg-[#C1A98F] hover:bg-black dark:hover:bg-[#d6beab] text-[#C1A98F] dark:text-black rounded-xl text-xs uppercase tracking-widest font-bold transition-all shadow-md flex items-center justify-center gap-2"
                 >
                   <span>Show {filtered.length} Pieces</span>
                   <ChevronRight className="w-4 h-4" />
@@ -459,8 +459,8 @@ const ShopPage: React.FC = () => {
           <aside className="hidden lg:block w-64 xl:w-72 shrink-0 space-y-7">
             
             {/* 1. Search Box */}
-            <div className="bg-white p-4 rounded-xl border border-[#EDE6DF] shadow-xs">
-              <label className="block text-[10px] uppercase tracking-[0.25em] font-bold text-gray-400 mb-2">
+            <div className="bg-white dark:bg-[#1E1E1E] p-4 rounded-xl border border-[#EDE6DF] dark:border-[#2E2E2E] shadow-xs">
+              <label className="block text-[10px] uppercase tracking-[0.25em] font-bold text-gray-400 dark:text-gray-500 mb-2">
                 Search Catalog
               </label>
               <div className="relative">
@@ -470,12 +470,12 @@ const ShopPage: React.FC = () => {
                   value={search}
                   onChange={e => setSearch(e.target.value)}
                   placeholder="Find rings, perfumes..."
-                  className="w-full pl-8 pr-7 py-2 text-xs bg-[#FAF7F5] border border-gray-200 text-[#1a1a1a] placeholder:text-gray-400 rounded-lg outline-none focus:border-[#c1a98f] focus:bg-white transition-all"
+                  className="w-full pl-8 pr-7 py-2 text-xs bg-[#FAF7F5] dark:bg-[#252525] border border-gray-200 dark:border-[#2E2E2E] text-[#1a1a1a] dark:text-[#F5F5F5] placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-lg outline-none focus:border-[#c1a98f] focus:bg-white dark:focus:bg-[#282828] transition-all"
                 />
                 {search && (
                   <button
                     onClick={() => setSearch('')}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black p-0.5"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black dark:hover:text-white p-0.5"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -484,12 +484,12 @@ const ShopPage: React.FC = () => {
             </div>
 
             {/* 2. Vertical Categories Menu */}
-            <div className="bg-white p-5 rounded-2xl border border-[#EDE6DF] shadow-xs">
-              <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#EDE6DF]">
-                <span className="text-[11px] uppercase tracking-[0.25em] font-bold text-[#1a1a1a]">
+            <div className="bg-white dark:bg-[#1E1E1E] p-5 rounded-2xl border border-[#EDE6DF] dark:border-[#2E2E2E] shadow-xs">
+              <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#EDE6DF] dark:border-[#2E2E2E]">
+                <span className="text-[11px] uppercase tracking-[0.25em] font-bold text-[#1a1a1a] dark:text-[#F5F5F5]">
                   Categories
                 </span>
-                <span className="text-[10px] text-[#8c6d4f] font-semibold bg-[#FAF7F5] px-2 py-0.5 rounded-full border border-[#EDE6DF]">
+                <span className="text-[10px] text-[#8c6d4f] dark:text-[#C1A98F] font-semibold bg-[#FAF7F5] dark:bg-[#252525] px-2 py-0.5 rounded-full border border-[#EDE6DF] dark:border-[#2E2E2E]">
                   {categories.length}
                 </span>
               </div>
@@ -505,8 +505,8 @@ const ShopPage: React.FC = () => {
                       onClick={() => handleCategoryChange(cat)}
                       className={`w-full flex items-center justify-between px-3.5 py-2.5 text-left rounded-xl text-xs tracking-wider uppercase transition-all duration-300 group relative overflow-hidden ${
                         isSelected
-                          ? 'bg-[#1a1a1a] text-white font-bold shadow-sm pl-4'
-                          : 'text-gray-600 hover:text-[#1a1a1a] hover:bg-[#FAF6F3] hover:pl-4 border border-transparent hover:border-[#EDE6DF]'
+                          ? 'bg-[#1a1a1a] dark:bg-[#252525] text-white dark:text-[#C1A98F] font-bold shadow-sm pl-4'
+                          : 'text-gray-600 dark:text-[#AAAAAA] hover:text-[#1a1a1a] dark:hover:text-[#F5F5F5] hover:bg-[#FAF6F3] dark:hover:bg-[#252525] hover:pl-4 border border-transparent hover:border-[#EDE6DF] dark:hover:border-[#2E2E2E]'
                       }`}
                     >
                       {/* Left luxury gold accent bar indicator on hover and active */}
@@ -529,7 +529,7 @@ const ShopPage: React.FC = () => {
                         className={`text-[10px] px-2 py-0.5 rounded-full font-medium transition-all duration-300 z-10 ${
                           isSelected
                             ? 'bg-[#C1A98F]/20 text-[#C1A98F] font-bold'
-                            : 'text-gray-400 group-hover:text-[#8c6d4f] group-hover:bg-[#C1A98F]/15 group-hover:font-semibold'
+                            : 'text-gray-400 dark:text-gray-500 group-hover:text-[#8c6d4f] dark:group-hover:text-[#C1A98F] group-hover:bg-[#C1A98F]/15 group-hover:font-semibold'
                         }`}
                       >
                         {count}
@@ -541,9 +541,9 @@ const ShopPage: React.FC = () => {
             </div>
 
             {/* 3. Curated Collections / Badges */}
-            <div className="bg-white p-5 rounded-2xl border border-[#EDE6DF] shadow-xs">
-              <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#EDE6DF]">
-                <span className="text-[11px] uppercase tracking-[0.25em] font-bold text-[#1a1a1a]">
+            <div className="bg-white dark:bg-[#1E1E1E] p-5 rounded-2xl border border-[#EDE6DF] dark:border-[#2E2E2E] shadow-xs">
+              <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#EDE6DF] dark:border-[#2E2E2E]">
+                <span className="text-[11px] uppercase tracking-[0.25em] font-bold text-[#1a1a1a] dark:text-[#F5F5F5]">
                   Curated Filters
                 </span>
               </div>
@@ -559,7 +559,7 @@ const ShopPage: React.FC = () => {
                       className={`w-full flex items-center justify-between px-3.5 py-2.5 text-left rounded-xl text-xs tracking-wider uppercase transition-all duration-300 group relative overflow-hidden ${
                         isSelected
                           ? 'bg-[#C1A98F] text-black font-bold shadow-sm'
-                          : 'text-gray-600 hover:text-[#1a1a1a] hover:bg-[#FAF6F3] hover:pl-4 border border-transparent hover:border-[#EDE6DF]'
+                          : 'text-gray-600 dark:text-[#AAAAAA] hover:text-[#1a1a1a] dark:hover:text-[#F5F5F5] hover:bg-[#FAF6F3] dark:hover:bg-[#252525] hover:pl-4 border border-transparent hover:border-[#EDE6DF] dark:hover:border-[#2E2E2E]'
                       }`}
                     >
                       <span 
@@ -580,7 +580,7 @@ const ShopPage: React.FC = () => {
                         <span className={`text-[9px] font-bold px-2 py-0.5 rounded-md transition-colors ${
                           isSelected 
                             ? 'bg-black text-white' 
-                            : 'bg-[#FAF7F5] border border-[#EDE6DF] text-gray-500 group-hover:border-[#C1A98F]/40 group-hover:text-[#8c6d4f]'
+                            : 'bg-[#FAF7F5] dark:bg-[#252525] border border-[#EDE6DF] dark:border-[#2E2E2E] text-gray-500 dark:text-[#AAAAAA] group-hover:border-[#C1A98F]/40 group-hover:text-[#8c6d4f]'
                         }`}>
                           {col.badge}
                         </span>
@@ -592,15 +592,15 @@ const ShopPage: React.FC = () => {
             </div>
 
             {/* 4. Sort Options */}
-            <div className="bg-white p-5 rounded-xl border border-[#EDE6DF] shadow-xs">
-              <label className="block text-[11px] uppercase tracking-[0.25em] font-bold text-[#1a1a1a] mb-3 pb-2 border-b border-gray-100">
+            <div className="bg-white dark:bg-[#1E1E1E] p-5 rounded-xl border border-[#EDE6DF] dark:border-[#2E2E2E] shadow-xs">
+              <label className="block text-[11px] uppercase tracking-[0.25em] font-bold text-[#1a1a1a] dark:text-[#F5F5F5] mb-3 pb-2 border-b border-gray-100 dark:border-[#2E2E2E]">
                 Sort Pieces
               </label>
               <div className="relative">
                 <select
                   value={sort}
                   onChange={e => handleSortChange(e.target.value as SortOption)}
-                  className="w-full pl-3.5 pr-9 py-2.5 text-xs font-medium uppercase tracking-wider bg-[#FAF7F5] border border-gray-200 text-[#1a1a1a] rounded-lg outline-none focus:border-[#c1a98f] focus:bg-white transition-all cursor-pointer appearance-none"
+                  className="w-full pl-3.5 pr-9 py-2.5 text-xs font-medium uppercase tracking-wider bg-[#FAF7F5] dark:bg-[#252525] border border-gray-200 dark:border-[#2E2E2E] text-[#1a1a1a] dark:text-[#F5F5F5] rounded-lg outline-none focus:border-[#c1a98f] focus:bg-white dark:focus:bg-[#282828] transition-all cursor-pointer appearance-none"
                 >
                   {sortOptions.map(o => (
                     <option key={o.value} value={o.value}>
@@ -608,7 +608,7 @@ const ShopPage: React.FC = () => {
                     </option>
                   ))}
                 </select>
-                <SlidersHorizontal className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500 pointer-events-none" />
+                <SlidersHorizontal className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500 dark:text-gray-400 pointer-events-none" />
               </div>
             </div>
 
@@ -616,7 +616,7 @@ const ShopPage: React.FC = () => {
             {isAnyFilterActive && (
               <button
                 onClick={handleResetFilters}
-                className="w-full py-3 px-4 bg-white hover:bg-gray-100 text-red-700 border border-red-200 rounded-xl text-xs uppercase tracking-widest font-bold flex items-center justify-center gap-2 transition-all shadow-2xs"
+                className="w-full py-3 px-4 bg-white dark:bg-[#1E1E1E] hover:bg-gray-100 dark:hover:bg-[#252525] text-red-700 dark:text-red-400 border border-red-200 dark:border-red-900/50 rounded-xl text-xs uppercase tracking-widest font-bold flex items-center justify-center gap-2 transition-all shadow-2xs"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Reset All Filters</span>
@@ -631,42 +631,42 @@ const ShopPage: React.FC = () => {
           <main className="flex-1 min-w-0 w-full">
             
             {/* Top Toolbar / Active Tags Summary */}
-            <div className="bg-white px-3.5 sm:px-5 py-3 rounded-xl border border-[#EDE6DF] shadow-xs mb-5 sm:mb-8 flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-2 text-xs text-gray-600">
-                <span className="font-semibold text-[#1a1a1a]">
+            <div className="bg-white dark:bg-[#1E1E1E] px-3.5 sm:px-5 py-3 rounded-xl border border-[#EDE6DF] dark:border-[#2E2E2E] shadow-xs mb-5 sm:mb-8 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-[#AAAAAA]">
+                <span className="font-semibold text-[#1a1a1a] dark:text-[#F5F5F5]">
                   {category !== 'All' ? category : 'All Collection'}
                 </span>
                 {activeTag && (
                   <>
                     <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
-                    <span className="font-bold text-[#8c6d4f] capitalize">{activeTag.replace('-', ' ')}</span>
+                    <span className="font-bold text-[#8c6d4f] dark:text-[#C1A98F] capitalize">{activeTag.replace('-', ' ')}</span>
                   </>
                 )}
-                <span className="text-gray-400 ml-1">({filtered.length} items)</span>
+                <span className="text-gray-400 dark:text-gray-500 ml-1">({filtered.length} items)</span>
               </div>
 
               {/* Active Filter Badges */}
               <div className="flex flex-wrap items-center gap-2">
                 {category !== 'All' && (
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#FAF7F5] border border-gray-200 text-gray-700 text-[11px] rounded-full">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#FAF7F5] dark:bg-[#252525] border border-gray-200 dark:border-[#2E2E2E] text-gray-700 dark:text-[#F5F5F5] text-[11px] rounded-full">
                     <span>{category}</span>
-                    <button onClick={() => handleCategoryChange('All')} className="hover:text-black">
+                    <button onClick={() => handleCategoryChange('All')} className="hover:text-black dark:hover:text-white">
                       <X className="w-3 h-3" />
                     </button>
                   </span>
                 )}
                 {activeTag && (
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#C1A98F]/20 border border-[#C1A98F]/40 text-[#8c6d4f] font-bold text-[11px] rounded-full">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#C1A98F]/20 border border-[#C1A98F]/40 text-[#8c6d4f] dark:text-[#C1A98F] font-bold text-[11px] rounded-full">
                     <span>{activeTag.replace('-', ' ')}</span>
-                    <button onClick={() => handleTagChange(activeTag)} className="hover:text-black">
+                    <button onClick={() => handleTagChange(activeTag)} className="hover:text-black dark:hover:text-white">
                       <X className="w-3 h-3" />
                     </button>
                   </span>
                 )}
                 {search && (
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gray-100 text-gray-800 text-[11px] rounded-full">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gray-100 dark:bg-[#252525] border border-transparent dark:border-[#2E2E2E] text-gray-800 dark:text-[#F5F5F5] text-[11px] rounded-full">
                     <span>"{search}"</span>
-                    <button onClick={() => setSearch('')} className="hover:text-black">
+                    <button onClick={() => setSearch('')} className="hover:text-black dark:hover:text-white">
                       <X className="w-3 h-3" />
                     </button>
                   </span>
@@ -686,19 +686,19 @@ const ShopPage: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center py-20 sm:py-24 text-center bg-white p-6 sm:p-8 rounded-2xl border border-[#EDE6DF] shadow-xs">
-                <div className="w-14 sm:w-16 h-14 sm:h-16 rounded-full bg-[#FAF7F5] flex items-center justify-center text-[#c1a98f] mb-4">
+              <div className="flex flex-col items-center justify-center py-20 sm:py-24 text-center bg-white dark:bg-[#1E1E1E] p-6 sm:p-8 rounded-2xl border border-[#EDE6DF] dark:border-[#2E2E2E] shadow-xs">
+                <div className="w-14 sm:w-16 h-14 sm:h-16 rounded-full bg-[#FAF7F5] dark:bg-[#252525] flex items-center justify-center text-[#c1a98f] mb-4">
                   <Search className="w-6 h-6 sm:w-7 sm:h-7" />
                 </div>
-                <h3 className="text-lg sm:text-xl font-serif uppercase tracking-[0.15em] text-[#1a1a1a] mb-2 font-bold">
+                <h3 className="text-lg sm:text-xl font-serif uppercase tracking-[0.15em] text-[#1a1a1a] dark:text-[#F5F5F5] mb-2 font-bold">
                   No pieces found
                 </h3>
-                <p className="text-gray-500 text-xs tracking-wider max-w-sm mb-6 leading-relaxed">
+                <p className="text-gray-500 dark:text-[#AAAAAA] text-xs tracking-wider max-w-sm mb-6 leading-relaxed">
                   We couldn't find any jewelry or fragrance matching your active criteria. Try adjusting your search term or clearing filters.
                 </p>
                 <button
                   onClick={handleResetFilters}
-                  className="px-6 py-3 bg-[#1a1a1a] hover:bg-[#c1a98f] text-white hover:text-black text-xs uppercase tracking-widest font-bold rounded-xl transition-all shadow-sm flex items-center gap-2"
+                  className="px-6 py-3 bg-[#1a1a1a] dark:bg-[#C1A98F] hover:bg-[#c1a98f] dark:hover:bg-[#d6beab] text-white dark:text-black hover:text-black text-xs uppercase tracking-widest font-bold rounded-xl transition-all shadow-sm flex items-center gap-2"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
                   <span>Show All Products</span>

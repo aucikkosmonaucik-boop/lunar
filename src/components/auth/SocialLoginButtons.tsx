@@ -114,16 +114,16 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
     <div className={`w-full space-y-4 ${className}`}>
       {/* Divider */}
       <div className="relative flex items-center justify-center">
-        <div className="border-t border-gray-200 w-full" />
-        <span className="bg-white px-3 text-[10px] uppercase tracking-[0.25em] text-gray-400 font-medium whitespace-nowrap">
+        <div className="border-t border-gray-200 dark:border-[#2E2E2E] w-full" />
+        <span className="bg-white dark:bg-[#1E1E1E] px-3 text-[10px] uppercase tracking-[0.25em] text-gray-400 dark:text-[#AAAAAA] font-medium whitespace-nowrap">
           {dividerText}
         </span>
-        <div className="border-t border-gray-200 w-full" />
+        <div className="border-t border-gray-200 dark:border-[#2E2E2E] w-full" />
       </div>
 
       {/* Error alert */}
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-xl flex items-center space-x-2 text-xs">
+        <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 p-3 rounded-xl flex items-center space-x-2 text-xs">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{error}</span>
         </div>
@@ -136,11 +136,11 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
           type="button"
           disabled={loadingProvider !== null}
           onClick={() => handleSocialAuth('google')}
-          className="flex items-center justify-center gap-2 py-3 px-3 border border-gray-200 hover:border-gray-900 bg-white hover:bg-gray-50/80 rounded-xl transition-all duration-200 text-[#1a1a1a] shadow-xs group disabled:opacity-50 cursor-pointer"
+          className="flex items-center justify-center gap-2 py-3 px-3 border border-gray-200 dark:border-[#2E2E2E] hover:border-gray-900 dark:hover:border-[#C1A98F] bg-white dark:bg-[#252525] hover:bg-gray-50/80 dark:hover:bg-[#2E2E2E] rounded-xl transition-all duration-200 text-[#1a1a1a] dark:text-[#F5F5F5] shadow-xs group disabled:opacity-50 cursor-pointer"
           title="Sign in with Google"
         >
           {loadingProvider === 'google' ? (
-            <Loader2 className="w-4 h-4 animate-spin text-[#1a1a1a]" />
+            <Loader2 className="w-4 h-4 animate-spin text-[#1a1a1a] dark:text-[#F5F5F5]" />
           ) : (
             <>
               <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
@@ -171,7 +171,7 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
           type="button"
           disabled={loadingProvider !== null}
           onClick={() => handleSocialAuth('facebook')}
-          className="flex items-center justify-center gap-2 py-3 px-3 border border-gray-200 hover:border-[#1877F2] bg-white hover:bg-[#1877F2]/5 rounded-xl transition-all duration-200 text-[#1a1a1a] shadow-xs group disabled:opacity-50 cursor-pointer"
+          className="flex items-center justify-center gap-2 py-3 px-3 border border-gray-200 dark:border-[#2E2E2E] hover:border-[#1877F2] dark:hover:border-[#1877F2] bg-white dark:bg-[#252525] hover:bg-[#1877F2]/5 dark:hover:bg-[#1877F2]/10 rounded-xl transition-all duration-200 text-[#1a1a1a] dark:text-[#F5F5F5] shadow-xs group disabled:opacity-50 cursor-pointer"
           title="Sign in with Facebook"
         >
           {loadingProvider === 'facebook' ? (
@@ -191,10 +191,10 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
       <button
         type="button"
         onClick={() => setShowPhoneModal(true)}
-        className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-gray-200 hover:border-gray-900 bg-white hover:bg-gray-50/80 rounded-xl transition-all duration-200 text-[#1a1a1a] shadow-xs group cursor-pointer"
+        className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-gray-200 dark:border-[#2E2E2E] hover:border-gray-900 dark:hover:border-[#C1A98F] bg-white dark:bg-[#252525] hover:bg-gray-50/80 dark:hover:bg-[#2E2E2E] rounded-xl transition-all duration-200 text-[#1a1a1a] dark:text-[#F5F5F5] shadow-xs group cursor-pointer"
         title="Sign in with Phone Number"
       >
-        <Phone className="w-4 h-4 text-[#1a1a1a] shrink-0" />
+        <Phone className="w-4 h-4 text-[#1a1a1a] dark:text-[#C1A98F] shrink-0" />
         <span className="text-[12px] font-medium tracking-wide">Continue with Phone Number</span>
       </button>
 

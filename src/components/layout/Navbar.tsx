@@ -1,10 +1,11 @@
 import React, { useState, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingBag, User, Search, Menu, X, Heart, ChevronDown, ChevronRight, Sparkles, Smartphone, Truck } from 'lucide-react';
+import { ShoppingBag, User, Search, Menu, X, Heart, ChevronDown, ChevronRight, Sparkles, Smartphone, Truck, Sun, Moon } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
 import { useFavorites } from '../../hooks/useFavorites';
 import SearchMenuBox from './SearchMenuBox';
 import { useAuth } from '../../hooks/useAuth';
+import { useTheme } from '../../hooks/useTheme';
 import FavoritesDrawer from '../ui/FavoritesDrawer';
 import SmartAppBanner from '../ui/SmartAppBanner';
 import { NotificationBell } from './NotificationBell';
@@ -48,6 +49,7 @@ const shopCategories: DropdownItem[] = [
 
 const Navbar: React.FC = () => {
   const { totalItems } = useCart();
+  const { isDark, toggleTheme } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileShopOpen, setMobileShopOpen] = useState(false);
   const [mobileSubmenuOpen, setMobileSubmenuOpen] = useState<string | null>(null);
@@ -97,13 +99,13 @@ const Navbar: React.FC = () => {
   const isShopActive = location.pathname.startsWith('/shop');
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm border-b border-gray-200">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-[#121212] shadow-sm border-b border-gray-200 dark:border-[#2E2E2E] transition-colors duration-200">
       {/* Smart Mobile App Install Banner */}
       <SmartAppBanner />
 
       {/* Announcement Bar */}
-      <div className="bg-[#fcdde5] py-2 overflow-hidden">
-        <div className="text-center text-[12px] md:text-[13px] text-gray-900 font-medium tracking-[0.25em] uppercase flex items-center justify-center gap-2">
+      <div className="bg-[#fcdde5] dark:bg-[#1C1518] py-2 overflow-hidden border-b border-transparent dark:border-[#2E2E2E]/40">
+        <div className="text-center text-[12px] md:text-[13px] text-gray-900 dark:text-[#E8DCCF] font-medium tracking-[0.25em] uppercase flex items-center justify-center gap-2">
           <span>FREE DELIVERY OVER 50€</span>
           <span className="text-[10px] font-bold">&gt;&gt;</span>
         </div>
@@ -115,17 +117,30 @@ const Navbar: React.FC = () => {
         {/* Left: Mobile Menu Trigger */}
         <div className="w-full md:w-auto flex justify-between items-center md:hidden mb-4">
           <button 
-            className="p-2 text-gray-800 focus:outline-none" 
+            className="p-2 text-gray-800 dark:text-[#F5F5F5] focus:outline-none" 
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="Toggle Menu"
           >
             {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
-          <div className="flex items-center gap-3.5 sm:gap-4">
+          <div className="flex items-center gap-2.5 sm:gap-3.5">
+            {/* Mobile Theme Toggle Button */}
+            <button
+              onClick={toggleTheme}
+              className="p-1 text-[#1a1a1a] dark:text-[#F5F5F5] hover:text-[#C1A98F] dark:hover:text-[#C1A98F] transition-colors"
+              aria-label={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            >
+              {isDark ? (
+                <Sun className="w-5 h-5 stroke-[1.5] text-[#C1A98F]" />
+              ) : (
+                <Moon className="w-5 h-5 stroke-[1.5]" />
+              )}
+            </button>
             <NotificationBell isMobile />
             <Link 
               to="/track-order" 
-              className="text-[#1a1a1a] hover:text-[#8C6D4F] transition-colors p-1" 
+              className="text-[#1a1a1a] dark:text-[#F5F5F5] hover:text-[#8C6D4F] dark:hover:text-[#C1A98F] transition-colors p-1" 
               aria-label="Track Package"
               title="Track Package"
             >
@@ -133,16 +148,16 @@ const Navbar: React.FC = () => {
             </Link>
             <button 
               onClick={() => setSearchOpen(!searchOpen)} 
-              className={`transition-colors p-1 ${searchOpen ? 'text-[#8C6D4F]' : 'text-[#1a1a1a]'}`} 
+              className={`transition-colors p-1 ${searchOpen ? 'text-[#8C6D4F] dark:text-[#C1A98F]' : 'text-[#1a1a1a] dark:text-[#F5F5F5]'}`} 
               aria-label="Search and Categories"
               aria-expanded={searchOpen}
             >
               <Search className="w-6 h-6 stroke-[1.2]" />
             </button>
-            <Link to="/cart" className="relative p-1" aria-label="Shopping Cart">
+            <Link to="/cart" className="relative p-1 text-[#1a1a1a] dark:text-[#F5F5F5]" aria-label="Shopping Cart">
               <ShoppingBag className="w-6 h-6 stroke-[1.2]" />
               {totalItems > 0 && (
-                <span className="absolute -top-0.5 -right-1 w-4 h-4 bg-black rounded-full text-[10px] flex items-center justify-center text-white font-bold">
+                <span className="absolute -top-0.5 -right-1 w-4 h-4 bg-black dark:bg-[#C1A98F] rounded-full text-[10px] flex items-center justify-center text-white dark:text-black font-bold">
                   {totalItems}
                 </span>
               )}
@@ -160,13 +175,13 @@ const Navbar: React.FC = () => {
                 </svg>
               </div>
               <span 
-                className="text-4xl md:text-[56px] text-[#1a1a1a] transition-transform duration-500 group-hover:scale-105"
+                className="text-4xl md:text-[56px] text-[#1a1a1a] dark:text-[#F5F5F5] transition-transform duration-500 group-hover:scale-105"
                 style={{ fontFamily: "'Alex Brush', cursive" }}
               >
                 My
               </span>
               <span 
-                className="font-serif text-xl md:text-[28px] tracking-[0.4em] text-[#1a1a1a] uppercase -mt-4 md:-mt-6 transition-transform duration-500 group-hover:scale-105 pl-[0.4em]"
+                className="font-serif text-xl md:text-[28px] tracking-[0.4em] text-[#1a1a1a] dark:text-[#F5F5F5] uppercase -mt-4 md:-mt-6 transition-transform duration-500 group-hover:scale-105 pl-[0.4em]"
               >
                 Lunar
               </span>
@@ -179,10 +194,10 @@ const Navbar: React.FC = () => {
             {/* 1. Home */}
             <Link
               to="/"
-              className="text-[14px] lg:text-[15px] tracking-widest text-[#1a1a1a] font-medium uppercase hover:text-gray-500 transition-colors flex flex-col items-center group"
+              className="text-[14px] lg:text-[15px] tracking-widest text-[#1a1a1a] dark:text-[#F5F5F5] font-medium uppercase hover:text-gray-500 dark:hover:text-[#C1A98F] transition-colors flex flex-col items-center group"
             >
               <span>Home</span>
-              <div className={`h-[1px] bg-black mt-1 transition-all duration-300 ${location.pathname === '/' ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+              <div className={`h-[1px] bg-black dark:bg-[#C1A98F] mt-1 transition-all duration-300 ${location.pathname === '/' ? 'w-full' : 'w-0 group-hover:w-full'}`} />
             </Link>
 
             {/* 2. Shop with Dropdown Hover Menu (MyLunar luxury styling) */}
@@ -193,18 +208,18 @@ const Navbar: React.FC = () => {
             >
               <Link
                 to="/shop"
-                className="text-[14px] lg:text-[15px] tracking-widest text-[#1a1a1a] font-medium uppercase hover:text-gray-500 transition-colors flex flex-col items-center group"
+                className="text-[14px] lg:text-[15px] tracking-widest text-[#1a1a1a] dark:text-[#F5F5F5] font-medium uppercase hover:text-gray-500 dark:hover:text-[#C1A98F] transition-colors flex flex-col items-center group"
               >
                 <div className="flex items-center gap-1.5 cursor-pointer">
                   <span>Shop</span>
                   <ChevronDown
                     className={`w-3.5 h-3.5 transition-transform duration-300 ${
-                      isShopHovered ? 'rotate-180 text-black' : 'text-gray-500'
+                      isShopHovered ? 'rotate-180 text-black dark:text-[#C1A98F]' : 'text-gray-500 dark:text-[#AAAAAA]'
                     }`}
                   />
                 </div>
                 <div
-                  className={`h-[1px] bg-black mt-1 transition-all duration-300 ${
+                  className={`h-[1px] bg-black dark:bg-[#C1A98F] mt-1 transition-all duration-300 ${
                     isShopActive || isShopHovered ? 'w-full' : 'w-0 group-hover:w-full'
                   }`}
                 />
@@ -220,8 +235,8 @@ const Navbar: React.FC = () => {
                   {/* Invisible Hover Bridge */}
                   <div className="absolute -top-3 left-0 right-0 h-4 bg-transparent" />
 
-                  {/* Main Dropdown Panel (Styled in clean white matching header) */}
-                  <div className="bg-white border border-gray-200 shadow-2xl shadow-black/10 min-w-[260px] py-3 animate-fade-in relative">
+                  {/* Main Dropdown Panel */}
+                  <div className="bg-white dark:bg-[#1E1E1E] border border-gray-200 dark:border-[#2E2E2E] shadow-2xl shadow-black/10 dark:shadow-black/70 min-w-[260px] py-3 animate-fade-in relative">
                     <div className="flex flex-col">
                       {shopCategories.map((item) => {
                         const hasSub = !!item.subitems;
@@ -236,16 +251,16 @@ const Navbar: React.FC = () => {
                             <Link
                               to={item.to}
                               onClick={() => setIsShopHovered(false)}
-                              className={`px-6 py-2.5 flex items-center justify-between text-[#1a1a1a] transition-all duration-200 hover:bg-gray-50 hover:translate-x-1 ${
+                              className={`px-6 py-2.5 flex items-center justify-between transition-all duration-200 hover:bg-gray-50 dark:hover:bg-[#282828] hover:translate-x-1 ${
                                 item.label === 'Shop All'
-                                  ? 'font-serif text-[15px] border-b border-gray-100 mb-1 pb-3 pt-1 text-black font-semibold'
-                                  : 'font-serif text-[14px] tracking-[0.18em] uppercase text-[#2b2b2b] hover:text-black'
+                                  ? 'font-serif text-[15px] border-b border-gray-100 dark:border-[#2E2E2E] mb-1 pb-3 pt-1 text-black dark:text-white font-semibold'
+                                  : 'font-serif text-[14px] tracking-[0.18em] uppercase text-[#2b2b2b] dark:text-[#E0E0E0] hover:text-black dark:hover:text-white'
                               }`}
                             >
                               <div className="flex items-center gap-2">
                                 <span>{item.label}</span>
                                 {item.badge && (
-                                  <span className="text-[9px] font-sans font-bold px-1.5 py-0.5 bg-[#1a1a1a] text-white tracking-widest uppercase rounded-none">
+                                  <span className="text-[9px] font-sans font-bold px-1.5 py-0.5 bg-[#1a1a1a] dark:bg-[#C1A98F] text-white dark:text-black tracking-widest uppercase rounded-none">
                                     {item.badge}
                                   </span>
                                 )}
@@ -254,7 +269,7 @@ const Navbar: React.FC = () => {
                               {hasSub && (
                                 <ChevronRight
                                   className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                                    isFlyoutOpen ? 'rotate-90 text-black' : 'text-gray-400 group-hover/item:text-black'
+                                    isFlyoutOpen ? 'rotate-90 text-black dark:text-[#C1A98F]' : 'text-gray-400 dark:text-gray-500 group-hover/item:text-black dark:group-hover/item:text-white'
                                   }`}
                                 />
                               )}
@@ -271,9 +286,9 @@ const Navbar: React.FC = () => {
                                   setActiveFlyout(item.label);
                                 }}
                               >
-                                <div className="bg-white border border-gray-200 shadow-2xl shadow-black/10 min-w-[240px] py-3 animate-fade-in">
-                                  <div className="px-5 pb-2 mb-2 border-b border-gray-100 flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-gray-500 font-sans font-semibold">
-                                    <Sparkles className="w-3 h-3 text-gray-400" />
+                                <div className="bg-white dark:bg-[#1E1E1E] border border-gray-200 dark:border-[#2E2E2E] shadow-2xl shadow-black/10 dark:shadow-black/70 min-w-[240px] py-3 animate-fade-in">
+                                  <div className="px-5 pb-2 mb-2 border-b border-gray-100 dark:border-[#2E2E2E] flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-gray-500 dark:text-[#AAAAAA] font-sans font-semibold">
+                                    <Sparkles className="w-3 h-3 text-[#C1A98F]" />
                                     <span>{item.label} Collection</span>
                                   </div>
                                   {item.subitems?.map((sub) => (
@@ -284,7 +299,7 @@ const Navbar: React.FC = () => {
                                         setIsShopHovered(false);
                                         setActiveFlyout(null);
                                       }}
-                                      className="px-5 py-2 block font-serif text-[13px] tracking-[0.16em] uppercase text-[#333] hover:text-black hover:bg-gray-50 hover:translate-x-1 transition-all duration-200"
+                                      className="px-5 py-2 block font-serif text-[13px] tracking-[0.16em] uppercase text-[#333] dark:text-[#E0E0E0] hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-[#282828] hover:translate-x-1 transition-all duration-200"
                                     >
                                       {sub.label}
                                     </Link>
@@ -304,7 +319,7 @@ const Navbar: React.FC = () => {
             {/* 3. Mobile App */}
             <Link
               to="/app"
-              className="text-[14px] lg:text-[15px] tracking-widest text-[#1a1a1a] font-medium uppercase hover:text-gray-500 transition-colors flex flex-col items-center group"
+              className="text-[14px] lg:text-[15px] tracking-widest text-[#1a1a1a] dark:text-[#F5F5F5] font-medium uppercase hover:text-gray-500 dark:hover:text-[#C1A98F] transition-colors flex flex-col items-center group"
             >
               <div className="flex items-center gap-1.5">
                 <span>App</span>
@@ -312,37 +327,37 @@ const Navbar: React.FC = () => {
                   NEW
                 </span>
               </div>
-              <div className={`h-[1px] bg-black mt-1 transition-all duration-300 ${location.pathname === '/app' ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+              <div className={`h-[1px] bg-black dark:bg-[#C1A98F] mt-1 transition-all duration-300 ${location.pathname === '/app' ? 'w-full' : 'w-0 group-hover:w-full'}`} />
             </Link>
 
             {/* 5. Contact */}
             <Link
               to="/contact"
-              className="text-[14px] lg:text-[15px] tracking-widest text-[#1a1a1a] font-medium uppercase hover:text-gray-500 transition-colors flex flex-col items-center group"
+              className="text-[14px] lg:text-[15px] tracking-widest text-[#1a1a1a] dark:text-[#F5F5F5] font-medium uppercase hover:text-gray-500 dark:hover:text-[#C1A98F] transition-colors flex flex-col items-center group"
             >
               <span>Contact</span>
-              <div className={`h-[1px] bg-black mt-1 transition-all duration-300 ${location.pathname === '/contact' ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+              <div className={`h-[1px] bg-black dark:bg-[#C1A98F] mt-1 transition-all duration-300 ${location.pathname === '/contact' ? 'w-full' : 'w-0 group-hover:w-full'}`} />
             </Link>
 
             {/* 6. Track Order */}
             <Link
               to="/track-order"
-              className="text-[14px] lg:text-[15px] tracking-widest text-[#8C6D4F] font-medium uppercase hover:text-[#1a1a1a] transition-colors flex flex-col items-center group"
+              className="text-[14px] lg:text-[15px] tracking-widest text-[#8C6D4F] dark:text-[#C1A98F] font-medium uppercase hover:text-[#1a1a1a] dark:hover:text-white transition-colors flex flex-col items-center group"
             >
               <span>Track Order</span>
-              <div className={`h-[1px] bg-[#8C6D4F] mt-1 transition-all duration-300 ${location.pathname === '/track-order' ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+              <div className={`h-[1px] bg-[#8C6D4F] dark:bg-[#C1A98F] mt-1 transition-all duration-300 ${location.pathname === '/track-order' ? 'w-full' : 'w-0 group-hover:w-full'}`} />
             </Link>
 
           </nav>
         </div>
 
         {/* Right: Icons (Desktop) */}
-        <div className="hidden md:flex items-center justify-end gap-6 ml-auto w-full md:w-auto mt-4 md:mt-0 md:absolute md:right-12 md:top-12">
+        <div className="hidden md:flex items-center justify-end gap-5 lg:gap-6 ml-auto w-full md:w-auto mt-4 md:mt-0 md:absolute md:right-12 md:top-12">
           {/* Search Trigger */}
           <button 
             onClick={() => setSearchOpen(!searchOpen)}
-            className={`flex items-center gap-2 mr-2 cursor-pointer transition-colors ${
-              searchOpen ? 'text-[#8C6D4F]' : 'hover:text-gray-600 text-[#1a1a1a]'
+            className={`flex items-center gap-2 mr-1 cursor-pointer transition-colors ${
+              searchOpen ? 'text-[#8C6D4F] dark:text-[#C1A98F]' : 'hover:text-gray-600 dark:hover:text-[#C1A98F] text-[#1a1a1a] dark:text-[#F5F5F5]'
             }`}
             aria-label="Search and Categories Menu"
             aria-expanded={searchOpen}
@@ -350,9 +365,24 @@ const Navbar: React.FC = () => {
             <span className="text-base font-medium font-serif uppercase tracking-widest mr-1">Search</span>
             <Search className="w-[22px] h-[22px] stroke-[1.2]" />
           </button>
+
+          {/* Theme Toggle Button (Desktop) */}
+          <button
+            onClick={toggleTheme}
+            className="p-1.5 text-[#1a1a1a] dark:text-[#F5F5F5] hover:text-[#C1A98F] dark:hover:text-[#C1A98F] transition-all rounded-full hover:bg-gray-100 dark:hover:bg-[#282828] cursor-pointer"
+            aria-label={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          >
+            {isDark ? (
+              <Sun className="w-[22px] h-[22px] stroke-[1.5] text-[#C1A98F] transition-transform duration-300 hover:rotate-45" />
+            ) : (
+              <Moon className="w-[22px] h-[22px] stroke-[1.5] text-[#1a1a1a] transition-transform duration-300 hover:-rotate-12" />
+            )}
+          </button>
+
           <Link
             to="/admin"
-            className="hidden lg:flex items-center gap-1.5 px-3 py-1 bg-black text-white hover:bg-[#d4af37] hover:text-black transition-all rounded text-[11px] font-bold uppercase tracking-wider shadow-sm"
+            className="hidden lg:flex items-center gap-1.5 px-3 py-1 bg-black dark:bg-[#1E1E1E] text-white dark:text-[#C1A98F] border border-transparent dark:border-[#2E2E2E] hover:bg-[#d4af37] dark:hover:bg-[#C1A98F] dark:hover:text-black transition-all rounded text-[11px] font-bold uppercase tracking-wider shadow-sm"
             title="Owner Admin Portal (Product moderation, pricing, promo codes, loyalty program)"
           >
             <Sparkles className="w-3.5 h-3.5" />
@@ -361,7 +391,7 @@ const Navbar: React.FC = () => {
 
           <Link
             to="/track-order"
-            className="text-[#1a1a1a] hover:text-[#8C6D4F] transition-colors"
+            className="text-[#1a1a1a] dark:text-[#F5F5F5] hover:text-[#8C6D4F] dark:hover:text-[#C1A98F] transition-colors"
             aria-label="Track Package"
             title="Track Package"
           >
@@ -373,12 +403,12 @@ const Navbar: React.FC = () => {
           {user ? (
             <Link
               to="/account"
-              className="text-[#1a1a1a] hover:text-gray-600 transition-colors relative group"
+              className="text-[#1a1a1a] dark:text-[#F5F5F5] hover:text-gray-600 dark:hover:text-[#C1A98F] transition-colors relative group"
               aria-label="My Account"
             >
               <User className="w-[24px] h-[24px] stroke-[1.2]" />
               {user.loyaltyPoints !== undefined && user.loyaltyPoints > 0 && (
-                <span className="absolute -top-1.5 -right-2 bg-[#d4af37] text-black text-[9px] font-bold px-1 rounded-full border border-white">
+                <span className="absolute -top-1.5 -right-2 bg-[#d4af37] text-black text-[9px] font-bold px-1 rounded-full border border-white dark:border-black">
                   {user.loyaltyPoints > 999 ? '999+' : user.loyaltyPoints}
                 </span>
               )}
@@ -386,7 +416,7 @@ const Navbar: React.FC = () => {
           ) : (
             <Link
               to="/login"
-              className="text-[#1a1a1a] hover:text-gray-600 transition-colors"
+              className="text-[#1a1a1a] dark:text-[#F5F5F5] hover:text-gray-600 dark:hover:text-[#C1A98F] transition-colors"
               aria-label="Account"
             >
               <User className="w-[24px] h-[24px] stroke-[1.2]" />
@@ -394,20 +424,20 @@ const Navbar: React.FC = () => {
           )}
           <button
             onClick={() => setFavOpen(true)}
-            className="relative text-[#1a1a1a] hover:text-gray-600 transition-colors"
+            className="relative text-[#1a1a1a] dark:text-[#F5F5F5] hover:text-gray-600 dark:hover:text-[#C1A98F] transition-colors"
             aria-label="Wishlist"
           >
             <Heart className="w-[24px] h-[24px] stroke-[1.2]" />
             {favCount > 0 && (
-              <span className="absolute -top-1.5 -right-2 w-5 h-5 bg-black rounded-full text-[11px] flex items-center justify-center text-white font-bold">
+              <span className="absolute -top-1.5 -right-2 w-5 h-5 bg-black dark:bg-[#C1A98F] rounded-full text-[11px] flex items-center justify-center text-white dark:text-black font-bold">
                 {favCount}
               </span>
             )}
           </button>
-          <Link to="/cart" className="flex items-center gap-2 group relative text-[#1a1a1a] hover:text-gray-600 transition-colors">
+          <Link to="/cart" className="flex items-center gap-2 group relative text-[#1a1a1a] dark:text-[#F5F5F5] hover:text-gray-600 dark:hover:text-[#C1A98F] transition-colors">
             <ShoppingBag className="w-[24px] h-[24px] stroke-[1.2]" />
             {totalItems > 0 && (
-              <span className="absolute -top-1.5 -right-2 w-5 h-5 bg-black rounded-full text-[11px] flex items-center justify-center text-white font-bold">
+              <span className="absolute -top-1.5 -right-2 w-5 h-5 bg-black dark:bg-[#C1A98F] rounded-full text-[11px] flex items-center justify-center text-white dark:text-black font-bold">
                 {totalItems}
               </span>
             )}
@@ -418,22 +448,22 @@ const Navbar: React.FC = () => {
 
       {/* Mobile Menu Slide-down Drawer with Accordion */}
       {menuOpen && (
-        <div className="md:hidden flex flex-col bg-white border-b border-gray-200 py-4 px-6 gap-2 animate-fade-in shadow-xl max-h-[80vh] overflow-y-auto">
+        <div className="md:hidden flex flex-col bg-white dark:bg-[#1E1E1E] border-b border-gray-200 dark:border-[#2E2E2E] py-4 px-6 gap-2 animate-fade-in shadow-xl max-h-[80vh] overflow-y-auto">
           {/* Home */}
           <Link
             to="/"
-            className="text-base tracking-widest uppercase font-medium py-2.5 border-b border-gray-100 text-[#1a1a1a]"
+            className="text-base tracking-widest uppercase font-medium py-2.5 border-b border-gray-100 dark:border-[#2E2E2E] text-[#1a1a1a] dark:text-[#F5F5F5]"
             onClick={() => setMenuOpen(false)}
           >
             Home
           </Link>
 
           {/* Shop Accordion */}
-          <div className="border-b border-gray-100 py-1">
+          <div className="border-b border-gray-100 dark:border-[#2E2E2E] py-1">
             <div className="flex items-center justify-between py-2">
               <Link
                 to="/shop"
-                className="text-base tracking-widest uppercase font-medium text-[#1a1a1a]"
+                className="text-base tracking-widest uppercase font-medium text-[#1a1a1a] dark:text-[#F5F5F5]"
                 onClick={() => setMenuOpen(false)}
               >
                 Shop
@@ -441,7 +471,7 @@ const Navbar: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setMobileShopOpen(!mobileShopOpen)}
-                className="p-2 text-gray-700 hover:text-black focus:outline-none"
+                className="p-2 text-gray-700 dark:text-[#AAAAAA] hover:text-black dark:hover:text-white focus:outline-none"
                 aria-label="Toggle Shop Submenu"
               >
                 <ChevronDown
@@ -454,7 +484,7 @@ const Navbar: React.FC = () => {
 
             {/* Mobile Shop Accordion Content */}
             {mobileShopOpen && (
-              <div className="pl-4 pr-2 py-2 flex flex-col gap-1 bg-white border border-gray-100 my-2">
+              <div className="pl-4 pr-2 py-2 flex flex-col gap-1 bg-white dark:bg-[#161616] border border-gray-100 dark:border-[#2E2E2E] my-2 rounded-lg">
                 {shopCategories.map((item) => {
                   const hasSub = !!item.subitems;
                   const isSubOpen = mobileSubmenuOpen === item.label;
@@ -464,7 +494,7 @@ const Navbar: React.FC = () => {
                       <div className="flex items-center justify-between py-1.5">
                         <Link
                           to={item.to}
-                          className="font-serif text-sm tracking-widest uppercase text-[#333] hover:text-black"
+                          className="font-serif text-sm tracking-widest uppercase text-[#333] dark:text-[#E0E0E0] hover:text-black dark:hover:text-white"
                           onClick={() => setMenuOpen(false)}
                         >
                           {item.label}
@@ -475,7 +505,7 @@ const Navbar: React.FC = () => {
                             onClick={() =>
                               setMobileSubmenuOpen(isSubOpen ? null : item.label)
                             }
-                            className="p-1 text-gray-500"
+                            className="p-1 text-gray-500 dark:text-gray-400"
                           >
                             <ChevronDown
                               className={`w-3.5 h-3.5 transition-transform duration-200 ${
@@ -488,12 +518,12 @@ const Navbar: React.FC = () => {
 
                       {/* Nested mobile subcategories */}
                       {hasSub && isSubOpen && (
-                        <div className="pl-4 pb-2 flex flex-col gap-1.5 border-l-2 border-gray-200 ml-1 my-1">
+                        <div className="pl-4 pb-2 flex flex-col gap-1.5 border-l-2 border-gray-200 dark:border-[#2E2E2E] ml-1 my-1">
                           {item.subitems?.map((sub) => (
                             <Link
                               key={sub.label}
                               to={sub.to}
-                              className="text-xs uppercase tracking-wider text-[#666] hover:text-black py-1"
+                              className="text-xs uppercase tracking-wider text-[#666] dark:text-[#AAAAAA] hover:text-black dark:hover:text-white py-1"
                               onClick={() => setMenuOpen(false)}
                             >
                               {sub.label}
@@ -511,11 +541,11 @@ const Navbar: React.FC = () => {
           {/* Mobile App */}
           <Link
             to="/app"
-            className="text-base tracking-widest uppercase font-medium py-2.5 border-b border-gray-100 text-[#1a1a1a] flex items-center justify-between"
+            className="text-base tracking-widest uppercase font-medium py-2.5 border-b border-gray-100 dark:border-[#2E2E2E] text-[#1a1a1a] dark:text-[#F5F5F5] flex items-center justify-between"
             onClick={() => setMenuOpen(false)}
           >
             <div className="flex items-center gap-2">
-              <Smartphone className="w-4 h-4 text-[#8c6d4f]" />
+              <Smartphone className="w-4 h-4 text-[#8c6d4f] dark:text-[#C1A98F]" />
               <span>Mobile App</span>
             </div>
             <span className="text-[9px] font-sans font-bold px-2 py-0.5 bg-[#C1A98F] text-black tracking-widest uppercase rounded">
@@ -526,7 +556,7 @@ const Navbar: React.FC = () => {
           {/* Contact */}
           <Link
             to="/contact"
-            className="text-base tracking-widest uppercase font-medium py-2.5 text-[#1a1a1a]"
+            className="text-base tracking-widest uppercase font-medium py-2.5 text-[#1a1a1a] dark:text-[#F5F5F5]"
             onClick={() => setMenuOpen(false)}
           >
             Contact
@@ -535,20 +565,20 @@ const Navbar: React.FC = () => {
           {/* Track Order */}
           <Link
             to="/track-order"
-            className="text-base tracking-widest uppercase font-medium py-2.5 text-[#8C6D4F]"
+            className="text-base tracking-widest uppercase font-medium py-2.5 text-[#8C6D4F] dark:text-[#C1A98F]"
             onClick={() => setMenuOpen(false)}
           >
             Track Order
           </Link>
 
-          {/* Mobile Account / Wishlist actions */}
-          <div className="mt-4 pt-4 border-t border-gray-200 flex items-center justify-around">
+          {/* Mobile Account / Wishlist / Theme actions */}
+          <div className="mt-4 pt-4 border-t border-gray-200 dark:border-[#2E2E2E] flex items-center justify-around">
             <button
               onClick={() => {
                 setMenuOpen(false);
                 setSearchOpen(true);
               }}
-              className="flex items-center gap-1.5 text-xs uppercase tracking-widest text-gray-700"
+              className="flex items-center gap-1.5 text-xs uppercase tracking-widest text-gray-700 dark:text-[#AAAAAA] hover:text-black dark:hover:text-[#F5F5F5]"
             >
               <Search className="w-4 h-4" />
               <span>Search</span>
@@ -559,25 +589,24 @@ const Navbar: React.FC = () => {
                 setMenuOpen(false);
                 setFavOpen(true);
               }}
-              className="flex items-center gap-1.5 text-xs uppercase tracking-widest text-gray-700"
+              className="flex items-center gap-1.5 text-xs uppercase tracking-widest text-gray-700 dark:text-[#AAAAAA] hover:text-black dark:hover:text-[#F5F5F5]"
             >
               <Heart className="w-4 h-4" />
               <span>Wishlist ({favCount})</span>
             </button>
 
-            <Link
-              to="/admin"
-              onClick={() => setMenuOpen(false)}
-              className="flex items-center gap-1.5 text-xs uppercase tracking-widest text-[#d4af37] font-bold"
+            <button
+              onClick={toggleTheme}
+              className="flex items-center gap-1.5 text-xs uppercase tracking-widest text-gray-700 dark:text-[#C1A98F] hover:text-black dark:hover:text-white"
             >
-              <Sparkles className="w-4 h-4" />
-              <span>Admin</span>
-            </Link>
+              {isDark ? <Sun className="w-4 h-4 text-[#C1A98F]" /> : <Moon className="w-4 h-4" />}
+              <span>{isDark ? 'Light' : 'Dark'}</span>
+            </button>
 
             <Link
               to={user ? '/account' : '/login'}
               onClick={() => setMenuOpen(false)}
-              className="flex items-center gap-1.5 text-xs uppercase tracking-widest text-gray-700"
+              className="flex items-center gap-1.5 text-xs uppercase tracking-widest text-gray-700 dark:text-[#AAAAAA] hover:text-black dark:hover:text-[#F5F5F5]"
             >
               <User className="w-4 h-4" />
               <span>{user ? 'Account' : 'Login'}</span>

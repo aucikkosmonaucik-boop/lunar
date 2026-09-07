@@ -359,10 +359,10 @@ const CartPage: React.FC = () => {
   /* ─── Empty State ─────────────────────────────── */
   if (items.length === 0) {
     return (
-      <div className="min-h-[75vh] bg-[#FAF8F5] flex items-center justify-center px-4 py-16">
-        <div className="max-w-lg w-full bg-white border border-[#EAE3D9] p-8 md:p-12 text-center shadow-sm">
-          <div className="w-20 h-20 rounded-full bg-[#FAF6F0] border border-[#E8DFD3] flex items-center justify-center mx-auto mb-6">
-            <ShoppingBag className="w-9 h-9 text-[#8C7E70] stroke-[1.2]" />
+      <div className="min-h-[75vh] bg-[#FAF8F5] dark:bg-[#121212] flex items-center justify-center px-4 py-16 transition-colors duration-200">
+        <div className="max-w-lg w-full bg-white dark:bg-[#1E1E1E] border border-[#EAE3D9] dark:border-[#2E2E2E] p-8 md:p-12 text-center shadow-sm">
+          <div className="w-20 h-20 rounded-full bg-[#FAF6F0] dark:bg-[#252525] border border-[#E8DFD3] dark:border-[#2E2E2E] flex items-center justify-center mx-auto mb-6">
+            <ShoppingBag className="w-9 h-9 text-[#8C7E70] dark:text-[#C1A98F] stroke-[1.2]" />
           </div>
 
           <p className="text-[10px] text-[#C1A98F] font-bold uppercase tracking-[0.35em] mb-2">
@@ -371,27 +371,27 @@ const CartPage: React.FC = () => {
 
           <h2
             style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
-            className="text-4xl text-[#1A1A1A] uppercase font-medium tracking-wide mb-3"
+            className="text-4xl text-[#1A1A1A] dark:text-[#F5F5F5] uppercase font-medium tracking-wide mb-3"
           >
             Your bag is empty
           </h2>
 
           <div className="w-10 h-[1px] bg-[#C1A98F] mx-auto mb-5" />
 
-          <p className="text-gray-600 text-[13px] leading-relaxed mb-8 max-w-sm mx-auto font-normal">
+          <p className="text-gray-600 dark:text-[#AAAAAA] text-[13px] leading-relaxed mb-8 max-w-sm mx-auto font-normal">
             Discover our unique collection of handcrafted jewellery and luxury accessories by Lunar.
           </p>
 
           <Link
             to="/shop"
-            className="inline-flex items-center justify-center gap-3 w-full bg-[#1A1A1A] text-white text-[12px] uppercase tracking-[0.25em] py-4 px-8 hover:bg-[#333333] transition-colors duration-200 mb-6 font-medium group"
+            className="inline-flex items-center justify-center gap-3 w-full bg-[#1A1A1A] dark:bg-[#C1A98F] text-white dark:text-black text-[12px] uppercase tracking-[0.25em] py-4 px-8 hover:bg-[#333333] dark:hover:bg-[#d6beab] transition-colors duration-200 mb-6 font-medium group"
           >
             <span>Browse the Collection</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
 
-          <div className="pt-6 border-t border-gray-100">
-            <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-3 font-medium">
+          <div className="pt-6 border-t border-gray-100 dark:border-[#2E2E2E]">
+            <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 mb-3 font-medium">
               Popular Categories
             </p>
             <div className="flex flex-wrap items-center justify-center gap-2">
@@ -404,7 +404,7 @@ const CartPage: React.FC = () => {
                 <Link
                   key={link.label}
                   to={link.to}
-                  className="text-[11px] uppercase tracking-wider text-gray-600 bg-gray-50 hover:bg-[#FAF6F0] hover:text-black px-3 py-1.5 border border-gray-200 transition-colors"
+                  className="text-[11px] uppercase tracking-wider text-gray-600 dark:text-[#AAAAAA] bg-gray-50 dark:bg-[#252525] hover:bg-[#FAF6F0] dark:hover:bg-[#282828] hover:text-black dark:hover:text-white px-3 py-1.5 border border-gray-200 dark:border-[#2E2E2E] transition-colors"
                 >
                   {link.label}
                 </Link>
@@ -418,18 +418,18 @@ const CartPage: React.FC = () => {
 
   /* ─── Active Cart & Checkout ───────────────────── */
   return (
-    <div className="min-h-screen bg-[#FDFCFA] pb-24">
+    <div className="min-h-screen bg-[#FDFCFA] dark:bg-[#121212] pb-24 transition-colors duration-200">
       {/* Top Banner Notice if Payment was Canceled */}
       {showCanceledNotice && (
-        <div className="bg-[#FFF8F0] border-b border-[#F5DFC8] py-3 px-4 animate-fade-in">
+        <div className="bg-[#FFF8F0] dark:bg-[#251D14] border-b border-[#F5DFC8] dark:border-[#422B18] py-3 px-4 animate-fade-in">
           <div className="max-w-[1240px] mx-auto flex items-center justify-between">
-            <div className="flex items-center gap-2.5 text-[12px] text-[#8A532B]">
+            <div className="flex items-center gap-2.5 text-[12px] text-[#8A532B] dark:text-[#F3B775]">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>Payment was cancelled. Your items are still safely waiting in your bag.</span>
             </div>
             <button
               onClick={() => setShowCanceledNotice(false)}
-              className="text-gray-400 hover:text-gray-700 p-1"
+              className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 p-1"
               aria-label="Dismiss notification"
             >
               <X className="w-4 h-4" />
@@ -441,22 +441,22 @@ const CartPage: React.FC = () => {
       <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 pt-8 md:pt-12">
         {/* ── Breadcrumb & Page Header ─────────────────── */}
         <div className="text-center mb-10 md:mb-14">
-          <div className="flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.2em] text-gray-400 mb-3 font-light">
-            <Link to="/" className="hover:text-black transition-colors">Home</Link>
+          <div className="flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 mb-3 font-light">
+            <Link to="/" className="hover:text-black dark:hover:text-white transition-colors">Home</Link>
             <span>/</span>
-            <span className="text-black font-medium">Bag & Delivery</span>
+            <span className="text-black dark:text-white font-medium">Bag & Delivery</span>
           </div>
 
           <h1
             style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
-            className="text-4xl sm:text-5xl lg:text-6xl text-[#1A1A1A] tracking-wider uppercase font-medium mb-3"
+            className="text-4xl sm:text-5xl lg:text-6xl text-[#1A1A1A] dark:text-[#F5F5F5] tracking-wider uppercase font-medium mb-3"
           >
             Bag & Checkout
           </h1>
 
           <div className="w-12 h-[1px] bg-[#C1A98F] mx-auto mb-3" />
 
-          <p className="text-gray-500 text-[12px] uppercase tracking-[0.25em] font-light">
+          <p className="text-gray-500 dark:text-[#AAAAAA] text-[12px] uppercase tracking-[0.25em] font-light">
             {totalItems} {totalItems === 1 ? 'item in bag' : 'items in bag'}
           </p>
         </div>
@@ -468,30 +468,30 @@ const CartPage: React.FC = () => {
           <div className="space-y-8">
             
             {/* Free Shipping Progress Indicator */}
-            <div className="bg-white border border-[#EAE3D9] p-4 sm:p-5 rounded-none shadow-xs">
+            <div className="bg-white dark:bg-[#1E1E1E] border border-[#EAE3D9] dark:border-[#2E2E2E] p-4 sm:p-5 rounded-none shadow-xs">
               <div className="flex items-center justify-between gap-4 mb-2.5">
                 <div className="flex items-center gap-2">
                   <Truck className="w-4 h-4 text-[#C1A98F]" />
-                  <span className="text-[12px] font-medium tracking-wider uppercase text-[#1A1A1A]">
+                  <span className="text-[12px] font-medium tracking-wider uppercase text-[#1A1A1A] dark:text-[#F5F5F5]">
                     {isFreeShipping ? (
-                      <span className="text-emerald-700 font-semibold">Free Insured Delivery Unlocked!</span>
+                      <span className="text-emerald-700 dark:text-emerald-400 font-semibold">Free Insured Delivery Unlocked!</span>
                     ) : (
                       <span>
-                        Add <span className="font-semibold text-black">€{remainingForFreeShipping.toFixed(2)}</span> more for free delivery
+                        Add <span className="font-semibold text-black dark:text-[#C1A98F]">€{remainingForFreeShipping.toFixed(2)}</span> more for free delivery
                       </span>
                     )}
                   </span>
                 </div>
-                <span className="text-[11px] font-medium text-gray-400">
+                <span className="text-[11px] font-medium text-gray-400 dark:text-gray-500">
                   Threshold: €{FREE_SHIPPING_THRESHOLD}
                 </span>
               </div>
 
               {/* Progress track */}
-              <div className="w-full h-1.5 bg-[#F0EBE3] overflow-hidden">
+              <div className="w-full h-1.5 bg-[#F0EBE3] dark:bg-[#2A2A2A] overflow-hidden">
                 <div
                   className={`h-full transition-all duration-700 ease-out ${
-                    isFreeShipping ? 'bg-emerald-600' : 'bg-[#1A1A1A]'
+                    isFreeShipping ? 'bg-emerald-600' : 'bg-[#1A1A1A] dark:bg-[#C1A98F]'
                   }`}
                   style={{ width: `${progressPct}%` }}
                 />
@@ -499,17 +499,17 @@ const CartPage: React.FC = () => {
             </div>
 
             {/* Step 1: Items in Cart Container */}
-            <div className="bg-white border border-[#EAE3D9]">
-              <div className="px-6 py-4 border-b border-[#F0EBE3] flex items-center justify-between">
+            <div className="bg-white dark:bg-[#1E1E1E] border border-[#EAE3D9] dark:border-[#2E2E2E]">
+              <div className="px-6 py-4 border-b border-[#F0EBE3] dark:border-[#2E2E2E] flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <span className="w-5 h-5 rounded-full bg-[#1A1A1A] text-white text-[10px] font-semibold flex items-center justify-center">
+                  <span className="w-5 h-5 rounded-full bg-[#1A1A1A] dark:bg-[#C1A98F] text-white dark:text-black text-[10px] font-semibold flex items-center justify-center">
                     1
                   </span>
-                  <h2 className="text-[12px] uppercase tracking-[0.25em] font-semibold text-[#1A1A1A]">
+                  <h2 className="text-[12px] uppercase tracking-[0.25em] font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">
                     Selected Items
                   </h2>
                 </div>
-                <span className="text-[11px] text-gray-400 font-light">
+                <span className="text-[11px] text-gray-400 dark:text-gray-500 font-light">
                   {totalItems} {totalItems === 1 ? 'item' : 'items'}
                 </span>
               </div>
@@ -519,7 +519,7 @@ const CartPage: React.FC = () => {
                 {items.map((item) => (
                   <div
                     key={item.product.id}
-                    className="p-4 sm:p-6 transition-colors hover:bg-[#FAF8F5]/50 group"
+                    className="p-4 sm:p-6 transition-colors hover:bg-[#FAF8F5]/50 dark:hover:bg-[#252525]/50 group"
                   >
                     <div className="flex flex-col sm:grid sm:grid-cols-12 gap-4 sm:gap-2 items-center">
                       
@@ -527,7 +527,7 @@ const CartPage: React.FC = () => {
                       <div className="w-full sm:col-span-6 flex gap-4 items-center">
                         <Link
                           to={`/product/${item.product.id}`}
-                          className="shrink-0 w-20 h-24 sm:w-20 sm:h-24 bg-[#FAF6F0] border border-[#EAE3D9] overflow-hidden relative block"
+                          className="shrink-0 w-20 h-24 sm:w-20 sm:h-24 bg-[#FAF6F0] dark:bg-[#252525] border border-[#EAE3D9] dark:border-[#2E2E2E] overflow-hidden relative block"
                         >
                           <img
                             src={item.product.image}
@@ -546,18 +546,18 @@ const CartPage: React.FC = () => {
 
                           <Link
                             to={`/product/${item.product.id}`}
-                            className="hover:text-gray-600 transition-colors"
+                            className="hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                           >
                             <h3
                               style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
-                              className="text-lg sm:text-xl font-medium text-[#1A1A1A] leading-snug truncate"
+                              className="text-lg sm:text-xl font-medium text-[#1A1A1A] dark:text-[#F5F5F5] leading-snug truncate"
                             >
                               {item.product.name}
                             </h3>
                           </Link>
 
-                          <div className="flex items-center gap-3 mt-1 text-[11px] text-gray-500 font-light">
-                            <span className="inline-flex items-center gap-1 text-emerald-700">
+                          <div className="flex items-center gap-3 mt-1 text-[11px] text-gray-500 dark:text-[#AAAAAA] font-light">
+                            <span className="inline-flex items-center gap-1 text-emerald-700 dark:text-emerald-400">
                               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>
                               In Stock
                             </span>
@@ -569,32 +569,32 @@ const CartPage: React.FC = () => {
 
                       {/* Unit Price (Col 7-8) */}
                       <div className="hidden sm:block sm:col-span-2 text-center">
-                        <span className="text-sm font-light text-[#1A1A1A]">
+                        <span className="text-sm font-light text-[#1A1A1A] dark:text-[#F5F5F5]">
                           €{item.product.price.toFixed(2)}
                         </span>
                       </div>
 
                       {/* Quantity Controls (Col 9-10) */}
                       <div className="w-full sm:w-auto sm:col-span-2 flex items-center justify-between sm:justify-center">
-                        <span className="sm:hidden text-xs text-gray-500 font-medium uppercase tracking-wider">
+                        <span className="sm:hidden text-xs text-gray-500 dark:text-[#AAAAAA] font-medium uppercase tracking-wider">
                           Qty:
                         </span>
-                        <div className="inline-flex items-center border border-[#D5CCC1] bg-white">
+                        <div className="inline-flex items-center border border-[#D5CCC1] dark:border-[#2E2E2E] bg-white dark:bg-[#252525]">
                           <button
                             onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
                             disabled={item.quantity <= 1}
-                            className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-black hover:bg-[#FAF6F0] disabled:opacity-30 disabled:hover:bg-white transition-colors"
+                            className="w-8 h-8 flex items-center justify-center text-gray-600 dark:text-[#AAAAAA] hover:text-black dark:hover:text-white hover:bg-[#FAF6F0] dark:hover:bg-[#333333] disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
                             aria-label="Decrease quantity"
                           >
                             <Minus className="w-3 h-3" />
                           </button>
-                          <span className="w-8 text-center text-xs font-semibold text-[#1A1A1A] select-none">
+                          <span className="w-8 text-center text-xs font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] select-none">
                             {item.quantity}
                           </span>
                           <button
                             onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
                             disabled={item.product.stock ? item.quantity >= item.product.stock : false}
-                            className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-black hover:bg-[#FAF6F0] disabled:opacity-30 disabled:hover:bg-white transition-colors"
+                            className="w-8 h-8 flex items-center justify-center text-gray-600 dark:text-[#AAAAAA] hover:text-black dark:hover:text-white hover:bg-[#FAF6F0] dark:hover:bg-[#333333] disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
                             aria-label="Increase quantity"
                           >
                             <Plus className="w-3 h-3" />
@@ -605,14 +605,14 @@ const CartPage: React.FC = () => {
                       {/* Line Total & Remove (Col 11-12) */}
                       <div className="w-full sm:w-auto sm:col-span-2 flex items-center justify-between sm:justify-end gap-3">
                         <div className="text-left sm:text-right">
-                          <span className="text-base font-medium text-[#1A1A1A]">
+                          <span className="text-base font-medium text-[#1A1A1A] dark:text-[#F5F5F5]">
                             €{(item.product.price * item.quantity).toFixed(2)}
                           </span>
                         </div>
 
                         <button
                           onClick={() => removeFromCart(item.product.id)}
-                          className="p-1.5 text-gray-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                          className="p-1.5 text-gray-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
                           title="Remove item"
                           aria-label="Remove item"
                         >
@@ -626,10 +626,10 @@ const CartPage: React.FC = () => {
               </div>
 
               {/* Bottom Actions Bar */}
-              <div className="p-4 sm:p-5 bg-[#FAF8F5] border-t border-[#EAE3D9] flex items-center justify-between">
+              <div className="p-4 sm:p-5 bg-[#FAF8F5] dark:bg-[#1A1A1A] border-t border-[#EAE3D9] dark:border-[#2E2E2E] flex items-center justify-between">
                 <Link
                   to="/shop"
-                  className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] font-medium text-[#1A1A1A] hover:text-[#C1A98F] transition-colors"
+                  className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] font-medium text-[#1A1A1A] dark:text-[#F5F5F5] hover:text-[#C1A98F] transition-colors"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
                   <span>Continue Shopping</span>
@@ -645,27 +645,27 @@ const CartPage: React.FC = () => {
             </div>
 
             {/* ── Step 2: Mandatory Shipping & Recipient Details Form ── */}
-            <div id="shipping-address-section" className="bg-white border border-[#EAE3D9] shadow-xs">
+            <div id="shipping-address-section" className="bg-white dark:bg-[#1E1E1E] border border-[#EAE3D9] dark:border-[#2E2E2E] shadow-xs">
               
               {/* Header */}
-              <div className="px-6 py-5 border-b border-[#F0EBE3] flex items-center justify-between bg-[#FCFAF7]">
+              <div className="px-6 py-5 border-b border-[#F0EBE3] dark:border-[#2E2E2E] flex items-center justify-between bg-[#FCFAF7] dark:bg-[#252525]">
                 <div className="flex items-center gap-2.5">
-                  <span className="w-5 h-5 rounded-full bg-[#1A1A1A] text-white text-[10px] font-semibold flex items-center justify-center">
+                  <span className="w-5 h-5 rounded-full bg-[#1A1A1A] dark:bg-[#C1A98F] text-white dark:text-black text-[10px] font-semibold flex items-center justify-center">
                     2
                   </span>
                   <div>
-                    <h2 className="text-[13px] uppercase tracking-[0.25em] font-semibold text-[#1A1A1A] flex items-center gap-2">
+                    <h2 className="text-[13px] uppercase tracking-[0.25em] font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] flex items-center gap-2">
                       <MapPin className="w-4 h-4 text-[#C1A98F]" />
                       <span>Shipping & Recipient Details</span>
                     </h2>
-                    <span className="text-[10px] text-amber-800 font-light uppercase tracking-wider block mt-0.5">
+                    <span className="text-[10px] text-amber-800 dark:text-amber-400 font-light uppercase tracking-wider block mt-0.5">
                       * Required fields for delivery
                     </span>
                   </div>
                 </div>
 
                 {user && (
-                  <div className="flex items-center gap-2 px-3 py-1 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs">
+                  <div className="flex items-center gap-2 px-3 py-1 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-xs">
                     <UserCheck className="w-3.5 h-3.5" />
                     <span className="font-medium hidden sm:inline">Signed in: {user.name || user.email}</span>
                     <span className="font-medium sm:hidden">Signed in</span>
@@ -677,8 +677,8 @@ const CartPage: React.FC = () => {
 
                 {/* ── Account Option Selection (For Unauthenticated Users) ── */}
                 {!user ? (
-                  <div className="space-y-3 pb-6 border-b border-[#F0EBE3]">
-                    <span className="text-[11px] uppercase tracking-[0.25em] font-semibold text-[#1A1A1A] block">
+                  <div className="space-y-3 pb-6 border-b border-[#F0EBE3] dark:border-[#2E2E2E]">
+                    <span className="text-[11px] uppercase tracking-[0.25em] font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] block">
                       Choose how to place your order:
                     </span>
 
@@ -687,8 +687,8 @@ const CartPage: React.FC = () => {
                       <label
                         className={`relative border p-4 cursor-pointer transition-all duration-200 flex flex-col justify-between ${
                           checkoutMode === 'guest'
-                            ? 'border-[#1A1A1A] bg-[#FAF8F5] shadow-xs'
-                            : 'border-[#EAE3D9] hover:border-gray-400 bg-white'
+                            ? 'border-[#1A1A1A] dark:border-[#C1A98F] bg-[#FAF8F5] dark:bg-[#252525] shadow-xs'
+                            : 'border-[#EAE3D9] dark:border-[#2E2E2E] hover:border-gray-400 dark:hover:border-gray-600 bg-white dark:bg-[#1E1E1E]'
                         }`}
                       >
                         <div className="flex items-start justify-between mb-1.5">
@@ -699,15 +699,15 @@ const CartPage: React.FC = () => {
                               value="guest"
                               checked={checkoutMode === 'guest'}
                               onChange={() => setCheckoutMode('guest')}
-                              className="accent-[#1A1A1A]"
+                              className="accent-[#1A1A1A] dark:accent-[#C1A98F]"
                             />
-                            <span className="text-xs font-semibold uppercase tracking-wider text-[#1A1A1A]">
+                            <span className="text-xs font-semibold uppercase tracking-wider text-[#1A1A1A] dark:text-[#F5F5F5]">
                               Guest Checkout
                             </span>
                           </div>
-                          <span className="text-[10px] px-2 py-0.5 bg-gray-100 text-gray-600 font-medium">Guest</span>
+                          <span className="text-[10px] px-2 py-0.5 bg-gray-100 dark:bg-[#333333] text-gray-600 dark:text-[#AAAAAA] font-medium">Guest</span>
                         </div>
-                        <p className="text-[11px] text-gray-500 font-light pl-5 leading-relaxed">
+                        <p className="text-[11px] text-gray-500 dark:text-[#AAAAAA] font-light pl-5 leading-relaxed">
                           Quick checkout without creating a password. Confirmation and tracking will be sent to your email.
                         </p>
                       </label>
@@ -716,8 +716,8 @@ const CartPage: React.FC = () => {
                       <label
                         className={`relative border p-4 cursor-pointer transition-all duration-200 flex flex-col justify-between ${
                           checkoutMode === 'create_account'
-                            ? 'border-[#C1A98F] bg-[#FAF6F0] shadow-xs ring-1 ring-[#C1A98F]'
-                            : 'border-[#EAE3D9] hover:border-gray-400 bg-white'
+                            ? 'border-[#C1A98F] bg-[#FAF6F0] dark:bg-[#252525] shadow-xs ring-1 ring-[#C1A98F]'
+                            : 'border-[#EAE3D9] dark:border-[#2E2E2E] hover:border-gray-400 dark:hover:border-gray-600 bg-white dark:bg-[#1E1E1E]'
                         }`}
                       >
                         <div className="flex items-start justify-between mb-1.5">
@@ -730,25 +730,25 @@ const CartPage: React.FC = () => {
                               onChange={() => setCheckoutMode('create_account')}
                               className="accent-[#C1A98F]"
                             />
-                            <span className="text-xs font-semibold uppercase tracking-wider text-[#1A1A1A] flex items-center gap-1.5">
+                            <span className="text-xs font-semibold uppercase tracking-wider text-[#1A1A1A] dark:text-[#F5F5F5] flex items-center gap-1.5">
                               <span>Create account with order</span>
                               <Sparkles className="w-3 h-3 text-[#C1A98F]" />
                             </span>
                           </div>
-                          <span className="text-[10px] px-2 py-0.5 bg-[#FAF0E4] text-[#8A532B] font-medium">Recommended</span>
+                          <span className="text-[10px] px-2 py-0.5 bg-[#FAF0E4] dark:bg-[#3B2E1E] text-[#8A532B] dark:text-[#D4AF37] font-medium">Recommended</span>
                         </div>
-                        <p className="text-[11px] text-gray-600 font-light pl-5 leading-relaxed">
+                        <p className="text-[11px] text-gray-600 dark:text-[#AAAAAA] font-light pl-5 leading-relaxed">
                           Automatically create a Lunar account, track your delivery online, and save your address for future orders.
                         </p>
                       </label>
                     </div>
 
                     {/* Returning Customer Quick Login Link */}
-                    <div className="pt-2 flex items-center justify-between text-xs text-gray-500">
+                    <div className="pt-2 flex items-center justify-between text-xs text-gray-500 dark:text-[#AAAAAA]">
                       <span>Already have a Lunar account?</span>
                       <Link
                         to="/login?redirect=/cart"
-                        className="text-[#1A1A1A] font-medium hover:text-[#C1A98F] transition-colors underline underline-offset-4"
+                        className="text-[#1A1A1A] dark:text-[#C1A98F] font-medium hover:text-[#C1A98F] transition-colors underline underline-offset-4"
                       >
                         Sign in to load your details →
                       </Link>
@@ -756,8 +756,8 @@ const CartPage: React.FC = () => {
 
                     {/* Password Input for Account Creation */}
                     {checkoutMode === 'create_account' && (
-                      <div className="mt-4 p-4 bg-[#FAF6F0] border border-[#E8DFD3] animate-fade-in space-y-2">
-                        <label className="block text-[11px] uppercase tracking-[0.2em] font-medium text-[#1A1A1A]">
+                      <div className="mt-4 p-4 bg-[#FAF6F0] dark:bg-[#252525] border border-[#E8DFD3] dark:border-[#2E2E2E] animate-fade-in space-y-2">
+                        <label className="block text-[11px] uppercase tracking-[0.2em] font-medium text-[#1A1A1A] dark:text-[#F5F5F5]">
                           Create a password for your new account *
                         </label>
                         <div className="relative">
@@ -766,26 +766,26 @@ const CartPage: React.FC = () => {
                             value={accountPassword}
                             onChange={(e) => handleFieldChange('password', e.target.value)}
                             placeholder="Enter password (minimum 6 characters)"
-                            className={`w-full px-3.5 py-2.5 text-xs bg-white border ${
-                              formErrors.password ? 'border-rose-500 focus:ring-rose-200' : 'border-[#D5CCC1] focus:border-black'
+                            className={`w-full px-3.5 py-2.5 text-xs bg-white dark:bg-[#1E1E1E] text-[#1A1A1A] dark:text-[#F5F5F5] border ${
+                              formErrors.password ? 'border-rose-500 focus:ring-rose-200' : 'border-[#D5CCC1] dark:border-[#2E2E2E] focus:border-black dark:focus:border-[#C1A98F]'
                             } focus:outline-none pr-10`}
                           />
                           <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black dark:hover:text-white"
                             aria-label={showPassword ? 'Hide password' : 'Show password'}
                           >
                             {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                           </button>
                         </div>
                         {formErrors.password ? (
-                          <p className="text-[11px] text-rose-600 font-light flex items-center gap-1 mt-1">
+                          <p className="text-[11px] text-rose-600 dark:text-rose-400 font-light flex items-center gap-1 mt-1">
                             <AlertCircle className="w-3.5 h-3.5" />
                             <span>{formErrors.password}</span>
                           </p>
                         ) : (
-                          <p className="text-[10px] text-gray-500 font-light">
+                          <p className="text-[10px] text-gray-500 dark:text-[#AAAAAA] font-light">
                             This password will be used to sign in and view your order history.
                           </p>
                         )}
@@ -795,13 +795,13 @@ const CartPage: React.FC = () => {
                   </div>
                 ) : (
                   /* Logged-in user address sync option */
-                  <div className="pb-4 border-b border-[#F0EBE3] flex items-center justify-between">
-                    <label className="flex items-center gap-2 cursor-pointer text-xs text-gray-700">
+                  <div className="pb-4 border-b border-[#F0EBE3] dark:border-[#2E2E2E] flex items-center justify-between">
+                    <label className="flex items-center gap-2 cursor-pointer text-xs text-gray-700 dark:text-[#AAAAAA]">
                       <input
                         type="checkbox"
                         checked={saveAddressToProfile}
                         onChange={(e) => setSaveAddressToProfile(e.target.checked)}
-                        className="accent-[#1A1A1A] w-4 h-4 rounded-none"
+                        className="accent-[#1A1A1A] dark:accent-[#C1A98F] w-4 h-4 rounded-none"
                       />
                       <span>Save / update this address as default in my Lunar profile</span>
                     </label>
@@ -814,7 +814,7 @@ const CartPage: React.FC = () => {
                   {/* Row 1: Name & Email */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[10px] uppercase tracking-[0.25em] font-medium text-gray-600 mb-1.5">
+                      <label className="block text-[10px] uppercase tracking-[0.25em] font-medium text-gray-600 dark:text-[#AAAAAA] mb-1.5">
                         Recipient Full Name *
                       </label>
                       <div className="relative">
@@ -823,21 +823,21 @@ const CartPage: React.FC = () => {
                           value={shippingName}
                           onChange={(e) => handleFieldChange('name', e.target.value)}
                           placeholder="e.g. Jane Smith"
-                          className={`w-full px-3.5 py-2.5 text-xs bg-[#FAF8F5] border ${
-                            formErrors.name ? 'border-rose-500 bg-rose-50/30' : 'border-[#D5CCC1] focus:border-black focus:bg-white'
+                          className={`w-full px-3.5 py-2.5 text-xs bg-[#FAF8F5] dark:bg-[#252525] border ${
+                            formErrors.name ? 'border-rose-500 bg-rose-50/30' : 'border-[#D5CCC1] dark:border-[#2E2E2E] focus:border-black dark:focus:border-[#C1A98F] focus:bg-white dark:focus:bg-[#282828] text-[#1A1A1A] dark:text-[#F5F5F5]'
                           } focus:outline-none transition-colors`}
                         />
                         <UserIcon className="w-3.5 h-3.5 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2" />
                       </div>
                       {formErrors.name && (
-                        <span className="text-[10px] text-rose-600 font-light mt-1 block">
+                        <span className="text-[10px] text-rose-600 dark:text-rose-400 font-light mt-1 block">
                           {formErrors.name}
                         </span>
                       )}
                     </div>
 
                     <div>
-                      <label className="block text-[10px] uppercase tracking-[0.25em] font-medium text-gray-600 mb-1.5">
+                      <label className="block text-[10px] uppercase tracking-[0.25em] font-medium text-gray-600 dark:text-[#AAAAAA] mb-1.5">
                         Email Address for Notifications *
                       </label>
                       <div className="relative">
@@ -846,14 +846,14 @@ const CartPage: React.FC = () => {
                           value={shippingEmail}
                           onChange={(e) => handleFieldChange('email', e.target.value)}
                           placeholder="e.g. jane.smith@example.com"
-                          className={`w-full px-3.5 py-2.5 text-xs bg-[#FAF8F5] border ${
-                            formErrors.email ? 'border-rose-500 bg-rose-50/30' : 'border-[#D5CCC1] focus:border-black focus:bg-white'
+                          className={`w-full px-3.5 py-2.5 text-xs bg-[#FAF8F5] dark:bg-[#252525] border ${
+                            formErrors.email ? 'border-rose-500 bg-rose-50/30' : 'border-[#D5CCC1] dark:border-[#2E2E2E] focus:border-black dark:focus:border-[#C1A98F] focus:bg-white dark:focus:bg-[#282828] text-[#1A1A1A] dark:text-[#F5F5F5]'
                           } focus:outline-none transition-colors`}
                         />
                         <Mail className="w-3.5 h-3.5 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2" />
                       </div>
                       {formErrors.email && (
-                        <span className="text-[10px] text-rose-600 font-light mt-1 block">
+                        <span className="text-[10px] text-rose-600 dark:text-rose-400 font-light mt-1 block">
                           {formErrors.email}
                         </span>
                       )}
@@ -863,7 +863,7 @@ const CartPage: React.FC = () => {
                   {/* Row 2: Phone & Country */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[10px] uppercase tracking-[0.25em] font-medium text-gray-600 mb-1.5">
+                      <label className="block text-[10px] uppercase tracking-[0.25em] font-medium text-gray-600 dark:text-[#AAAAAA] mb-1.5">
                         Phone Number for Courier *
                       </label>
                       <div className="relative">
@@ -872,31 +872,31 @@ const CartPage: React.FC = () => {
                           value={shippingPhone}
                           onChange={(e) => handleFieldChange('phone', e.target.value)}
                           placeholder="+353 87 123 4567"
-                          className={`w-full px-3.5 py-2.5 text-xs bg-[#FAF8F5] border ${
-                            formErrors.phone ? 'border-rose-500 bg-rose-50/30' : 'border-[#D5CCC1] focus:border-black focus:bg-white'
+                          className={`w-full px-3.5 py-2.5 text-xs bg-[#FAF8F5] dark:bg-[#252525] border ${
+                            formErrors.phone ? 'border-rose-500 bg-rose-50/30' : 'border-[#D5CCC1] dark:border-[#2E2E2E] focus:border-black dark:focus:border-[#C1A98F] focus:bg-white dark:focus:bg-[#282828] text-[#1A1A1A] dark:text-[#F5F5F5]'
                           } focus:outline-none transition-colors`}
                         />
                         <Phone className="w-3.5 h-3.5 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2" />
                       </div>
                       {formErrors.phone && (
-                        <span className="text-[10px] text-rose-600 font-light mt-1 block">
+                        <span className="text-[10px] text-rose-600 dark:text-rose-400 font-light mt-1 block">
                           {formErrors.phone}
                         </span>
                       )}
                     </div>
 
                     <div>
-                      <label className="block text-[10px] uppercase tracking-[0.25em] font-medium text-gray-600 mb-1.5">
+                      <label className="block text-[10px] uppercase tracking-[0.25em] font-medium text-gray-600 dark:text-[#AAAAAA] mb-1.5">
                         Delivery Country *
                       </label>
                       <div className="relative">
                         <select
                           value={shippingCountry}
                           onChange={(e) => handleFieldChange('country', e.target.value)}
-                          className="w-full px-3.5 py-2.5 text-xs bg-[#FAF8F5] border border-[#D5CCC1] focus:border-black focus:bg-white focus:outline-none transition-colors appearance-none cursor-pointer"
+                          className="w-full px-3.5 py-2.5 text-xs bg-[#FAF8F5] dark:bg-[#252525] border border-[#D5CCC1] dark:border-[#2E2E2E] focus:border-black dark:focus:border-[#C1A98F] focus:bg-white dark:focus:bg-[#282828] text-[#1A1A1A] dark:text-[#F5F5F5] focus:outline-none transition-colors appearance-none cursor-pointer"
                         >
                           {COUNTRIES.map((c) => (
-                            <option key={c.code} value={c.code}>
+                            <option key={c.code} value={c.code} className="dark:bg-[#1E1E1E]">
                               {c.name}
                             </option>
                           ))}
@@ -904,7 +904,7 @@ const CartPage: React.FC = () => {
                         <Globe className="w-3.5 h-3.5 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                       </div>
                       {formErrors.country && (
-                        <span className="text-[10px] text-rose-600 font-light mt-1 block">
+                        <span className="text-[10px] text-rose-600 dark:text-rose-400 font-light mt-1 block">
                           {formErrors.country}
                         </span>
                       )}
@@ -913,7 +913,7 @@ const CartPage: React.FC = () => {
 
                   {/* Row 3: Street Address */}
                   <div>
-                    <label className="block text-[10px] uppercase tracking-[0.25em] font-medium text-gray-600 mb-1.5">
+                    <label className="block text-[10px] uppercase tracking-[0.25em] font-medium text-gray-600 dark:text-[#AAAAAA] mb-1.5">
                       Street Address & House / Flat No. *
                     </label>
                     <div className="relative">
@@ -922,14 +922,14 @@ const CartPage: React.FC = () => {
                         value={shippingStreet}
                         onChange={(e) => handleFieldChange('street', e.target.value)}
                         placeholder="e.g. 15 Grafton Street, Apt 4"
-                        className={`w-full px-3.5 py-2.5 text-xs bg-[#FAF8F5] border ${
-                          formErrors.street ? 'border-rose-500 bg-rose-50/30' : 'border-[#D5CCC1] focus:border-black focus:bg-white'
+                        className={`w-full px-3.5 py-2.5 text-xs bg-[#FAF8F5] dark:bg-[#252525] border ${
+                          formErrors.street ? 'border-rose-500 bg-rose-50/30' : 'border-[#D5CCC1] dark:border-[#2E2E2E] focus:border-black dark:focus:border-[#C1A98F] focus:bg-white dark:focus:bg-[#282828] text-[#1A1A1A] dark:text-[#F5F5F5]'
                         } focus:outline-none transition-colors`}
                       />
                       <Home className="w-3.5 h-3.5 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2" />
                     </div>
                     {formErrors.street && (
-                      <span className="text-[10px] text-rose-600 font-light mt-1 block">
+                      <span className="text-[10px] text-rose-600 dark:text-rose-400 font-light mt-1 block">
                         {formErrors.street}
                       </span>
                     )}
@@ -938,7 +938,7 @@ const CartPage: React.FC = () => {
                   {/* Row 4: Postal Code & City */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[10px] uppercase tracking-[0.25em] font-medium text-gray-600 mb-1.5">
+                      <label className="block text-[10px] uppercase tracking-[0.25em] font-medium text-gray-600 dark:text-[#AAAAAA] mb-1.5">
                         Postal Code *
                       </label>
                       <input
@@ -946,19 +946,19 @@ const CartPage: React.FC = () => {
                         value={shippingPostalCode}
                         onChange={(e) => handleFieldChange('postalCode', e.target.value)}
                         placeholder="e.g. D02 XY45"
-                        className={`w-full px-3.5 py-2.5 text-xs bg-[#FAF8F5] border ${
-                          formErrors.postalCode ? 'border-rose-500 bg-rose-50/30' : 'border-[#D5CCC1] focus:border-black focus:bg-white'
+                        className={`w-full px-3.5 py-2.5 text-xs bg-[#FAF8F5] dark:bg-[#252525] border ${
+                          formErrors.postalCode ? 'border-rose-500 bg-rose-50/30' : 'border-[#D5CCC1] dark:border-[#2E2E2E] focus:border-black dark:focus:border-[#C1A98F] focus:bg-white dark:focus:bg-[#282828] text-[#1A1A1A] dark:text-[#F5F5F5]'
                         } focus:outline-none transition-colors`}
                       />
                       {formErrors.postalCode && (
-                        <span className="text-[10px] text-rose-600 font-light mt-1 block">
+                        <span className="text-[10px] text-rose-600 dark:text-rose-400 font-light mt-1 block">
                           {formErrors.postalCode}
                         </span>
                       )}
                     </div>
 
                     <div>
-                      <label className="block text-[10px] uppercase tracking-[0.25em] font-medium text-gray-600 mb-1.5">
+                      <label className="block text-[10px] uppercase tracking-[0.25em] font-medium text-gray-600 dark:text-[#AAAAAA] mb-1.5">
                         City / Town *
                       </label>
                       <input
@@ -966,12 +966,12 @@ const CartPage: React.FC = () => {
                         value={shippingCity}
                         onChange={(e) => handleFieldChange('city', e.target.value)}
                         placeholder="e.g. Dublin"
-                        className={`w-full px-3.5 py-2.5 text-xs bg-[#FAF8F5] border ${
-                          formErrors.city ? 'border-rose-500 bg-rose-50/30' : 'border-[#D5CCC1] focus:border-black focus:bg-white'
+                        className={`w-full px-3.5 py-2.5 text-xs bg-[#FAF8F5] dark:bg-[#252525] border ${
+                          formErrors.city ? 'border-rose-500 bg-rose-50/30' : 'border-[#D5CCC1] dark:border-[#2E2E2E] focus:border-black dark:focus:border-[#C1A98F] focus:bg-white dark:focus:bg-[#282828] text-[#1A1A1A] dark:text-[#F5F5F5]'
                         } focus:outline-none transition-colors`}
                       />
                       {formErrors.city && (
-                        <span className="text-[10px] text-rose-600 font-light mt-1 block">
+                        <span className="text-[10px] text-rose-600 dark:text-rose-400 font-light mt-1 block">
                           {formErrors.city}
                         </span>
                       )}
@@ -984,19 +984,19 @@ const CartPage: React.FC = () => {
             </div>
 
             {/* ── Step 3: Select Delivery Carrier ── */}
-            <div className="bg-white border border-[#EAE3D9] shadow-xs">
+            <div className="bg-white dark:bg-[#1E1E1E] border border-[#EAE3D9] dark:border-[#2E2E2E] shadow-xs">
               {/* Header */}
-              <div className="px-6 py-5 border-b border-[#F0EBE3] flex items-center justify-between bg-[#FCFAF7]">
+              <div className="px-6 py-5 border-b border-[#F0EBE3] dark:border-[#2E2E2E] flex items-center justify-between bg-[#FCFAF7] dark:bg-[#252525]">
                 <div className="flex items-center gap-2.5">
-                  <span className="w-5 h-5 rounded-full bg-[#1A1A1A] text-white text-[10px] font-semibold flex items-center justify-center">
+                  <span className="w-5 h-5 rounded-full bg-[#1A1A1A] dark:bg-[#C1A98F] text-white dark:text-black text-[10px] font-semibold flex items-center justify-center">
                     3
                   </span>
                   <div>
-                    <h2 className="text-[13px] uppercase tracking-[0.25em] font-semibold text-[#1A1A1A] flex items-center gap-2">
+                    <h2 className="text-[13px] uppercase tracking-[0.25em] font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] flex items-center gap-2">
                       <Truck className="w-4 h-4 text-[#C1A98F]" />
                       <span>Select Delivery Carrier</span>
                     </h2>
-                    <span className="text-[10px] text-gray-500 font-light uppercase tracking-wider block mt-0.5">
+                    <span className="text-[10px] text-gray-500 dark:text-[#AAAAAA] font-light uppercase tracking-wider block mt-0.5">
                       All shipments include comprehensive insurance &amp; live parcel tracking
                     </span>
                   </div>
@@ -1015,36 +1015,36 @@ const CartPage: React.FC = () => {
                       onClick={() => setSelectedCarrierId(c.id)}
                       className={`relative border p-4 sm:p-5 cursor-pointer transition-all duration-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xs ${
                         isSelected
-                          ? 'border-[#1A1A1A] bg-[#FAF8F5] shadow-xs ring-1 ring-[#1A1A1A]'
-                          : 'border-[#EAE3D9] hover:border-gray-400 bg-white'
+                          ? 'border-[#1A1A1A] dark:border-[#C1A98F] bg-[#FAF8F5] dark:bg-[#252525] shadow-xs ring-1 ring-[#1A1A1A] dark:ring-[#C1A98F]'
+                          : 'border-[#EAE3D9] dark:border-[#2E2E2E] hover:border-gray-400 dark:hover:border-gray-600 bg-white dark:bg-[#1E1E1E]'
                       }`}
                     >
                       <div className="flex items-start sm:items-center gap-3.5">
                         {/* Custom Radio Button */}
                         <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 mt-0.5 sm:mt-0 ${
-                          isSelected ? 'border-[#1A1A1A] bg-[#1A1A1A]' : 'border-gray-300 bg-white'
+                          isSelected ? 'border-[#1A1A1A] dark:border-[#C1A98F] bg-[#1A1A1A] dark:bg-[#C1A98F]' : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1E1E1E]'
                         }`}>
-                          {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                          {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white dark:bg-black" />}
                         </div>
 
                         <div>
                           <div className="flex flex-wrap items-center gap-2 mb-1">
-                            <span className="font-serif text-base text-[#1A1A1A] font-semibold tracking-wide">
+                            <span className="font-serif text-base text-[#1A1A1A] dark:text-[#F5F5F5] font-semibold tracking-wide">
                               {c.name}
                             </span>
                             <span className={`text-[9px] uppercase tracking-wider font-bold px-2 py-0.5 rounded border ${c.badgeColor}`}>
                               {c.tagline}
                             </span>
                           </div>
-                          <p className="text-xs text-gray-500 font-light leading-relaxed max-w-lg">
+                          <p className="text-xs text-gray-500 dark:text-[#AAAAAA] font-light leading-relaxed max-w-lg">
                             {c.description}
                           </p>
-                          <div className="flex items-center gap-3 mt-1.5 text-[11px] text-[#8C6D4F]">
+                          <div className="flex items-center gap-3 mt-1.5 text-[11px] text-[#8C6D4F] dark:text-[#C1A98F]">
                             <span className="flex items-center gap-1 font-medium">
                               ✦ Est. Delivery: {c.estimatedDelivery}
                             </span>
-                            <span className="text-gray-300">•</span>
-                            <span className="text-gray-500">Live Tracking Included</span>
+                            <span className="text-gray-300 dark:text-gray-600">•</span>
+                            <span className="text-gray-500 dark:text-gray-400">Live Tracking Included</span>
                           </div>
                         </div>
                       </div>
@@ -1053,21 +1053,21 @@ const CartPage: React.FC = () => {
                         <div className="text-sm font-semibold">
                           {carrierFree ? (
                             <div className="flex flex-col items-start sm:items-end">
-                              <span className="text-emerald-700 font-bold text-xs uppercase tracking-wider">
+                              <span className="text-emerald-700 dark:text-emerald-400 font-bold text-xs uppercase tracking-wider">
                                 Complimentary
                               </span>
-                              <span className="text-[10px] text-gray-400 line-through">
+                              <span className="text-[10px] text-gray-400 dark:text-gray-500 line-through">
                                 €{c.basePrice.toFixed(2)}
                               </span>
                             </div>
                           ) : (
-                            <span className="text-[#8C6D4F] font-bold">
+                            <span className="text-[#8C6D4F] dark:text-[#C1A98F] font-bold">
                               €{cost.toFixed(2)}
                             </span>
                           )}
                         </div>
                         {c.freeShippingAvailable && !carrierFree && (
-                          <span className="text-[9px] text-gray-400 block mt-0.5">
+                          <span className="text-[9px] text-gray-400 dark:text-gray-500 block mt-0.5">
                             Free over €{c.freeThreshold}
                           </span>
                         )}
@@ -1079,10 +1079,10 @@ const CartPage: React.FC = () => {
             </div>
 
             {/* Gift Message & Packaging Guarantee Banner */}
-            <div className="bg-[#FAF6F0] border border-[#E8DFD3] p-4 sm:p-5 flex items-start gap-4">
+            <div className="bg-[#FAF6F0] dark:bg-[#252525] border border-[#E8DFD3] dark:border-[#2E2E2E] p-4 sm:p-5 flex items-start gap-4">
               <Gift className="w-5 h-5 text-[#C1A98F] shrink-0 mt-0.5" />
-              <div className="text-[12px] text-gray-700 leading-relaxed font-light">
-                <span className="font-semibold text-black uppercase tracking-wider text-[11px] block mb-0.5">
+              <div className="text-[12px] text-gray-700 dark:text-[#AAAAAA] leading-relaxed font-light">
+                <span className="font-semibold text-black dark:text-[#F5F5F5] uppercase tracking-wider text-[11px] block mb-0.5">
                   Complimentary Luxury Gift Packaging
                 </span>
                 Every Lunar piece is presented in an elegant embossed jewellery box tied with a satin ribbon, along with a certificate of authenticity.
@@ -1093,27 +1093,27 @@ const CartPage: React.FC = () => {
 
           {/* ── Right Column: Sticky Order Summary & Stripe Checkout ── */}
           <div className="lg:sticky lg:top-24 space-y-6">
-            <div className="bg-white border border-[#EAE3D9] p-6 sm:p-8 shadow-xs">
+            <div className="bg-white dark:bg-[#1E1E1E] border border-[#EAE3D9] dark:border-[#2E2E2E] p-6 sm:p-8 shadow-xs">
               
-              <div className="flex items-center justify-between pb-5 border-b border-[#F0EBE3] mb-6">
-                <h2 className="text-[13px] uppercase tracking-[0.3em] font-semibold text-[#1A1A1A]">
+              <div className="flex items-center justify-between pb-5 border-b border-[#F0EBE3] dark:border-[#2E2E2E] mb-6">
+                <h2 className="text-[13px] uppercase tracking-[0.3em] font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">
                   Order Summary
                 </h2>
-                <span className="text-[11px] text-gray-400 tracking-wider">
+                <span className="text-[11px] text-gray-400 dark:text-gray-500 tracking-wider">
                   {totalItems} {totalItems === 1 ? 'item' : 'items'}
                 </span>
               </div>
 
               {/* Breakdown Rows */}
-              <div className="space-y-3.5 text-[13px] text-gray-600 mb-6">
+              <div className="space-y-3.5 text-[13px] text-gray-600 dark:text-[#AAAAAA] mb-6">
                 <div className="flex justify-between items-center">
                   <span className="font-light">Subtotal</span>
-                  <span className="font-medium text-[#1A1A1A]">€{totalPrice.toFixed(2)}</span>
+                  <span className="font-medium text-[#1A1A1A] dark:text-[#F5F5F5]">€{totalPrice.toFixed(2)}</span>
                 </div>
 
                 {/* Promo discount */}
                 {appliedPromo && discountAmount > 0 && (
-                  <div className="flex justify-between items-center text-emerald-700">
+                  <div className="flex justify-between items-center text-emerald-700 dark:text-emerald-400">
                     <span className="flex items-center gap-1">
                       <Tag className="w-3.5 h-3.5" />
                       <span>
@@ -1130,13 +1130,13 @@ const CartPage: React.FC = () => {
                 )}
 
                 {/* Loyalty Points to be Earned */}
-                <div className="flex items-center justify-between p-2.5 bg-amber-50/70 border border-amber-200 rounded text-amber-950">
+                <div className="flex items-center justify-between p-2.5 bg-amber-50/70 dark:bg-[#252018] border border-amber-200 dark:border-amber-900/50 rounded text-amber-950 dark:text-amber-200">
                   <div className="flex items-center gap-2">
                     <Coins className="w-4 h-4 text-[#D4AF37]" />
                     <div className="text-xs">
                       <span className="font-semibold block">LUNAR Club Points:</span>
                       {user && (
-                        <span className="text-[10px] text-gray-500">Balance: {loyaltyPoints} pts</span>
+                        <span className="text-[10px] text-gray-500 dark:text-[#AAAAAA]">Balance: {loyaltyPoints} pts</span>
                       )}
                     </div>
                   </div>
@@ -1148,36 +1148,36 @@ const CartPage: React.FC = () => {
                 {/* Delivery */}
                 <div className="flex justify-between items-start">
                   <div className="flex flex-col">
-                    <span className="font-light flex items-center gap-1.5">
+                    <span className="font-light flex items-center gap-1.5 text-gray-600 dark:text-[#AAAAAA]">
                       <Truck className="w-3.5 h-3.5 text-[#C1A98F]" />
                       <span>{selectedCarrier.shortName}</span>
                     </span>
-                    <span className="text-[10px] text-gray-400 font-light">
+                    <span className="text-[10px] text-gray-400 dark:text-gray-500 font-light">
                       {selectedCarrier.estimatedDelivery} • Tracked
                     </span>
                   </div>
-                  <span className={`font-medium ${isFreeShipping ? 'text-emerald-700 font-semibold' : 'text-[#8C6D4F] font-bold'}`}>
+                  <span className={`font-medium ${isFreeShipping ? 'text-emerald-700 dark:text-emerald-400 font-semibold' : 'text-[#8C6D4F] dark:text-[#C1A98F] font-bold'}`}>
                     {isFreeShipping ? 'FREE' : `€${shippingFee.toFixed(2)}`}
                   </span>
                 </div>
 
-                <div className="flex justify-between items-center text-[11px] text-gray-400 pt-1">
+                <div className="flex justify-between items-center text-[11px] text-gray-400 dark:text-gray-500 pt-1">
                   <span>VAT</span>
                   <span>Included</span>
                 </div>
               </div>
 
               {/* Shipping Address Status Badge */}
-              <div className="border-t border-[#F0EBE3] pt-4 mb-6">
+              <div className="border-t border-[#F0EBE3] dark:border-[#2E2E2E] pt-4 mb-6">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-500 font-light">Delivery address:</span>
+                  <span className="text-gray-500 dark:text-[#AAAAAA] font-light">Delivery address:</span>
                   {shippingStreet && shippingCity && shippingPostalCode ? (
-                    <span className="text-emerald-700 font-medium flex items-center gap-1 text-[11px]">
+                    <span className="text-emerald-700 dark:text-emerald-400 font-medium flex items-center gap-1 text-[11px]">
                       <Check className="w-3.5 h-3.5" />
                       <span>Filled ({shippingCity})</span>
                     </span>
                   ) : (
-                    <span className="text-amber-700 font-medium text-[11px]">
+                    <span className="text-amber-700 dark:text-amber-400 font-medium text-[11px]">
                       Required
                     </span>
                   )}
@@ -1185,21 +1185,21 @@ const CartPage: React.FC = () => {
               </div>
 
               {/* Promo Code & Loyalty Coupons Accordion */}
-              <div className="border-t border-[#F0EBE3] pt-4 mb-6">
+              <div className="border-t border-[#F0EBE3] dark:border-[#2E2E2E] pt-4 mb-6">
                 {!appliedPromo ? (
                   <div className="space-y-3">
                     {/* User Loyalty Coupons Available */}
                     {user && userCoupons.filter(c => !c.isUsed).length > 0 && (
-                      <div className="p-3 bg-amber-50/80 border border-amber-200 rounded">
+                      <div className="p-3 bg-amber-50/80 dark:bg-[#252018] border border-amber-200 dark:border-amber-900/50 rounded">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-[11px] font-bold text-amber-900 uppercase tracking-wider flex items-center gap-1.5">
+                          <span className="text-[11px] font-bold text-amber-900 dark:text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
                             <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
                             You have {userCoupons.filter(c => !c.isUsed).length} voucher(s) in wallet:
                           </span>
                           <button
                             type="button"
                             onClick={() => setIsLoyaltyCouponsOpen(!isLoyaltyCouponsOpen)}
-                            className="text-[10px] uppercase tracking-wider font-bold text-black underline"
+                            className="text-[10px] uppercase tracking-wider font-bold text-black dark:text-[#C1A98F] underline"
                           >
                             {isLoyaltyCouponsOpen ? 'Hide' : 'Select Voucher'}
                           </button>
@@ -1212,11 +1212,11 @@ const CartPage: React.FC = () => {
                                 key={c.id}
                                 type="button"
                                 onClick={() => handleApplyUserCoupon(c)}
-                                className="w-full text-left p-2 bg-white border border-amber-200 hover:border-black rounded flex items-center justify-between text-xs transition-colors"
+                                className="w-full text-left p-2 bg-white dark:bg-[#1E1E1E] border border-amber-200 dark:border-amber-900/50 hover:border-black dark:hover:border-[#C1A98F] rounded flex items-center justify-between text-xs transition-colors"
                               >
-                                <span className="font-mono font-bold text-black">{c.code}</span>
-                                <span className="font-bold text-emerald-700">
-                                  {c.discountType === 'PERCENTAGE' ? `-${c.discountValue}%` : `-€${c.discountValue.toFixed(2)}`}
+                                <span className="font-mono font-bold text-black dark:text-[#F5F5F5]">{c.code}</span>
+                                <span className="font-bold text-emerald-700 dark:text-emerald-400">
+                                   {c.discountType === 'PERCENTAGE' ? `-${c.discountValue}%` : `-€${c.discountValue.toFixed(2)}`}
                                 </span>
                               </button>
                             ))}
@@ -1228,7 +1228,7 @@ const CartPage: React.FC = () => {
                     {!isPromoOpen ? (
                       <button
                         onClick={() => setIsPromoOpen(true)}
-                        className="text-[11px] uppercase tracking-[0.2em] font-medium text-[#C1A98F] hover:text-[#1A1A1A] transition-colors flex items-center gap-1.5"
+                        className="text-[11px] uppercase tracking-[0.2em] font-medium text-[#C1A98F] hover:text-[#1A1A1A] dark:hover:text-[#F5F5F5] transition-colors flex items-center gap-1.5"
                       >
                         <Tag className="w-3.5 h-3.5" />
                         <span>Have a promo code? Enter here</span>
@@ -1241,11 +1241,11 @@ const CartPage: React.FC = () => {
                             placeholder="Enter code (e.g. LUNAR10)"
                             value={promoCode}
                             onChange={(e) => setPromoCode(e.target.value)}
-                            className="flex-1 px-3 py-2 text-xs uppercase tracking-wider border border-[#D5CCC1] focus:outline-none focus:border-black bg-[#FAF8F5]"
+                            className="flex-1 px-3 py-2 text-xs uppercase tracking-wider border border-[#D5CCC1] dark:border-[#2E2E2E] focus:outline-none focus:border-black dark:focus:border-[#C1A98F] bg-[#FAF8F5] dark:bg-[#252525] text-[#1A1A1A] dark:text-[#F5F5F5]"
                           />
                           <button
                             type="submit"
-                            className="px-4 py-2 bg-[#1A1A1A] text-white text-[11px] uppercase tracking-wider font-medium hover:bg-[#333333] transition-colors"
+                            className="px-4 py-2 bg-[#1A1A1A] dark:bg-[#C1A98F] text-white dark:text-black text-[11px] uppercase tracking-wider font-medium hover:bg-[#333333] dark:hover:bg-[#d6beab] transition-colors"
                           >
                             Apply
                           </button>
@@ -1257,14 +1257,14 @@ const CartPage: React.FC = () => {
                     )}
                   </div>
                 ) : (
-                  <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 px-3 py-2 text-xs text-emerald-800">
+                  <div className="flex items-center justify-between bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 px-3 py-2 text-xs text-emerald-800 dark:text-emerald-300">
                     <span className="flex items-center gap-1.5 font-medium">
-                      <Check className="w-3.5 h-3.5 text-emerald-600" />
+                      <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                       <span>Voucher {appliedPromo.code} applied!</span>
                     </span>
                     <button
                       onClick={handleRemovePromo}
-                      className="text-gray-400 hover:text-black font-semibold text-xs ml-2"
+                      className="text-gray-400 hover:text-black dark:hover:text-white font-semibold text-xs ml-2"
                     >
                       Remove
                     </button>
@@ -1273,18 +1273,18 @@ const CartPage: React.FC = () => {
               </div>
 
               {/* Total Row */}
-              <div className="border-t border-[#EAE3D9] pt-5 mb-6">
+              <div className="border-t border-[#EAE3D9] dark:border-[#2E2E2E] pt-5 mb-6">
                 <div className="flex justify-between items-baseline">
                   <div>
-                    <span className="text-[12px] uppercase tracking-[0.25em] font-semibold text-[#1A1A1A] block">
+                    <span className="text-[12px] uppercase tracking-[0.25em] font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] block">
                       Total Due
                     </span>
-                    <span className="text-[10px] text-gray-400 tracking-wider">Currency: EUR</span>
+                    <span className="text-[10px] text-gray-400 dark:text-gray-500 tracking-wider">Currency: EUR</span>
                   </div>
                   <div className="text-right">
                     <span
                       style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
-                      className="text-3xl sm:text-4xl font-light text-[#1A1A1A] tracking-tight"
+                      className="text-3xl sm:text-4xl font-light text-[#1A1A1A] dark:text-[#F5F5F5] tracking-tight"
                     >
                       €{grandTotal.toFixed(2)}
                     </span>
@@ -1294,7 +1294,7 @@ const CartPage: React.FC = () => {
 
               {/* Error Notice */}
               {error && (
-                <div className="bg-rose-50 border border-rose-200 text-rose-700 text-xs p-3.5 rounded-none mb-4 flex items-start gap-2.5">
+                <div className="bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 text-rose-700 dark:text-rose-300 text-xs p-3.5 rounded-none mb-4 flex items-start gap-2.5">
                   <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-600" />
                   <span className="leading-relaxed">{error}</span>
                 </div>
@@ -1305,16 +1305,16 @@ const CartPage: React.FC = () => {
                 id="stripe-checkout-btn"
                 onClick={handleStripeCheckout}
                 disabled={isCheckingOut}
-                className="w-full bg-[#1A1A1A] hover:bg-[#333333] text-white py-4 px-6 text-[12px] uppercase tracking-[0.25em] font-medium transition-all duration-300 flex items-center justify-center gap-3 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed group cursor-pointer"
+                className="w-full bg-[#1A1A1A] dark:bg-[#C1A98F] hover:bg-[#333333] dark:hover:bg-[#d6beab] text-white dark:text-black py-4 px-6 text-[12px] uppercase tracking-[0.25em] font-medium transition-all duration-300 flex items-center justify-center gap-3 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed group cursor-pointer"
               >
                 {isCheckingOut ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-white/30 dark:border-black/30 border-t-white dark:border-t-black rounded-full animate-spin" />
                     <span>Connecting to Stripe...</span>
                   </>
                 ) : (
                   <>
-                    <Lock className="w-3.5 h-3.5 text-[#C1A98F]" />
+                    <Lock className="w-3.5 h-3.5 text-[#C1A98F] dark:text-black" />
                     <span>Proceed to Payment</span>
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </>
@@ -1322,15 +1322,15 @@ const CartPage: React.FC = () => {
               </button>
 
               {/* Payment Methods Badges */}
-              <div className="mt-5 pt-5 border-t border-[#F0EBE3] text-center">
-                <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-3 font-medium">
+              <div className="mt-5 pt-5 border-t border-[#F0EBE3] dark:border-[#2E2E2E] text-center">
+                <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 mb-3 font-medium">
                   Secure Encrypted Payment via Stripe
                 </p>
                 <div className="flex flex-wrap items-center justify-center gap-1.5 text-gray-500">
                   {['Visa', 'Mastercard', 'Apple Pay', 'Google Pay', 'BLIK', 'Klarna'].map((badge) => (
                     <span
                       key={badge}
-                      className="text-[10px] font-medium tracking-wider px-2 py-0.5 bg-[#FAF8F5] border border-[#EAE3D9] text-[#4A4A4A]"
+                      className="text-[10px] font-medium tracking-wider px-2 py-0.5 bg-[#FAF8F5] dark:bg-[#252525] border border-[#EAE3D9] dark:border-[#2E2E2E] text-[#4A4A4A] dark:text-[#CCCCCC]"
                     >
                       {badge}
                     </span>
@@ -1339,7 +1339,7 @@ const CartPage: React.FC = () => {
               </div>
 
               {/* Trust Guarantees */}
-              <div className="mt-6 pt-5 border-t border-[#F0EBE3] space-y-3 text-[11px] text-gray-500 font-light">
+              <div className="mt-6 pt-5 border-t border-[#F0EBE3] dark:border-[#2E2E2E] space-y-3 text-[11px] text-gray-500 dark:text-[#AAAAAA] font-light">
                 <div className="flex items-center gap-2.5">
                   <ShieldCheck className="w-4 h-4 text-[#C1A98F] shrink-0" />
                   <span>256-Bit SSL encryption and buyer protection</span>

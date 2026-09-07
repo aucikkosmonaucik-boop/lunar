@@ -1,12 +1,31 @@
 @import "tailwindcss";
 @config "../tailwind.config.js";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --bg: #ffffff;
-  --text: #1a1a1a;
-  --muted: #525252;
-  --gold: #c1a98f;
-  --border: #e5e5e5;
+  --bg: #FAF9F6;
+  --surface: #FFFFFF;
+  --surface-elevated: #F7F5F2;
+  --text: #1A1A1A;
+  --muted: #757575;
+  --gold: #C1A98F;
+  --gold-dark: #A38363;
+  --gold-light: #E8DCCF;
+  --border: #EDE6DF;
+}
+
+html.dark {
+  --bg: #121212;
+  --surface: #1E1E1E;
+  --surface-elevated: #282828;
+  --text: #F5F5F5;
+  --muted: #AAAAAA;
+  --gold: #C1A98F;
+  --gold-dark: #A38363;
+  --gold-light: #E8DCCF;
+  --border: #2E2E2E;
+  color-scheme: dark;
 }
 
 
@@ -85,15 +104,22 @@ textarea::placeholder {
   opacity: 1;
 }
 
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #888888 !important;
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: white;
+  background: var(--bg);
 }
 ::-webkit-scrollbar-thumb {
   background: var(--border);
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--gold);
@@ -101,19 +127,19 @@ textarea::placeholder {
 
 /* Custom helper classes */
 .btn-primary {
-  @apply bg-wonders-gold text-white px-8 py-3 transition-all duration-300 hover:opacity-90 active:scale-[0.98] uppercase text-xs tracking-widest font-bold;
+  @apply bg-wonders-gold text-white px-8 py-3 transition-all duration-300 hover:opacity-90 active:scale-[0.98] uppercase text-xs tracking-widest font-bold dark:bg-[#C1A98F] dark:text-[#121212];
 }
 
 .btn-outline {
-  @apply border border-wonders-dark text-wonders-dark px-8 py-3 transition-all duration-300 hover:bg-wonders-dark hover:text-white active:scale-[0.98] uppercase text-xs tracking-widest font-bold;
+  @apply border border-wonders-dark text-wonders-dark px-8 py-3 transition-all duration-300 hover:bg-wonders-dark hover:text-white active:scale-[0.98] uppercase text-xs tracking-widest font-bold dark:border-[#2E2E2E] dark:text-[#F5F5F5] dark:hover:bg-[#C1A98F] dark:hover:text-[#121212];
 }
 
 .nav-link {
-  @apply text-[11px] uppercase tracking-[0.2em] font-medium text-wonders-dark hover:text-wonders-gold transition-colors duration-200;
+  @apply text-[11px] uppercase tracking-[0.2em] font-medium text-wonders-dark hover:text-wonders-gold transition-colors duration-200 dark:text-[#F5F5F5] dark:hover:text-[#C1A98F];
 }
 
 .section-title {
-  @apply text-3xl md:text-4xl text-center uppercase tracking-[0.25em] font-semibold mb-12;
+  @apply text-3xl md:text-4xl text-center uppercase tracking-[0.25em] font-semibold mb-12 dark:text-[#F5F5F5];
 }
 
 /* Animation utilities */

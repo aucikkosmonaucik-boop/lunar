@@ -203,29 +203,29 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
   };
 
   return (
-    <section id="reviews" className="pt-20 border-t border-[#EAE3D9] max-w-7xl mx-auto">
+    <section id="reviews" className="pt-20 border-t border-[#EAE3D9] dark:border-[#2E2E2E] max-w-7xl mx-auto">
       {/* Header Section */}
       <div className="text-center mb-14">
-        <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#FAF7F2] border border-[#D4AF37]/40 rounded-full mb-3">
+        <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#FAF7F2] dark:bg-[#252525] border border-[#D4AF37]/40 rounded-full mb-3">
           <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
-          <span className="text-[10px] uppercase tracking-[0.25em] font-bold text-[#1A1A1A]">
+          <span className="text-[10px] uppercase tracking-[0.25em] font-bold text-[#1A1A1A] dark:text-[#F5F5F5]">
             Verified Customer Feedback
           </span>
         </div>
-        <h2 className="text-3xl md:text-4xl font-light uppercase tracking-[0.15em] text-[#1A1A1A]">
+        <h2 className="text-3xl md:text-4xl font-light uppercase tracking-[0.15em] text-[#1A1A1A] dark:text-[#F5F5F5]">
           Reviews & <span className="font-bold">Ratings</span>
         </h2>
-        <p className="text-xs text-gray-500 uppercase tracking-widest mt-2">
+        <p className="text-xs text-gray-500 dark:text-[#AAAAAA] uppercase tracking-widest mt-2">
           Read authentic testimonials from collectors and luxury enthusiasts
         </p>
       </div>
 
       {/* Summary Score & Breakdown Card */}
-      <div className="bg-[#FAF8F5] border border-[#EAE3D9] rounded-sm p-6 sm:p-10 mb-12 shadow-xs">
+      <div className="bg-[#FAF8F5] dark:bg-[#1E1E1E] border border-[#EAE3D9] dark:border-[#2E2E2E] rounded-sm p-6 sm:p-10 mb-12 shadow-xs">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
           {/* Left: Overall Rating */}
-          <div className="md:col-span-4 flex flex-col items-center justify-center text-center md:border-r border-[#EAE3D9] md:pr-8">
-            <div className="text-5xl md:text-6xl font-light tracking-tight text-[#1A1A1A] mb-2 font-serif">
+          <div className="md:col-span-4 flex flex-col items-center justify-center text-center md:border-r border-[#EAE3D9] dark:border-[#2E2E2E] md:pr-8">
+            <div className="text-5xl md:text-6xl font-light tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5] mb-2 font-serif">
               {stats.averageRating.toFixed(1)}
             </div>
             <div className="flex items-center gap-1 mb-2">
@@ -235,15 +235,15 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
                   className={`w-5 h-5 ${
                     star <= Math.round(stats.averageRating)
                       ? 'text-[#D4AF37] fill-[#D4AF37]'
-                      : 'text-gray-300'
+                      : 'text-gray-300 dark:text-gray-600'
                   }`}
                 />
               ))}
             </div>
-            <p className="text-xs uppercase tracking-widest font-bold text-[#1A1A1A] mb-1">
+            <p className="text-xs uppercase tracking-widest font-bold text-[#1A1A1A] dark:text-[#F5F5F5] mb-1">
               {stats.totalReviews} {stats.totalReviews === 1 ? 'Customer Review' : 'Customer Reviews'}
             </p>
-            <p className="text-[11px] text-gray-500 flex items-center gap-1 justify-center">
+            <p className="text-[11px] text-gray-500 dark:text-[#AAAAAA] flex items-center gap-1 justify-center">
               <ShieldCheck className="w-3.5 h-3.5 text-[#D4AF37]" />
               100% Verified Purchases
             </p>
@@ -265,16 +265,16 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
                     filterRating !== 'ALL' && !isSelected ? 'opacity-50' : 'opacity-100'
                   }`}
                 >
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#1A1A1A] w-12 flex items-center gap-1 shrink-0">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#1A1A1A] dark:text-[#F5F5F5] w-12 flex items-center gap-1 shrink-0">
                     {star} <Star className="w-3 h-3 text-[#D4AF37] fill-[#D4AF37]" />
                   </span>
-                  <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="flex-1 h-2 bg-gray-200 dark:bg-[#2A2A2A] rounded-full overflow-hidden">
                     <div
                       className="h-full bg-[#D4AF37] rounded-full transition-all duration-500"
                       style={{ width: `${pct}%` }}
                     />
                   </div>
-                  <span className="text-[10px] text-gray-500 w-12 text-right shrink-0">
+                  <span className="text-[10px] text-gray-500 dark:text-[#AAAAAA] w-12 text-right shrink-0">
                     {count} ({pct}%)
                   </span>
                 </button>
@@ -283,8 +283,8 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
           </div>
 
           {/* Right: Write Review CTA Button */}
-          <div className="md:col-span-3 flex flex-col items-center justify-center text-center md:pl-6 border-t md:border-t-0 border-[#EAE3D9] pt-6 md:pt-0">
-            <p className="text-xs text-gray-600 mb-4 font-medium">
+          <div className="md:col-span-3 flex flex-col items-center justify-center text-center md:pl-6 border-t md:border-t-0 border-[#EAE3D9] dark:border-[#2E2E2E] pt-6 md:pt-0">
+            <p className="text-xs text-gray-600 dark:text-[#AAAAAA] mb-4 font-medium">
               Have you experienced this piece?
             </p>
             <button
@@ -293,7 +293,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
                 setIsFormOpen(!isFormOpen);
                 setSubmitSuccess(false);
               }}
-              className="w-full sm:w-auto px-6 py-3.5 bg-[#1A1A1A] hover:bg-[#D4AF37] text-white hover:text-black font-bold text-xs uppercase tracking-[0.2em] rounded-full transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full sm:w-auto px-6 py-3.5 bg-[#1A1A1A] dark:bg-[#C1A98F] hover:bg-[#D4AF37] dark:hover:bg-[#d6beab] text-white dark:text-black hover:text-black font-bold text-xs uppercase tracking-[0.2em] rounded-full transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
             >
               {isFormOpen ? (
                 <>
@@ -313,47 +313,47 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
 
       {/* Review Submission Form (Collapsible) */}
       {isFormOpen && (
-        <div className="bg-white border-2 border-[#D4AF37]/50 rounded-sm p-6 sm:p-10 mb-12 shadow-lg animate-fade-in">
+        <div className="bg-white dark:bg-[#1E1E1E] border-2 border-[#D4AF37]/50 rounded-sm p-6 sm:p-10 mb-12 shadow-lg animate-fade-in">
           <div className="max-w-2xl mx-auto">
-            <div className="flex items-center justify-between pb-6 border-b border-gray-100 mb-6">
+            <div className="flex items-center justify-between pb-6 border-b border-gray-100 dark:border-[#2E2E2E] mb-6">
               <div>
-                <h3 className="text-xl uppercase tracking-widest font-light text-[#1A1A1A]">
+                <h3 className="text-xl uppercase tracking-widest font-light text-[#1A1A1A] dark:text-[#F5F5F5]">
                   Review <span className="font-bold">{productName}</span>
                 </h3>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-gray-500 dark:text-[#AAAAAA] mt-1">
                   Share your genuine experience with other connoisseurs
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setIsFormOpen(false)}
-                className="p-2 text-gray-400 hover:text-black transition-colors"
+                className="p-2 text-gray-400 hover:text-black dark:hover:text-white transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {submitSuccess ? (
-              <div className="p-8 text-center bg-emerald-50 border border-emerald-200 rounded text-emerald-800 animate-fade-in">
-                <CheckCircle2 className="w-12 h-12 text-emerald-600 mx-auto mb-3" />
+              <div className="p-8 text-center bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 rounded text-emerald-800 dark:text-emerald-300 animate-fade-in">
+                <CheckCircle2 className="w-12 h-12 text-emerald-600 dark:text-emerald-400 mx-auto mb-3" />
                 <h4 className="text-lg font-bold uppercase tracking-wider mb-2">
                   Thank You For Your Review!
                 </h4>
-                <p className="text-xs text-emerald-700 max-w-md mx-auto">
+                <p className="text-xs text-emerald-700 dark:text-emerald-300 max-w-md mx-auto">
                   Your feedback has been published and will help other customers make exquisite choices.
                 </p>
               </div>
             ) : (
               <form onSubmit={handleSubmitReview} className="space-y-6">
                 {formError && (
-                  <div className="p-3.5 bg-rose-50 border border-rose-200 rounded text-rose-800 text-xs">
+                  <div className="p-3.5 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 rounded text-rose-800 dark:text-rose-300 text-xs">
                     {formError}
                   </div>
                 )}
 
                 {/* Rating Selector */}
                 <div>
-                  <label className="block text-[11px] uppercase tracking-[0.2em] font-bold text-gray-700 mb-2">
+                  <label className="block text-[11px] uppercase tracking-[0.2em] font-bold text-gray-700 dark:text-[#AAAAAA] mb-2">
                     Overall Rating <span className="text-red-500">*</span>
                   </label>
                   <div className="flex items-center gap-2">
@@ -372,7 +372,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
                             className={`w-8 h-8 ${
                               active
                                 ? 'text-[#D4AF37] fill-[#D4AF37] drop-shadow-sm'
-                                : 'text-gray-300 hover:text-gray-400'
+                                : 'text-gray-300 dark:text-gray-600 hover:text-gray-400'
                             }`}
                           />
                         </button>
@@ -386,7 +386,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
 
                 {/* Author Name */}
                 <div>
-                  <label className="block text-[11px] uppercase tracking-[0.2em] font-bold text-gray-700 mb-2">
+                  <label className="block text-[11px] uppercase tracking-[0.2em] font-bold text-gray-700 dark:text-[#AAAAAA] mb-2">
                     Your Name / Display Name <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
@@ -396,7 +396,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
                       onChange={(e) => setAuthorName(e.target.value)}
                       placeholder="e.g. Charlotte Vance"
                       required
-                      className="w-full px-4 py-3 bg-[#FAF9F7] border border-[#D5CCC1] focus:border-[#1A1A1A] focus:bg-white focus:outline-none text-[#1A1A1A] text-sm rounded-sm transition-colors"
+                      className="w-full px-4 py-3 bg-[#FAF9F7] dark:bg-[#252525] border border-[#D5CCC1] dark:border-[#2E2E2E] focus:border-[#1A1A1A] dark:focus:border-[#C1A98F] focus:bg-white dark:focus:bg-[#282828] focus:outline-none text-[#1A1A1A] dark:text-[#F5F5F5] placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm rounded-sm transition-colors"
                     />
                     <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400">
                       <User className="w-4 h-4" />
@@ -406,7 +406,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
 
                 {/* Review Headline / Title */}
                 <div>
-                  <label className="block text-[11px] uppercase tracking-[0.2em] font-bold text-gray-700 mb-2">
+                  <label className="block text-[11px] uppercase tracking-[0.2em] font-bold text-gray-700 dark:text-[#AAAAAA] mb-2">
                     Review Headline (Optional)
                   </label>
                   <input
@@ -414,13 +414,13 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="e.g. Exquisite craftsmanship and breathtaking shine"
-                    className="w-full px-4 py-3 bg-[#FAF9F7] border border-[#D5CCC1] focus:border-[#1A1A1A] focus:bg-white focus:outline-none text-[#1A1A1A] text-sm rounded-sm transition-colors"
+                    className="w-full px-4 py-3 bg-[#FAF9F7] dark:bg-[#252525] border border-[#D5CCC1] dark:border-[#2E2E2E] focus:border-[#1A1A1A] dark:focus:border-[#C1A98F] focus:bg-white dark:focus:bg-[#282828] focus:outline-none text-[#1A1A1A] dark:text-[#F5F5F5] placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm rounded-sm transition-colors"
                   />
                 </div>
 
                 {/* Review Comment */}
                 <div>
-                  <label className="block text-[11px] uppercase tracking-[0.2em] font-bold text-gray-700 mb-2">
+                  <label className="block text-[11px] uppercase tracking-[0.2em] font-bold text-gray-700 dark:text-[#AAAAAA] mb-2">
                     Your Review Comments <span className="text-red-500">*</span>
                   </label>
                   <textarea
@@ -429,23 +429,23 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
                     onChange={(e) => setComment(e.target.value)}
                     placeholder="Describe the aesthetic, quality, weight, scent projection, or unboxing experience..."
                     required
-                    className="w-full px-4 py-3 bg-[#FAF9F7] border border-[#D5CCC1] focus:border-[#1A1A1A] focus:bg-white focus:outline-none text-[#1A1A1A] text-sm rounded-sm transition-colors"
+                    className="w-full px-4 py-3 bg-[#FAF9F7] dark:bg-[#252525] border border-[#D5CCC1] dark:border-[#2E2E2E] focus:border-[#1A1A1A] dark:focus:border-[#C1A98F] focus:bg-white dark:focus:bg-[#282828] focus:outline-none text-[#1A1A1A] dark:text-[#F5F5F5] placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm rounded-sm transition-colors"
                   />
                 </div>
 
                 {/* Submit button */}
-                <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
+                <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-100 dark:border-[#2E2E2E]">
                   <button
                     type="button"
                     onClick={() => setIsFormOpen(false)}
-                    className="px-6 py-3 border border-gray-300 hover:border-black rounded text-xs uppercase tracking-widest text-gray-600 transition-colors"
+                    className="px-6 py-3 border border-gray-300 dark:border-[#2E2E2E] hover:border-black dark:hover:border-[#C1A98F] rounded text-xs uppercase tracking-widest text-gray-600 dark:text-[#AAAAAA] hover:text-black dark:hover:text-white transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="px-8 py-3 bg-[#1A1A1A] hover:bg-[#D4AF37] text-white hover:text-black font-bold text-xs uppercase tracking-[0.2em] rounded-sm transition-all shadow-md flex items-center gap-2 disabled:opacity-50"
+                    className="px-8 py-3 bg-[#1A1A1A] dark:bg-[#C1A98F] hover:bg-[#D4AF37] dark:hover:bg-[#d6beab] text-white dark:text-black hover:text-black font-bold text-xs uppercase tracking-[0.2em] rounded-sm transition-all shadow-md flex items-center gap-2 disabled:opacity-50"
                   >
                     {submitting ? (
                       <>
@@ -467,7 +467,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
       )}
 
       {/* Filter and Sort Toolbar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-[#EAE3D9] mb-8">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-[#EAE3D9] dark:border-[#2E2E2E] mb-8">
         {/* Rating Filter Pills */}
         <div className="flex items-center gap-2 overflow-x-auto no-scrollbar w-full sm:w-auto">
           <button
@@ -475,8 +475,8 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
             onClick={() => setFilterRating('ALL')}
             className={`px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap ${
               filterRating === 'ALL'
-                ? 'bg-[#1A1A1A] text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                ? 'bg-[#1A1A1A] dark:bg-[#C1A98F] text-white dark:text-black'
+                : 'bg-gray-100 dark:bg-[#252525] text-gray-600 dark:text-[#AAAAAA] hover:bg-gray-200 dark:hover:bg-[#2E2E2E]'
             }`}
           >
             All Reviews ({reviews.length})
@@ -488,8 +488,8 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
               onClick={() => setFilterRating(star)}
               className={`px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1 transition-all whitespace-nowrap ${
                 filterRating === star
-                  ? 'bg-[#D4AF37] text-black shadow-xs'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  ? 'bg-[#D4AF37] dark:bg-[#C1A98F] text-black shadow-xs font-bold'
+                  : 'bg-gray-100 dark:bg-[#252525] text-gray-600 dark:text-[#AAAAAA] hover:bg-gray-200 dark:hover:bg-[#2E2E2E]'
               }`}
             >
               <span>{star}</span>
@@ -504,12 +504,12 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
         {/* Sort Dropdown */}
         <div className="flex items-center gap-2 self-end sm:self-auto">
           <SlidersHorizontal className="w-4 h-4 text-gray-400" />
-          <span className="text-xs uppercase tracking-wider font-bold text-gray-500">Sort:</span>
+          <span className="text-xs uppercase tracking-wider font-bold text-gray-500 dark:text-[#AAAAAA]">Sort:</span>
           <div className="relative">
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as SortType)}
-              className="appearance-none bg-white border border-[#D5CCC1] rounded px-3 py-1.5 pr-8 text-xs font-medium text-[#1A1A1A] focus:outline-none focus:border-black cursor-pointer"
+              className="appearance-none bg-white dark:bg-[#252525] border border-[#D5CCC1] dark:border-[#2E2E2E] rounded px-3 py-1.5 pr-8 text-xs font-medium text-[#1A1A1A] dark:text-[#F5F5F5] focus:outline-none focus:border-black dark:focus:border-[#C1A98F] cursor-pointer"
             >
               <option value="recent">Most Recent</option>
               <option value="highest">Highest Rating</option>
@@ -524,16 +524,16 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
       {/* Reviews List */}
       {loading ? (
         <div className="py-16 text-center text-gray-400 flex flex-col items-center justify-center">
-          <div className="w-8 h-8 border-2 border-gray-300 border-t-[#D4AF37] rounded-full animate-spin mb-4" />
+          <div className="w-8 h-8 border-2 border-gray-300 dark:border-[#2E2E2E] border-t-[#D4AF37] rounded-full animate-spin mb-4" />
           <p className="text-xs uppercase tracking-widest">Loading reviews...</p>
         </div>
       ) : filteredAndSortedReviews.length === 0 ? (
-        <div className="py-16 text-center bg-gray-50 border border-gray-200 rounded-sm p-8">
-          <Star className="w-10 h-10 text-gray-300 mx-auto mb-3" />
-          <h4 className="text-sm font-bold uppercase tracking-wider text-gray-700 mb-1">
+        <div className="py-16 text-center bg-gray-50 dark:bg-[#1E1E1E] border border-gray-200 dark:border-[#2E2E2E] rounded-sm p-8">
+          <Star className="w-10 h-10 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
+          <h4 className="text-sm font-bold uppercase tracking-wider text-gray-700 dark:text-[#F5F5F5] mb-1">
             No reviews match your selected filter
           </h4>
-          <p className="text-xs text-gray-500 mb-4">
+          <p className="text-xs text-gray-500 dark:text-[#AAAAAA] mb-4">
             Be the first to share your thoughts on this exquisite piece.
           </p>
           <button
@@ -542,7 +542,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
               setFilterRating('ALL');
               setIsFormOpen(true);
             }}
-            className="px-6 py-2.5 bg-[#1A1A1A] text-white text-xs uppercase tracking-widest rounded-sm hover:bg-[#D4AF37] hover:text-black transition-all font-bold"
+            className="px-6 py-2.5 bg-[#1A1A1A] dark:bg-[#C1A98F] text-white dark:text-black text-xs uppercase tracking-widest rounded-sm hover:bg-[#D4AF37] dark:hover:bg-[#d6beab] hover:text-black transition-all font-bold"
           >
             Write a Review
           </button>
@@ -567,27 +567,27 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
             return (
               <div
                 key={rev.id}
-                className="bg-white border border-[#EAE3D9] rounded-sm p-6 sm:p-8 hover:shadow-xs transition-shadow"
+                className="bg-white dark:bg-[#1E1E1E] border border-[#EAE3D9] dark:border-[#2E2E2E] rounded-sm p-6 sm:p-8 hover:shadow-xs transition-shadow"
               >
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
                   {/* Author Information */}
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[#FAF7F2] border border-[#D4AF37]/50 text-[#1A1A1A] font-bold text-xs flex items-center justify-center shadow-xs">
+                    <div className="w-10 h-10 rounded-full bg-[#FAF7F2] dark:bg-[#252525] border border-[#D4AF37]/50 text-[#1A1A1A] dark:text-[#F5F5F5] font-bold text-xs flex items-center justify-center shadow-xs">
                       {initials || 'U'}
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-bold text-[#1A1A1A]">
+                        <span className="text-sm font-bold text-[#1A1A1A] dark:text-[#F5F5F5]">
                           {rev.authorName}
                         </span>
                         {rev.verified !== false && (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded text-[10px] font-bold uppercase tracking-wider">
-                            <ShieldCheck className="w-3 h-3 text-emerald-600" />
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60 rounded text-[10px] font-bold uppercase tracking-wider">
+                            <ShieldCheck className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
                             Verified Buyer
                           </span>
                         )}
                       </div>
-                      <p className="text-[11px] text-gray-400">{dateStr}</p>
+                      <p className="text-[11px] text-gray-400 dark:text-gray-500">{dateStr}</p>
                     </div>
                   </div>
 
@@ -599,7 +599,7 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
                         className={`w-4 h-4 ${
                           s <= rev.rating
                             ? 'text-[#D4AF37] fill-[#D4AF37]'
-                            : 'text-gray-200'
+                            : 'text-gray-200 dark:text-gray-700'
                         }`}
                       />
                     ))}
@@ -608,29 +608,29 @@ export const ProductReviews: React.FC<ProductReviewsProps> = ({
 
                 {/* Review Headline & Body */}
                 {rev.title && (
-                  <h4 className="text-base font-bold text-[#1A1A1A] mb-2 font-serif tracking-wide">
+                  <h4 className="text-base font-bold text-[#1A1A1A] dark:text-[#F5F5F5] mb-2 font-serif tracking-wide">
                     {rev.title}
                   </h4>
                 )}
-                <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line mb-6">
+                <p className="text-sm text-gray-700 dark:text-[#CCCCCC] leading-relaxed whitespace-pre-line mb-6">
                   {rev.comment}
                 </p>
 
                 {/* Helpful voting button */}
-                <div className="flex items-center justify-between pt-4 border-t border-gray-100 text-xs text-gray-500">
+                <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-[#2E2E2E] text-xs text-gray-500">
                   <div className="flex items-center gap-2">
-                    <span className="text-[11px] text-gray-400">Was this review helpful?</span>
+                    <span className="text-[11px] text-gray-400 dark:text-gray-500">Was this review helpful?</span>
                     <button
                       type="button"
                       disabled={hasVoted}
                       onClick={() => handleVoteHelpful(rev.id)}
                       className={`px-3 py-1 rounded-full border flex items-center gap-1.5 text-xs transition-all ${
                         hasVoted
-                          ? 'bg-emerald-50 border-emerald-200 text-emerald-700 cursor-default'
-                          : 'border-gray-200 text-gray-600 hover:border-black hover:text-black'
+                          ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800/60 text-emerald-700 dark:text-emerald-400 cursor-default'
+                          : 'border-gray-200 dark:border-[#2E2E2E] text-gray-600 dark:text-[#AAAAAA] hover:border-black dark:hover:border-white hover:text-black dark:hover:text-white'
                       }`}
                     >
-                      <ThumbsUp className={`w-3.5 h-3.5 ${hasVoted ? 'text-emerald-600' : ''}`} />
+                      <ThumbsUp className={`w-3.5 h-3.5 ${hasVoted ? 'text-emerald-600 dark:text-emerald-400' : ''}`} />
                       <span>{hasVoted ? 'Helpful' : 'Yes'} ({rev.helpfulCount || 0})</span>
                     </button>
                   </div>

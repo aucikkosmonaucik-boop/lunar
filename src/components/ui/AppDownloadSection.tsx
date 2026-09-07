@@ -4,7 +4,7 @@ import { Smartphone, Download, ShieldCheck, Zap, Bell, Gift, ArrowRight, QrCode 
 
 const AppDownloadSection: React.FC = () => {
   return (
-    <section className="py-20 md:py-28 bg-[#FAF6F3] border-y border-[#EDE6DF] overflow-hidden relative">
+    <section className="py-20 md:py-28 bg-[#FAF6F3] dark:bg-[#161616] border-y border-[#EDE6DF] dark:border-[#2E2E2E] overflow-hidden relative transition-colors duration-200">
       {/* Decorative background glow */}
       <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#C1A98F]/15 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-[#C1A98F]/10 rounded-full blur-3xl pointer-events-none" />
@@ -106,61 +106,61 @@ const AppDownloadSection: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Column: Copy, Features & Download Links */}
+          {/* Right Column: Copy & Details */}
           <div className="lg:col-span-7 text-left space-y-6">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#C1A98F]/20 text-[#8c6d4f] font-semibold text-xs tracking-wider uppercase">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#C1A98F]/20 text-[#8c6d4f] dark:text-[#C1A98F] font-semibold text-xs tracking-wider uppercase">
               <Smartphone className="w-3.5 h-3.5" />
               <span>Lunar Mobile Experience</span>
             </div>
 
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif text-[#1a1a1a] font-bold leading-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif text-[#1a1a1a] dark:text-[#F5F5F5] font-bold leading-tight">
               Elegance in Your Pocket. <br />
-              <span className="italic font-normal text-[#8c6d4f]">Anytime, anywhere.</span>
+              <span className="italic font-normal text-[#8c6d4f] dark:text-[#C1A98F]">Anytime, anywhere.</span>
             </h2>
 
-            <p className="text-gray-600 text-base md:text-lg max-w-xl leading-relaxed">
+            <p className="text-gray-600 dark:text-[#AAAAAA] text-base md:text-lg max-w-xl leading-relaxed">
               Elevate your shopping journey with the official Lunar mobile app for Android & iOS. Enjoy instant parcel tracking, one-tap biometric checkout, and exclusive member drops.
             </p>
 
             {/* Value Props */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-              <div className="flex items-start gap-3 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                <div className="w-9 h-9 rounded-lg bg-[#C1A98F]/20 flex items-center justify-center text-[#8c6d4f] shrink-0 mt-0.5">
+              <div className="flex items-start gap-3 bg-white dark:bg-[#1E1E1E] p-4 rounded-xl shadow-sm border border-gray-100 dark:border-[#2E2E2E]">
+                <div className="w-9 h-9 rounded-lg bg-[#C1A98F]/20 flex items-center justify-center text-[#8c6d4f] dark:text-[#C1A98F] shrink-0 mt-0.5">
                   <Zap className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-[#1a1a1a]">Instant Checkout</h4>
-                  <p className="text-xs text-gray-500 mt-0.5">One-click BLIK, Apple Pay & saved addresses.</p>
+                  <h4 className="text-sm font-bold text-[#1a1a1a] dark:text-[#F5F5F5]">Instant Checkout</h4>
+                  <p className="text-xs text-gray-500 dark:text-[#AAAAAA] mt-0.5">One-click BLIK, Apple Pay & saved addresses.</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                <div className="w-9 h-9 rounded-lg bg-[#C1A98F]/20 flex items-center justify-center text-[#8c6d4f] shrink-0 mt-0.5">
+              <div className="flex items-start gap-3 bg-white dark:bg-[#1E1E1E] p-4 rounded-xl shadow-sm border border-gray-100 dark:border-[#2E2E2E]">
+                <div className="w-9 h-9 rounded-lg bg-[#C1A98F]/20 flex items-center justify-center text-[#8c6d4f] dark:text-[#C1A98F] shrink-0 mt-0.5">
                   <ShieldCheck className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-[#1a1a1a]">Live Order Tracking</h4>
-                  <p className="text-xs text-gray-500 mt-0.5">Real-time status alerts from dispatch to doorstep.</p>
+                  <h4 className="text-sm font-bold text-[#1a1a1a] dark:text-[#F5F5F5]">Live Order Tracking</h4>
+                  <p className="text-xs text-gray-500 dark:text-[#AAAAAA] mt-0.5">Real-time status alerts from dispatch to doorstep.</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                <div className="w-9 h-9 rounded-lg bg-[#C1A98F]/20 flex items-center justify-center text-[#8c6d4f] shrink-0 mt-0.5">
+              <div className="flex items-start gap-3 bg-white dark:bg-[#1E1E1E] p-4 rounded-xl shadow-sm border border-gray-100 dark:border-[#2E2E2E]">
+                <div className="w-9 h-9 rounded-lg bg-[#C1A98F]/20 flex items-center justify-center text-[#8c6d4f] dark:text-[#C1A98F] shrink-0 mt-0.5">
                   <Gift className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-[#1a1a1a]">VIP Club Rewards</h4>
-                  <p className="text-xs text-gray-500 mt-0.5">Earn bonus loyalty points on every in-app purchase.</p>
+                  <h4 className="text-sm font-bold text-[#1a1a1a] dark:text-[#F5F5F5]">VIP Club Rewards</h4>
+                  <p className="text-xs text-gray-500 dark:text-[#AAAAAA] mt-0.5">Earn bonus loyalty points on every in-app purchase.</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                <div className="w-9 h-9 rounded-lg bg-[#C1A98F]/20 flex items-center justify-center text-[#8c6d4f] shrink-0 mt-0.5">
+              <div className="flex items-start gap-3 bg-white dark:bg-[#1E1E1E] p-4 rounded-xl shadow-sm border border-gray-100 dark:border-[#2E2E2E]">
+                <div className="w-9 h-9 rounded-lg bg-[#C1A98F]/20 flex items-center justify-center text-[#8c6d4f] dark:text-[#C1A98F] shrink-0 mt-0.5">
                   <Bell className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-[#1a1a1a]">Exclusive Drops</h4>
-                  <p className="text-xs text-gray-500 mt-0.5">Priority early access to limited jewelry collections.</p>
+                  <h4 className="text-sm font-bold text-[#1a1a1a] dark:text-[#F5F5F5]">Exclusive Drops</h4>
+                  <p className="text-xs text-gray-500 dark:text-[#AAAAAA] mt-0.5">Priority early access to limited jewelry collections.</p>
                 </div>
               </div>
             </div>

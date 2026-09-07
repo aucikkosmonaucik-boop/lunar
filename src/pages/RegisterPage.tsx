@@ -40,36 +40,36 @@ const RegisterPage: React.FC = () => {
 
   return (
     <div className="min-h-[60vh] flex items-start justify-center px-4 pt-2 md:pt-4">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-xl border border-gray-100 mt-2 md:mt-4">
+      <div className="max-w-md w-full space-y-8 bg-white dark:bg-[#1E1E1E] p-8 rounded-2xl shadow-xl border border-gray-100 dark:border-[#2E2E2E] mt-2 md:mt-4 transition-colors duration-200">
         <div>
-          <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-center text-3xl md:text-4xl tracking-[0.15em] text-[#1a1a1a] uppercase font-light">
+          <h2 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }} className="text-center text-3xl md:text-4xl tracking-[0.15em] text-[#1a1a1a] dark:text-[#F5F5F5] uppercase font-light">
             Register
           </h2>
-          <div className="mt-4 flex items-center justify-center gap-2 text-[10px] md:text-xs uppercase tracking-[0.2em] text-gray-500">
+          <div className="mt-4 flex items-center justify-center gap-2 text-[10px] md:text-xs uppercase tracking-[0.2em] text-gray-500 dark:text-[#AAAAAA]">
             <span>or</span>
-            <Link to="/login" className="font-medium text-[#1a1a1a] hover:text-gray-500 transition-colors pb-0.5 border-b border-[#1a1a1a] hover:border-gray-500">
+            <Link to="/login" className="font-medium text-[#1a1a1a] dark:text-[#F5F5F5] hover:text-gray-500 dark:hover:text-[#C1A98F] transition-colors pb-0.5 border-b border-[#1a1a1a] dark:border-[#F5F5F5] hover:border-gray-500 dark:hover:border-[#C1A98F]">
               sign in to your account
             </Link>
           </div>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-600 p-4 rounded-xl flex items-start space-x-2 text-sm">
+            <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 p-4 rounded-xl flex items-start space-x-2 text-sm">
               <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
           )}
           <div className="rounded-md space-y-4">
             <div>
-              <label htmlFor="name" className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">Full Name</label>
-              <div className="flex items-center border-b border-gray-200 focus-within:border-[#1a1a1a] transition-colors duration-300 py-3">
-                <User className="h-5 w-5 text-gray-400 stroke-[1.5] mr-4" />
+              <label htmlFor="name" className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 dark:text-[#888888] font-medium mb-2">Full Name</label>
+              <div className="flex items-center border-b border-gray-200 dark:border-[#2E2E2E] focus-within:border-[#1a1a1a] dark:focus-within:border-[#C1A98F] transition-colors duration-300 py-3">
+                <User className="h-5 w-5 text-gray-400 dark:text-[#888888] stroke-[1.5] mr-4" />
                 <input
                   id="name"
                   name="name"
                   type="text"
                   required
-                  className="w-full bg-transparent text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none"
+                  className="w-full bg-transparent text-[15px] text-[#1a1a1a] dark:text-[#F5F5F5] placeholder-gray-300 dark:placeholder-[#555555] font-light tracking-wide focus:outline-none"
                   placeholder="Jane Smith"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -77,16 +77,16 @@ const RegisterPage: React.FC = () => {
               </div>
             </div>
             <div>
-              <label htmlFor="email-address" className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">Email Address</label>
-              <div className="flex items-center border-b border-gray-200 focus-within:border-[#1a1a1a] transition-colors duration-300 py-3">
-                <Mail className="h-5 w-5 text-gray-400 stroke-[1.5] mr-4" />
+              <label htmlFor="email-address" className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 dark:text-[#888888] font-medium mb-2">Email Address</label>
+              <div className="flex items-center border-b border-gray-200 dark:border-[#2E2E2E] focus-within:border-[#1a1a1a] dark:focus-within:border-[#C1A98F] transition-colors duration-300 py-3">
+                <Mail className="h-5 w-5 text-gray-400 dark:text-[#888888] stroke-[1.5] mr-4" />
                 <input
                   id="email-address"
                   name="email"
                   type="email"
                   autoComplete="email"
                   required
-                  className="w-full bg-transparent text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none"
+                  className="w-full bg-transparent text-[15px] text-[#1a1a1a] dark:text-[#F5F5F5] placeholder-gray-300 dark:placeholder-[#555555] font-light tracking-wide focus:outline-none"
                   placeholder="jane@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -94,16 +94,16 @@ const RegisterPage: React.FC = () => {
               </div>
             </div>
             <div>
-              <label htmlFor="password" className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-2">Password</label>
-              <div className="flex items-center border-b border-gray-200 focus-within:border-[#1a1a1a] transition-colors duration-300 py-3">
-                <Lock className="h-5 w-5 text-gray-400 stroke-[1.5] mr-4" />
+              <label htmlFor="password" className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 dark:text-[#888888] font-medium mb-2">Password</label>
+              <div className="flex items-center border-b border-gray-200 dark:border-[#2E2E2E] focus-within:border-[#1a1a1a] dark:focus-within:border-[#C1A98F] transition-colors duration-300 py-3">
+                <Lock className="h-5 w-5 text-gray-400 dark:text-[#888888] stroke-[1.5] mr-4" />
                 <input
                   id="password"
                   name="password"
                   type="password"
                   autoComplete="new-password"
                   required
-                  className="w-full bg-transparent text-[15px] text-[#1a1a1a] placeholder-gray-300 font-light tracking-wide focus:outline-none"
+                  className="w-full bg-transparent text-[15px] text-[#1a1a1a] dark:text-[#F5F5F5] placeholder-gray-300 dark:placeholder-[#555555] font-light tracking-wide focus:outline-none"
                   placeholder="Must be at least 6 characters"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -117,7 +117,7 @@ const RegisterPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="mt-6 w-full flex justify-center items-center gap-3 bg-[#1a1a1a] text-white text-[12px] uppercase tracking-[0.45em] py-5 px-14 hover:bg-gray-800 transition-colors duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              className="mt-6 w-full flex justify-center items-center gap-3 bg-[#1a1a1a] dark:bg-[#C1A98F] text-white dark:text-[#121212] text-[12px] uppercase tracking-[0.45em] py-5 px-14 hover:bg-gray-800 dark:hover:bg-[#d4be9f] transition-colors duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {loading ? 'Processing...' : 'Create Account'}
             </button>
@@ -128,10 +128,10 @@ const RegisterPage: React.FC = () => {
           <SocialLoginButtons dividerText="Or register with" onSuccess={() => navigate('/account')} />
         </div>
 
-        <div className="pt-2 text-center border-t border-gray-100">
+        <div className="pt-2 text-center border-t border-gray-100 dark:border-[#2E2E2E]">
           <Link
             to="/login"
-            className="text-[11px] uppercase tracking-[0.2em] text-[#8C6D4F] hover:text-[#1a1a1a] transition-colors"
+            className="text-[11px] uppercase tracking-[0.2em] text-[#8C6D4F] dark:text-[#C1A98F] hover:text-[#1a1a1a] dark:hover:text-[#F5F5F5] transition-colors"
           >
             Didn't receive verification email? Resend link
           </Link>
