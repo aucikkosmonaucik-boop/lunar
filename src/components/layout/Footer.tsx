@@ -22,7 +22,7 @@ const Footer: React.FC = () => {
         </Link>
 
         <div className="flex justify-center items-center gap-6 md:gap-8 mb-12">
-          <a href="https://www.instagram.com/mylunar.ie?igsh=MXJjZjNndm13NHduMQ==" target="_blank" rel="noreferrer"
+          <a href="https://www.instagram.com/mylunar.shop?stkn=MXJjZjNndm13NHduMQ%3D%3D" target="_blank" rel="noreferrer"
             className="w-10 h-10 rounded-full bg-gray-600 dark:bg-[#282828] flex items-center justify-center text-white hover:bg-black dark:hover:bg-[#C1A98F] dark:hover:text-black hover:scale-105 transition-all duration-300"
             aria-label="Instagram">
             <Instagram className="w-5 h-5" />
