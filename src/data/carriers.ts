@@ -27,7 +27,7 @@ export const CARRIERS: Carrier[] = [
     freeThreshold: 50,
     trackingPlaceholder: 'e.g. 1198547382IE or CE123456789IE',
     trackingRegexHint: 'An Post barcode (e.g. 9-13 alphanumeric characters)',
-    badgeColor: 'bg-[#00703C]/10 text-[#00703C] border-[#00703C]/30',
+    badgeColor: 'bg-[#00703C]/10 text-[#00703C] border-[#00703C]/30 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-500/50',
     getTrackingUrl: (trackingNumber: string) => {
       const clean = trackingNumber.trim().replace(/\s+/g, '');
       return `https://www.anpost.com/Post-Parcels/Track/History?item=${encodeURIComponent(clean)}`;
@@ -45,7 +45,7 @@ export const CARRIERS: Carrier[] = [
     freeThreshold: 80,
     trackingPlaceholder: 'e.g. 08123456789012 or 15501234567890',
     trackingRegexHint: 'DPD parcel number (usually 14 digits)',
-    badgeColor: 'bg-[#DC0032]/10 text-[#DC0032] border-[#DC0032]/30',
+    badgeColor: 'bg-[#DC0032]/10 text-[#DC0032] border-[#DC0032]/30 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-500/50',
     getTrackingUrl: (trackingNumber: string) => {
       const clean = trackingNumber.trim().replace(/\s+/g, '');
       return `https://dpd.ie/tracking?parcelnumber=${encodeURIComponent(clean)}`;
@@ -63,7 +63,7 @@ export const CARRIERS: Carrier[] = [
     freeThreshold: 75,
     trackingPlaceholder: 'e.g. 23908172641 or 12345678',
     trackingRegexHint: 'GLS parcel number or Track ID',
-    badgeColor: 'bg-[#002B7F]/10 text-[#002B7F] border-[#002B7F]/30',
+    badgeColor: 'bg-[#002B7F]/10 text-[#002B7F] border-[#002B7F]/30 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-500/50',
     getTrackingUrl: (trackingNumber: string) => {
       const clean = trackingNumber.trim().replace(/\s+/g, '');
       return `https://gls-group.eu/IE/en/track-trace?match=${encodeURIComponent(clean)}`;
@@ -81,7 +81,7 @@ export const CARRIERS: Carrier[] = [
     freeThreshold: 150,
     trackingPlaceholder: 'e.g. 1Z9999999999999999',
     trackingRegexHint: 'UPS tracking (starts with 1Z, 18 characters)',
-    badgeColor: 'bg-[#351C15]/10 text-[#59341C] border-[#59341C]/30',
+    badgeColor: 'bg-[#351C15]/10 text-[#59341C] border-[#59341C]/30 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-500/50',
     getTrackingUrl: (trackingNumber: string) => {
       const clean = trackingNumber.trim().replace(/\s+/g, '');
       return `https://www.ups.com/track?tracknum=${encodeURIComponent(clean)}`;
@@ -99,7 +99,7 @@ export const CARRIERS: Carrier[] = [
     freeThreshold: 180,
     trackingPlaceholder: 'e.g. 794823901234 or 123456789012',
     trackingRegexHint: 'FedEx tracking number (12 or 15 digits)',
-    badgeColor: 'bg-[#4D148C]/10 text-[#4D148C] border-[#4D148C]/30',
+    badgeColor: 'bg-[#4D148C]/10 text-[#4D148C] border-[#4D148C]/30 dark:bg-purple-950/60 dark:text-purple-300 dark:border-purple-500/50',
     getTrackingUrl: (trackingNumber: string) => {
       const clean = trackingNumber.trim().replace(/\s+/g, '');
       return `https://www.fedex.com/fedextrack/?trknbr=${encodeURIComponent(clean)}`;

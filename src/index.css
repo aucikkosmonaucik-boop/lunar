@@ -82,19 +82,60 @@ h6.font-light,
   font-weight: 400;
 }
 
-/* Improve contrast for small text and muted labels across the site */
-p.text-gray-400,
-span.text-gray-400,
-label.text-gray-400,
-div.text-gray-400 {
+/* Light mode: improve contrast for small text and muted labels on cream/white backgrounds */
+html:not(.dark) p.text-gray-400,
+html:not(.dark) span.text-gray-400,
+html:not(.dark) label.text-gray-400,
+html:not(.dark) div.text-gray-400 {
   color: #64748b;
 }
 
-p.text-gray-500,
-span.text-gray-500,
-label.text-gray-500,
-div.text-gray-500 {
+html:not(.dark) p.text-gray-500,
+html:not(.dark) span.text-gray-500,
+html:not(.dark) label.text-gray-500,
+html:not(.dark) div.text-gray-500 {
   color: #475569;
+}
+
+/* Dark mode: crisp, high-contrast, crystal-clear typography */
+html.dark {
+  color-scheme: dark;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html.dark body {
+  color: #F5F5F5;
+}
+
+/* Elevate contrast of muted/subtext in dark mode so nothing is washed out or faint */
+html.dark p.text-gray-400,
+html.dark span.text-gray-400,
+html.dark label.text-gray-400,
+html.dark div.text-gray-400,
+html.dark .text-gray-400 {
+  color: #D1D5DB !important;
+}
+
+html.dark p.text-gray-500,
+html.dark span.text-gray-500,
+html.dark label.text-gray-500,
+html.dark div.text-gray-500,
+html.dark .text-gray-500 {
+  color: #E5E7EB !important;
+}
+
+html.dark p.text-gray-600,
+html.dark span.text-gray-600,
+html.dark label.text-gray-600,
+html.dark div.text-gray-600,
+html.dark .text-gray-600 {
+  color: #F3F4F6 !important;
+}
+
+/* Ensure no thin, blurry hairlines on dark background */
+html.dark .font-light {
+  font-weight: 400 !important;
 }
 
 /* Inputs & placeholders clarity */
@@ -106,7 +147,7 @@ textarea::placeholder {
 
 html.dark input::placeholder,
 html.dark textarea::placeholder {
-  color: #888888 !important;
+  color: #9CA3AF !important;
 }
 
 /* Scrollbar */

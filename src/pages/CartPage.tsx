@@ -1052,15 +1052,15 @@ const CartPage: React.FC = () => {
                               {c.tagline}
                             </span>
                           </div>
-                          <p className="text-xs text-gray-500 dark:text-[#AAAAAA] font-light leading-relaxed max-w-lg">
+                          <p className="text-xs text-gray-600 dark:text-[#E2E8F0] font-normal leading-relaxed max-w-lg">
                             {c.description}
                           </p>
-                          <div className="flex items-center gap-3 mt-1.5 text-[11px] text-[#8C6D4F] dark:text-[#C1A98F]">
-                            <span className="flex items-center gap-1 font-medium">
+                          <div className="flex items-center gap-3 mt-1.5 text-[11px] text-[#8C6D4F] dark:text-[#DFC8B0]">
+                            <span className="flex items-center gap-1 font-semibold">
                               ✦ Est. Delivery: {c.estimatedDelivery}
                             </span>
-                            <span className="text-gray-300 dark:text-gray-600">•</span>
-                            <span className="text-gray-500 dark:text-gray-400">Live Tracking Included</span>
+                            <span className="text-gray-300 dark:text-gray-500">•</span>
+                            <span className="text-gray-600 dark:text-[#CBD5E1] font-medium">Live Tracking Included</span>
                           </div>
                         </div>
                       </div>
@@ -1072,18 +1072,18 @@ const CartPage: React.FC = () => {
                               <span className="text-emerald-700 dark:text-emerald-400 font-bold text-xs uppercase tracking-wider">
                                 Complimentary
                               </span>
-                              <span className="text-[10px] text-gray-400 dark:text-gray-500 line-through">
+                              <span className="text-[10px] text-gray-400 dark:text-gray-400 line-through">
                                 €{c.basePrice.toFixed(2)}
                               </span>
                             </div>
                           ) : (
-                            <span className="text-[#8C6D4F] dark:text-[#C1A98F] font-bold">
+                            <span className="text-[#8C6D4F] dark:text-[#DFC8B0] font-bold text-base">
                               €{cost.toFixed(2)}
                             </span>
                           )}
                         </div>
                         {c.freeShippingAvailable && !carrierFree && (
-                          <span className="text-[9px] text-gray-400 dark:text-gray-500 block mt-0.5">
+                          <span className="text-[10px] text-gray-500 dark:text-[#CBD5E1] font-medium block mt-0.5">
                             Free over €{c.freeThreshold}
                           </span>
                         )}
@@ -1164,20 +1164,20 @@ const CartPage: React.FC = () => {
                 {/* Delivery */}
                 <div className="flex justify-between items-start">
                   <div className="flex flex-col">
-                    <span className="font-light flex items-center gap-1.5 text-gray-600 dark:text-[#AAAAAA]">
+                    <span className="font-normal flex items-center gap-1.5 text-gray-700 dark:text-[#F3F4F6]">
                       <Truck className="w-3.5 h-3.5 text-[#C1A98F]" />
                       <span>{selectedCarrier.shortName}</span>
                     </span>
-                    <span className="text-[10px] text-gray-400 dark:text-gray-500 font-light">
+                    <span className="text-[11px] text-gray-500 dark:text-[#CBD5E1] font-normal">
                       {selectedCarrier.estimatedDelivery} • Tracked
                     </span>
                   </div>
-                  <span className={`font-medium ${isFreeShipping ? 'text-emerald-700 dark:text-emerald-400 font-semibold' : 'text-[#8C6D4F] dark:text-[#C1A98F] font-bold'}`}>
+                  <span className={`font-medium ${isFreeShipping ? 'text-emerald-700 dark:text-emerald-400 font-semibold' : 'text-[#8C6D4F] dark:text-[#DFC8B0] font-bold'}`}>
                     {isFreeShipping ? 'FREE' : `€${shippingFee.toFixed(2)}`}
                   </span>
                 </div>
 
-                <div className="flex justify-between items-center text-[11px] text-gray-400 dark:text-gray-500 pt-1">
+                <div className="flex justify-between items-center text-xs text-gray-500 dark:text-[#CBD5E1] pt-1 font-medium">
                   <span>VAT</span>
                   <span>Included</span>
                 </div>
@@ -1186,14 +1186,14 @@ const CartPage: React.FC = () => {
               {/* Shipping Address Status Badge */}
               <div className="border-t border-[#F0EBE3] dark:border-[#2E2E2E] pt-4 mb-6">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-500 dark:text-[#AAAAAA] font-light">Delivery address:</span>
+                  <span className="text-gray-600 dark:text-[#CBD5E1] font-medium">Delivery address:</span>
                   {shippingStreet && shippingCity && shippingPostalCode ? (
                     <span className="text-emerald-700 dark:text-emerald-400 font-medium flex items-center gap-1 text-[11px]">
                       <Check className="w-3.5 h-3.5" />
                       <span>Filled ({shippingCity})</span>
                     </span>
                   ) : (
-                    <span className="text-amber-700 dark:text-amber-400 font-medium text-[11px]">
+                    <span className="text-amber-700 dark:text-amber-300 font-semibold text-xs uppercase tracking-wider">
                       Required
                     </span>
                   )}
@@ -1292,15 +1292,15 @@ const CartPage: React.FC = () => {
               <div className="border-t border-[#EAE3D9] dark:border-[#2E2E2E] pt-5 mb-6">
                 <div className="flex justify-between items-baseline">
                   <div>
-                    <span className="text-[12px] uppercase tracking-[0.25em] font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] block">
+                    <span className="text-[13px] uppercase tracking-[0.25em] font-bold text-[#1A1A1A] dark:text-[#FFFFFF] block">
                       Total Due
                     </span>
-                    <span className="text-[10px] text-gray-400 dark:text-gray-500 tracking-wider">Currency: EUR</span>
+                    <span className="text-xs text-gray-500 dark:text-[#CBD5E1] tracking-wider font-medium">Currency: EUR</span>
                   </div>
                   <div className="text-right">
                     <span
                       style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
-                      className="text-3xl sm:text-4xl font-light text-[#1A1A1A] dark:text-[#F5F5F5] tracking-tight"
+                      className="text-3xl sm:text-4xl font-light text-[#1A1A1A] dark:text-[#FFFFFF] tracking-tight"
                     >
                       €{grandTotal.toFixed(2)}
                     </span>
@@ -1312,7 +1312,7 @@ const CartPage: React.FC = () => {
               {error && (
                 <div className="bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 text-rose-700 dark:text-rose-300 text-xs p-3.5 rounded-none mb-4 flex items-start gap-2.5">
                   <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-600" />
-                  <span className="leading-relaxed">{error}</span>
+                  <span className="leading-relaxed font-medium">{error}</span>
                 </div>
               )}
 
@@ -1321,7 +1321,7 @@ const CartPage: React.FC = () => {
                 id="stripe-checkout-btn"
                 onClick={handleStripeCheckout}
                 disabled={isCheckingOut}
-                className="w-full bg-[#1A1A1A] dark:bg-[#C1A98F] hover:bg-[#333333] dark:hover:bg-[#d6beab] text-white dark:text-black py-4 px-6 text-[12px] uppercase tracking-[0.25em] font-medium transition-all duration-300 flex items-center justify-center gap-3 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed group cursor-pointer"
+                className="w-full bg-[#1A1A1A] dark:bg-[#C1A98F] hover:bg-[#333333] dark:hover:bg-[#d6beab] text-white dark:text-black py-4 px-6 text-[12px] uppercase tracking-[0.25em] font-bold transition-all duration-300 flex items-center justify-center gap-3 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed group cursor-pointer"
               >
                 {isCheckingOut ? (
                   <>
@@ -1339,14 +1339,14 @@ const CartPage: React.FC = () => {
 
               {/* Payment Methods Badges */}
               <div className="mt-5 pt-5 border-t border-[#F0EBE3] dark:border-[#2E2E2E] text-center">
-                <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 mb-3 font-medium">
+                <p className="text-[11px] uppercase tracking-[0.2em] text-gray-600 dark:text-[#E2E8F0] mb-3 font-semibold">
                   Secure Encrypted Payment via Stripe
                 </p>
-                <div className="flex flex-wrap items-center justify-center gap-1.5 text-gray-500">
+                <div className="flex flex-wrap items-center justify-center gap-1.5">
                   {['Visa', 'Mastercard', 'Apple Pay', 'Google Pay', 'BLIK', 'Klarna'].map((badge) => (
                     <span
                       key={badge}
-                      className="text-[10px] font-medium tracking-wider px-2 py-0.5 bg-[#FAF8F5] dark:bg-[#252525] border border-[#EAE3D9] dark:border-[#2E2E2E] text-[#4A4A4A] dark:text-[#CCCCCC]"
+                      className="text-[11px] font-semibold tracking-wider px-2.5 py-1 bg-[#FAF8F5] dark:bg-[#2A2A2A] border border-[#EAE3D9] dark:border-[#444444] text-[#333333] dark:text-[#FFFFFF] shadow-xs"
                     >
                       {badge}
                     </span>
@@ -1355,7 +1355,7 @@ const CartPage: React.FC = () => {
               </div>
 
               {/* Trust Guarantees */}
-              <div className="mt-6 pt-5 border-t border-[#F0EBE3] dark:border-[#2E2E2E] space-y-3 text-[11px] text-gray-500 dark:text-[#AAAAAA] font-light">
+              <div className="mt-6 pt-5 border-t border-[#F0EBE3] dark:border-[#2E2E2E] space-y-3 text-xs text-gray-700 dark:text-[#F3F4F6] font-medium">
                 <div className="flex items-center gap-2.5">
                   <ShieldCheck className="w-4 h-4 text-[#C1A98F] shrink-0" />
                   <span>256-Bit SSL encryption and buyer protection</span>
