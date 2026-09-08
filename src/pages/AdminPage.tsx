@@ -271,6 +271,7 @@ export const AdminPage: React.FC = () => {
   const [editStatus, setEditStatus] = useState('Processing');
   const [editNotifyCustomer, setEditNotifyCustomer] = useState(true);
   const [isSavingOrder, setIsSavingOrder] = useState(false);
+  const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null);
 
   const fetchAdminOrders = async () => {
     try {
@@ -427,11 +428,50 @@ export const AdminPage: React.FC = () => {
     showToast(`Created duplicate: "${copy.name}"`);
   };
 
-  const handleOrderStatusChange = (orderId: string, newStatus: string) => {
+  const handleOrderStatusChange = async (orderId: string, newStatus: string) => {
+    const targetOrder = orders.find(o => o.id === orderId);
+    const previousStatus = targetOrder?.status;
+
+    // Optimistic UI update
     setOrders(prev =>
       prev.map(o => (o.id === orderId ? { ...o, status: newStatus } : o))
     );
-    showToast(`Order status updated to: ${newStatus}`);
+    setUpdatingOrderId(orderId);
+
+    try {
+      const adminToken = localStorage.getItem('lunar_admin_token');
+      const res = await fetch('/api/orders/update', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(adminToken ? { Authorization: `Bearer ${adminToken}` } : {}),
+        },
+        body: JSON.stringify({
+          orderId,
+          orderNumber: targetOrder?.orderNumber,
+          status: newStatus,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || 'Failed to update order status');
+      }
+
+      showToast(`Order #${targetOrder?.orderNumber || orderId} status saved: ${newStatus}`);
+      await fetchAdminOrders();
+    } catch (err) {
+      console.error('Failed to update order status in database:', err);
+      // Revert optimistic update on failure
+      if (previousStatus) {
+        setOrders(prev =>
+          prev.map(o => (o.id === orderId ? { ...o, status: previousStatus } : o))
+        );
+      }
+      showToast(err instanceof Error ? err.message : 'Failed to update order status', 'info');
+    } finally {
+      setUpdatingOrderId(null);
+    }
   };
 
   // KPIs
@@ -1208,8 +1248,9 @@ export const AdminPage: React.FC = () => {
                           <td className="py-4 px-6">
                             <select
                               value={ord.status}
+                              disabled={updatingOrderId === ord.id}
                               onChange={(e) => handleOrderStatusChange(ord.id, e.target.value)}
-                              className={`text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded border focus:outline-none cursor-pointer ${
+                              className={`text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded border focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-wait ${
                                 ord.status === 'Paid'
                                   ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700'
                                   : ord.status === 'Processing'
@@ -1218,6 +1259,8 @@ export const AdminPage: React.FC = () => {
                                   ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border-blue-300 dark:border-blue-700'
                                   : ord.status === 'Delivered'
                                   ? 'bg-green-50 dark:bg-green-950/60 text-green-800 dark:text-green-300 border-green-300 dark:border-green-700'
+                                  : ord.status === 'Cancelled'
+                                  ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border-rose-300 dark:border-rose-700'
                                   : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600'
                               }`}
                             >
