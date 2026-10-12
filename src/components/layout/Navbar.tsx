@@ -144,18 +144,41 @@ const Navbar: React.FC = () => {
       </div>
 
       {/* Main Header Container */}
-      <div className="w-full px-4 sm:px-8 lg:px-12 py-4 md:py-6 flex flex-col md:flex-row items-center justify-between relative min-h-[160px] md:min-h-[190px]">
+      <div className="w-full px-4 sm:px-6 lg:px-10 py-2.5 md:py-3.5 flex items-center justify-between relative">
         
-        {/* Left: Mobile Menu Trigger */}
-        <div className="w-full md:w-auto flex justify-between items-center md:hidden mb-4">
-          <button 
-            className="p-2 text-gray-800 dark:text-[#F5F5F5] focus:outline-none" 
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Toggle Menu"
-          >
-            {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
-          <div className="flex items-center gap-2.5 sm:gap-3.5">
+        {/* Mobile Header Bar (< md) */}
+        <div className="w-full flex md:hidden items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <button 
+              className="p-1.5 -ml-1 text-gray-800 dark:text-[#F5F5F5] focus:outline-none" 
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label="Toggle Menu"
+            >
+              {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+            <Link to="/" className="flex flex-col items-center select-none group">
+              <div className="flex flex-col items-center select-none relative">
+                <div className="text-[#C1A98F] -mb-0.5">
+                  <svg className="w-3 h-3 fill-none stroke-current stroke-[1.75]" viewBox="0 0 24 24">
+                    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                <span 
+                  className="text-2xl text-[#1a1a1a] dark:text-[#F5F5F5] leading-none"
+                  style={{ fontFamily: "'Alex Brush', cursive" }}
+                >
+                  My
+                </span>
+                <span 
+                  className="font-serif text-xs tracking-[0.35em] text-[#1a1a1a] dark:text-[#F5F5F5] uppercase -mt-2 pl-[0.35em]"
+                >
+                  Lunar
+                </span>
+              </div>
+            </Link>
+          </div>
+
+          <div className="flex items-center gap-2 sm:gap-3">
             {/* Mobile Theme Toggle Button */}
             <button
               onClick={toggleTheme}
@@ -176,7 +199,7 @@ const Navbar: React.FC = () => {
               aria-label="Track Package"
               title="Track Package"
             >
-              <Truck className="w-6 h-6 stroke-[1.2]" />
+              <Truck className="w-5 h-5 stroke-[1.2]" />
             </Link>
             <button 
               onClick={() => setSearchOpen(!searchOpen)} 
@@ -184,10 +207,10 @@ const Navbar: React.FC = () => {
               aria-label="Search and Categories"
               aria-expanded={searchOpen}
             >
-              <Search className="w-6 h-6 stroke-[1.2]" />
+              <Search className="w-5 h-5 stroke-[1.2]" />
             </button>
             <Link to="/cart" className="relative p-1 text-[#1a1a1a] dark:text-[#F5F5F5]" aria-label="Shopping Cart">
-              <ShoppingBag className="w-6 h-6 stroke-[1.2]" />
+              <ShoppingBag className="w-5 h-5 stroke-[1.2]" />
               {totalItems > 0 && (
                 <span className="absolute -top-0.5 -right-1 w-4 h-4 bg-black dark:bg-[#C1A98F] rounded-full text-[10px] flex items-center justify-center text-white dark:text-black font-bold">
                   {totalItems}
@@ -197,207 +220,211 @@ const Navbar: React.FC = () => {
           </div>
         </div>
 
-        {/* Center: Logo and Desktop Nav */}
-        <div className="flex flex-col items-center justify-center w-full md:absolute md:left-1/2 md:-translate-x-1/2 md:top-4">
-          <Link to="/" className="flex flex-col items-center group mb-4">
+        {/* Left: Desktop Logo (Top-Left Corner) */}
+        <div className="hidden md:flex items-center shrink-0">
+          <Link to="/" className="flex flex-col items-center group select-none">
             <div className="flex flex-col items-center select-none relative">
               <div className="text-[#C1A98F] -mb-1 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-12">
-                <svg className="w-4 h-4 md:w-5 md:h-5 fill-none stroke-current stroke-[1.75]" viewBox="0 0 24 24">
+                <svg className="w-3.5 h-3.5 md:w-4 md:h-4 fill-none stroke-current stroke-[1.75]" viewBox="0 0 24 24">
                   <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
               <span 
-                className="text-4xl md:text-[56px] text-[#1a1a1a] dark:text-[#F5F5F5] transition-transform duration-500 group-hover:scale-105"
+                className="text-3xl md:text-4xl lg:text-[44px] text-[#1a1a1a] dark:text-[#F5F5F5] transition-transform duration-500 group-hover:scale-105 leading-none"
                 style={{ fontFamily: "'Alex Brush', cursive" }}
               >
                 My
               </span>
               <span 
-                className="font-serif text-xl md:text-[28px] tracking-[0.4em] text-[#1a1a1a] dark:text-[#F5F5F5] uppercase -mt-4 md:-mt-6 transition-transform duration-500 group-hover:scale-105 pl-[0.4em]"
+                className="font-serif text-base md:text-lg lg:text-[20px] tracking-[0.4em] text-[#1a1a1a] dark:text-[#F5F5F5] uppercase -mt-2.5 md:-mt-3.5 transition-transform duration-500 group-hover:scale-105 pl-[0.4em]"
               >
                 Lunar
               </span>
             </div>
           </Link>
-          
-          {/* Desktop Main Navigation */}
-          <nav className="hidden md:flex items-center gap-10 lg:gap-12">
-            
-            {/* 1. Home */}
-            <Link
-              to="/"
-              className="text-[14px] lg:text-[15px] tracking-widest text-[#1a1a1a] dark:text-[#F5F5F5] font-medium uppercase hover:text-gray-500 dark:hover:text-[#C1A98F] transition-colors flex flex-col items-center group"
-            >
-              <span>Home</span>
-              <div className={`h-[1px] bg-black dark:bg-[#C1A98F] mt-1 transition-all duration-300 ${location.pathname === '/' ? 'w-full' : 'w-0 group-hover:w-full'}`} />
-            </Link>
-
-            {/* 2. Shop with Dropdown Hover Menu (MyLunar luxury styling) */}
-            <div
-              className="relative"
-              onMouseEnter={handleMouseEnterShop}
-              onMouseLeave={handleMouseLeaveShop}
-            >
-              <Link
-                to="/shop"
-                className="text-[14px] lg:text-[15px] tracking-widest text-[#1a1a1a] dark:text-[#F5F5F5] font-medium uppercase hover:text-gray-500 dark:hover:text-[#C1A98F] transition-colors flex flex-col items-center group"
-              >
-                <div className="flex items-center gap-1.5 cursor-pointer">
-                  <span>Shop</span>
-                  <ChevronDown
-                    className={`w-3.5 h-3.5 transition-transform duration-300 ${
-                      isShopHovered ? 'rotate-180 text-black dark:text-[#C1A98F]' : 'text-gray-500 dark:text-[#AAAAAA]'
-                    }`}
-                  />
-                </div>
-                <div
-                  className={`h-[1px] bg-black dark:bg-[#C1A98F] mt-1 transition-all duration-300 ${
-                    isShopActive || isShopHovered ? 'w-full' : 'w-0 group-hover:w-full'
-                  }`}
-                />
-              </Link>
-
-              {/* Dropdown Container */}
-              {isShopHovered && (
-                <div 
-                  className="absolute top-full left-1/2 -translate-x-1/2 pt-3 z-50"
-                  onMouseEnter={handleMouseEnterShop}
-                  onMouseLeave={handleMouseLeaveDropdown}
-                >
-                  {/* Invisible Hover Bridge */}
-                  <div className="absolute -top-3 left-0 right-0 h-4 bg-transparent" />
-
-                  {/* Main Dropdown Panel */}
-                  <div className="bg-white dark:bg-[#1E1E1E] border border-gray-200 dark:border-[#2E2E2E] shadow-2xl shadow-black/10 dark:shadow-black/70 min-w-[260px] py-3 animate-fade-in relative">
-                    <div className="flex flex-col">
-                      {shopCategories.map((item) => {
-                        const hasSub = !!item.subitems;
-                        const isFlyoutOpen = activeFlyout === item.label;
-
-                        return (
-                          <div
-                            key={item.label}
-                            className="relative group/item"
-                            onMouseEnter={() => handleMouseEnterItem(item.label, hasSub)}
-                          >
-                            <Link
-                              to={item.to}
-                              onClick={() => setIsShopHovered(false)}
-                              className={`px-6 py-2.5 flex items-center justify-between transition-all duration-200 hover:bg-gray-50 dark:hover:bg-[#282828] hover:translate-x-1 ${
-                                item.label === 'Shop All'
-                                  ? 'font-serif text-[15px] border-b border-gray-100 dark:border-[#2E2E2E] mb-1 pb-3 pt-1 text-black dark:text-white font-semibold'
-                                  : 'font-serif text-[14px] tracking-[0.18em] uppercase text-[#2b2b2b] dark:text-[#E0E0E0] hover:text-black dark:hover:text-white'
-                              }`}
-                            >
-                              <div className="flex items-center gap-2">
-                                <span>{item.label}</span>
-                                {item.badge && (
-                                  <span className="text-[9px] font-sans font-bold px-1.5 py-0.5 bg-[#1a1a1a] dark:bg-[#C1A98F] text-white dark:text-black tracking-widest uppercase rounded-none">
-                                    {item.badge}
-                                  </span>
-                                )}
-                              </div>
-
-                              {hasSub && (
-                                <ChevronRight
-                                  className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                                    isFlyoutOpen ? 'rotate-90 text-black dark:text-[#C1A98F]' : 'text-gray-400 dark:text-gray-500 group-hover/item:text-black dark:group-hover/item:text-white'
-                                  }`}
-                                />
-                              )}
-                            </Link>
-
-                            {/* Nested Submenu Flyout (e.g. for RINGS / PERFUMES) */}
-                            {hasSub && isFlyoutOpen && (
-                              <div 
-                                className="absolute left-full top-0 pl-1 z-50"
-                                onMouseEnter={() => {
-                                  if (flyoutCloseTimeoutRef.current) {
-                                    clearTimeout(flyoutCloseTimeoutRef.current);
-                                  }
-                                  setActiveFlyout(item.label);
-                                }}
-                              >
-                                <div className="bg-white dark:bg-[#1E1E1E] border border-gray-200 dark:border-[#2E2E2E] shadow-2xl shadow-black/10 dark:shadow-black/70 min-w-[240px] py-3 animate-fade-in">
-                                  <div className="px-5 pb-2 mb-2 border-b border-gray-100 dark:border-[#2E2E2E] flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-gray-500 dark:text-[#AAAAAA] font-sans font-semibold">
-                                    <Sparkles className="w-3 h-3 text-[#C1A98F]" />
-                                    <span>{item.label} Collection</span>
-                                  </div>
-                                  {item.subitems?.map((sub) => (
-                                    <Link
-                                      key={sub.label}
-                                      to={sub.to}
-                                      onClick={() => {
-                                        setIsShopHovered(false);
-                                        setActiveFlyout(null);
-                                      }}
-                                      className="px-5 py-2 block font-serif text-[13px] tracking-[0.16em] uppercase text-[#333] dark:text-[#E0E0E0] hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-[#282828] hover:translate-x-1 transition-all duration-200"
-                                    >
-                                      {sub.label}
-                                    </Link>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* 3. Mobile App */}
-            <Link
-              to="/app"
-              className="text-[14px] lg:text-[15px] tracking-widest text-[#1a1a1a] dark:text-[#F5F5F5] font-medium uppercase hover:text-gray-500 dark:hover:text-[#C1A98F] transition-colors flex flex-col items-center group"
-            >
-              <div className="flex items-center gap-1.5">
-                <span>App</span>
-                <span className="text-[9px] font-sans font-bold px-1.5 py-0.2 bg-[#C1A98F] text-black tracking-widest uppercase rounded">
-                  NEW
-                </span>
-              </div>
-              <div className={`h-[1px] bg-black dark:bg-[#C1A98F] mt-1 transition-all duration-300 ${location.pathname === '/app' ? 'w-full' : 'w-0 group-hover:w-full'}`} />
-            </Link>
-
-            {/* 5. Contact */}
-            <Link
-              to="/contact"
-              className="text-[14px] lg:text-[15px] tracking-widest text-[#1a1a1a] dark:text-[#F5F5F5] font-medium uppercase hover:text-gray-500 dark:hover:text-[#C1A98F] transition-colors flex flex-col items-center group"
-            >
-              <span>Contact</span>
-              <div className={`h-[1px] bg-black dark:bg-[#C1A98F] mt-1 transition-all duration-300 ${location.pathname === '/contact' ? 'w-full' : 'w-0 group-hover:w-full'}`} />
-            </Link>
-
-            {/* 6. Track Order */}
-            <Link
-              to="/track-order"
-              className="text-[14px] lg:text-[15px] tracking-widest text-[#8C6D4F] dark:text-[#C1A98F] font-medium uppercase hover:text-[#1a1a1a] dark:hover:text-white transition-colors flex flex-col items-center group"
-            >
-              <span>Track Order</span>
-              <div className={`h-[1px] bg-[#8C6D4F] dark:bg-[#C1A98F] mt-1 transition-all duration-300 ${location.pathname === '/track-order' ? 'w-full' : 'w-0 group-hover:w-full'}`} />
-            </Link>
-
-          </nav>
         </div>
 
-        {/* Right: Icons (Desktop) */}
-        <div className="hidden md:flex items-center justify-end gap-5 lg:gap-6 ml-auto w-full md:w-auto mt-4 md:mt-0 md:absolute md:right-12 md:top-12">
-          {/* Search Trigger */}
-          <button 
+        {/* Center: Desktop Main Navigation (with Search Bar in the same line) */}
+        <nav className="hidden md:flex items-center gap-5 lg:gap-8 xl:gap-10">
+          
+          {/* 1. Home */}
+          <Link
+            to="/"
+            className="text-[14px] lg:text-[15px] tracking-widest text-[#1a1a1a] dark:text-[#F5F5F5] font-medium uppercase hover:text-gray-500 dark:hover:text-[#C1A98F] transition-colors flex flex-col items-center group"
+          >
+            <span>Home</span>
+            <div className={`h-[1px] bg-black dark:bg-[#C1A98F] mt-1 transition-all duration-300 ${location.pathname === '/' ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+          </Link>
+
+          {/* 2. Shop with Dropdown Hover Menu */}
+          <div
+            className="relative"
+            onMouseEnter={handleMouseEnterShop}
+            onMouseLeave={handleMouseLeaveShop}
+          >
+            <Link
+              to="/shop"
+              className="text-[14px] lg:text-[15px] tracking-widest text-[#1a1a1a] dark:text-[#F5F5F5] font-medium uppercase hover:text-gray-500 dark:hover:text-[#C1A98F] transition-colors flex flex-col items-center group"
+            >
+              <div className="flex items-center gap-1.5 cursor-pointer">
+                <span>Shop</span>
+                <ChevronDown
+                  className={`w-3.5 h-3.5 transition-transform duration-300 ${
+                    isShopHovered ? 'rotate-180 text-black dark:text-[#C1A98F]' : 'text-gray-500 dark:text-[#AAAAAA]'
+                  }`}
+                />
+              </div>
+              <div
+                className={`h-[1px] bg-black dark:bg-[#C1A98F] mt-1 transition-all duration-300 ${
+                  isShopActive || isShopHovered ? 'w-full' : 'w-0 group-hover:w-full'
+                }`}
+              />
+            </Link>
+
+            {/* Dropdown Container */}
+            {isShopHovered && (
+              <div 
+                className="absolute top-full left-1/2 -translate-x-1/2 pt-3 z-50"
+                onMouseEnter={handleMouseEnterShop}
+                onMouseLeave={handleMouseLeaveDropdown}
+              >
+                {/* Invisible Hover Bridge */}
+                <div className="absolute -top-3 left-0 right-0 h-4 bg-transparent" />
+
+                {/* Main Dropdown Panel */}
+                <div className="bg-white dark:bg-[#1E1E1E] border border-gray-200 dark:border-[#2E2E2E] shadow-2xl shadow-black/10 dark:shadow-black/70 min-w-[260px] py-3 animate-fade-in relative">
+                  <div className="flex flex-col">
+                    {shopCategories.map((item) => {
+                      const hasSub = !!item.subitems;
+                      const isFlyoutOpen = activeFlyout === item.label;
+
+                      return (
+                        <div
+                          key={item.label}
+                          className="relative group/item"
+                          onMouseEnter={() => handleMouseEnterItem(item.label, hasSub)}
+                        >
+                          <Link
+                            to={item.to}
+                            onClick={() => setIsShopHovered(false)}
+                            className={`px-6 py-2.5 flex items-center justify-between transition-all duration-200 hover:bg-gray-50 dark:hover:bg-[#282828] hover:translate-x-1 ${
+                              item.label === 'Shop All'
+                                ? 'font-serif text-[15px] border-b border-gray-100 dark:border-[#2E2E2E] mb-1 pb-3 pt-1 text-black dark:text-white font-semibold'
+                                : 'font-serif text-[14px] tracking-[0.18em] uppercase text-[#2b2b2b] dark:text-[#E0E0E0] hover:text-black dark:hover:text-white'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <span>{item.label}</span>
+                              {item.badge && (
+                                <span className="text-[9px] font-sans font-bold px-1.5 py-0.5 bg-[#1a1a1a] dark:bg-[#C1A98F] text-white dark:text-black tracking-widest uppercase rounded-none">
+                                  {item.badge}
+                                </span>
+                              )}
+                            </div>
+
+                            {hasSub && (
+                              <ChevronRight
+                                className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                                  isFlyoutOpen ? 'rotate-90 text-black dark:text-[#C1A98F]' : 'text-gray-400 dark:text-gray-500 group-hover/item:text-black dark:group-hover/item:text-white'
+                                }`}
+                              />
+                            )}
+                          </Link>
+
+                          {/* Nested Submenu Flyout */}
+                          {hasSub && isFlyoutOpen && (
+                            <div 
+                              className="absolute left-full top-0 pl-1 z-50"
+                              onMouseEnter={() => {
+                                if (flyoutCloseTimeoutRef.current) {
+                                  clearTimeout(flyoutCloseTimeoutRef.current);
+                                }
+                                setActiveFlyout(item.label);
+                              }}
+                            >
+                              <div className="bg-white dark:bg-[#1E1E1E] border border-gray-200 dark:border-[#2E2E2E] shadow-2xl shadow-black/10 dark:shadow-black/70 min-w-[240px] py-3 animate-fade-in">
+                                <div className="px-5 pb-2 mb-2 border-b border-gray-100 dark:border-[#2E2E2E] flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-gray-500 dark:text-[#AAAAAA] font-sans font-semibold">
+                                  <Sparkles className="w-3 h-3 text-[#C1A98F]" />
+                                  <span>{item.label} Collection</span>
+                                </div>
+                                {item.subitems?.map((sub) => (
+                                  <Link
+                                    key={sub.label}
+                                    to={sub.to}
+                                    onClick={() => {
+                                      setIsShopHovered(false);
+                                      setActiveFlyout(null);
+                                    }}
+                                    className="px-5 py-2 block font-serif text-[13px] tracking-[0.16em] uppercase text-[#333] dark:text-[#E0E0E0] hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-[#282828] hover:translate-x-1 transition-all duration-200"
+                                  >
+                                    {sub.label}
+                                  </Link>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* 3. Mobile App */}
+          <Link
+            to="/app"
+            className="text-[14px] lg:text-[15px] tracking-widest text-[#1a1a1a] dark:text-[#F5F5F5] font-medium uppercase hover:text-gray-500 dark:hover:text-[#C1A98F] transition-colors flex flex-col items-center group"
+          >
+            <div className="flex items-center gap-1.5">
+              <span>App</span>
+              <span className="text-[9px] font-sans font-bold px-1.5 py-0.2 bg-[#C1A98F] text-black tracking-widest uppercase rounded">
+                NEW
+              </span>
+            </div>
+            <div className={`h-[1px] bg-black dark:bg-[#C1A98F] mt-1 transition-all duration-300 ${location.pathname === '/app' ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+          </Link>
+
+          {/* 4. Contact */}
+          <Link
+            to="/contact"
+            className="text-[14px] lg:text-[15px] tracking-widest text-[#1a1a1a] dark:text-[#F5F5F5] font-medium uppercase hover:text-gray-500 dark:hover:text-[#C1A98F] transition-colors flex flex-col items-center group"
+          >
+            <span>Contact</span>
+            <div className={`h-[1px] bg-black dark:bg-[#C1A98F] mt-1 transition-all duration-300 ${location.pathname === '/contact' ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+          </Link>
+
+          {/* 5. Track Order */}
+          <Link
+            to="/track-order"
+            className="text-[14px] lg:text-[15px] tracking-widest text-[#8C6D4F] dark:text-[#C1A98F] font-medium uppercase hover:text-[#1a1a1a] dark:hover:text-white transition-colors flex flex-col items-center group"
+          >
+            <span>Track Order</span>
+            <div className={`h-[1px] bg-[#8C6D4F] dark:bg-[#C1A98F] mt-1 transition-all duration-300 ${location.pathname === '/track-order' ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+          </Link>
+
+          {/* 6. Search Bar Trigger (in the same line as HOME etc.) */}
+          <button
             onClick={() => setSearchOpen(!searchOpen)}
-            className={`flex items-center gap-2 mr-1 cursor-pointer transition-colors ${
-              searchOpen ? 'text-[#8C6D4F] dark:text-[#C1A98F]' : 'hover:text-gray-600 dark:hover:text-[#C1A98F] text-[#1a1a1a] dark:text-[#F5F5F5]'
+            className={`text-[14px] lg:text-[15px] tracking-widest font-medium uppercase transition-colors flex flex-col items-center group cursor-pointer ${
+              searchOpen ? 'text-[#8C6D4F] dark:text-[#C1A98F]' : 'text-[#1a1a1a] dark:text-[#F5F5F5] hover:text-gray-500 dark:hover:text-[#C1A98F]'
             }`}
             aria-label="Search and Categories Menu"
             aria-expanded={searchOpen}
           >
-            <span className="text-base font-medium font-serif uppercase tracking-widest mr-1">Search</span>
-            <Search className="w-[22px] h-[22px] stroke-[1.2]" />
+            <div className="flex items-center gap-1.5 cursor-pointer">
+              <span className="font-serif">Search</span>
+              <Search className="w-4 h-4 stroke-[1.5]" />
+            </div>
+            <div className={`h-[1px] bg-black dark:bg-[#C1A98F] mt-1 transition-all duration-300 ${searchOpen ? 'w-full' : 'w-0 group-hover:w-full'}`} />
           </button>
 
+        </nav>
+
+        {/* Right: Icons (Desktop) */}
+        <div className="hidden md:flex items-center justify-end gap-3.5 lg:gap-5 shrink-0">
+          
           {/* Theme Toggle Button (Desktop) */}
           <button
             onClick={toggleTheme}
@@ -406,15 +433,15 @@ const Navbar: React.FC = () => {
             title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
           >
             {isDark ? (
-              <Sun className="w-[22px] h-[22px] stroke-[1.5] text-[#C1A98F] transition-transform duration-300 hover:rotate-45" />
+              <Sun className="w-5 h-5 stroke-[1.5] text-[#C1A98F] transition-transform duration-300 hover:rotate-45" />
             ) : (
-              <Moon className="w-[22px] h-[22px] stroke-[1.5] text-[#1a1a1a] transition-transform duration-300 hover:-rotate-12" />
+              <Moon className="w-5 h-5 stroke-[1.5] text-[#1a1a1a] transition-transform duration-300 hover:-rotate-12" />
             )}
           </button>
 
           <Link
             to="/admin"
-            className="hidden lg:flex items-center gap-1.5 px-3 py-1 bg-black dark:bg-[#1E1E1E] text-white dark:text-[#C1A98F] border border-transparent dark:border-[#2E2E2E] hover:bg-[#d4af37] dark:hover:bg-[#C1A98F] dark:hover:text-black transition-all rounded text-[11px] font-bold uppercase tracking-wider shadow-sm"
+            className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 bg-black dark:bg-[#1E1E1E] text-white dark:text-[#C1A98F] border border-transparent dark:border-[#2E2E2E] hover:bg-[#d4af37] dark:hover:bg-[#C1A98F] dark:hover:text-black transition-all rounded text-[11px] font-bold uppercase tracking-wider shadow-sm"
             title="Owner Admin Portal (Product moderation, pricing, promo codes, loyalty program)"
           >
             <Sparkles className="w-3.5 h-3.5" />
@@ -423,7 +450,7 @@ const Navbar: React.FC = () => {
 
           <Link
             to="/track-order"
-            className="text-[#1a1a1a] dark:text-[#F5F5F5] hover:text-[#8C6D4F] dark:hover:text-[#C1A98F] transition-colors"
+            className="text-[#1a1a1a] dark:text-[#F5F5F5] hover:text-[#8C6D4F] dark:hover:text-[#C1A98F] transition-colors p-1"
             aria-label="Track Package"
             title="Track Package"
           >
@@ -435,12 +462,12 @@ const Navbar: React.FC = () => {
           {user ? (
             <Link
               to="/account"
-              className="text-[#1a1a1a] dark:text-[#F5F5F5] hover:text-gray-600 dark:hover:text-[#C1A98F] transition-colors relative group"
+              className="text-[#1a1a1a] dark:text-[#F5F5F5] hover:text-gray-600 dark:hover:text-[#C1A98F] transition-colors relative group p-1"
               aria-label="My Account"
             >
-              <User className="w-[24px] h-[24px] stroke-[1.2]" />
+              <User className="w-[22px] h-[22px] stroke-[1.2]" />
               {user.loyaltyPoints !== undefined && user.loyaltyPoints > 0 && (
-                <span className="absolute -top-1.5 -right-2 bg-[#d4af37] text-black text-[9px] font-bold px-1 rounded-full border border-white dark:border-black">
+                <span className="absolute -top-1 -right-1 bg-[#d4af37] text-black text-[9px] font-bold px-1 rounded-full border border-white dark:border-black">
                   {user.loyaltyPoints > 999 ? '999+' : user.loyaltyPoints}
                 </span>
               )}
@@ -448,28 +475,30 @@ const Navbar: React.FC = () => {
           ) : (
             <Link
               to="/login"
-              className="text-[#1a1a1a] dark:text-[#F5F5F5] hover:text-gray-600 dark:hover:text-[#C1A98F] transition-colors"
+              className="text-[#1a1a1a] dark:text-[#F5F5F5] hover:text-gray-600 dark:hover:text-[#C1A98F] transition-colors p-1"
               aria-label="Account"
             >
-              <User className="w-[24px] h-[24px] stroke-[1.2]" />
+              <User className="w-[22px] h-[22px] stroke-[1.2]" />
             </Link>
           )}
+
           <button
             onClick={() => setFavOpen(true)}
-            className="relative text-[#1a1a1a] dark:text-[#F5F5F5] hover:text-gray-600 dark:hover:text-[#C1A98F] transition-colors"
+            className="relative text-[#1a1a1a] dark:text-[#F5F5F5] hover:text-gray-600 dark:hover:text-[#C1A98F] transition-colors p-1 cursor-pointer"
             aria-label="Wishlist"
           >
-            <Heart className="w-[24px] h-[24px] stroke-[1.2]" />
+            <Heart className="w-[22px] h-[22px] stroke-[1.2]" />
             {favCount > 0 && (
-              <span className="absolute -top-1.5 -right-2 w-5 h-5 bg-black dark:bg-[#C1A98F] rounded-full text-[11px] flex items-center justify-center text-white dark:text-black font-bold">
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-black dark:bg-[#C1A98F] rounded-full text-[10px] flex items-center justify-center text-white dark:text-black font-bold">
                 {favCount}
               </span>
             )}
           </button>
-          <Link to="/cart" className="flex items-center gap-2 group relative text-[#1a1a1a] dark:text-[#F5F5F5] hover:text-gray-600 dark:hover:text-[#C1A98F] transition-colors">
-            <ShoppingBag className="w-[24px] h-[24px] stroke-[1.2]" />
+
+          <Link to="/cart" className="flex items-center gap-2 group relative text-[#1a1a1a] dark:text-[#F5F5F5] hover:text-gray-600 dark:hover:text-[#C1A98F] transition-colors p-1" aria-label="Shopping Cart">
+            <ShoppingBag className="w-[22px] h-[22px] stroke-[1.2]" />
             {totalItems > 0 && (
-              <span className="absolute -top-1.5 -right-2 w-5 h-5 bg-black dark:bg-[#C1A98F] rounded-full text-[11px] flex items-center justify-center text-white dark:text-black font-bold">
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-black dark:bg-[#C1A98F] rounded-full text-[10px] flex items-center justify-center text-white dark:text-black font-bold">
                 {totalItems}
               </span>
             )}

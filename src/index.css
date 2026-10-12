@@ -13,14 +13,14 @@
   --gold-dark: #A38363;
   --gold-light: #E8DCCF;
   --border: #EDE6DF;
-  --navbar-height: 155px;
+  --navbar-height: 85px;
   --safe-area-top: env(safe-area-inset-top, 0px);
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 @media (min-width: 768px) {
   :root {
-    --navbar-height: 220px;
+    --navbar-height: 95px;
   }
 }
 

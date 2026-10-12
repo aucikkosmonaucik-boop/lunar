@@ -146,7 +146,7 @@ export const SearchMenuBox: React.FC<SearchMenuBoxProps> = ({
       {/* Larger Lunar Style Rectangle Popover Box */}
       <div
         ref={containerRef}
-        className="z-50 bg-white dark:bg-[#1E1E1E] border border-gray-300 dark:border-[#2E2E2E] shadow-2xl shadow-black/25 dark:shadow-black/70 animate-fade-in text-[#111111] dark:text-[#F5F5F5] fixed top-[90px] md:top-[125px] left-3 right-3 md:left-auto md:right-8 lg:right-14 w-auto md:w-[660px] lg:w-[720px] max-w-[95vw] rounded-none"
+        className="z-50 bg-white dark:bg-[#1E1E1E] border border-gray-300 dark:border-[#2E2E2E] shadow-2xl shadow-black/25 dark:shadow-black/70 animate-fade-in text-[#111111] dark:text-[#F5F5F5] fixed top-[85px] md:top-[95px] left-3 right-3 md:left-1/2 md:-translate-x-1/2 md:right-auto w-auto md:w-[680px] lg:w-[740px] max-w-[95vw] rounded-none"
         style={{
           maxHeight: 'calc(88vh - 40px)',
           display: 'flex',
@@ -157,8 +157,8 @@ export const SearchMenuBox: React.FC<SearchMenuBoxProps> = ({
         {/* Top Gold Accent Hairline */}
         <div className="h-[3px] bg-gradient-to-r from-[#C1A98F]/40 via-[#C1A98F] to-[#C1A98F]/40 w-full shrink-0" />
 
-        {/* Upward Pointer Arrow (Desktop only, pointing towards the SEARCH button) */}
-        <div className="hidden md:block absolute -top-[7px] right-[270px] lg:right-[290px] w-3.5 h-3.5 bg-white dark:bg-[#1E1E1E] border-t border-l border-gray-300 dark:border-[#2E2E2E] rotate-45 z-10" />
+        {/* Upward Pointer Arrow (Desktop only) */}
+        <div className="hidden md:block absolute -top-[7px] left-1/2 -translate-x-1/2 w-3.5 h-3.5 bg-white dark:bg-[#1E1E1E] border-t border-l border-gray-300 dark:border-[#2E2E2E] rotate-45 z-10" />
 
         {/* 1. Header & Search Input Bar */}
         <div className="p-5 sm:p-6 border-b border-gray-200 dark:border-[#2E2E2E] bg-[#FAF9F6] dark:bg-[#181818]">
