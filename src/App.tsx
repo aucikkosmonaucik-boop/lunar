@@ -26,6 +26,16 @@ import MobileAppPage from './pages/MobileAppPage';
 import TrackOrderPage from './pages/TrackOrderPage';
 import CookieConsentBanner from './components/ui/CookieConsentBanner';
 
+const ScrollToTop: React.FC = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+};
+
 const PageViewTracker: React.FC = () => {
   const location = useLocation();
 
@@ -51,6 +61,7 @@ const App: React.FC = () => {
             <CartProvider>
               <FavoritesProvider>
                 <Router>
+                  <ScrollToTop />
                   <PageViewTracker />
                   <div className="flex flex-col min-h-screen bg-[#FAF9F6] dark:bg-[#121212] text-[#1A1A1A] dark:text-[#F5F5F5] transition-colors duration-200">
                     <Navbar />

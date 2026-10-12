@@ -3,14 +3,18 @@ import { Link } from 'react-router-dom';
 import { Instagram, Facebook } from 'lucide-react';
 
 const Footer: React.FC = () => {
+  const handleScrollTop = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  };
+
   return (
     <footer className="bg-[#f5eeeb] dark:bg-[#161616] border-t border-transparent dark:border-[#2E2E2E] pt-24 pb-12 transition-colors duration-200">
       {/* Centered Content: Logo, Socials, and Links — full viewport width */}
       <div className="w-full flex flex-col items-center justify-center text-center mb-24 px-4">
-        <Link to="/" className="flex flex-col items-center group mb-10 select-none">
+        <Link to="/" onClick={handleScrollTop} className="flex flex-col items-center group mb-10 select-none">
           <div className="mb-2 text-[#C1A98F] transition-transform duration-500 group-hover:scale-110 group-hover:rotate-12">
             <svg className="w-5 h-5 fill-none stroke-current stroke-[1.75]" viewBox="0 0 24 24">
-              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M12 3a6 6 0 0 0 9 9 9 0 1 1-9-9Z" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
           <span className="font-serif font-medium text-2xl md:text-3xl tracking-[0.35em] text-[#1a1a1a] dark:text-[#F5F5F5] uppercase leading-none pl-[0.35em] transition-opacity duration-300 group-hover:opacity-75">
@@ -44,19 +48,19 @@ const Footer: React.FC = () => {
         </div>
 
         <div className="flex flex-wrap justify-center items-center gap-8 md:gap-14">
-          <Link to="/track-order" className="text-[14px] uppercase tracking-widest text-[#8C6D4F] dark:text-[#C1A98F] hover:text-black dark:hover:text-white transition-colors font-medium">
+          <Link to="/track-order" onClick={handleScrollTop} className="text-[14px] uppercase tracking-widest text-[#8C6D4F] dark:text-[#C1A98F] hover:text-black dark:hover:text-white transition-colors font-medium">
             Track Order
           </Link>
-          <Link to="/app" className="text-[14px] uppercase tracking-widest text-[#5e5e5e] dark:text-[#AAAAAA] hover:text-black dark:hover:text-white transition-colors font-medium">
+          <Link to="/app" onClick={handleScrollTop} className="text-[14px] uppercase tracking-widest text-[#5e5e5e] dark:text-[#AAAAAA] hover:text-black dark:hover:text-white transition-colors font-medium">
             Mobile App
           </Link>
-          <Link to="/contact" className="text-[14px] uppercase tracking-widest text-[#5e5e5e] dark:text-[#AAAAAA] hover:text-black dark:hover:text-white transition-colors font-medium">
+          <Link to="/contact" onClick={handleScrollTop} className="text-[14px] uppercase tracking-widest text-[#5e5e5e] dark:text-[#AAAAAA] hover:text-black dark:hover:text-white transition-colors font-medium">
             Contact
           </Link>
-          <Link to="/terms" className="text-[14px] uppercase tracking-widest text-[#5e5e5e] dark:text-[#AAAAAA] hover:text-black dark:hover:text-white transition-colors font-medium">
+          <Link to="/terms" onClick={handleScrollTop} className="text-[14px] uppercase tracking-widest text-[#5e5e5e] dark:text-[#AAAAAA] hover:text-black dark:hover:text-white transition-colors font-medium">
             Terms of Service
           </Link>
-          <Link to="/cookies" className="text-[14px] uppercase tracking-widest text-[#5e5e5e] dark:text-[#AAAAAA] hover:text-black dark:hover:text-white transition-colors font-medium">
+          <Link to="/cookies" onClick={handleScrollTop} className="text-[14px] uppercase tracking-widest text-[#5e5e5e] dark:text-[#AAAAAA] hover:text-black dark:hover:text-white transition-colors font-medium">
             Cookies
           </Link>
           <button 
