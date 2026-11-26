@@ -58,6 +58,17 @@ jobs:
           path: build_out.txt
           if-no-files-found: ignore
 
+      - name: Push Log Branch If Build Failed
+        if: failure()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -B ci-log
+          tail -n 300 build_out.txt > failure_log.txt
+          git add failure_log.txt
+          git commit -m "ci failure log [skip ci]" || true
+          git push -f origin ci-log || true
+
       - name: Prepare APK Asset
         run: |
           mkdir -p build-output
