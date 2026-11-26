@@ -59,6 +59,9 @@ const ShopPage: React.FC = () => {
     if (matched) return matched;
     if (catParam.toLowerCase() === 'perfumes') return 'Perfumes';
     if (catParam.toLowerCase() === 'jewelry') return 'Jewelry';
+    if (catParam.toLowerCase() === 'wallets' || catParam.toLowerCase() === 'mens-wallets' || catParam.toLowerCase() === "men's-wallets") return "Men's Wallets";
+    if (catParam.toLowerCase() === 'watches') return 'Watches';
+    if (catParam.toLowerCase() === 'watches-wallets') return "Watches & Men's Wallets";
     return 'All';
   }, [catParam]);
 
@@ -76,6 +79,8 @@ const ShopPage: React.FC = () => {
     const nextParams = new URLSearchParams(searchParams);
     if (cat === 'All') {
       nextParams.delete('category');
+    } else if (cat === "Men's Wallets") {
+      nextParams.set('category', 'mens-wallets');
     } else {
       nextParams.set('category', cat.toLowerCase().replace(/\s+/g, '-'));
     }
@@ -116,6 +121,10 @@ const ShopPage: React.FC = () => {
       const normalized = cat.toLowerCase().replace(/\s+/g, '-');
       if (cat === 'Jewelry') {
         counts[cat] = products.filter(p => p.category === 'jewelry' || p.category === 'earrings' || p.category === 'rings' || p.category === 'necklaces' || p.category === 'bracelets' || p.category === 'bridal' || p.tags.includes('jewelry')).length;
+      } else if (cat === "Men's Wallets") {
+        counts[cat] = products.filter(p => p.category.includes('wallet') || p.tags.some(t => t.toLowerCase().includes('wallet'))).length;
+      } else if (cat === 'Watches') {
+        counts[cat] = products.filter(p => p.category.includes('watch') || p.tags.some(t => t.toLowerCase().includes('watch'))).length;
       } else {
         counts[cat] = products.filter(p => p.category.toLowerCase().includes(normalized) || p.tags.some(t => t === normalized)).length;
       }
@@ -143,6 +152,12 @@ const ShopPage: React.FC = () => {
         list = list.filter(p => p.category === 'jewelry' || p.category === 'earrings' || p.category === 'rings' || p.category === 'necklaces' || p.category === 'bracelets' || p.category === 'bridal' || p.tags.includes('jewelry'));
       } else if (category === 'Perfumes' || catParam?.toLowerCase() === 'perfumes') {
         list = list.filter(p => p.category.startsWith('perfumes') || p.tags.includes('perfumes'));
+      } else if (category === "Men's Wallets" || catParam?.toLowerCase() === 'wallets' || catParam?.toLowerCase() === 'mens-wallets') {
+        list = list.filter(p => p.category.includes('wallet') || p.tags.some(t => t.toLowerCase().includes('wallet')));
+      } else if (category === 'Watches' || catParam?.toLowerCase() === 'watches') {
+        list = list.filter(p => p.category.includes('watch') || p.tags.some(t => t.toLowerCase().includes('watch')));
+      } else if (category === "Watches & Men's Wallets" || catParam?.toLowerCase() === 'watches-wallets') {
+        list = list.filter(p => p.category.includes('watch') || p.category.includes('wallet') || p.tags.some(t => t.toLowerCase().includes('watch') || t.toLowerCase().includes('wallet')));
       } else {
         list = list.filter(p => p.category.toLowerCase().includes(normalizedCat) || p.tags.some(t => t === normalizedCat));
       }

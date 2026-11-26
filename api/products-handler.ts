@@ -213,6 +213,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         where.categorySlug = {
           in: ['perfumes', 'perfumes-women', 'perfumes-men'],
         };
+      } else if (normalizedCat === 'wallets' || normalizedCat === 'mens-wallets') {
+        where.OR = [
+          { categorySlug: { in: ['wallets', 'mens-wallets'] } },
+          { tags: { hasSome: ['wallets', 'mens-wallets', 'wallet'] } },
+        ];
+      } else if (normalizedCat === 'watches') {
+        where.OR = [
+          { categorySlug: { in: ['watches', 'watch'] } },
+          { tags: { hasSome: ['watches', 'watch'] } },
+        ];
+      } else if (normalizedCat === 'watches-wallets') {
+        where.OR = [
+          { categorySlug: { in: ['watches', 'watch', 'wallets', 'mens-wallets'] } },
+          { tags: { hasSome: ['watches', 'watch', 'wallets', 'mens-wallets', 'wallet'] } },
+        ];
       } else {
         where.OR = [
           { categorySlug: { equals: normalizedCat, mode: 'insensitive' } },

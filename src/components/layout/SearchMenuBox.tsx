@@ -44,6 +44,18 @@ const siteCategories: CategoryItem[] = [
     image: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&q=80&w=300',
   },
   {
+    label: 'Watches',
+    to: '/shop?category=watches',
+    subtext: 'Luxury timepieces & chronographs',
+    image: 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&q=80&w=300',
+  },
+  {
+    label: "Men's Wallets",
+    to: '/shop?category=mens-wallets',
+    subtext: 'Fine leather wallets & accessories',
+    image: 'https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&q=80&w=300',
+  },
+  {
     label: 'Perfumes',
     to: '/shop?category=perfumes',
     subtext: 'Haute parfumerie (Women & Men)',

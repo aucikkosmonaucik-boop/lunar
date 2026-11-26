@@ -40,6 +40,7 @@ export const ProductEditorModal: React.FC<ProductEditorModalProps> = ({
   onClose,
   onSave,
   onDelete,
+  categories,
 }) => {
   const [activeTab, setActiveTab] = useState<'basic' | 'gallery' | 'pricing' | 'features'>('basic');
   const [saving, setSaving] = useState(false);
@@ -347,11 +348,17 @@ export const ProductEditorModal: React.FC<ProductEditorModalProps> = ({
                     <option value="rings">Rings</option>
                     <option value="necklaces">Necklaces</option>
                     <option value="bracelets">Bracelets</option>
+                    <option value="watches">Watches</option>
+                    <option value="mens-wallets">Men's Wallets</option>
+                    <option value="watches-wallets">Watches & Men's Wallets</option>
                     <option value="perfumes">Perfumes (All)</option>
                     <option value="perfumes-women">Women's Perfumes</option>
                     <option value="perfumes-men">Men's Perfumes</option>
                     <option value="bridal">Bridal Collection</option>
                     <option value="sets">Luxury Gift Sets</option>
+                    {categories?.filter((c: string) => !['jewelry', 'earrings', 'rings', 'necklaces', 'bracelets', 'watches', 'mens-wallets', 'wallets', 'watches-wallets', 'perfumes', 'perfumes-women', 'perfumes-men', 'bridal', 'sets'].includes(c)).map((c: string) => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
                   </select>
                 </div>
               </div>

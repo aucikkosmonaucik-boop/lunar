@@ -34,6 +34,8 @@ const shopCategories: DropdownItem[] = [
   },
   { label: 'NECKLACES', to: '/shop?category=necklaces' },
   { label: 'BRACELETS', to: '/shop?category=bracelets' },
+  { label: 'WATCHES', to: '/shop?category=watches' },
+  { label: 'MEN\'S WALLETS', to: '/shop?category=mens-wallets' },
   {
     label: 'PERFUMES',
     to: '/shop?category=perfumes',
