@@ -20,33 +20,8 @@ interface DropdownItem {
 const shopCategories: DropdownItem[] = [
   { label: 'Shop All', to: '/shop' },
   { label: 'LATEST ARRIVALS', to: '/shop?tag=new-arrivals', badge: 'NEW' },
-  { label: 'EARRINGS', to: '/shop?category=earrings' },
-  {
-    label: 'RINGS',
-    to: '/shop?category=rings',
-    subitems: [
-      { label: 'All Rings', to: '/shop?category=rings' },
-      { label: 'Statement Rings', to: '/shop?category=rings' },
-      { label: 'Stacking & Minimalist', to: '/shop?category=rings' },
-      { label: '18K Gold Plated', to: '/shop?category=rings' },
-      { label: '925 Sterling Silver', to: '/shop?category=rings' },
-    ],
-  },
   { label: 'NECKLACES', to: '/shop?category=necklaces' },
   { label: 'BRACELETS', to: '/shop?category=bracelets' },
-  { label: 'WATCHES', to: '/shop?category=watches' },
-  { label: 'MEN\'S WALLETS', to: '/shop?category=mens-wallets' },
-  {
-    label: 'PERFUMES',
-    to: '/shop?category=perfumes',
-    subitems: [
-      { label: 'All Fragrances', to: '/shop?category=perfumes' },
-      { label: 'Women\'s Perfumes', to: '/shop?category=perfumes-women' },
-      { label: 'Men\'s Perfumes', to: '/shop?category=perfumes-men' },
-    ],
-  },
-  { label: 'GIFT SETS', to: '/shop?category=sets' },
-  { label: 'BRIDAL', to: '/shop?category=bridal' },
 ];
 
 const Navbar: React.FC = () => {

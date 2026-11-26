@@ -20,7 +20,7 @@ export const CARRIERS: Carrier[] = [
     name: 'An Post (Standard Letter / Envelope)',
     shortName: 'An Post Letter',
     tagline: 'Economy Padded Mailer',
-    description: 'Economical standard post in a secure bubble-padded envelope. Ideal for rings, earrings, and lighter pieces.',
+    description: 'Economical standard post in a secure bubble-padded envelope. Ideal for necklaces, bracelets, and lighter pieces.',
     estimatedDelivery: '2 – 3 Business Days',
     basePrice: 2.90,
     freeShippingAvailable: true,

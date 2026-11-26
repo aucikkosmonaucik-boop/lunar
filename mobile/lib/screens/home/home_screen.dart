@@ -23,27 +23,27 @@ class HomeScreen extends StatelessWidget {
 
     final sampleBanners = [
       BannerItem(
-        title: 'Spring / Summer Collection',
-        subtitle: 'Discover minimalist gold & silver jewelry',
-        imageUrl: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&q=80&w=1200',
+        title: 'Necklaces & Chains',
+        subtitle: 'Delicate pendants and radiant solid gold chains',
+        imageUrl: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&q=80&w=1200',
         badge: 'NEW',
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (_) => const ShopScreen(initialBadge: 'NEW'),
+              builder: (_) => const ShopScreen(initialCategory: 'necklaces'),
             ),
           );
         },
       ),
       BannerItem(
-        title: 'Bridal Collection',
-        subtitle: 'Distinctive accents for your memorable moments',
-        imageUrl: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&q=80&w=1200',
-        badge: 'BRIDAL',
+        title: 'Bracelets & Bangles',
+        subtitle: 'Artisan crafted bangles, tennis bracelets & pearl links',
+        imageUrl: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&q=80&w=1200',
+        badge: 'EXCLUSIVE',
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (_) => const ShopScreen(initialCategory: 'bridal'),
+              builder: (_) => const ShopScreen(initialCategory: 'bracelets'),
             ),
           );
         },
@@ -51,7 +51,7 @@ class HomeScreen extends StatelessWidget {
       BannerItem(
         title: 'Lunar Bestsellers',
         subtitle: 'Most cherished designs chosen by our patrons',
-        imageUrl: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&q=80&w=1200',
+        imageUrl: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&q=80&w=1200',
         badge: 'BESTSELLER',
         onTap: () {
           Navigator.of(context).push(

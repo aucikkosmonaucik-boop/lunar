@@ -50,7 +50,7 @@ export const ProductEditorModal: React.FC<ProductEditorModalProps> = ({
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
   const [description, setDescription] = useState('');
-  const [category, setCategory] = useState('jewelry');
+  const [category, setCategory] = useState('necklaces');
   const [subcategory, setSubcategory] = useState('');
   const [price, setPrice] = useState<number | ''>(29.90);
   const [originalPrice, setOriginalPrice] = useState<number | ''>('');
@@ -75,7 +75,7 @@ export const ProductEditorModal: React.FC<ProductEditorModalProps> = ({
       setName(product.name || '');
       setSlug(product.slug || '');
       setDescription(product.description || '');
-      setCategory(product.category || 'jewelry');
+      setCategory(product.category || 'necklaces');
       setSubcategory(product.subcategory || '');
       setPrice(product.price);
       setOriginalPrice(product.originalPrice !== undefined ? product.originalPrice : '');
@@ -343,20 +343,9 @@ export const ProductEditorModal: React.FC<ProductEditorModalProps> = ({
                     onChange={(e) => setCategory(e.target.value)}
                     className="w-full px-4 py-3 bg-white dark:bg-[#252525] text-gray-900 dark:text-white border border-gray-300 dark:border-[#3E3E3E] rounded focus:ring-1 focus:ring-black dark:focus:ring-[#D4AF37] focus:outline-none text-base"
                   >
-                    <option value="jewelry">Fine Jewelry (General)</option>
-                    <option value="earrings">Earrings</option>
-                    <option value="rings">Rings</option>
                     <option value="necklaces">Necklaces</option>
                     <option value="bracelets">Bracelets</option>
-                    <option value="watches">Watches</option>
-                    <option value="mens-wallets">Men's Wallets</option>
-                    <option value="watches-wallets">Watches & Men's Wallets</option>
-                    <option value="perfumes">Perfumes (All)</option>
-                    <option value="perfumes-women">Women's Perfumes</option>
-                    <option value="perfumes-men">Men's Perfumes</option>
-                    <option value="bridal">Bridal Collection</option>
-                    <option value="sets">Luxury Gift Sets</option>
-                    {categories?.filter((c: string) => !['jewelry', 'earrings', 'rings', 'necklaces', 'bracelets', 'watches', 'mens-wallets', 'wallets', 'watches-wallets', 'perfumes', 'perfumes-women', 'perfumes-men', 'bridal', 'sets'].includes(c)).map((c: string) => (
+                    {categories?.filter((c: string) => !['necklaces', 'bracelets'].includes(c)).map((c: string) => (
                       <option key={c} value={c}>{c}</option>
                     ))}
                   </select>

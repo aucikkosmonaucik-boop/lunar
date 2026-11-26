@@ -26,16 +26,8 @@ async function main() {
   
   const mainCategories = [
     { name: 'Shop All', slug: 'all', description: 'Explore our entire curated collection of luxury pieces.', displayOrder: 1 },
-    { name: 'Latest Arrivals', slug: 'new-arrivals', description: 'Freshly designed jewelry and newly formulated perfumes.', badge: 'NEW', displayOrder: 2 },
-    { name: 'Earrings', slug: 'earrings', description: 'Handcrafted earrings, pearls, hoops, and diamond studs.', displayOrder: 3 },
-    { name: 'Rings', slug: 'rings', description: 'Fine artisan rings crafted in 18k solid gold plating and 925 sterling silver.', displayOrder: 4 },
-    { name: 'Necklaces', slug: 'necklaces', description: 'Delicate pendants, statement chokers, and radiant gold necklaces.', displayOrder: 5 },
-    { name: 'Bracelets', slug: 'bracelets', description: 'Sculpted bangles, tennis bracelets, and delicate pearl links.', displayOrder: 6 },
-    { name: 'Watches', slug: 'watches', description: 'Precision luxury timepieces and artisanal chronographs.', displayOrder: 7 },
-    { name: "Men's Wallets", slug: 'mens-wallets', description: 'Handcrafted leather wallets, billfolds, and cardholders.', displayOrder: 8 },
-    { name: 'Perfumes', slug: 'perfumes', description: 'Exclusive niche fragrances and artisanal luxury extrait de parfum.', displayOrder: 9 },
-    { name: 'Gift Sets', slug: 'sets', description: 'Curated luxury boxes with signature pairings and complimentary presentation.', badge: 'GIFT SET', displayOrder: 10 },
-    { name: 'Bridal', slug: 'bridal', description: 'Breathtaking bridal suites and heirloom jewelry crafted for momentous celebrations.', badge: 'BRIDAL', displayOrder: 11 },
+    { name: 'Necklaces', slug: 'necklaces', description: 'Delicate pendants, statement chokers, and radiant gold necklaces.', displayOrder: 2 },
+    { name: 'Bracelets', slug: 'bracelets', description: 'Sculpted bangles, tennis bracelets, and delicate pearl links.', displayOrder: 3 },
   ];
 
   const categoryMap: Record<string, string> = {};
@@ -58,41 +50,6 @@ async function main() {
       },
     });
     categoryMap[cat.slug] = created.id;
-  }
-
-  // Seed Subcategories (Rings and Perfumes)
-  const ringsId = categoryMap['rings'];
-  if (ringsId) {
-    const ringSubcategories = [
-      { name: 'Statement Rings', slug: 'statement-rings', displayOrder: 1 },
-      { name: 'Stacking & Minimalist', slug: 'stacking-minimalist', displayOrder: 2 },
-      { name: '18K Gold Plated Rings', slug: 'rings-18k-gold', displayOrder: 3 },
-      { name: '925 Sterling Silver Rings', slug: 'rings-sterling-silver', displayOrder: 4 },
-    ];
-    for (const sub of ringSubcategories) {
-      const createdSub = await prisma.category.upsert({
-        where: { slug: sub.slug },
-        update: { name: sub.name, parentId: ringsId, displayOrder: sub.displayOrder },
-        create: { name: sub.name, slug: sub.slug, parentId: ringsId, displayOrder: sub.displayOrder },
-      });
-      categoryMap[sub.slug] = createdSub.id;
-    }
-  }
-
-  const perfumesId = categoryMap['perfumes'];
-  if (perfumesId) {
-    const perfumeSubcategories = [
-      { name: "Women's Perfumes", slug: 'perfumes-women', displayOrder: 1 },
-      { name: "Men's Perfumes", slug: 'perfumes-men', displayOrder: 2 },
-    ];
-    for (const sub of perfumeSubcategories) {
-      const createdSub = await prisma.category.upsert({
-        where: { slug: sub.slug },
-        update: { name: sub.name, parentId: perfumesId, displayOrder: sub.displayOrder },
-        create: { name: sub.name, slug: sub.slug, parentId: perfumesId, displayOrder: sub.displayOrder },
-      });
-      categoryMap[sub.slug] = createdSub.id;
-    }
   }
 
   // 2. Seed Products (Complete Catalog from Dropdown Menu)

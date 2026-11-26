@@ -57,11 +57,8 @@ const ShopPage: React.FC = () => {
     if (!catParam) return 'All';
     const matched = categories.find(c => c.toLowerCase().replace(/[\s-]/g, '') === catParam.toLowerCase().replace(/[\s-]/g, ''));
     if (matched) return matched;
-    if (catParam.toLowerCase() === 'perfumes') return 'Perfumes';
-    if (catParam.toLowerCase() === 'jewelry') return 'Jewelry';
-    if (catParam.toLowerCase() === 'wallets' || catParam.toLowerCase() === 'mens-wallets' || catParam.toLowerCase() === "men's-wallets") return "Men's Wallets";
-    if (catParam.toLowerCase() === 'watches') return 'Watches';
-    if (catParam.toLowerCase() === 'watches-wallets') return "Watches & Men's Wallets";
+    if (catParam.toLowerCase() === 'necklaces') return 'Necklaces';
+    if (catParam.toLowerCase() === 'bracelets') return 'Bracelets';
     return 'All';
   }, [catParam]);
 
@@ -79,8 +76,6 @@ const ShopPage: React.FC = () => {
     const nextParams = new URLSearchParams(searchParams);
     if (cat === 'All') {
       nextParams.delete('category');
-    } else if (cat === "Men's Wallets") {
-      nextParams.set('category', 'mens-wallets');
     } else {
       nextParams.set('category', cat.toLowerCase().replace(/\s+/g, '-'));
     }
@@ -119,15 +114,7 @@ const ShopPage: React.FC = () => {
     for (const cat of categories) {
       if (cat === 'All') continue;
       const normalized = cat.toLowerCase().replace(/\s+/g, '-');
-      if (cat === 'Jewelry') {
-        counts[cat] = products.filter(p => p.category === 'jewelry' || p.category === 'earrings' || p.category === 'rings' || p.category === 'necklaces' || p.category === 'bracelets' || p.category === 'bridal' || p.tags.includes('jewelry')).length;
-      } else if (cat === "Men's Wallets") {
-        counts[cat] = products.filter(p => p.category.includes('wallet') || p.tags.some(t => t.toLowerCase().includes('wallet'))).length;
-      } else if (cat === 'Watches') {
-        counts[cat] = products.filter(p => p.category.includes('watch') || p.tags.some(t => t.toLowerCase().includes('watch'))).length;
-      } else {
-        counts[cat] = products.filter(p => p.category.toLowerCase().includes(normalized) || p.tags.some(t => t === normalized)).length;
-      }
+      counts[cat] = products.filter(p => p.category.toLowerCase().includes(normalized) || p.tags.some(t => t === normalized)).length;
     }
     return counts;
   }, [products]);
@@ -148,19 +135,7 @@ const ShopPage: React.FC = () => {
       list = list.filter(p => p.tags.includes(activeTag) || p.badge?.toLowerCase().replace(/\s+/g, '-') === activeTag);
     } else if (category !== 'All') {
       const normalizedCat = category.toLowerCase().replace(/\s+/g, '-');
-      if (category === 'Jewelry') {
-        list = list.filter(p => p.category === 'jewelry' || p.category === 'earrings' || p.category === 'rings' || p.category === 'necklaces' || p.category === 'bracelets' || p.category === 'bridal' || p.tags.includes('jewelry'));
-      } else if (category === 'Perfumes' || catParam?.toLowerCase() === 'perfumes') {
-        list = list.filter(p => p.category.startsWith('perfumes') || p.tags.includes('perfumes'));
-      } else if (category === "Men's Wallets" || catParam?.toLowerCase() === 'wallets' || catParam?.toLowerCase() === 'mens-wallets') {
-        list = list.filter(p => p.category.includes('wallet') || p.tags.some(t => t.toLowerCase().includes('wallet')));
-      } else if (category === 'Watches' || catParam?.toLowerCase() === 'watches') {
-        list = list.filter(p => p.category.includes('watch') || p.tags.some(t => t.toLowerCase().includes('watch')));
-      } else if (category === "Watches & Men's Wallets" || catParam?.toLowerCase() === 'watches-wallets') {
-        list = list.filter(p => p.category.includes('watch') || p.category.includes('wallet') || p.tags.some(t => t.toLowerCase().includes('watch') || t.toLowerCase().includes('wallet')));
-      } else {
-        list = list.filter(p => p.category.toLowerCase().includes(normalizedCat) || p.tags.some(t => t === normalizedCat));
-      }
+      list = list.filter(p => p.category.toLowerCase().includes(normalizedCat) || p.tags.some(t => t === normalizedCat));
     }
 
     switch (sort) {
@@ -364,7 +339,7 @@ const ShopPage: React.FC = () => {
                       type="text"
                       value={search}
                       onChange={e => setSearch(e.target.value)}
-                      placeholder="Find rings, necklaces, perfumes..."
+                      placeholder="Find necklaces, bracelets, chains..."
                       className="w-full pl-8 pr-7 py-2.5 text-xs bg-[#FAF7F5] dark:bg-[#252525] border border-gray-200 dark:border-[#2E2E2E] text-[#1a1a1a] dark:text-[#F5F5F5] placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-xl outline-none focus:border-[#c1a98f] focus:bg-white dark:focus:bg-[#282828] transition-all"
                     />
                     {search && (
@@ -484,7 +459,7 @@ const ShopPage: React.FC = () => {
                   type="text"
                   value={search}
                   onChange={e => setSearch(e.target.value)}
-                  placeholder="Find rings, perfumes..."
+                  placeholder="Find necklaces, bracelets..."
                   className="w-full pl-8 pr-7 py-2 text-xs bg-[#FAF7F5] dark:bg-[#252525] border border-gray-200 dark:border-[#2E2E2E] text-[#1a1a1a] dark:text-[#F5F5F5] placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-lg outline-none focus:border-[#c1a98f] focus:bg-white dark:focus:bg-[#282828] transition-all"
                 />
                 {search && (

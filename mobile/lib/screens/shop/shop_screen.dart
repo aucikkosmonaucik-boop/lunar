@@ -130,15 +130,8 @@ class _ShopScreenState extends State<ShopScreen> {
 
   static IconData getCategoryIcon(String slug) {
     final s = slug.toLowerCase();
-    if (s.contains('watch')) return Icons.watch_outlined;
-    if (s.contains('wallet')) return Icons.account_balance_wallet_outlined;
-    if (s.contains('ring')) return Icons.diamond_outlined;
-    if (s.contains('earring')) return Icons.auto_awesome_outlined;
     if (s.contains('necklace')) return Icons.link_rounded;
     if (s.contains('bracelet')) return Icons.trip_origin_rounded;
-    if (s.contains('bridal')) return Icons.favorite_outline_rounded;
-    if (s.contains('perfume')) return Icons.local_florist_outlined;
-    if (s.contains('gift')) return Icons.card_giftcard_rounded;
     return Icons.spa_outlined;
   }
 

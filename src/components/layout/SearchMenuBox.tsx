@@ -20,18 +20,6 @@ const siteCategories: CategoryItem[] = [
     image: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=300',
   },
   {
-    label: 'Earrings',
-    to: '/shop?category=earrings',
-    subtext: 'Studs, hoops & drops',
-    image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&q=80&w=300',
-  },
-  {
-    label: 'Rings',
-    to: '/shop?category=rings',
-    subtext: 'Solitaires, bands & stacking',
-    image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&q=80&w=300',
-  },
-  {
     label: 'Necklaces',
     to: '/shop?category=necklaces',
     subtext: 'Chains, chokers & pendants',
@@ -42,36 +30,6 @@ const siteCategories: CategoryItem[] = [
     to: '/shop?category=bracelets',
     subtext: 'Bangles, tennis & cuffs',
     image: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&q=80&w=300',
-  },
-  {
-    label: 'Watches',
-    to: '/shop?category=watches',
-    subtext: 'Luxury timepieces & chronographs',
-    image: 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&q=80&w=300',
-  },
-  {
-    label: "Men's Wallets",
-    to: '/shop?category=mens-wallets',
-    subtext: 'Fine leather wallets & accessories',
-    image: 'https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&q=80&w=300',
-  },
-  {
-    label: 'Perfumes',
-    to: '/shop?category=perfumes',
-    subtext: 'Haute parfumerie (Women & Men)',
-    image: 'https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&q=80&w=300',
-  },
-  {
-    label: 'Gift Sets',
-    to: '/shop?category=sets',
-    subtext: 'Curated luxury boxed sets',
-    image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=300',
-  },
-  {
-    label: 'Bridal',
-    to: '/shop?category=bridal',
-    subtext: 'Pearls & wedding jewelry',
-    image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&q=80&w=300',
   },
 ];
 
@@ -180,7 +138,7 @@ export const SearchMenuBox: React.FC<SearchMenuBoxProps> = ({
               <input
                 ref={inputRef}
                 type="text"
-                placeholder="Search jewelry, perfumes, collections..."
+                placeholder="Search necklaces, bracelets, collections..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 className="w-full bg-transparent text-base sm:text-lg font-serif italic text-black dark:text-[#F5F5F5] placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none tracking-wide"
@@ -278,7 +236,7 @@ export const SearchMenuBox: React.FC<SearchMenuBoxProps> = ({
                     No matching pieces found for "{query}"
                   </p>
                   <p className="text-xs font-sans uppercase tracking-wider text-gray-500 dark:text-[#888888] mb-5">
-                    Try searching for gold, silver, rings, earrings, or perfumes
+                    Try searching for gold, silver, necklaces, or bracelets
                   </p>
                   <button
                     type="button"

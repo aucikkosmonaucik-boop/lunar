@@ -236,15 +236,6 @@ export const products: Product[] = [
 
 export const categories = [
   'All',
-  'Earrings',
-  'Rings',
   'Necklaces',
-  'Bracelets',
-  'Watches',
-  "Men's Wallets",
-  'Sets',
-  'Bridal',
-  'Perfumes Women',
-  'Perfumes Men',
-  'Jewelry'
+  'Bracelets'
 ];

@@ -18,7 +18,7 @@ const HomePage: React.FC = () => {
     if (chains.length >= 4) {
       return chains.slice(0, 4);
     }
-    const jewelry = products.filter((p) => !p.category.startsWith('perfumes'));
+    const jewelry = products.filter((p) => p.category === 'necklaces' || p.category === 'bracelets');
     return jewelry.slice(0, 4);
   }, [products]);
 

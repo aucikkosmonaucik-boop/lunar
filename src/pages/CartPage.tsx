@@ -414,9 +414,8 @@ const CartPage: React.FC = () => {
             </p>
             <div className="flex flex-wrap items-center justify-center gap-2">
               {[
-                { label: 'Rings', to: '/shop?category=rings' },
                 { label: 'Necklaces', to: '/shop?category=necklaces' },
-                { label: 'Earrings', to: '/shop?category=earrings' },
+                { label: 'Bracelets', to: '/shop?category=bracelets' },
                 { label: 'Ready to Ship', to: '/shop?tag=ready-to-ship' },
               ].map((link) => (
                 <Link

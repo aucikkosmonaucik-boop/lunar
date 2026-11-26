@@ -50,7 +50,7 @@ const List<CarrierModel> kCarriers = [
     name: 'An Post (Standard Letter)',
     shortName: 'An Post Letter',
     tagline: 'Standard Letter • Padded Mailer',
-    description: 'Economical standard post in a protective bubble envelope. Ideal for rings and smaller jewelry.',
+    description: 'Economical standard post in a protective bubble envelope. Ideal for necklaces, bracelets, and fine jewelry.',
     estimatedDelivery: '2 – 3 Business Days',
     basePrice: 2.90,
     freeShippingAvailable: true,
