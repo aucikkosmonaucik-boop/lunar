@@ -40,7 +40,23 @@ jobs:
       - name: Build APK Release
         run: |
           cd mobile
-          flutter build apk --release --no-tree-shake-icons --android-skip-build-dependency-validation > ../build_out.txt 2>&1 || (cat ../build_out.txt && exit 1)
+          if ! flutter build apk --release --no-tree-shake-icons --android-skip-build-dependency-validation > ../build_out.txt 2>&1; then
+            echo "## ❌ Build APK Failed" >> $GITHUB_STEP_SUMMARY
+            echo '```text' >> $GITHUB_STEP_SUMMARY
+            tail -n 80 ../build_out.txt >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat ../build_out.txt
+            exit 1
+          fi
+          echo "## ✅ Build APK Succeeded" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload Build Log on Failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: flutter-build-failure-log
+          path: build_out.txt
+          if-no-files-found: ignore
 
       - name: Prepare APK Asset
         run: |
