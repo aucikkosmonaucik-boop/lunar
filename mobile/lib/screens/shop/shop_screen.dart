@@ -130,6 +130,8 @@ class _ShopScreenState extends State<ShopScreen> {
 
   static IconData getCategoryIcon(String slug) {
     final s = slug.toLowerCase();
+    if (s.contains('watch')) return Icons.watch_outlined;
+    if (s.contains('wallet')) return Icons.account_balance_wallet_outlined;
     if (s.contains('ring')) return Icons.diamond_outlined;
     if (s.contains('earring')) return Icons.auto_awesome_outlined;
     if (s.contains('necklace')) return Icons.link_rounded;
@@ -424,7 +426,7 @@ class _ShopScreenState extends State<ShopScreen> {
                 if (val.isEmpty) provider.setSearchQuery('');
               },
               decoration: InputDecoration(
-                hintText: 'Search jewelry, earrings, rings, perfumes...',
+                hintText: 'Search jewelry, watches, wallets, perfumes...',
                 prefixIcon: const Icon(Icons.search_rounded),
                 suffixIcon: _searchController.text.isNotEmpty
                     ? IconButton(
