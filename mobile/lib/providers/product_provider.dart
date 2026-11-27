@@ -55,12 +55,15 @@ class ProductProvider extends ChangeNotifier {
     ]);
   }
 
+  static const Set<String> _allowedCategorySlugs = {'necklaces', 'bracelets'};
+
   Future<void> fetchCategories() async {
     try {
       final res = await ApiService.get(ApiConstants.categories);
       if (res is Map && res['categories'] is List) {
         _categories = (res['categories'] as List)
             .map((c) => CategoryModel.fromJson(c as Map<String, dynamic>))
+            .where((c) => _allowedCategorySlugs.contains(c.slug.toLowerCase()))
             .toList();
         notifyListeners();
       }

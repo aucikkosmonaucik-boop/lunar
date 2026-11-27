@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../core/constants/app_colors.dart';
 import '../providers/auth_provider.dart';
-import '../screens/auth/phone_auth_screen.dart';
 
 class SocialAuthButtons extends StatefulWidget {
   final VoidCallback? onSuccess;
@@ -20,17 +19,6 @@ class SocialAuthButtons extends StatefulWidget {
 
 class _SocialAuthButtonsState extends State<SocialAuthButtons> {
   String? _activeProvider;
-
-  Future<void> _handleGoogleSignIn() async {
-    setState(() => _activeProvider = 'google');
-    final auth = context.read<AuthProvider>();
-    final success = await auth.loginWithGoogle();
-    setState(() => _activeProvider = null);
-
-    if (success && mounted) {
-      widget.onSuccess?.call();
-    }
-  }
 
   Future<void> _handleFacebookSignIn() async {
     setState(() => _activeProvider = 'facebook');
@@ -82,63 +70,18 @@ class _SocialAuthButtonsState extends State<SocialAuthButtons> {
         ),
         const SizedBox(height: 20),
 
-        // Social Buttons Row
-        Row(
-          children: [
-            // Google Button
-            Expanded(
-              child: _buildSocialCard(
-                isDark: isDark,
-                provider: 'google',
-                isLoading: _activeProvider == 'google' && isBusy,
-                iconWidget: _buildGoogleIcon(),
-                label: 'Google',
-                onTap: isBusy ? null : _handleGoogleSignIn,
-              ),
-            ),
-            const SizedBox(width: 12),
-
-            // Facebook Button
-            Expanded(
-              child: _buildSocialCard(
-                isDark: isDark,
-                provider: 'facebook',
-                isLoading: _activeProvider == 'facebook' && isBusy,
-                iconWidget: const Icon(
-                  Icons.facebook,
-                  size: 22,
-                  color: Color(0xFF1877F2),
-                ),
-                label: 'Facebook',
-                onTap: isBusy ? null : _handleFacebookSignIn,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-
-        // Phone Auth Button
+        // Facebook Button
         _buildSocialCard(
           isDark: isDark,
-          provider: 'phone',
-          isLoading: false,
-          iconWidget: Icon(
-            Icons.phone_iphone_rounded,
-            size: 20,
-            color: isDark ? AppColors.primary : AppColors.primaryDark,
+          provider: 'facebook',
+          isLoading: _activeProvider == 'facebook' && isBusy,
+          iconWidget: const Icon(
+            Icons.facebook,
+            size: 22,
+            color: Color(0xFF1877F2),
           ),
-          label: 'Continue with Phone Number',
-          onTap: isBusy
-              ? null
-              : () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => PhoneAuthScreen(
-                        onSuccess: widget.onSuccess,
-                      ),
-                    ),
-                  );
-                },
+          label: 'Continue with Facebook',
+          onTap: isBusy ? null : _handleFacebookSignIn,
         ),
       ],
     );
@@ -200,15 +143,6 @@ class _SocialAuthButtonsState extends State<SocialAuthButtons> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildGoogleIcon() {
-    return Image.asset(
-      'assets/images/google_logo.png',
-      width: 20,
-      height: 20,
-      fit: BoxFit.contain,
     );
   }
 }

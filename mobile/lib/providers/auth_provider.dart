@@ -1,7 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:firebase_auth/firebase_auth.dart' as fb;
 import '../core/constants/api_constants.dart';
 import '../core/services/api_service.dart';
 import '../core/services/storage_service.dart';
@@ -241,42 +239,6 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  final GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: ['email', 'profile'],
-    serverClientId: '651131285123-r9oumbu13b95p2slhaim48k9dallkvjk.apps.googleusercontent.com',
-  );
-
-  Future<bool> loginWithGoogle() async {
-    _isLoading = true;
-    _errorMessage = null;
-    notifyListeners();
-
-    try {
-      final GoogleSignInAccount? account = await _googleSignIn.signIn();
-      if (account == null) {
-        // User cancelled Google sign-in
-        _isLoading = false;
-        notifyListeners();
-        return false;
-      }
-
-      final GoogleSignInAuthentication auth = await account.authentication;
-
-      return await _submitSocialLogin(
-        provider: 'google',
-        email: account.email,
-        name: account.displayName,
-        providerId: account.id,
-        token: auth.idToken ?? auth.accessToken,
-      );
-    } catch (e) {
-      _isLoading = false;
-      _errorMessage = 'Google Sign-In failed: ${e.toString()}';
-      notifyListeners();
-      return false;
-    }
-  }
-
   Future<bool> loginWithFacebook() async {
     _isLoading = true;
     _errorMessage = null;
@@ -314,36 +276,6 @@ class AuthProvider extends ChangeNotifier {
     } catch (e) {
       _isLoading = false;
       _errorMessage = 'Facebook login failed: ${e.toString()}';
-      notifyListeners();
-      return false;
-    }
-  }
-
-  Future<bool> loginWithPhoneAuth({
-    required fb.User firebaseUser,
-    String? name,
-  }) async {
-    _isLoading = true;
-    _errorMessage = null;
-    notifyListeners();
-
-    try {
-      final token = await firebaseUser.getIdToken();
-      final phone = firebaseUser.phoneNumber;
-      final email = firebaseUser.email;
-      final displayName = name ?? firebaseUser.displayName;
-
-      return await _submitSocialLogin(
-        provider: 'phone',
-        email: email ?? (phone != null ? '${phone.replaceAll(RegExp(r'[^0-9]'), '')}@phone.lunar.com' : ''),
-        phone: phone,
-        name: displayName,
-        providerId: firebaseUser.uid,
-        token: token,
-      );
-    } catch (e) {
-      _isLoading = false;
-      _errorMessage = 'Phone sign-in failed: ${e.toString()}';
       notifyListeners();
       return false;
     }
@@ -400,13 +332,7 @@ class AuthProvider extends ChangeNotifier {
       await ApiService.post(ApiConstants.authLogout);
     } catch (_) {}
     try {
-      await _googleSignIn.signOut();
-    } catch (_) {}
-    try {
       await FacebookAuth.instance.logOut();
-    } catch (_) {}
-    try {
-      await fb.FirebaseAuth.instance.signOut();
     } catch (_) {}
 
     _user = null;
