@@ -41,6 +41,7 @@ jobs:
         run: |
           cd mobile
           if ! flutter build apk --release --no-tree-shake-icons --android-skip-build-dependency-validation > ../build_out.txt 2>&1; then
+            (cd android && ./gradlew assembleRelease --stacktrace >> ../../build_out.txt 2>&1) || true
             echo "## ❌ Build APK Failed" >> $GITHUB_STEP_SUMMARY
             echo '```text' >> $GITHUB_STEP_SUMMARY
             tail -n 80 ../build_out.txt >> $GITHUB_STEP_SUMMARY
