@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useFavorites } from '../hooks/useFavorites';
 import { useCart } from '../hooks/useCart';
 import { Package, MapPin, Heart, Settings, LogOut, Clock, ArrowRight, Trash2, Phone, Award, Coins, Sparkles, Copy, Truck, ExternalLink } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { useLoyalty } from '../hooks/useLoyalty';
 import { getCarrierById } from '../data/carriers';
 interface OrderItem {
@@ -37,7 +36,18 @@ const AccountPage: React.FC = () => {
   const { addToCart } = useCart();
   const { loyaltyPoints, tier, rewards, userCoupons, history, redeemReward } = useLoyalty();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'overview' | 'settings' | 'addresses' | 'orders' | 'wishlist' | 'loyalty'>('overview');
+  const [searchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState<'overview' | 'settings' | 'addresses' | 'orders' | 'wishlist' | 'loyalty'>(() => {
+    const t = searchParams.get('tab');
+    return t === 'loyalty' || t === 'orders' || t === 'wishlist' || t === 'settings' || t === 'addresses' ? t : 'overview';
+  });
+
+  useEffect(() => {
+    const t = searchParams.get('tab');
+    if (t === 'loyalty' || t === 'orders' || t === 'wishlist' || t === 'settings' || t === 'addresses' || t === 'overview') {
+      setActiveTab(t);
+    }
+  }, [searchParams]);
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
   const [loading, setLoading] = useState(false);
   const [redeemingRewardId, setRedeemingRewardId] = useState<string | null>(null);
@@ -213,8 +223,7 @@ const AccountPage: React.FC = () => {
   };
 
   if (!user) {
-    navigate('/login');
-    return null;
+    return <Navigate to="/login" replace />;
   }
 
   const handleLogout = () => {

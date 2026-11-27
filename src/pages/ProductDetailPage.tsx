@@ -257,7 +257,7 @@ const ProductDetailPage: React.FC = () => {
                 </div>
               </div>
               <Link
-                to="/account"
+                to="/account?tab=loyalty"
                 className="text-[10px] uppercase tracking-wider font-bold text-[#1A1A1A] dark:text-[#C1A98F] hover:text-[#D4AF37] underline whitespace-nowrap self-end sm:self-auto"
               >
                 View Rewards
