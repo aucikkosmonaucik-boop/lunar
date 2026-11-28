@@ -1287,10 +1287,12 @@ export const AdminPage: React.FC = () => {
                 </table>
               </div>
             </div>
+          </div>
+        )}
 
-            {/* FULFILLMENT & CARRIER TRACKING MODAL */}
-            {trackingModalOrder && (
-              <div className="fixed inset-0 z-50 flex justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in overflow-y-auto">
+        {/* FULFILLMENT & CARRIER TRACKING MODAL */}
+        {trackingModalOrder && (
+          <div className="fixed inset-0 z-[100] flex justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in overflow-y-auto">
                 <div className="bg-white dark:bg-[#1E1E1E] border border-[#EAE3D9] dark:border-[#2E2E2E] w-full max-w-xl my-auto max-h-[90vh] overflow-y-auto rounded-sm shadow-2xl p-6 sm:p-8 space-y-6 text-[#1A1A1A] dark:text-[#F5F5F5] transition-colors">
                   
                   {/* Modal Header */}
@@ -1443,8 +1445,6 @@ export const AdminPage: React.FC = () => {
                 </div>
               </div>
             )}
-          </div>
-        )}
 
         {/* TAB 6: CUSTOMER REVIEWS & RATINGS */}
         {activeTab === 'reviews' && (
