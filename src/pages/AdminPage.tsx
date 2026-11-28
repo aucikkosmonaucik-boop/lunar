@@ -483,7 +483,7 @@ export const AdminPage: React.FC = () => {
   // ─────────────────────────────────────────────────────────────
   if (!isAdminAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#FDFCFB] dark:bg-[#121212] text-[#1A1A1A] dark:text-[#F5F5F5] flex flex-col items-center justify-center px-4 py-16 relative transition-colors">
+      <div className="min-h-screen bg-[#FDFCFB] dark:bg-[#121212] text-[#1A1A1A] dark:text-[#F5F5F5] flex flex-col items-center justify-start px-4 pt-12 pb-16 sm:pt-16 relative transition-colors">
         {/* Dark/Light mode toggle in corner */}
         <button
           type="button"
