@@ -6,7 +6,7 @@ import bcrypt from 'bcryptjs';
 import { prisma } from '../_lib/prisma.js';
 import { getJwtSecret } from '../_lib/auth-util.js';
 import { getBackendCarrier } from '../_lib/carriers.js';
-import { getStripeSecretKey } from './_stripe-key.js';
+import { getStripeSecretKey, getStripePublishableKey } from './_stripe-key.js';
 
 const FREE_SHIPPING_THRESHOLD = 50;
 
@@ -159,22 +159,29 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   dbProducts.forEach((p: any) => dbProductMap.set(p.id, p));
 
   let itemsTotal = 0;
-  const verifiedItems = items.map((item: CartItem) => {
+  const verifiedItems = [];
+  for (const item of items) {
     const pId = item.product?.id;
     const dbProduct = pId ? dbProductMap.get(pId) : null;
-    const verifiedPrice = dbProduct ? Number(dbProduct.price) : Math.max(0, Number(item.product?.price || 0));
+    if (!dbProduct) {
+      return res.status(400).json({
+        message: `Product '${item.product?.name || pId || 'unknown'}' is no longer available.`,
+      });
+    }
+
+    const verifiedPrice = Number(dbProduct.price);
     const verifiedQty = Math.max(1, Math.min(100, Math.floor(Number(item.quantity) || 1)));
     itemsTotal += verifiedPrice * verifiedQty;
 
-    return {
-      productId: dbProduct ? dbProduct.id : null,
-      name: dbProduct ? dbProduct.name : (item.product?.name || 'Item'),
+    verifiedItems.push({
+      productId: dbProduct.id,
+      name: dbProduct.name,
       price: verifiedPrice,
       quantity: verifiedQty,
-      image: dbProduct ? dbProduct.image : (item.product?.image || ''),
+      image: dbProduct.image,
       selectedOptions: item.selectedOptions ? String(item.selectedOptions).slice(0, 100) : null,
-    };
-  });
+    });
+  }
 
   // 3. Verify Promo Code
   let discountPct = 0;
@@ -256,7 +263,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amountInCents,
       currency: 'eur',
-      payment_method_types: ['card', 'link'],
+      automatic_payment_methods: { enabled: true },
       metadata: {
         orderId: String(order.id),
         orderNumber: String(order.orderNumber),
@@ -270,11 +277,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Update order with payment intent ID
     await (prisma as any).order.update({
       where: { id: order.id },
-      data: { stripeSessionId: paymentIntent.id },
+      data: {
+        stripeSessionId: paymentIntent.id,
+        stripePaymentIntentId: paymentIntent.id,
+      },
     });
 
     return res.status(200).json({
       clientSecret: paymentIntent.client_secret,
+      publishableKey: getStripePublishableKey(),
       paymentIntentId: paymentIntent.id,
       orderNumber: order.orderNumber,
       orderId: order.id,

@@ -96,6 +96,10 @@
       "destination": "/api/notifications-handler?action=:action"
     },
     {
+      "source": "/api/stripe/webhook",
+      "destination": "/api/stripe-webhook"
+    },
+    {
       "source": "/api/stripe/:action",
       "destination": "/api/stripe-handler?action=:action"
     },

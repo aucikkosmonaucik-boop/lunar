@@ -78,6 +78,7 @@ const CartPage: React.FC = () => {
   // Stripe PaymentIntent Model B states
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [paymentClientSecret, setPaymentClientSecret] = useState<string | null>(null);
+  const [paymentPublishableKey, setPaymentPublishableKey] = useState<string | null>(null);
   const [paymentOrderNumber, setPaymentOrderNumber] = useState<string | null>(null);
   const [paymentAmount, setPaymentAmount] = useState<number>(0);
 
@@ -358,6 +359,9 @@ const CartPage: React.FC = () => {
 
       if (data.clientSecret) {
         setPaymentClientSecret(data.clientSecret);
+        if (data.publishableKey) {
+          setPaymentPublishableKey(data.publishableKey);
+        }
         setPaymentOrderNumber(data.orderNumber);
         setPaymentAmount(data.amount || grandTotal);
         setIsPaymentModalOpen(true);
@@ -1601,8 +1605,9 @@ const CartPage: React.FC = () => {
         onClose={() => setIsPaymentModalOpen(false)}
         clientSecret={paymentClientSecret || ''}
         publishableKey={
+          paymentPublishableKey ||
           import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY ||
-          'pk_live_51U8GXcFTXDZcKBNuXeFipeSIpVUpt74Wfa7EQHaUan4CKN1eh5e5yNFLTONMqPbrNfyBcrQUXtnGqf3Fda748HSd00rIhuigF0'
+          ''
         }
         amount={paymentAmount || grandTotal}
         currency="EUR"

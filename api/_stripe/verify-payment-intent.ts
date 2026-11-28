@@ -1,9 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import Stripe from 'stripe';
-import { prisma } from '../_lib/prisma.js';
-import { sendOrderConfirmationEmail } from '../_lib/email.js';
-import { notifyPaymentConfirmed, notifyOrderPlaced, notifyLoyaltyPointsEarned } from '../_lib/notifications.js';
 import { getStripeSecretKey } from './_stripe-key.js';
+import { fulfillOrderFromPaymentIntent } from './_fulfill-order.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const paymentIntentId =
@@ -25,62 +23,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const stripe = new Stripe(stripeSecretKey);
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
 
-    // Find the corresponding order in Postgres
-    let order = await (prisma as any).order.findFirst({
-      where: {
-        OR: [
-          { stripeSessionId: paymentIntentId },
-          { orderNumber: paymentIntent.metadata?.orderNumber || '' },
-          { id: paymentIntent.metadata?.orderId || '' },
-        ],
-      },
-      include: { items: true },
-    });
+    const order = await fulfillOrderFromPaymentIntent(paymentIntent);
 
     if (!order) {
       return res.status(404).json({ message: 'Order associated with this PaymentIntent not found.' });
-    }
-
-    // If PaymentIntent succeeded and order is still Pending
-    if (paymentIntent.status === 'succeeded' && order.paymentStatus !== 'paid') {
-      const updatedOrder = await (prisma as any).order.update({
-        where: { id: order.id },
-        data: {
-          status: 'Paid',
-          paymentStatus: 'paid',
-          paymentMethod: paymentIntent.payment_method_types?.[0] || 'card',
-        },
-        include: { items: true },
-      });
-
-      order = updatedOrder;
-
-      // Send confirmation email
-      try {
-        await sendOrderConfirmationEmail(order);
-      } catch (emailErr) {
-        console.error('Failed to send order confirmation email:', emailErr);
-      }
-
-      // Send in-app notifications
-      try {
-        if (order.userId) {
-          await notifyPaymentConfirmed(order.userId, order.orderNumber, Number(order.total));
-          await notifyOrderPlaced(order.userId, order.orderNumber, Number(order.total));
-
-          // Award loyalty points (10 points per 1 EUR)
-          const pointsEarned = Math.max(10, Math.floor(Number(order.total) * 10));
-          await (prisma as any).user.update({
-            where: { id: order.userId },
-            data: {
-              loyaltyPoints: { increment: pointsEarned },
-            },
-          });
-          await notifyLoyaltyPointsEarned(order.userId, pointsEarned, 'order');
-        }
-      } catch (notifErr) {
-        console.error('Failed to dispatch notifications or loyalty points:', notifErr);
-      }
     }
 
     return res.status(200).json({

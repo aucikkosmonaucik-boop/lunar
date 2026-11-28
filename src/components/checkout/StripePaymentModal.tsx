@@ -130,9 +130,12 @@ export const StripePaymentModal: React.FC<StripePaymentModalProps> = ({
   onSuccess,
   isDark = false,
 }) => {
-  if (!isOpen || !clientSecret || !publishableKey) return null;
+  const stripePromise = React.useMemo(
+    () => (publishableKey ? loadStripe(publishableKey) : null),
+    [publishableKey]
+  );
 
-  const stripePromise = React.useMemo(() => loadStripe(publishableKey), [publishableKey]);
+  if (!isOpen || !clientSecret || !publishableKey || !stripePromise) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/75 backdrop-blur-xs animate-in fade-in duration-200 overflow-y-auto">

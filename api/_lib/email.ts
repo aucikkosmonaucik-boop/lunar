@@ -169,9 +169,11 @@ export async function sendOrderConfirmationEmail(order: any, options?: { pointsE
     day: 'numeric',
   });
 
-  const orderUrl = order.stripeSessionId 
-    ? `${appUrl}/order-success?session_id=${order.stripeSessionId}` 
-    : `${appUrl}/account/orders`;
+  const orderUrl = order.stripePaymentIntentId
+    ? `${appUrl}/order-success?payment_intent=${order.stripePaymentIntentId}`
+    : order.stripeSessionId
+      ? `${appUrl}/order-success?session_id=${order.stripeSessionId}`
+      : `${appUrl}/account/orders`;
 
   const phoneRow = order.shippingPhone 
     ? `Phone: ${order.shippingPhone}` 
