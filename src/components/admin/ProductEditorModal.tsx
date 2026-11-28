@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { X, Plus, Trash2, Image as ImageIcon, Star, Sparkles, ArrowLeft, ArrowRight, Check, Percent, Tag } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { X, Plus, Trash2, Image as ImageIcon, Star, Sparkles, ArrowLeft, ArrowRight, Check, Percent, Tag, Upload, Loader2 } from 'lucide-react';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from '../../lib/firebase';
 import type { Product } from '../../types';
 
 interface ProductEditorModalProps {
@@ -62,6 +64,8 @@ export const ProductEditorModal: React.FC<ProductEditorModalProps> = ({
   // Gallery state
   const [images, setImages] = useState<string[]>([]);
   const [newImageUrl, setNewImageUrl] = useState('');
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Features and tags
   const [features, setFeatures] = useState<string[]>([]);
@@ -118,6 +122,54 @@ export const ProductEditorModal: React.FC<ProductEditorModalProps> = ({
       setImages(prev => [...prev, url]);
     }
     setNewImageUrl('');
+  };
+
+  const handleFileUpload = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+    const validFiles: File[] = [];
+
+    for (const file of Array.from(files)) {
+      if (!file.type.startsWith('image/')) {
+        setError(`"${file.name}" is not a valid image file.`);
+        return;
+      }
+      if (file.size > MAX_FILE_SIZE) {
+        setError(`"${file.name}" exceeds the 10 MB size limit.`);
+        return;
+      }
+      validFiles.push(file);
+    }
+
+    setError(null);
+    setUploadingImage(true);
+
+    try {
+      const uploadedUrls: string[] = [];
+
+      for (const file of validFiles) {
+        const sanitizedName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+        const uniquePath = `products/${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${sanitizedName}`;
+        const storageRef = ref(storage, uniquePath);
+        await uploadBytes(storageRef, file, { contentType: file.type });
+        const downloadUrl = await getDownloadURL(storageRef);
+        uploadedUrls.push(downloadUrl);
+      }
+
+      setImages(prev => [
+        ...prev,
+        ...uploadedUrls.filter(url => !prev.includes(url)),
+      ]);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to upload image to Firebase Storage.';
+      setError(`Upload failed: ${message}`);
+    } finally {
+      setUploadingImage(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
   };
 
   const handleRemoveImage = (indexToRemove: number) => {
@@ -429,13 +481,13 @@ export const ProductEditorModal: React.FC<ProductEditorModalProps> = ({
                 <label className="block text-xs uppercase tracking-wider font-bold text-gray-800 dark:text-gray-200 mb-2">
                   Add Image URL to Gallery
                 </label>
-                <div className="flex gap-2.5">
+                <div className="flex flex-wrap gap-2.5">
                   <input
                     type="url"
                     value={newImageUrl}
                     onChange={(e) => setNewImageUrl(e.target.value)}
                     placeholder="https://images.unsplash.com/... or direct image link"
-                    className="flex-1 px-4 py-3 bg-white dark:bg-[#1E1E1E] text-gray-900 dark:text-white border border-gray-300 dark:border-[#3E3E3E] rounded focus:ring-1 focus:ring-black dark:focus:ring-[#D4AF37] focus:outline-none text-base font-normal"
+                    className="flex-1 min-w-[220px] px-4 py-3 bg-white dark:bg-[#1E1E1E] text-gray-900 dark:text-white border border-gray-300 dark:border-[#3E3E3E] rounded focus:ring-1 focus:ring-black dark:focus:ring-[#D4AF37] focus:outline-none text-base font-normal"
                   />
                   <button
                     type="button"
@@ -443,6 +495,30 @@ export const ProductEditorModal: React.FC<ProductEditorModalProps> = ({
                     className="bg-[#1A1A1A] hover:bg-[#D4AF37] text-white hover:text-black dark:bg-[#D4AF37] dark:text-black dark:hover:bg-[#E8DCCF] px-5 py-3 text-xs uppercase tracking-wider font-bold rounded transition-colors flex items-center gap-2 cursor-pointer shrink-0"
                   >
                     <Plus className="w-4 h-4" /> Add Photo
+                  </button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={(e) => handleFileUpload(e.target.files)}
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    disabled={uploadingImage}
+                    onClick={() => fileInputRef.current?.click()}
+                    className="bg-white dark:bg-[#1E1E1E] text-gray-900 dark:text-[#D4AF37] border border-gray-300 dark:border-[#D4AF37]/60 hover:border-black dark:hover:border-[#D4AF37] hover:bg-gray-100 dark:hover:bg-[#2C2C2C] disabled:opacity-60 disabled:cursor-not-allowed px-5 py-3 text-xs uppercase tracking-wider font-bold rounded transition-colors flex items-center gap-2 cursor-pointer shrink-0"
+                  >
+                    {uploadingImage ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" /> Uploading...
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="w-4 h-4" /> Upload from PC
+                      </>
+                    )}
                   </button>
                 </div>
 
