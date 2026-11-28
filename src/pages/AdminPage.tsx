@@ -1290,8 +1290,8 @@ export const AdminPage: React.FC = () => {
 
             {/* FULFILLMENT & CARRIER TRACKING MODAL */}
             {trackingModalOrder && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
-                <div className="bg-white dark:bg-[#1E1E1E] border border-[#EAE3D9] dark:border-[#2E2E2E] w-full max-w-xl rounded-sm shadow-2xl p-6 sm:p-8 space-y-6 text-[#1A1A1A] dark:text-[#F5F5F5] transition-colors">
+              <div className="fixed inset-0 z-50 flex justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in overflow-y-auto">
+                <div className="bg-white dark:bg-[#1E1E1E] border border-[#EAE3D9] dark:border-[#2E2E2E] w-full max-w-xl my-auto max-h-[90vh] overflow-y-auto rounded-sm shadow-2xl p-6 sm:p-8 space-y-6 text-[#1A1A1A] dark:text-[#F5F5F5] transition-colors">
                   
                   {/* Modal Header */}
                   <div className="flex items-center justify-between border-b border-gray-100 dark:border-[#2E2E2E] pb-4">
